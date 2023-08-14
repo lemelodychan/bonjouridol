@@ -1,6 +1,9 @@
 import './globals.css'
 import { DM_Sans, Poppins, Noto_Sans_JP } from 'next/font/google'
 
+import { PrismicPreview } from '@prismicio/next'
+import { repositoryName } from '@/prismicio'
+
 const DMSans = DM_Sans({ subsets: ['latin'] })
 
 export const metadata = {
@@ -9,9 +12,18 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+
   return (
     <html lang="en">
-      <body className={DMSans.className}>{children}</body>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400;1,9..40,500;1,9..40,700&family=Noto+Sans+JP:wght@400;500;700&family=Poppins:wght@900&display=swap" rel="stylesheet" />
+      </head>
+      <body>
+        {children}
+        <PrismicPreview repositoryName={repositoryName} />
+      </body>
     </html>
   )
 }

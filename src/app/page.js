@@ -1,63 +1,45 @@
 import styles from './page.module.scss'
-
 import Navbar from './components/Navbar'
+import Button from './components/IconButton.js';
 
-export default function Home() {
+import { IoArrowForwardOutline } from "react-icons/io5";
+
+import { asText } from "@prismicio/client";
+import { SliceZone } from "@prismicio/react";
+
+import { createClient } from "@/prismicio";
+import { components } from "@/slices";
+import { PrismicNextImage } from "@prismicio/next";
+
+export async function generateMetadata() {
+  const client = createClient();
+  const page = await client.getSingle("homepage");
+
+  return {
+    title: page.data.meta_title,
+    description: page.data.meta_description,
+  };
+}
+
+export default async function Page() {
+  const client = createClient();
+  const page = await client.getSingle("homepage");
+
+  console.log("Page:", page)
+
   return (
-    <main className={styles.main}>
+    <div className={styles.main}>
       <Navbar />
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+      <h1>{page.data.meta_title}</h1>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+      <a href="https://bonjouridol.com/">
+        <Button variant={"Pink"} textValue={"See more articles"} icon={<IoArrowForwardOutline />} />
+      </a>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div className={styles.homeBackground}>
+        <PrismicNextImage field={page.data.background} />
       </div>
-    </main>
-  )
-}
+    </div>
+  );
+};

@@ -1,0 +1,33 @@
+.Main {
+    border: none;
+    border-radius: 16px;
+    font-family: var(--font-text);
+    font-weight: 500;
+    font-size: var(--font-size);
+    line-height: 1.5;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+
+    gap: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 12px;
+
+    transition: var(--transi);
+
+    > span {
+      text-decoration: none !important;
+    }
+  }
+
+  .Pink {
+    color: var(--white);
+    background-image: var(--bi-gradient-1);
+    background-position: center right;
+    background-size: 200% 100%;
+  
+    &:hover{
+      background-position: center left;
+    }
+  }

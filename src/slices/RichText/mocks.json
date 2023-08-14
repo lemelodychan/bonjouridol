@@ -1,0 +1,42 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {},
+		"items": [
+			{
+				"__TYPE__": "GroupItemContent",
+				"value": [
+					[
+						"title",
+						{
+							"__TYPE__": "StructuredTextContent",
+							"value": [
+								{
+									"type": "heading1",
+									"content": {
+										"text": "Atmosphere"
+									}
+								}
+							]
+						}
+					],
+					[
+						"richtext",
+						{
+							"__TYPE__": "StructuredTextContent",
+							"value": [
+								{
+									"type": "paragraph",
+									"content": {
+										"text": "Ipsum fugiat ut aliquip sit nisi dolore amet sit Lorem. Dolore eu aliquip veniam mollit non amet sit eiusmod laborum non laborum."
+									}
+								}
+							]
+						}
+					]
+				]
+			}
+		]
+	}
+]
