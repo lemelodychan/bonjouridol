@@ -318,7 +318,7 @@ Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_
 
 /***/ }),
 
-/***/ 9839:
+/***/ 5324:
 /***/ (() => {
 
 
@@ -356,8 +356,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6786);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var next_font_google_target_css_path_src_app_layout_js_import_Inter_arguments_subsets_latin_variableName_inter___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7647);
-/* harmony import */ var next_font_google_target_css_path_src_app_layout_js_import_Inter_arguments_subsets_latin_variableName_inter___WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_font_google_target_css_path_src_app_layout_js_import_Inter_arguments_subsets_latin_variableName_inter___WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var next_font_google_target_css_path_src_app_layout_js_import_DM_Sans_arguments_subsets_latin_variableName_DMSans___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4081);
+/* harmony import */ var next_font_google_target_css_path_src_app_layout_js_import_DM_Sans_arguments_subsets_latin_variableName_DMSans___WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_font_google_target_css_path_src_app_layout_js_import_DM_Sans_arguments_subsets_latin_variableName_DMSans___WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _globals_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5023);
 /* harmony import */ var _globals_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_globals_css__WEBPACK_IMPORTED_MODULE_1__);
 
@@ -371,7 +371,7 @@ function RootLayout({ children }) {
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("html", {
         lang: "en",
         children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("body", {
-            className: (next_font_google_target_css_path_src_app_layout_js_import_Inter_arguments_subsets_latin_variableName_inter___WEBPACK_IMPORTED_MODULE_2___default().className),
+            className: (next_font_google_target_css_path_src_app_layout_js_import_DM_Sans_arguments_subsets_latin_variableName_DMSans___WEBPACK_IMPORTED_MODULE_2___default().className),
             children: children
         })
     });
@@ -571,7 +571,7 @@ __webpack_require__.r(__webpack_exports__);
 var __webpack_require__ = require("../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [587,212], () => (__webpack_exec__(9584)));
+var __webpack_exports__ = __webpack_require__.X(0, [587,528], () => (__webpack_exec__(9584)));
 module.exports = __webpack_exports__;
 
 })();
