@@ -1,7 +1,7 @@
 import './globals.css'
-import { Inter } from 'next/font/google'
+import { DM_Sans, Poppins, Noto_Sans_JP } from 'next/font/google'
 
-const inter = Inter({ subsets: ['latin'] })
+const DMSans = DM_Sans({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Create Next App',
