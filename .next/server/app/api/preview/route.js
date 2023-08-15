@@ -1069,7 +1069,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \**********************************/
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"repositoryName":"bonjouridol","adapter":"@slicemachine/adapter-next","libraries":["./src/slices"],"localSliceSimulatorURL":"http://localhost:3000/slice-simulator"}');
+module.exports = JSON.parse('{"repositoryName":"bonjouridol","adapter":"@slicemachine/adapter-next","libraries":["./src/app/slices"],"localSliceSimulatorURL":"http://localhost:3000/slice-simulator"}');
 
 /***/ })
 

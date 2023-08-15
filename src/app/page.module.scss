@@ -20,7 +20,6 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 6rem;
   min-height: 100vh;
 
   /* ------ TITLES STYLES ------ */
@@ -47,6 +46,11 @@
       content: " ";
       background-image: var(--bi-gradient-2);
     }
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
   }
 
   /* ------ BUTTONS STYLES ------ */
