@@ -1,0 +1,80 @@
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[2].use[1]!./node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js??ruleSet[1].rules[5].oneOf[2].use[2]!./node_modules/next/font/google/target.css?{"path":"src/app/layout.js","import":"DM_Sans","arguments":[{"subsets":["latin"]}],"variableName":"DMSans"} ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/* latin-ext */
+@font-face {
+  font-family: '__DM_Sans_6ff133';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url(/_next/static/media/adde053269573569-s.woff2) format('woff2');
+  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: '__DM_Sans_6ff133';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url(/_next/static/media/3e3cf2ee9aa3f174-s.p.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}@font-face {font-family: '__DM_Sans_Fallback_6ff133';src: local("Arial");ascent-override: 94.37%;descent-override: 29.49%;line-gap-override: 0.00%;size-adjust: 105.12%
+}.__className_6ff133 {font-family: '__DM_Sans_6ff133', '__DM_Sans_Fallback_6ff133';font-style: normal
+}
+
+/*!***************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[12].use[3]!./src/app/globals.css ***!
+  \***************************************************************************************************************************************************************************************************************************************************************/
+:root {
+  --font-jp: "Noto Sans JP";
+  --font-text: "DM Sans", var(--font-jp), Helvetica, Arial, sans-serif;
+  --font-title: "Poppins", var(--font-jp), Helvetica, Arial, sans-serif;
+
+  --bi-dark-pink: #FF3194;
+  --bi-pink: #FF61A9;
+  --bi-light-pink: #FC8DC5;
+  --bi-indigo: #7272FC;
+  --dark-grey: #333;
+  --medium-grey: #898989;
+  --light-grey: #f4f4f4;
+  --white: #ffffff;
+
+  --bi-gradient-1: linear-gradient(to right, var(--bi-dark-pink), var(--bi-light-pink), var(--bi-dark-pink));
+  --bi-gradient-2: linear-gradient(45deg, var(--bi-dark-pink), var(--bi-indigo));
+
+  --transi: all 0.3s ease;
+
+  --font-size-4xl: 48px;
+  --font-size-3xl: 40px;
+  --font-size-2xl: 32px;
+  --font-size-xl: 24px;
+  --font-size-lg: 20px;
+  --font-size-md: 16px;
+  --font-size: 14px;
+  --font-size-sm: 12px;
+  --font-size-xs: 10px;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html, body {
+  font-family: var(--font-text);
+  font-size: var(--font-size);
+
+  background-color: var(--light-grey);
+  color: var(--dark-grey);
+}
+
+.global {
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  width: 100%;
+  margin: auto;
+}
