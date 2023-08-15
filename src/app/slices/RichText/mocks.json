@@ -2,40 +2,34 @@
 	{
 		"__TYPE__": "SharedSliceContent",
 		"variation": "default",
-		"primary": {},
+		"primary": {
+			"title": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading1",
+						"content": {
+							"text": "Tribe"
+						}
+					}
+				]
+			},
+			"content": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "In Lorem dolore excepteur cupidatat irure id eiusmod adipisicing culpa non fugiat dolore sunt in in."
+						}
+					}
+				]
+			}
+		},
 		"items": [
 			{
 				"__TYPE__": "GroupItemContent",
-				"value": [
-					[
-						"title",
-						{
-							"__TYPE__": "StructuredTextContent",
-							"value": [
-								{
-									"type": "heading1",
-									"content": {
-										"text": "Atmosphere"
-									}
-								}
-							]
-						}
-					],
-					[
-						"richtext",
-						{
-							"__TYPE__": "StructuredTextContent",
-							"value": [
-								{
-									"type": "paragraph",
-									"content": {
-										"text": "Ipsum fugiat ut aliquip sit nisi dolore amet sit Lorem. Dolore eu aliquip veniam mollit non amet sit eiusmod laborum non laborum."
-									}
-								}
-							]
-						}
-					]
-				]
+				"value": []
 			}
 		]
 	}

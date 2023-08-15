@@ -4,6 +4,31 @@ import type * as prismic from "@prismicio/client";
 
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
+/**
+ * Item in *Articles → Content*
+ */
+export interface ArticlesDocumentDataContentItem {
+  /**
+   * Text field in *Articles → Content*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: articles.content[].text
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  text: prismic.RichTextField;
+
+  /**
+   * Single Image field in *Articles → Content*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: articles.content[].single_image
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  single_image: prismic.ImageField<never>;
+}
+
 type ArticlesDocumentDataSlicesSlice = RichTextSlice;
 
 /**
@@ -31,6 +56,17 @@ interface ArticlesDocumentData {
    * - **Documentation**: https://prismic.io/docs/field#image
    */
   featured_image: prismic.ImageField<never>;
+
+  /**
+   * Content field in *Articles*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: articles.content[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  content: prismic.GroupField<Simplify<ArticlesDocumentDataContentItem>>;
 
   /**
    * Slice Zone field in *Articles*
@@ -92,7 +128,7 @@ export type ArticlesDocument<Lang extends string = string> =
     Lang
   >;
 
-type HomepageDocumentDataSlicesSlice = RichTextSlice;
+type HomepageDocumentDataSlicesSlice = never;
 
 /**
  * Content for Homepage documents
@@ -172,28 +208,28 @@ export type HomepageDocument<Lang extends string = string> =
 export type AllDocumentTypes = ArticlesDocument | HomepageDocument;
 
 /**
- * Primary content in *RichText → Items*
+ * Primary content in *RichText → Primary*
  */
-export interface RichTextSliceDefaultItem {
+export interface RichTextSliceDefaultPrimary {
   /**
-   * Title field in *RichText → Items*
+   * Title field in *RichText → Primary*
    *
    * - **Field Type**: Title
    * - **Placeholder**: *None*
-   * - **API ID Path**: rich_text.items[].title
+   * - **API ID Path**: rich_text.primary.title
    * - **Documentation**: https://prismic.io/docs/field#rich-text-title
    */
   title: prismic.TitleField;
 
   /**
-   * RichText field in *RichText → Items*
+   * Content field in *RichText → Primary*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: rich_text.items[].richtext
+   * - **API ID Path**: rich_text.primary.content
    * - **Documentation**: https://prismic.io/docs/field#rich-text-title
    */
-  richtext: prismic.RichTextField;
+  content: prismic.RichTextField;
 }
 
 /**
@@ -205,8 +241,8 @@ export interface RichTextSliceDefaultItem {
  */
 export type RichTextSliceDefault = prismic.SharedSliceVariation<
   "default",
-  Record<string, never>,
-  Simplify<RichTextSliceDefaultItem>
+  Simplify<RichTextSliceDefaultPrimary>,
+  never
 >;
 
 /**
@@ -244,7 +280,7 @@ declare module "@prismicio/client" {
       HomepageDocumentDataSlicesSlice,
       AllDocumentTypes,
       RichTextSlice,
-      RichTextSliceDefaultItem,
+      RichTextSliceDefaultPrimary,
       RichTextSliceVariation,
       RichTextSliceDefault,
     };

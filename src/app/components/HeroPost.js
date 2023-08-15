@@ -1,4 +1,5 @@
 import { createClient } from "@/prismicio";
+import { Article } from "../articles/[uid]/page.js";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicLink, PrismicText, useAllPrismicDocumentsByType } from '@prismicio/react'
 
@@ -38,12 +39,12 @@ export default async function HeroPost() {
                         <PrismicText field={latestPost.data.title} />
                     </span>
                 </h1>
-                <PrismicLink href={latestPost.uid}>
+                <PrismicLink href={`/articles/${latestPost.uid}`}>
                     <Button variant={"Pink"} textValue={"Read more"} icon={<IoArrowForwardOutline />} />
                 </PrismicLink>
             </div>
             <div className={styles.FeaturedImage}>
-                <PrismicNextImage field={latestPost.data.featured_image} />
+                <PrismicNextImage field={latestPost.data.featured_image} alt={latestPost.data.title} />
             </div>
         </div>
     );

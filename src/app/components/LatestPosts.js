@@ -26,8 +26,6 @@ export default async function LatestPost() {
         ],
     })
     delete results[0];
-
-    console.log("Latest posts:", results)
     
     return (
         <div className={styles.LatestPosts}>
@@ -37,9 +35,9 @@ export default async function LatestPost() {
                 <h2><span>Other Posts</span></h2>
 
                 {results.map((item) => (
-                    <PrismicLink key={item.id} className={styles.OtherPost} href={item.uid}>
+                    <PrismicLink key={item.id} className={styles.OtherPost} href={`/articles/${item.uid}`}>
                         <div className={styles.FeaturedImage}>
-                            <PrismicNextImage field={item.data.featured_image} />
+                            <PrismicNextImage field={item.data.featured_image} alt={item.data.title} />
                         </div>
                         <div className={styles.Content}>
                             <div className={styles.Tags}>
