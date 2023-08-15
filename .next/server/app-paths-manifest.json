@@ -1,6 +1,9 @@
 {
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/page": "app/page.js",
+  "/slice-simulator/page": "app/slice-simulator/page.js",
+  "/api/revalidate/route": "app/api/revalidate/route.js",
   "/api/preview/route": "app/api/preview/route.js",
+  "/api/exit-preview/route": "app/api/exit-preview/route.js",
   "/articles/[uid]/page": "app/articles/[uid]/page.js"
 }

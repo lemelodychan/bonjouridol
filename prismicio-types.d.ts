@@ -4,31 +4,6 @@ import type * as prismic from "@prismicio/client";
 
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
-/**
- * Item in *Articles → Content*
- */
-export interface ArticlesDocumentDataContentItem {
-  /**
-   * Text field in *Articles → Content*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: articles.content[].text
-   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
-   */
-  text: prismic.RichTextField;
-
-  /**
-   * Single Image field in *Articles → Content*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: articles.content[].single_image
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  single_image: prismic.ImageField<never>;
-}
-
 type ArticlesDocumentDataSlicesSlice = RichTextSlice;
 
 /**
@@ -56,17 +31,6 @@ interface ArticlesDocumentData {
    * - **Documentation**: https://prismic.io/docs/field#image
    */
   featured_image: prismic.ImageField<never>;
-
-  /**
-   * Content field in *Articles*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: articles.content[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#group
-   */
-  content: prismic.GroupField<Simplify<ArticlesDocumentDataContentItem>>;
 
   /**
    * Slice Zone field in *Articles*
@@ -233,6 +197,21 @@ export interface RichTextSliceDefaultPrimary {
 }
 
 /**
+ * Primary content in *RichText → Items*
+ */
+export interface RichTextSliceDefaultItem {
+  /**
+   * Text field in *RichText → Items*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: rich_text.items[].text
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  text: prismic.RichTextField;
+}
+
+/**
  * Default variation for RichText Slice
  *
  * - **API ID**: `default`
@@ -242,7 +221,7 @@ export interface RichTextSliceDefaultPrimary {
 export type RichTextSliceDefault = prismic.SharedSliceVariation<
   "default",
   Simplify<RichTextSliceDefaultPrimary>,
-  never
+  Simplify<RichTextSliceDefaultItem>
 >;
 
 /**
@@ -281,6 +260,7 @@ declare module "@prismicio/client" {
       AllDocumentTypes,
       RichTextSlice,
       RichTextSliceDefaultPrimary,
+      RichTextSliceDefaultItem,
       RichTextSliceVariation,
       RichTextSliceDefault,
     };
