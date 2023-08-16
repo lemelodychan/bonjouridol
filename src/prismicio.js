@@ -2,10 +2,8 @@ import * as prismic from "@prismicio/client";
 import * as prismicNext from "@prismicio/next";
 import config from "../slicemachine.config.json";
 
-/**
- * The project's Prismic repository name.
- */
-export const repositoryName = config.repositoryName;
+export const endpoint = config.apiEndpoint
+export const repositoryName = prismic.getRepositoryName(endpoint)
 
 /**
  * A list of Route Resolver objects that define how a document's `url` field is resolved.
@@ -14,17 +12,31 @@ export const repositoryName = config.repositoryName;
  *
  * @type {prismic.ClientConfig["routes"]}
  */
-// TODO: Update the routes array to match your project's route structure.
-const routes = [
-  {
-    type: "homepage",
-    path: "/",
-  },
-  {
-    type: "articles",
-    path: "/articles/:uid",
+
+// const routes = [
+//   {
+//     type: "homepage",
+//     path: "/",
+//   },
+//   {
+//     type: "articles",
+//     path: "/articles/:uid",
+//   }
+// ];
+
+export const linkResolver = doc => {
+  switch (doc.type) {
+    case 'home':
+      return '/'
+    case 'page':
+      return `/${doc.uid}`
+    case 'article':
+      return `/articles/${doc.uid}`
+    default:
+      return null
   }
-];
+}
+
 
 /**
  * Creates a Prismic client for the project's repository. The client is used to
@@ -32,21 +44,29 @@ const routes = [
  *
  * @param {prismicNext.CreateClientConfig} config - Configuration for the Prismic client.
  */
+// export const createClient = (config = {}) => {
+//   const client = prismic.createClient(repositoryName, {
+//     routes,
+//     fetchOptions:
+//       process.env.NODE_ENV === "production"
+//         ? { next: { tags: ["prismic"] }, cache: "force-cache" }
+//         : { next: { revalidate: 5 } },
+//     ...config,
+//   });
+
+//   prismicNext.enableAutoPreviews({
+//     client,
+//     previewData: config.previewData,
+//     req: config.req,
+//   });
+
+//   return client;
+// };
+
 export const createClient = (config = {}) => {
-  const client = prismic.createClient(repositoryName, {
-    routes,
-    fetchOptions:
-      process.env.NODE_ENV === "production"
-        ? { next: { tags: ["prismic"] }, cache: "force-cache" }
-        : { next: { revalidate: 5 } },
+  const client = prismic.createClient(endpoint, {
     ...config,
-  });
+  })
 
-  prismicNext.enableAutoPreviews({
-    client,
-    previewData: config.previewData,
-    req: config.req,
-  });
-
-  return client;
-};
+  return client
+}
