@@ -1,3 +1,6 @@
+@use "../styles/mixins.scss";
+@use "../styles/variables.scss";
+
 .menu {
     position: fixed;
     z-index: 99 !important;
