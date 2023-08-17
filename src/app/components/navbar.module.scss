@@ -1,8 +1,8 @@
-@use "../styles/mixins.scss";
+@use "../styles/mixins.scss" as *;
 @use "../styles/variables.scss";
 
 .menu {
-    position: fixed;
+    position: absolute;
     z-index: 99 !important;
 
     text-align: center;
@@ -11,48 +11,99 @@
     padding: 0 32px;
   
     display: flex;
-    align-items: flex-end;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
     gap: 48px;
+
+    @include lg {
+        position: relative;
+        align-items: flex-end;
+        justify-content: flex-start;
+        background-color: var(--white);
+    }
   
     .logo {
-        margin: 24px 0;
+        margin: 16px 0;
+
+        @include lg {
+            margin: 24px 0;
+        }
+
+        .desktop {
+            display: none;
+
+            @include lg {
+                display: initial;
+            }
+        }
+        .mobile {
+            @include lg {
+                display: none;
+            }
+        }
     }
 
-    nav {
-        .navbar-menu {
+
+    .navbar {
+        display: none;
+        gap: 32px;
+        position: relative;
+        top: -40px;
+
+        ul {
+            list-style-type: none;
             display: flex;
-            gap: 32px;
-            position: relative;
-            top: -40px;
+            gap: 24px;
 
-            a.navbar-item {
-                color: var(--white);
-                font-weight: bold;
-                font-size: var(--font-size);
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                padding: 4px 0;
-                transition: var(--transi);
-
-                &:after,
-                &.active:after {
-                    display: block;
-                    height: 2px;
-                    background-color: var(--white);
-                    content: " ";
-                    position: relative;
-                    top: 4px;
-                    width: 100%;
+            li {
+                a {
+                    color: var(--bi-dark-pink);
+                    font-weight: bold;
+                    font-size: var(--font-size-md);
+                    letter-spacing: 0.32px;
+                    padding: 4px 0;
                     transition: var(--transi);
-                    transform: scaleX(0%);
-                    transform-origin: left;
-                }
-                &:hover:after,
-                &.active:after  {
-                    transform: scaleX(100%) !important;
+
+                    text-decoration: none;
+
+                    &:after,
+                    &.active:after {
+                        display: block;
+                        height: 2px;
+                        background-color: var(--bi-dark-pink);
+                        content: " ";
+                        position: relative;
+                        top: 4px;
+                        width: 100%;
+                        transition: var(--transi);
+                        transform: scaleX(0%);
+                        transform-origin: left;
+                    }
+                    &:hover:after,
+                    &.active:after  {
+                        transform: scaleX(100%) !important;
+                    }
                 }
             }
+        }
+
+        @include lg {
+            display: flex;
+        }
+    }
+
+    .mobilemenu {
+        background: transparent;
+        color: white;
+        border: 0;
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        z-index: 99;
+        font-size: 24px;
+
+        @include lg {
+            display: none;
         }
     }
   

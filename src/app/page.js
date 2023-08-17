@@ -21,16 +21,8 @@ export default async function Page() {
 
   return (
     <div className={styles.main}>
-      <Navbar />
-
-      <h1>{page.data.meta_title}</h1>
-
       <div className={styles.container}>
         <LatestPosts />
-      </div>
-
-      <div className={styles.homeBackground}>
-        <PrismicNextImage field={page.data.background} alt="background image" />
       </div>
     </div>
   );

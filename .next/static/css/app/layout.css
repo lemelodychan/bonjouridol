@@ -1,3 +1,103 @@
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[9].use[5]!./src/app/components/navbar.module.scss ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.navbar_menu__n4h96 {
+  position: absolute;
+  z-index: 99 !important;
+  text-align: center;
+  width: -webkit-fill-available;
+  height: -moz-fit-content;
+  height: fit-content;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+}
+@media (min-width: 1024px) {
+  .navbar_menu__n4h96 {
+    position: relative;
+    align-items: flex-end;
+    justify-content: flex-start;
+    background-color: var(--white);
+  }
+}
+.navbar_menu__n4h96 .navbar_logo__uf6Cx {
+  margin: 16px 0;
+}
+@media (min-width: 1024px) {
+  .navbar_menu__n4h96 .navbar_logo__uf6Cx {
+    margin: 24px 0;
+  }
+}
+.navbar_menu__n4h96 .navbar_logo__uf6Cx .navbar_desktop__qKJhQ {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .navbar_menu__n4h96 .navbar_logo__uf6Cx .navbar_desktop__qKJhQ {
+    display: initial;
+  }
+}
+@media (min-width: 1024px) {
+  .navbar_menu__n4h96 .navbar_logo__uf6Cx .navbar_mobile__JAlHa {
+    display: none;
+  }
+}
+.navbar_menu__n4h96 .navbar_navbar__oAVrm {
+  display: none;
+  gap: 32px;
+  position: relative;
+  top: -40px;
+}
+.navbar_menu__n4h96 .navbar_navbar__oAVrm ul {
+  list-style-type: none;
+  display: flex;
+  gap: 24px;
+}
+.navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a {
+  color: var(--bi-dark-pink);
+  font-weight: bold;
+  font-size: var(--font-size-md);
+  letter-spacing: 0.32px;
+  padding: 4px 0;
+  transition: var(--transi);
+  text-decoration: none;
+}
+.navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a:after, .navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a.navbar_active__uBR_B:after {
+  display: block;
+  height: 2px;
+  background-color: var(--bi-dark-pink);
+  content: " ";
+  position: relative;
+  top: 4px;
+  width: 100%;
+  transition: var(--transi);
+  transform: scaleX(0%);
+  transform-origin: left;
+}
+.navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a:hover:after, .navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a.navbar_active__uBR_B:after {
+  transform: scaleX(100%) !important;
+}
+@media (min-width: 1024px) {
+  .navbar_menu__n4h96 .navbar_navbar__oAVrm {
+    display: flex;
+  }
+}
+.navbar_menu__n4h96 .navbar_mobilemenu__YStSE {
+  background: transparent;
+  color: white;
+  border: 0;
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 99;
+  font-size: 24px;
+}
+@media (min-width: 1024px) {
+  .navbar_menu__n4h96 .navbar_mobilemenu__YStSE {
+    display: none;
+  }
+}
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[2].use[1]!./node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js??ruleSet[1].rules[5].oneOf[2].use[2]!./node_modules/next/font/google/target.css?{"path":"src/app/layout.js","import":"DM_Sans","arguments":[{"subsets":["latin"]}],"variableName":"DMSans"} ***!
   \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -78,3 +178,7 @@ html, body {
   width: 100%;
   margin: auto;
 }
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[13].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[13].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[13].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[13].use[5]!./src/app/layout.scss ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+

@@ -7,6 +7,7 @@ import Button from './IconButton.js';
 import { IoArrowForwardOutline } from "react-icons/io5";
 
 import styles from './LatestPosts.module.scss';
+import "../styles/mixins.scss"
 import Link from "next/link.js";
 
 export default async function LatestPost() {
@@ -17,7 +18,7 @@ export default async function LatestPost() {
           cache: 'no-store',
           next: { tags: ['prismic', 'articles'] },
         },
-        limit: 3,
+        limit: 4,
         orderings: [
           {
             field: 'document.first_publication_date',

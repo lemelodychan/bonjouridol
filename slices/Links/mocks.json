@@ -1,0 +1,36 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"text": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Sint esse do nostrud non velit commodo do ipsum dolore exercitation adipisicing ipsum minim proident. Reprehenderit laboris ea tempor ut sunt ad cillum ad sunt velit veniam est do. Enim nisi sit voluptate non eu dolore laborum sit."
+						}
+					}
+				]
+			}
+		},
+		"items": [
+			{
+				"__TYPE__": "GroupItemContent",
+				"value": [
+					[
+						"link",
+						{
+							"__TYPE__": "LinkContent",
+							"value": {
+								"__TYPE__": "ExternalLink",
+								"url": "http://twitter.com"
+							}
+						}
+					]
+				]
+			}
+		]
+	}
+]

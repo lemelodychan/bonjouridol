@@ -27,25 +27,25 @@ export default async function HeroPost() {
     const latestPost = results[0]
     
     return (
-        <div className={styles.Hero}>
-            <div className={styles.Content}>
-                <div className={styles.Tags}>
-                    {latestPost.tags.map((item) => (
-                        <span key={item} className={styles.Tag}>{item}</span>
-                    ))}
-                </div>
-                <h1>
-                    <span>
-                        <PrismicText field={latestPost.data.title} />
-                    </span>
-                </h1>
-                <PrismicLink href={`/articles/${latestPost.uid}`}>
+        <PrismicLink href={`/articles/${latestPost.uid}`}>
+            <div className={styles.Hero}>
+                <div className={styles.Content}>
+                    <div className={styles.Tags}>
+                        {latestPost.tags.map((item) => (
+                            <span key={item} className={styles.Tag}>{item}</span>
+                        ))}
+                    </div>
+                    <h1>
+                        <span>
+                            <PrismicText field={latestPost.data.title} />
+                        </span>
+                    </h1>
                     <Button variant={"Pink"} textValue={"Read more"} icon={<IoArrowForwardOutline />} />
-                </PrismicLink>
+                </div>
+                <div className={styles.FeaturedImage}>
+                    <PrismicNextImage field={latestPost.data.featured_image} alt={latestPost.data.title} />
+                </div>
             </div>
-            <div className={styles.FeaturedImage}>
-                <PrismicNextImage field={latestPost.data.featured_image} alt={latestPost.data.title} />
-            </div>
-        </div>
+        </PrismicLink>
     );
 }

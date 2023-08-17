@@ -1,29 +1,122 @@
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[9].use[5]!./src/app/components/navbar.module.scss ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.navbar_menu__n4h96 {
+  position: absolute;
+  z-index: 99 !important;
+  text-align: center;
+  width: -webkit-fill-available;
+  height: -moz-fit-content;
+  height: fit-content;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+}
+@media (min-width: 1024px) {
+  .navbar_menu__n4h96 {
+    position: relative;
+    align-items: flex-end;
+    justify-content: flex-start;
+    background-color: var(--white);
+  }
+}
+.navbar_menu__n4h96 .navbar_logo__uf6Cx {
+  margin: 16px 0;
+}
+@media (min-width: 1024px) {
+  .navbar_menu__n4h96 .navbar_logo__uf6Cx {
+    margin: 24px 0;
+  }
+}
+.navbar_menu__n4h96 .navbar_logo__uf6Cx .navbar_desktop__qKJhQ {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .navbar_menu__n4h96 .navbar_logo__uf6Cx .navbar_desktop__qKJhQ {
+    display: initial;
+  }
+}
+@media (min-width: 1024px) {
+  .navbar_menu__n4h96 .navbar_logo__uf6Cx .navbar_mobile__JAlHa {
+    display: none;
+  }
+}
+.navbar_menu__n4h96 .navbar_navbar__oAVrm {
+  display: none;
+  gap: 32px;
+  position: relative;
+  top: -40px;
+}
+.navbar_menu__n4h96 .navbar_navbar__oAVrm ul {
+  list-style-type: none;
+  display: flex;
+  gap: 24px;
+}
+.navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a {
+  color: var(--bi-dark-pink);
+  font-weight: bold;
+  font-size: var(--font-size-md);
+  letter-spacing: 0.32px;
+  padding: 4px 0;
+  transition: var(--transi);
+  text-decoration: none;
+}
+.navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a:after, .navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a.navbar_active__uBR_B:after {
+  display: block;
+  height: 2px;
+  background-color: var(--bi-dark-pink);
+  content: " ";
+  position: relative;
+  top: 4px;
+  width: 100%;
+  transition: var(--transi);
+  transform: scaleX(0%);
+  transform-origin: left;
+}
+.navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a:hover:after, .navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a.navbar_active__uBR_B:after {
+  transform: scaleX(100%) !important;
+}
+@media (min-width: 1024px) {
+  .navbar_menu__n4h96 .navbar_navbar__oAVrm {
+    display: flex;
+  }
+}
+.navbar_menu__n4h96 .navbar_mobilemenu__YStSE {
+  background: transparent;
+  color: white;
+  border: 0;
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 99;
+  font-size: 24px;
+}
+@media (min-width: 1024px) {
+  .navbar_menu__n4h96 .navbar_mobilemenu__YStSE {
+    display: none;
+  }
+}
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[9].use[5]!./src/app/page.module.scss ***!
   \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.page_homeBackground__t_g2q {
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-  background-image: var(--bi-gradient-2);
-  position: absolute;
-  top: 0;
-}
-.page_homeBackground__t_g2q img {
-  width: 115%;
-  height: 115%;
-  object-fit: cover;
-  opacity: 0.3;
-}
-
 .page_main__akH3E {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   min-height: 100vh;
+  width: 100%;
+  background-color: var(--white);
+  border-radius: 0 0 24px 24px;
   /* ------ TITLES STYLES ------ */
   /* ------ BUTTONS STYLES ------ */
+}
+@media (min-width: 1024px) {
+  .page_main__akH3E {
+    padding: 0 32px;
+  }
 }
 .page_main__akH3E h2 {
   display: grid;
@@ -108,55 +201,6 @@
   border: 1px solid rgba(var(--callout-border-rgb), 0.3);
   border-radius: var(--border-radius);
 }
-/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[9].use[5]!./src/app/components/navbar.module.scss ***!
-  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.navbar_menu__n4h96 {
-  position: fixed;
-  z-index: 99 !important;
-  text-align: center;
-  width: -webkit-fill-available;
-  height: -moz-fit-content;
-  height: fit-content;
-  padding: 0 32px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  gap: 48px;
-}
-.navbar_menu__n4h96 .navbar_logo__uf6Cx {
-  margin: 24px 0;
-}
-.navbar_menu__n4h96 nav .navbar_navbar-menu__uqvUX {
-  display: flex;
-  gap: 32px;
-  position: relative;
-  top: -40px;
-}
-.navbar_menu__n4h96 nav .navbar_navbar-menu__uqvUX a.navbar_navbar-item__cmGX2 {
-  color: var(--white);
-  font-weight: bold;
-  font-size: var(--font-size);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 4px 0;
-  transition: var(--transi);
-}
-.navbar_menu__n4h96 nav .navbar_navbar-menu__uqvUX a.navbar_navbar-item__cmGX2:after, .navbar_menu__n4h96 nav .navbar_navbar-menu__uqvUX a.navbar_navbar-item__cmGX2.navbar_active__uBR_B:after {
-  display: block;
-  height: 2px;
-  background-color: var(--white);
-  content: " ";
-  position: relative;
-  top: 4px;
-  width: 100%;
-  transition: var(--transi);
-  transform: scaleX(0%);
-  transform-origin: left;
-}
-.navbar_menu__n4h96 nav .navbar_navbar-menu__uqvUX a.navbar_navbar-item__cmGX2:hover:after, .navbar_menu__n4h96 nav .navbar_navbar-menu__uqvUX a.navbar_navbar-item__cmGX2.navbar_active__uBR_B:after {
-  transform: scaleX(100%) !important;
-}
 /*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[9].use[5]!./src/app/articles/[uid]/page.module.scss ***!
   \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -169,6 +213,10 @@ article .page_content__6AVtH .page_textblock__QdUlN {
 .RichText_repeatable__O6Zc8 {
   margin: 32px 0;
 }
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[9].use[5]!./slices/Gallery/Gallery.module.scss ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+
 /*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[9].use[5]!./src/app/components/IconButton.module.scss ***!
   \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -205,12 +253,18 @@ article .page_content__6AVtH .page_textblock__QdUlN {
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[9].use[5]!./src/app/components/HeroPost.module.scss ***!
   \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 .HeroPost_Hero__rikiH {
-  width: 414px;
-  height: 500px;
+  width: 100%;
+  height: 75vh;
   margin: 0 auto;
   position: relative;
-  border-radius: 24px;
+  border-radius: 0;
   overflow: hidden;
+}
+@media (min-width: 1024px) {
+  .HeroPost_Hero__rikiH {
+    height: 100%;
+    border-radius: 24px;
+  }
 }
 .HeroPost_Hero__rikiH .HeroPost_FeaturedImage__f2TVW {
   width: 100%;
@@ -218,13 +272,15 @@ article .page_content__6AVtH .page_textblock__QdUlN {
   position: absolute;
   top: 0;
   z-index: 1;
-  background-image: var(--bi-gradient-2);
+  background-color: var(--dark-grey);
 }
 .HeroPost_Hero__rikiH .HeroPost_FeaturedImage__f2TVW > img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   opacity: 0.8;
+  transform: scale(100%);
+  transition: all ease 0.3s;
 }
 .HeroPost_Hero__rikiH .HeroPost_Content__JA6gJ {
   position: relative;
@@ -238,6 +294,12 @@ article .page_content__6AVtH .page_textblock__QdUlN {
   color: white;
   text-align: left;
   padding: 32px 24px 72px 24px;
+  background: radial-gradient(320px 320px at 100% 0%, var(--bi-dark-pink) 0%, rgba(255, 49, 148, 0) 100%), radial-gradient(320px 320px at 0% 100%, var(--bi-indigo) 0%, rgba(114, 114, 252, 0) 100%);
+}
+@media (min-width: 1024px) {
+  .HeroPost_Hero__rikiH .HeroPost_Content__JA6gJ {
+    padding: 32px 24px;
+  }
 }
 .HeroPost_Hero__rikiH .HeroPost_Content__JA6gJ .HeroPost_Tags__Ttfno {
   display: flex;
@@ -268,6 +330,7 @@ article .page_content__6AVtH .page_textblock__QdUlN {
   border-radius: 16px 0px 0px 16px;
   overflow: hidden;
   margin: 0;
+  max-width: 720px;
 }
 .HeroPost_Hero__rikiH .HeroPost_Content__JA6gJ > h1 > span {
   background-color: var(--white);
@@ -277,13 +340,33 @@ article .page_content__6AVtH .page_textblock__QdUlN {
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
+@media (min-width: 1024px) {
+  .HeroPost_Hero__rikiH .HeroPost_Content__JA6gJ > h1 > span {
+    font-size: 32px;
+    line-height: 48px;
+  }
+}
+.HeroPost_Hero__rikiH .HeroPost_Content__JA6gJ button {
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.HeroPost_Hero__rikiH:hover .HeroPost_FeaturedImage__f2TVW > img {
+  transform: scale(105%);
+}
 /*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[9].use[5]!./src/app/components/LatestPosts.module.scss ***!
   \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 .LatestPosts_LatestPosts__Q3gRZ {
-  width: 414px;
+  width: 100%;
   margin: 0 auto;
   position: relative;
+}
+@media (min-width: 1024px) {
+  .LatestPosts_LatestPosts__Q3gRZ {
+    display: grid;
+    grid-template-columns: auto minmax(320px, 33%);
+    grid-gap: 24px;
+  }
 }
 .LatestPosts_LatestPosts__Q3gRZ > .LatestPosts_OtherPosts__RGIRy {
   position: relative;
@@ -296,8 +379,20 @@ article .page_content__6AVtH .page_textblock__QdUlN {
   flex-direction: column;
   gap: 16px;
 }
+@media (min-width: 1024px) {
+  .LatestPosts_LatestPosts__Q3gRZ > .LatestPosts_OtherPosts__RGIRy {
+    background-color: var(--light-grey);
+    top: 0;
+  }
+}
 .LatestPosts_LatestPosts__Q3gRZ > .LatestPosts_OtherPosts__RGIRy h2 {
   margin: 0;
+}
+@media (min-width: 1024px) {
+  .LatestPosts_LatestPosts__Q3gRZ > .LatestPosts_OtherPosts__RGIRy h2 span {
+    font-size: 32px;
+    line-height: 48px;
+  }
 }
 .LatestPosts_LatestPosts__Q3gRZ > .LatestPosts_OtherPosts__RGIRy .LatestPosts_btn__g0Dy2 > button {
   width: 100%;
@@ -307,19 +402,32 @@ article .page_content__6AVtH .page_textblock__QdUlN {
   color: var(--dark-gray);
   display: grid;
   grid-gap: 16px;
-  grid-template-columns: 33% auto;
+  grid-template-columns: minmax(0%, 112px) auto;
+}
+@media (min-width: 1024px) {
+  .LatestPosts_LatestPosts__Q3gRZ > .LatestPosts_OtherPosts__RGIRy > a.LatestPosts_OtherPost__rA4Zc {
+    grid-template-columns: 33% auto;
+  }
 }
 .LatestPosts_LatestPosts__Q3gRZ > .LatestPosts_OtherPosts__RGIRy > a.LatestPosts_OtherPost__rA4Zc .LatestPosts_FeaturedImage__45MTJ {
   width: 100%;
+  max-width: 112px;
   aspect-ratio: 1;
   overflow: hidden;
   border-radius: 16px;
+}
+@media (min-width: 1024px) {
+  .LatestPosts_LatestPosts__Q3gRZ > .LatestPosts_OtherPosts__RGIRy > a.LatestPosts_OtherPost__rA4Zc .LatestPosts_FeaturedImage__45MTJ {
+    max-width: unset;
+  }
 }
 .LatestPosts_LatestPosts__Q3gRZ > .LatestPosts_OtherPosts__RGIRy > a.LatestPosts_OtherPost__rA4Zc .LatestPosts_FeaturedImage__45MTJ > img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
+  transform: scale(100%);
+  transition: all ease 0.3s;
 }
 .LatestPosts_LatestPosts__Q3gRZ > .LatestPosts_OtherPosts__RGIRy > a.LatestPosts_OtherPost__rA4Zc > .LatestPosts_Content__g93uD {
   display: flex;
@@ -377,6 +485,9 @@ article .page_content__6AVtH .page_textblock__QdUlN {
   opacity: 0;
   transition: var(--transi);
 }
+.LatestPosts_LatestPosts__Q3gRZ > .LatestPosts_OtherPosts__RGIRy > a.LatestPosts_OtherPost__rA4Zc:hover .LatestPosts_FeaturedImage__45MTJ > img {
+  transform: scale(105%);
+}
 .LatestPosts_LatestPosts__Q3gRZ > .LatestPosts_OtherPosts__RGIRy > a.LatestPosts_OtherPost__rA4Zc:hover h3 {
   color: var(--bi-dark-pink);
 }
@@ -384,3 +495,7 @@ article .page_content__6AVtH .page_textblock__QdUlN {
   left: 0px;
   opacity: 1;
 }
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[13].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[13].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[13].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[13].use[5]!./src/app/styles/mixins.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+

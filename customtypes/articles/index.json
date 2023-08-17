@@ -27,7 +27,14 @@
       "slices": {
         "type": "Slices",
         "fieldset": "Slice Zone",
-        "config": { "choices": { "rich_text": { "type": "SharedSlice" } } }
+        "config": {
+          "choices": {
+            "rich_text": { "type": "SharedSlice" },
+            "gallery": { "type": "SharedSlice" },
+            "quote": { "type": "SharedSlice" },
+            "single_image": { "type": "SharedSlice" }
+          }
+        }
       }
     },
     "SEO & Metadata": {
@@ -52,6 +59,11 @@
           "thumbnails": []
         },
         "type": "Image"
+      },
+      "slices1": {
+        "type": "Slices",
+        "fieldset": "Slice Zone",
+        "config": { "choices": { "links": { "type": "SharedSlice" } } }
       }
     }
   }

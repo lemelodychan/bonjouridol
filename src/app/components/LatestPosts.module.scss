@@ -1,10 +1,16 @@
-@use "../styles/mixins.scss";
+@use "../styles/mixins.scss" as *;
 @use "../styles/variables.scss";
 
 .LatestPosts {
-    width: 414px;
+    width: 100%;
     margin: 0 auto;
     position: relative;
+
+    @include lg {
+        display: grid;
+        grid-template-columns: auto minmax(320px, 33%);
+        grid-gap: 24px;
+    }
 
     > .OtherPosts {
         position: relative;
@@ -17,8 +23,20 @@
         flex-direction: column;
         gap: 16px;
 
+        @include lg {
+            background-color: var(--light-grey);
+            top: 0;
+        }
+
         h2 {
             margin: 0;
+
+            span {
+                @include lg {
+                    font-size: 32px;
+                    line-height: 48px;
+                }
+            }
         }
 
         .btn {
@@ -32,19 +50,30 @@
             color: var(--dark-gray);
             display: grid;
             grid-gap: 16px;
-            grid-template-columns: 33% auto;
+            grid-template-columns: minmax(0%, 112px) auto;
+
+            @include lg {
+                grid-template-columns: 33% auto;
+            }
 
             .FeaturedImage {
                 width: 100%;
+                max-width: 112px;
                 aspect-ratio: 1;
                 overflow: hidden;
                 border-radius: 16px;
+
+                @include lg {
+                    max-width: unset;
+                }
 
                 > img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
                     object-position: center;
+                    transform: scale(100%);
+                    transition: all ease 0.3s;
                 }
             }
 
@@ -110,12 +139,20 @@
                 }
             }
 
-            &:hover h3 {
-                color: var(--bi-dark-pink);
+            &:hover {
+                .FeaturedImage {
+                    > img {
+                        transform: scale(105%);
+                    }
+                }
+                
+                h3 {
+                    color: var(--bi-dark-pink);
 
-                > .icon svg {
-                    left: 0px;
-                    opacity: 1;
+                    > .icon svg {
+                        left: 0px;
+                        opacity: 1;
+                    }
                 }
             }
         }

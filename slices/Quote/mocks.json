@@ -1,0 +1,25 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"quote": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Deserunt in magna anim quis officia labore nulla duis tempor quis irure in. Excepteur laborum proident eu. Nisi excepteur nulla Lorem duis id do consequat officia pariatur irure eu nisi consequat aliquip."
+						}
+					}
+				]
+			},
+			"author": {
+				"__TYPE__": "FieldContent",
+				"value": "dog",
+				"type": "Text"
+			}
+		},
+		"items": []
+	}
+]

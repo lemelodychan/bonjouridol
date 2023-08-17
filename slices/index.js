@@ -3,5 +3,9 @@
 import dynamic from "next/dynamic";
 
 export const components = {
+  gallery: dynamic(() => import("./Gallery")),
+  links: dynamic(() => import("./Links")),
+  quote: dynamic(() => import("./Quote")),
   rich_text: dynamic(() => import("./RichText")),
+  single_image: dynamic(() => import("./SingleImage")),
 };

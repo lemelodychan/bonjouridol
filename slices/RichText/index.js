@@ -12,12 +12,15 @@ const RichText = ({ slice }) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
     >
-      <PrismicRichText field={slice.primary.title} />
-      <PrismicRichText field={slice.primary.content} />
+      {/* <PrismicRichText field={slice.primary.title} />
+      <PrismicRichText field={slice.primary.content} /> */}
 
       <div className={styles.repeatable}>
         {slice.items.map((item) => (
+          <>
+            <PrismicRichText field={item.title} />
             <PrismicRichText field={item.text} />
+          </>
         ))}
       </div>
     </section>

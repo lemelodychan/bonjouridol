@@ -11,27 +11,17 @@
       "version": "initial",
       "description": "Default",
       "imageUrl": "",
-      "primary": {
+      "primary": {},
+      "items": {
         "title": {
           "type": "StructuredText",
           "config": {
             "label": "Title",
             "placeholder": "",
             "allowTargetBlank": true,
-            "single": "heading1,heading2,heading3,heading4,heading5,heading6"
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
           }
         },
-        "content": {
-          "type": "StructuredText",
-          "config": {
-            "label": "Content",
-            "placeholder": "",
-            "allowTargetBlank": true,
-            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
-          }
-        }
-      },
-      "items": {
         "text": {
           "type": "StructuredText",
           "config": {
