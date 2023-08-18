@@ -1,6 +1,5 @@
 "use client"
-import LogoDesktop from "../assets/logo_croissant_pink.svg";
-import LogoMobile from "../assets/logo_croissant_white.svg";
+import { useState } from "react";
 
 import styles from "./Menu.module.scss";
 import Link from "next/link.js";

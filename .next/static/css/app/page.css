@@ -324,6 +324,7 @@ article .page_content__6AVtH .page_textblock__QdUlN {
 @media (min-width: 1024px) {
   .HeroPost_Hero__rikiH {
     height: 100%;
+    position: relative;
     border-radius: 24px;
   }
 }
