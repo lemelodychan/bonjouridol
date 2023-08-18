@@ -1,0 +1,65 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.menuContent {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    height: -webkit-fill-available;
+    justify-content: center;
+
+    @include lg {
+        flex-direction: row;
+        gap: 24px;
+        width: auto;
+    }
+
+    li {
+        a {
+            color: var(--white);
+            font-family: var(--font-title);
+            font-size: var(--font-size-xl);
+            line-height: 56px;
+            letter-spacing: 0.5px;
+            padding: 4px 0;
+            transition: var(--transi);
+            text-decoration: none;
+
+            @include lg {
+                font-family: var(--font-text);
+                color: var(--bi-dark-pink);
+                font-size: var(--font-size-md);
+                line-height: 24px;
+                letter-spacing: 0.32px;
+                font-weight: 600;
+            }
+
+            &:hover  {
+                transform: scaleX(100%) !important;
+            }
+
+            &::after {
+                display: block;
+                height: 2px;
+                background-color: var(--bi-dark-pink);
+                content: " ";
+                position: relative;
+                top: 4px;
+                width: 100%;
+                transition: var(--transi);
+                transform-origin: left;
+                transform: scaleX(0%);
+            }
+            &:hover::after {
+                transform: scaleX(100%) !important;
+            }
+            &.active {
+                &::after {
+                    transform: scaleX(100%) !important;
+                }
+            }
+        }
+    }
+}

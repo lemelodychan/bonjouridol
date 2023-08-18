@@ -42,6 +42,10 @@ html, body {
   color: var(--dark-grey);
 }
 
+.overflowHidden {
+  overflow: hidden !important;
+}
+
 .global {
   display: flex;
   flex-direction: column;

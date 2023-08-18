@@ -1,3 +1,63 @@
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[9].use[5]!./src/app/components/Menu.module.scss ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.Menu_menuContent__b2cWS {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  height: -webkit-fill-available;
+  justify-content: center;
+}
+@media (min-width: 1024px) {
+  .Menu_menuContent__b2cWS {
+    flex-direction: row;
+    gap: 24px;
+    width: auto;
+  }
+}
+.Menu_menuContent__b2cWS li a {
+  color: var(--white);
+  font-family: var(--font-title);
+  font-size: var(--font-size-xl);
+  line-height: 56px;
+  letter-spacing: 0.5px;
+  padding: 4px 0;
+  transition: var(--transi);
+  text-decoration: none;
+}
+@media (min-width: 1024px) {
+  .Menu_menuContent__b2cWS li a {
+    font-family: var(--font-text);
+    color: var(--bi-dark-pink);
+    font-size: var(--font-size-md);
+    line-height: 24px;
+    letter-spacing: 0.32px;
+    font-weight: 600;
+  }
+}
+.Menu_menuContent__b2cWS li a:hover {
+  transform: scaleX(100%) !important;
+}
+.Menu_menuContent__b2cWS li a::after {
+  display: block;
+  height: 2px;
+  background-color: var(--bi-dark-pink);
+  content: " ";
+  position: relative;
+  top: 4px;
+  width: 100%;
+  transition: var(--transi);
+  transform-origin: left;
+  transform: scaleX(0%);
+}
+.Menu_menuContent__b2cWS li a:hover::after {
+  transform: scaleX(100%) !important;
+}
+.Menu_menuContent__b2cWS li a.Menu_active__dcugD::after {
+  transform: scaleX(100%) !important;
+}
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[9].use[5]!./src/app/components/navbar.module.scss ***!
   \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -24,9 +84,13 @@
 }
 .navbar_menu__n4h96 .navbar_logo__uf6Cx {
   margin: 16px 0;
+  position: fixed;
+  top: 0;
+  z-index: 999 !important;
 }
 @media (min-width: 1024px) {
   .navbar_menu__n4h96 .navbar_logo__uf6Cx {
+    position: relative;
     margin: 24px 0;
   }
 }
@@ -49,54 +113,50 @@
   position: relative;
   top: -40px;
 }
-.navbar_menu__n4h96 .navbar_navbar__oAVrm ul {
-  list-style-type: none;
-  display: flex;
-  gap: 24px;
-}
-.navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a {
-  color: var(--bi-dark-pink);
-  font-weight: bold;
-  font-size: var(--font-size-md);
-  letter-spacing: 0.32px;
-  padding: 4px 0;
-  transition: var(--transi);
-  text-decoration: none;
-}
-.navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a:after, .navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a.navbar_active__uBR_B:after {
-  display: block;
-  height: 2px;
-  background-color: var(--bi-dark-pink);
-  content: " ";
-  position: relative;
-  top: 4px;
-  width: 100%;
-  transition: var(--transi);
-  transform: scaleX(0%);
-  transform-origin: left;
-}
-.navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a:hover:after, .navbar_menu__n4h96 .navbar_navbar__oAVrm ul li a.navbar_active__uBR_B:after {
-  transform: scaleX(100%) !important;
-}
 @media (min-width: 1024px) {
   .navbar_menu__n4h96 .navbar_navbar__oAVrm {
     display: flex;
   }
 }
-.navbar_menu__n4h96 .navbar_mobilemenu__YStSE {
+
+.navbar_mobilebutton__U2DK_ {
   background: transparent;
   color: white;
   border: 0;
-  position: absolute;
+  position: fixed;
   top: 24px;
   right: 24px;
   z-index: 99;
   font-size: 24px;
+  z-index: 999 !important;
 }
 @media (min-width: 1024px) {
-  .navbar_menu__n4h96 .navbar_mobilemenu__YStSE {
+  .navbar_mobilebutton__U2DK_ {
     display: none;
   }
+}
+
+.navbar_mobilemenu__YStSE {
+  position: fixed;
+  top: 0;
+  z-index: 998 !important;
+  width: 100%;
+  height: 100vh;
+  padding: 32px;
+  color: var(--white);
+  background: radial-gradient(50% 100% at 0% 0%, rgba(255, 49, 148, 0.8) 0%, rgba(51, 51, 51, 0) 100%), radial-gradient(50% 100% at 100% 100%, rgba(114, 114, 252, 0.8) 0%, rgba(51, 51, 51, 0) 100%), rgba(51, 51, 51, 0.8);
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+  overflow: hidden;
+}
+.navbar_mobilemenu__YStSE .navbar_navbar__oAVrm {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 80px auto;
+  grid-gap: 40px;
+  width: 100%;
+  height: 75vh;
+  justify-content: space-between;
 }
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[9].use[5]!./src/app/page.module.scss ***!
