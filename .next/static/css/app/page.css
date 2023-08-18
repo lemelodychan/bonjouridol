@@ -316,7 +316,8 @@ article .page_content__6AVtH .page_textblock__QdUlN {
   width: 100%;
   height: 75vh;
   margin: 0 auto;
-  position: relative;
+  position: fixed;
+  top: 0;
   border-radius: 0;
   overflow: hidden;
 }
@@ -430,8 +431,8 @@ article .page_content__6AVtH .page_textblock__QdUlN {
 }
 .LatestPosts_LatestPosts__Q3gRZ > .LatestPosts_OtherPosts__RGIRy {
   position: relative;
+  top: 70vh;
   z-index: 2;
-  top: -44px;
   padding: 24px 24px;
   background-color: var(--white);
   border-radius: 24px;
