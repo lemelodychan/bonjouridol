@@ -4,14 +4,14 @@ import styles from "./page.module.scss"
 import { components } from "slices";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText, PrismicText, SliceZone } from "@prismicio/react";
+import SharingOptions from '../../components/SharingOptions';
+
 
 export const dynamicParams = false;
 
 export async function generateMetadata({ params }) {
   const client = createClient();
   const article = await client.getByUID("articles", params.uid);
-
-  // console.log("article:", article.data.slices[0].items);
 
   return {
     title: article.data.meta_title,
@@ -48,6 +48,7 @@ export default async function Page({ params }) {
           <div className={styles.content}>
             <SliceZone slices={article.data.slices} components={components} />
           </div>
+          <SharingOptions uid={article.uid} title={article.data.meta_title} />
         </article>
     </>
   );
