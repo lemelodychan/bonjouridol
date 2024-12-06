@@ -1,6 +1,30 @@
-/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[9].use[5]!./src/app/components/Menu.module.scss ***!
-  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[12].oneOf[2].use[1]!./node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js??ruleSet[1].rules[12].oneOf[2].use[2]!./node_modules/next/font/google/target.css?{"path":"src/app/layout.js","import":"DM_Sans","arguments":[{"subsets":["latin"]}],"variableName":"DMSans"} ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/* latin-ext */
+@font-face {
+  font-family: '__DM_Sans_05e5f9';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url(/_next/static/media/56d4c7a1c09c3371-s.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: '__DM_Sans_05e5f9';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url(/_next/static/media/7e6a2e30184bb114-s.p.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}@font-face {font-family: '__DM_Sans_Fallback_05e5f9';src: local("Arial");ascent-override: 94.37%;descent-override: 29.49%;line-gap-override: 0.00%;size-adjust: 105.12%
+}.__className_05e5f9 {font-family: '__DM_Sans_05e5f9', '__DM_Sans_Fallback_05e5f9';font-style: normal
+}
+
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[12].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[12].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[12].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[12].oneOf[9].use[5]!./src/app/components/Menu.module.scss ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 .Menu_menuContent__b2cWS {
   list-style-type: none;
   display: flex;
@@ -10,7 +34,7 @@
   height: -webkit-fill-available;
   justify-content: center;
 }
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .Menu_menuContent__b2cWS {
     flex-direction: row;
     gap: 24px;
@@ -27,7 +51,7 @@
   transition: var(--transi);
   text-decoration: none;
 }
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .Menu_menuContent__b2cWS li a {
     font-family: var(--font-text);
     color: var(--bi-dark-pink);
@@ -58,9 +82,9 @@
 .Menu_menuContent__b2cWS li a.Menu_active__dcugD::after {
   transform: scaleX(100%) !important;
 }
-/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[5].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[5].oneOf[9].use[5]!./src/app/components/navbar.module.scss ***!
-  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[12].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[12].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[12].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[12].oneOf[9].use[5]!./src/app/components/navbar.module.scss ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 .navbar_menu__n4h96 {
   position: absolute;
   z-index: 99 !important;
@@ -74,7 +98,7 @@
   justify-content: center;
   gap: 48px;
 }
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .navbar_menu__n4h96 {
     position: relative;
     align-items: flex-end;
@@ -88,7 +112,7 @@
   top: 0;
   z-index: 999 !important;
 }
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .navbar_menu__n4h96 .navbar_logo__uf6Cx {
     position: relative;
     margin: 24px 0;
@@ -97,12 +121,12 @@
 .navbar_menu__n4h96 .navbar_logo__uf6Cx .navbar_desktop__qKJhQ {
   display: none;
 }
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .navbar_menu__n4h96 .navbar_logo__uf6Cx .navbar_desktop__qKJhQ {
     display: initial;
   }
 }
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .navbar_menu__n4h96 .navbar_logo__uf6Cx .navbar_mobile__JAlHa {
     display: none;
   }
@@ -113,7 +137,7 @@
   position: relative;
   top: -40px;
 }
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .navbar_menu__n4h96 .navbar_navbar__oAVrm {
     display: flex;
   }
@@ -130,7 +154,7 @@
   font-size: 24px;
   z-index: 999 !important;
 }
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .navbar_mobilebutton__U2DK_ {
     display: none;
   }
@@ -158,33 +182,9 @@
   height: 75vh;
   justify-content: space-between;
 }
-/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[2].use[1]!./node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js??ruleSet[1].rules[5].oneOf[2].use[2]!./node_modules/next/font/google/target.css?{"path":"src/app/layout.js","import":"DM_Sans","arguments":[{"subsets":["latin"]}],"variableName":"DMSans"} ***!
-  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/* latin-ext */
-@font-face {
-  font-family: '__DM_Sans_6ff133';
-  font-style: normal;
-  font-weight: 100 1000;
-  font-display: swap;
-  src: url(/_next/static/media/adde053269573569-s.woff2) format('woff2');
-  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: '__DM_Sans_6ff133';
-  font-style: normal;
-  font-weight: 100 1000;
-  font-display: swap;
-  src: url(/_next/static/media/3e3cf2ee9aa3f174-s.p.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}@font-face {font-family: '__DM_Sans_Fallback_6ff133';src: local("Arial");ascent-override: 94.37%;descent-override: 29.49%;line-gap-override: 0.00%;size-adjust: 105.12%
-}.__className_6ff133 {font-family: '__DM_Sans_6ff133', '__DM_Sans_Fallback_6ff133';font-style: normal
-}
-
-/*!***************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[12].use[3]!./src/app/globals.css ***!
-  \***************************************************************************************************************************************************************************************************************************************************************/
+/*!*****************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[12].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[12].oneOf[12].use[3]!./src/app/globals.css ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************/
 :root {
   --font-jp: "Noto Sans JP";
   --font-text: "DM Sans", var(--font-jp), Helvetica, Arial, sans-serif;
@@ -220,12 +220,15 @@
   padding: 0;
   margin: 0;
 }
+::selection {
+  color: white;
+  background-color: var(--bi-pink);
+}
 
 html, body {
   font-family: var(--font-text);
   font-size: var(--font-size);
-
-  background-color: var(--light-grey);
+  background-color: white;
   color: var(--dark-grey);
 }
 
@@ -241,4 +244,39 @@ html, body {
 .container {
   width: 100%;
   margin: auto;
+}
+
+h1 {
+  font-family: var(--font-title);
+  font-size: 32px;
+  line-height: 40px;
+  color: var(--bi-dark-pink);
+}
+
+h2 {
+  font-family: var(--font-title);
+  font-size: 24px;
+  line-height: 32px;
+  color: var(--bi-pink);
+}
+
+h3 {
+  font-family: var(--font-text);
+  font-size: 24px;
+  line-height: 32px;
+  color: var(--bi-dark-pink);
+}
+
+.swiper-pagination-fraction, 
+.swiper-pagination-custom, 
+.swiper-horizontal > .swiper-pagination-bullets, 
+.swiper-pagination-bullets.swiper-pagination-horizontal {
+  bottom: 16px !important;
+}
+.swiper-pagination-bullet {
+  opacity: 1 !important;
+  background: white !important;
+}
+.swiper-pagination-bullet-active {
+  background: var(--bi-pink) !important;
 }

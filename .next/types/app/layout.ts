@@ -1,4 +1,4 @@
-// File: /Users/elodie/bonjouridol/src/app/layout.js
+// File: /Users/elodie/Documents/GitHub/bonjouridol/src/app/layout.js
 import * as entry from '../../../src/app/layout.js'
 import type { ResolvingMetadata } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

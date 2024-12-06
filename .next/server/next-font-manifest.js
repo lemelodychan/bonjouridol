@@ -1,1 +1,1 @@
-self.__NEXT_FONT_MANIFEST="{\"pages\":{},\"app\":{\"/Users/elodie/bonjouridol/src/app/layout\":[\"static/media/3e3cf2ee9aa3f174-s.p.woff2\"]},\"appUsingSizeAdjust\":true,\"pagesUsingSizeAdjust\":false}"
+self.__NEXT_FONT_MANIFEST="{\"pages\":{},\"app\":{\"/Users/elodie/Documents/GitHub/bonjouridol/src/app/layout\":[\"static/media/7e6a2e30184bb114-s.p.woff2\"]},\"appUsingSizeAdjust\":true,\"pagesUsingSizeAdjust\":false}"
