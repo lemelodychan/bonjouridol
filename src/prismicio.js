@@ -13,33 +13,24 @@ export const repositoryName = "bonjouridol";
  * @type {prismic.ClientConfig["routes"]}
  */
 
-const routes = [
-  {
-  	type: "homepage",
-  	path: "/",
-  },
-  {
-  	type: "page",
-  	path: "/:uid",
-  },
-  {
-  	type: "articles",
-  	path: "/articles/:uid",
-  },
+export const routes = [
+  { type: "homepage", path: "/" },
+  { type: "page", path: "/:uid" },
+  { type: "articles", path: "/articles/:uid" },
 ];
 
-export const linkResolver = doc => {
+export const linkResolver = (doc) => {
   switch (doc.type) {
-    case 'home':
-      return '/'
-    case 'page':
-      return `/${doc.uid}`
-    case 'article':
-      return `/articles/${doc.uid}`
+    case "homepage":
+      return "/";
+    case "page":
+      return `/${doc.uid}`;
+    case "articles":
+      return `/articles/${doc.uid}`;
     default:
-      return null
+      return "/";
   }
-}
+};
 
 
 /**
@@ -70,7 +61,6 @@ export const linkResolver = doc => {
 export const createClient = (config = {}) => {
   const client = prismic.createClient(repositoryName, {
     accessToken: process.env.PRISMIC_ACCESS_TOKEN,
-    routes,
     fetchOptions: {
       // Choose the caching strategy based on the environment
       next: process.env.NODE_ENV === "production"
