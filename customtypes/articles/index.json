@@ -13,12 +13,53 @@
         "type": "UID"
       },
       "title": {
-        "type": "StructuredText",
+        "type": "Text",
         "config": {
           "label": "Title",
+          "placeholder": ""
+        }
+      },
+      "subtitle": {
+        "type": "Text",
+        "config": {
+          "label": "Subtitle",
+          "placeholder": ""
+        }
+      },
+      "type": {
+        "type": "Select",
+        "config": {
+          "label": "Type",
           "placeholder": "",
-          "allowTargetBlank": true,
-          "single": "heading1,heading2,heading3,heading4,heading5,heading6"
+          "options": [
+            "Live report",
+            "Press release",
+            "Interview",
+            "Discovery",
+            "Other"
+          ],
+          "default_value": "Live report"
+        }
+      },
+      "idol_name": {
+        "type": "Text",
+        "config": {
+          "label": "Group/Idol",
+          "placeholder": ""
+        }
+      },
+      "event": {
+        "type": "Text",
+        "config": {
+          "label": "Event",
+          "placeholder": ""
+        }
+      },
+      "publication_date": {
+        "type": "Date",
+        "config": {
+          "label": "Publication date",
+          "placeholder": ""
         }
       },
       "featured_image": {
@@ -34,7 +75,13 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "image": {
+              "type": "SharedSlice"
+            },
             "rich_text": {
+              "type": "SharedSlice"
+            },
+            "carousel": {
               "type": "SharedSlice"
             }
           }
