@@ -37,13 +37,17 @@ export default async function HeroPost() {
                     </div>
                     <h1>
                         <span>
-                            <PrismicText field={latestPost.data.title} />
+                            {latestPost.data.title}
                         </span>
                     </h1>
                     <Button variant={"Pink"} textValue={"Read more"} icon={<IoArrowForwardOutline />} />
                 </div>
                 <div className={styles.FeaturedImage}>
-                    <PrismicNextImage field={latestPost.data.featured_image} alt={latestPost.data.title} />
+                    <PrismicNextImage 
+                        field={latestPost.data.featured_image} 
+                        alt=""
+                        fallbackAlt=""
+                    />
                 </div>
             </div>
         </PrismicLink>

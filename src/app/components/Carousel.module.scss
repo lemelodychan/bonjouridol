@@ -1,0 +1,24 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.Carousel {
+    display: block;
+    --swiper-theme-color: var(--bi-pink);
+    border-radius: 24px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3/2;
+
+    .Slide {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: 3/2;
+
+        > img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+}

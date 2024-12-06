@@ -2,8 +2,8 @@ import * as prismic from "@prismicio/client";
 import * as prismicNext from "@prismicio/next";
 import config from "../slicemachine.config.json";
 
-export const endpoint = config.apiEndpoint
-export const repositoryName = prismic.getRepositoryName(endpoint)
+export const endpoint = "https://bonjouridol.cdn.prismic.io/api/v2";
+export const repositoryName = "bonjouridol";
 
 /**
  * A list of Route Resolver objects that define how a document's `url` field is resolved.
@@ -13,16 +13,20 @@ export const repositoryName = prismic.getRepositoryName(endpoint)
  * @type {prismic.ClientConfig["routes"]}
  */
 
-// const routes = [
-//   {
-//     type: "homepage",
-//     path: "/",
-//   },
-//   {
-//     type: "articles",
-//     path: "/articles/:uid",
-//   }
-// ];
+const routes = [
+  {
+  	type: "homepage",
+  	path: "/",
+  },
+  {
+  	type: "page",
+  	path: "/:uid",
+  },
+  {
+  	type: "articles",
+  	path: "/articles/:uid",
+  },
+];
 
 export const linkResolver = doc => {
   switch (doc.type) {
@@ -64,9 +68,23 @@ export const linkResolver = doc => {
 // };
 
 export const createClient = (config = {}) => {
-  const client = prismic.createClient(endpoint, {
+  const client = prismic.createClient(repositoryName, {
+    accessToken: process.env.PRISMIC_ACCESS_TOKEN,
+    routes,
+    fetchOptions: {
+      // Choose the caching strategy based on the environment
+      next: process.env.NODE_ENV === "production"
+        ? { tags: ["prismic"], cache: "force-cache" }
+        : { revalidate: 5 }, // Use short revalidation in development
+    },
     ...config,
-  })
+  });
 
-  return client
-}
+  prismicNext.enableAutoPreviews({
+    client,
+    previewData: config.previewData,
+    req: config.req,
+  });
+
+  return client;
+};

@@ -1,0 +1,26 @@
+
+.Breadcrumbs {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    color: var(--dark-grey);
+
+    a {
+        text-decoration: none;
+        font-weight: 600;
+        color: var(--bi-pink);
+        transition: var(--transi);
+
+        &:not(.active):hover {
+            color: var(--bi-indigo);
+        }
+
+        &.active {
+            font-weight: 400;
+            color: var(--medium-grey);
+        }
+    }
+}

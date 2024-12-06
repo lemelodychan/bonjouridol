@@ -1,0 +1,17 @@
+@use "../../app/styles/mixins.scss" as *;
+@use "../../app/styles/variables.scss";
+
+.RichText {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 24px 0;
+
+    .Content {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        font-size: 16px;
+        line-height: 28px;
+    }
+}

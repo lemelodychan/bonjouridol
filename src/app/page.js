@@ -1,9 +1,9 @@
 import styles from './page.module.scss'
-import Navbar from './components/Navbar'
 import LatestPosts from './components/LatestPosts.js';
 
 import { createClient } from "@/prismicio";
-import { PrismicNextImage } from "@prismicio/next";
+import { SliceZone } from "@prismicio/react";
+import { components } from '@/slices';
 
 export async function generateMetadata() {
   const client = createClient();

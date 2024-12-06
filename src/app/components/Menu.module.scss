@@ -10,7 +10,7 @@
     height: -webkit-fill-available;
     justify-content: center;
 
-    @include lg {
+    @include md {
         flex-direction: row;
         gap: 24px;
         width: auto;
@@ -27,7 +27,7 @@
             transition: var(--transi);
             text-decoration: none;
 
-            @include lg {
+            @include md {
                 font-family: var(--font-text);
                 color: var(--bi-dark-pink);
                 font-size: var(--font-size-md);

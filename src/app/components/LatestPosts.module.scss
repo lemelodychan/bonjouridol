@@ -6,7 +6,7 @@
     margin: 0 auto;
     position: relative;
 
-    @include lg {
+    @include md {
         display: grid;
         grid-template-columns: auto minmax(320px, 33%);
         grid-gap: 24px;
@@ -23,7 +23,7 @@
         flex-direction: column;
         gap: 16px;
 
-        @include lg {
+        @include md {
             background-color: var(--light-grey);
             top: 0;
         }
@@ -32,7 +32,7 @@
             margin: 0;
 
             span {
-                @include lg {
+                @include md {
                     font-size: 32px;
                     line-height: 48px;
                 }
@@ -52,7 +52,7 @@
             grid-gap: 16px;
             grid-template-columns: minmax(0%, 112px) auto;
 
-            @include lg {
+            @include md {
                 grid-template-columns: 33% auto;
             }
 
@@ -63,7 +63,7 @@
                 overflow: hidden;
                 border-radius: 16px;
 
-                @include lg {
+                @include md {
                     max-width: unset;
                 }
 

@@ -4,24 +4,21 @@
  * @param {RichTextProps}
  */
 import { PrismicRichText } from "@prismicio/react";
-import styles from "./RichText.module.scss"
+
+import styles from "./page.module.scss";
 
 const RichText = ({ slice }) => {
   return (
     <section
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
+      className={styles.RichText}
     >
-      {/* <PrismicRichText field={slice.primary.title} />
-      <PrismicRichText field={slice.primary.content} /> */}
-
-      <div className={styles.repeatable}>
-        {slice.items.map((item) => (
-          <>
-            <PrismicRichText field={item.title} />
-            <PrismicRichText field={item.text} />
-          </>
-        ))}
+      {slice.primary.title && (
+        <h3>{slice.primary.title}</h3>
+      )}
+      <div className={styles.Content}>
+        <PrismicRichText field={slice.primary.text} />
       </div>
     </section>
   );

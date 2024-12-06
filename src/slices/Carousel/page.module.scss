@@ -1,0 +1,9 @@
+@use "../../app/styles/mixins.scss" as *;
+@use "../../app/styles/variables.scss";
+
+.Carousel {
+    display: block;
+    width: 100%;
+    padding: 0 32px;
+    height: auto;
+}

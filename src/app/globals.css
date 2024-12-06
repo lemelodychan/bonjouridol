@@ -33,12 +33,15 @@
   padding: 0;
   margin: 0;
 }
+::selection {
+  color: white;
+  background-color: var(--bi-pink);
+}
 
 html, body {
   font-family: var(--font-text);
   font-size: var(--font-size);
-
-  background-color: var(--light-grey);
+  background-color: white;
   color: var(--dark-grey);
 }
 
@@ -54,4 +57,39 @@ html, body {
 .container {
   width: 100%;
   margin: auto;
+}
+
+h1 {
+  font-family: var(--font-title);
+  font-size: 32px;
+  line-height: 40px;
+  color: var(--bi-dark-pink);
+}
+
+h2 {
+  font-family: var(--font-title);
+  font-size: 24px;
+  line-height: 32px;
+  color: var(--bi-pink);
+}
+
+h3 {
+  font-family: var(--font-text);
+  font-size: 24px;
+  line-height: 32px;
+  color: var(--bi-dark-pink);
+}
+
+.swiper-pagination-fraction, 
+.swiper-pagination-custom, 
+.swiper-horizontal > .swiper-pagination-bullets, 
+.swiper-pagination-bullets.swiper-pagination-horizontal {
+  bottom: 16px !important;
+}
+.swiper-pagination-bullet {
+  opacity: 1 !important;
+  background: white !important;
+}
+.swiper-pagination-bullet-active {
+  background: var(--bi-pink) !important;
 }

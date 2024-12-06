@@ -38,7 +38,11 @@ export default async function LatestPost() {
                 {results.map((item) => (
                     <PrismicLink key={item.id} className={styles.OtherPost} href={`/articles/${item.uid}`}>
                         <div className={styles.FeaturedImage}>
-                            <PrismicNextImage field={item.data.featured_image} alt={item.data.title} />
+                            <PrismicNextImage 
+                                field={item.data.featured_image} 
+                                alt=""
+                                fallbackAlt=""
+                            />
                         </div>
                         <div className={styles.Content}>
                             <div className={styles.Tags}>
@@ -47,7 +51,7 @@ export default async function LatestPost() {
                                 ))}
                             </div>
                             <h3>
-                                <span><PrismicText field={item.data.title} /></span>
+                                <span>{item.data.title}</span>
                                 <span className={styles.icon}><IoArrowForwardOutline /></span>
                             </h3>
                         </div>

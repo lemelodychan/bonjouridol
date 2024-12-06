@@ -1,0 +1,25 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"title": {
+				"__TYPE__": "FieldContent",
+				"value": "town",
+				"type": "Text"
+			},
+			"text": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Aute eu amet consectetur eu duis non enim magna fugiat dolor elit consequat aliqua cupidatat voluptate."
+						}
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]
