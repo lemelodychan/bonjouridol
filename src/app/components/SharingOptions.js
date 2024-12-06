@@ -1,15 +1,12 @@
 "use client"
-import { TwitterShareButton, TwitterIcon } from 'next-share'
-
-import styles from "./SharingOptions.module.scss"
+import { TwitterShareButton, TwitterIcon } from "next-share";
+import styles from "./SharingOptions.module.scss";
 
 export default function SharingOptions(props) {
-    const {uid} = props
-    const {title} = props
-    const {idol} = props
+    const { uid = "", title = "Untitled", idol = "" } = props;
 
     const processIdolName = (idol) => {
-        const name = idol;
+        const name = idol || "";
         const isJapanese = /^[\u3040-\u30FF\u4E00-\u9FFF]+$/.test(name);
         if (isJapanese) {
             return name;
@@ -17,7 +14,7 @@ export default function SharingOptions(props) {
         return name.replace(/[\W_]/g, "").toLowerCase();
     };
 
-    const idolName = (processIdolName(idol));
+    const idolName = processIdolName(idol);
 
     return (
         <div className={styles.Sharing}>
@@ -28,5 +25,5 @@ export default function SharingOptions(props) {
                 <TwitterIcon size={32} round />
             </TwitterShareButton>
         </div>
-    )
+    );
 }
