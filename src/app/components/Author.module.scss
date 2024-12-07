@@ -6,4 +6,77 @@
     flex-direction: row;
     gap: 16px;
     align-items: flex-start;
+
+    .authorImg {
+        width: 56px;
+        height: 56px;
+        display: flex;
+        text-align: center;
+        align-items: center;
+        justify-items: center;
+        justify-content: center;
+        position: relative;
+
+        img {
+            height: 48px;
+            width: 48px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        &:before {
+            position: absolute;
+            width: 54px;
+            height: 54px;
+            display: block;
+            content: "";
+            border-radius: 50%;
+            border: 1px solid var(--light-grey);
+        }
+    }
+
+    .AuthorInfo {
+        display: flex;
+        flex-direction: column;
+        gap: 0px;
+
+        h4 {
+            font-size: 16px;
+            line-height: 32px;
+            font-weight: 400;
+
+            span {
+                font-weight: 600;
+            }
+        }
+
+        .Description {
+            font-size: 14px;
+            line-height: 24px;
+            color: var(--medium-grey);
+        }
+
+        .SocialLinks {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+
+            a {
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                background-color: var(--bi-pink);
+                color: white;
+                transition: var(--transi);
+
+                &:hover {
+                    background-color: var(--bi-dark-pink);
+                }
+            }
+        }
+    }
 }

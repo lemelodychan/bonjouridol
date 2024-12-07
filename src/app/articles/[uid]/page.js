@@ -38,12 +38,20 @@ export default async function Page({ params }) {
   const article = await client.getByUID("articles", uid, {
       ref: client.masterRef,
       fetchLinks: [
+        "author.uid", 
         "author.name", 
         "author.profile_picture",
         "author.description",
         "author.twitter",
         "author.instagram",
         "author.website",
+        "photographer.uid", 
+        "photographer.name", 
+        "photographer.profile_picture",
+        "photographer.description",
+        "photographer.twitter",
+        "photographer.instagram",
+        "photographer.website",
       ],
       fetchOptions: {
         cache: 'no-store',
@@ -51,6 +59,7 @@ export default async function Page({ params }) {
   });
 
   const author = article.data.author;
+  const photo = article.data.photographer;
 
   const publicationDate = article.data.publication_date || article.first_publication_date;
   const formattedDate = publicationDate 
@@ -128,7 +137,12 @@ export default async function Page({ params }) {
               <SliceZone slices={article.data.slices} components={components} />
           </div>
 
-          <Author author={author} />
+          <div className={styles.credits}>
+              <Author author={author} type="Written" />
+              {author && photo && author.uid !== photo.uid && 
+                <Author author={photo} type="Photographed" />
+              }
+          </div>
         </article>
     </>
   );

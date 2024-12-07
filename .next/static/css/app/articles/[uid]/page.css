@@ -132,6 +132,22 @@
   flex-direction: column;
   gap: 24px;
 }
+.page_container__nbpj5 .page_credits__20LUC {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  border-top: 1px solid var(--light-grey);
+}
+.page_container__nbpj5 .page_credits__20LUC > div {
+  width: 50%;
+  padding: 24px 0;
+}
+.page_container__nbpj5 .page_credits__20LUC > div:first-child {
+  border-right: 1px solid var(--light-grey);
+}
+.page_container__nbpj5 .page_credits__20LUC > div:last-child {
+  border-right: 0px !important;
+}
 /*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/Author.module.scss ***!
   \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -140,6 +156,69 @@
   flex-direction: row;
   gap: 16px;
   align-items: flex-start;
+}
+.Author_AuthorBlock__qtl_0 .Author_authorImg__T0Fme {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+  position: relative;
+}
+.Author_AuthorBlock__qtl_0 .Author_authorImg__T0Fme img {
+  height: 48px;
+  width: 48px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.Author_AuthorBlock__qtl_0 .Author_authorImg__T0Fme:before {
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  display: block;
+  content: "";
+  border-radius: 50%;
+  border: 1px solid var(--light-grey);
+}
+.Author_AuthorBlock__qtl_0 .Author_AuthorInfo__Romdr {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+.Author_AuthorBlock__qtl_0 .Author_AuthorInfo__Romdr h4 {
+  font-size: 16px;
+  line-height: 32px;
+  font-weight: 400;
+}
+.Author_AuthorBlock__qtl_0 .Author_AuthorInfo__Romdr h4 span {
+  font-weight: 600;
+}
+.Author_AuthorBlock__qtl_0 .Author_AuthorInfo__Romdr .Author_Description__3yIwR {
+  font-size: 14px;
+  line-height: 24px;
+  color: var(--medium-grey);
+}
+.Author_AuthorBlock__qtl_0 .Author_AuthorInfo__Romdr .Author_SocialLinks__sXphM {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+.Author_AuthorBlock__qtl_0 .Author_AuthorInfo__Romdr .Author_SocialLinks__sXphM a {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--bi-pink);
+  color: white;
+  transition: var(--transi);
+}
+.Author_AuthorBlock__qtl_0 .Author_AuthorInfo__Romdr .Author_SocialLinks__sXphM a:hover {
+  background-color: var(--bi-dark-pink);
 }
 /*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/Breadcrumbs.module.scss ***!

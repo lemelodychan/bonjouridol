@@ -108,6 +108,17 @@ interface ArticlesDocumentData {
   author: prismic.ContentRelationshipField<"author">;
 
   /**
+   * Photographer field in *Articles*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: articles.photographer
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  photographer: prismic.ContentRelationshipField<"author">;
+
+  /**
    * Featured Image field in *Articles*
    *
    * - **Field Type**: Image

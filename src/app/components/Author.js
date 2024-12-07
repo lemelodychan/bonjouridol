@@ -9,7 +9,7 @@ import { HiOutlineLink } from 'react-icons/hi';
 import { FaInstagram } from "react-icons/fa6";
 import { FaXTwitter } from "react-icons/fa6";
 
-const Author = ({ author }) => {
+const Author = ({ author, type }) => {
     const { 
         name, 
         profile_picture, 
@@ -21,15 +21,20 @@ const Author = ({ author }) => {
     return (
         <div className={styles.AuthorBlock}>
             {profile_picture && (
-                <PrismicNextImage
-                    field={profile_picture}
-                    alt={`${name}'s Profile Picture`}
-                    width={100}
-                    height={100}
-                />
+                <span className={styles.authorImg}>
+                    <PrismicNextImage
+                        field={profile_picture}
+                        alt={`${name}'s Profile Picture`}
+                        width={100}
+                        height={100}
+                    />
+                </span>
             )}
             <div className={styles.AuthorInfo}>
-                <h4>{name}</h4>
+                <h4>
+                    {type} by&nbsp;
+                    <span className={styles.AuthorName}>{name}</span>
+                </h4>
                 {description && 
                     <div className={styles.Description}>
                         <PrismicRichText field={description} />
