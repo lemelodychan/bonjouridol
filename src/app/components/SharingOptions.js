@@ -1,5 +1,5 @@
 "use client"
-import { TwitterShareButton, TwitterIcon } from "next-share";
+import { TwitterShareButton, TwitterIcon, LineShareButton, LineIcon, RedditShareButton, RedditIcon } from "next-share";
 import styles from "./SharingOptions.module.scss";
 
 export default function SharingOptions(props) {
@@ -24,6 +24,18 @@ export default function SharingOptions(props) {
             >
                 <TwitterIcon size={32} round />
             </TwitterShareButton>
+            <LineShareButton
+                url={`https://bonjouridol.vercel.app/articles/${uid}`}
+                title={`${title} | BONJOUR IDOL #bonjouridol #${idolName}`}
+            >
+                <LineIcon size={32} round />
+            </LineShareButton>
+            <RedditShareButton
+                url={`https://bonjouridol.vercel.app/articles/${uid}`}
+                title={`${title} | BONJOUR IDOL #bonjouridol #${idolName}`}
+            >
+                <RedditIcon size={32} round />
+            </RedditShareButton>
         </div>
     );
 }
