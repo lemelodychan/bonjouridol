@@ -1,0 +1,14 @@
+.GalleryContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 0;
+    background-color: var(--light-grey);
+    padding: 32px;
+
+    h2 {
+        font-size: 32px;
+        line-height: 40px;
+        color: var(--bi-dark-pink);
+    }
+}

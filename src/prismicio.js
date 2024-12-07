@@ -1,9 +1,10 @@
 import * as prismic from "@prismicio/client";
 import * as prismicNext from "@prismicio/next";
 import config from "../slicemachine.config.json";
+const fetch = require('node-fetch');
 
 export const endpoint = "https://bonjouridol.cdn.prismic.io/api/v2";
-export const repositoryName = "bonjouridol";
+export const repositoryName = process.env.REPO_NAME;
 
 /**
  * A list of Route Resolver objects that define how a document's `url` field is resolved.

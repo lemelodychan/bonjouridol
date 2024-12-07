@@ -1,0 +1,21 @@
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+self["webpackHotUpdate_N_E"]("app/articles/[uid]/page",{
+
+/***/ "(app-pages-browser)/./src/app/articles/[uid]/page.module.scss":
+/*!*************************************************!*\
+  !*** ./src/app/articles/[uid]/page.module.scss ***!
+  \*************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+eval(__webpack_require__.ts("// extracted by mini-css-extract-plugin\nmodule.exports = {\"container\":\"page_container__nbpj5\",\"header\":\"page_header__3X_lA\",\"Breadcrumbs\":\"page_Breadcrumbs__U7P3n\",\"tag\":\"page_tag__RWZFp\",\"date\":\"page_date__LX9bo\",\"venue\":\"page_venue__LqWet\",\"information\":\"page_information__L_gSF\",\"author\":\"page_author__NY3nz\",\"authorImg\":\"page_authorImg__4rSMM\",\"authorInfo\":\"page_authorInfo__wMDql\",\"authorName\":\"page_authorName__QgeS4\",\"featuredimage\":\"page_featuredimage__VaERJ\",\"content\":\"page_content__6AVtH\"};\n    if(true) {\n      // 1733564040719\n      var cssReload = __webpack_require__(/*! ./node_modules/next/dist/compiled/mini-css-extract-plugin/hmr/hotModuleReplacement.js */ \"(app-pages-browser)/./node_modules/next/dist/compiled/mini-css-extract-plugin/hmr/hotModuleReplacement.js\")(module.id, {\"publicPath\":\"/_next/\",\"esModule\":false,\"locals\":true});\n      module.hot.dispose(cssReload);\n      \n    }\n  \nmodule.exports.__checksum = \"327653d08649\"\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKGFwcC1wYWdlcy1icm93c2VyKS8uL3NyYy9hcHAvYXJ0aWNsZXMvW3VpZF0vcGFnZS5tb2R1bGUuc2NzcyIsIm1hcHBpbmdzIjoiQUFBQTtBQUNBLGtCQUFrQjtBQUNsQixPQUFPLElBQVU7QUFDakI7QUFDQSxzQkFBc0IsbUJBQU8sQ0FBQyx3TUFBZ0ksY0FBYyxzREFBc0Q7QUFDbE8sTUFBTSxVQUFVO0FBQ2hCO0FBQ0E7QUFDQTtBQUNBLHlCQUF5QiIsInNvdXJjZXMiOlsiL1VzZXJzL2Vsb2RpZS9Eb2N1bWVudHMvR2l0SHViL2JvbmpvdXJpZG9sL3NyYy9hcHAvYXJ0aWNsZXMvW3VpZF0vcGFnZS5tb2R1bGUuc2NzcyJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyBleHRyYWN0ZWQgYnkgbWluaS1jc3MtZXh0cmFjdC1wbHVnaW5cbm1vZHVsZS5leHBvcnRzID0ge1wiY29udGFpbmVyXCI6XCJwYWdlX2NvbnRhaW5lcl9fbmJwajVcIixcImhlYWRlclwiOlwicGFnZV9oZWFkZXJfXzNYX2xBXCIsXCJCcmVhZGNydW1ic1wiOlwicGFnZV9CcmVhZGNydW1ic19fVTdQM25cIixcInRhZ1wiOlwicGFnZV90YWdfX1JXWkZwXCIsXCJkYXRlXCI6XCJwYWdlX2RhdGVfX0xYOWJvXCIsXCJ2ZW51ZVwiOlwicGFnZV92ZW51ZV9fTHFXZXRcIixcImluZm9ybWF0aW9uXCI6XCJwYWdlX2luZm9ybWF0aW9uX19MX2dTRlwiLFwiYXV0aG9yXCI6XCJwYWdlX2F1dGhvcl9fTlkzbnpcIixcImF1dGhvckltZ1wiOlwicGFnZV9hdXRob3JJbWdfXzRyU01NXCIsXCJhdXRob3JJbmZvXCI6XCJwYWdlX2F1dGhvckluZm9fX3dNRHFsXCIsXCJhdXRob3JOYW1lXCI6XCJwYWdlX2F1dGhvck5hbWVfX1FnZVM0XCIsXCJmZWF0dXJlZGltYWdlXCI6XCJwYWdlX2ZlYXR1cmVkaW1hZ2VfX1ZhRVJKXCIsXCJjb250ZW50XCI6XCJwYWdlX2NvbnRlbnRfXzZBVnRIXCJ9O1xuICAgIGlmKG1vZHVsZS5ob3QpIHtcbiAgICAgIC8vIDE3MzM1NjQwNDA3MTlcbiAgICAgIHZhciBjc3NSZWxvYWQgPSByZXF1aXJlKFwiL1VzZXJzL2Vsb2RpZS9Eb2N1bWVudHMvR2l0SHViL2JvbmpvdXJpZG9sL25vZGVfbW9kdWxlcy9uZXh0L2Rpc3QvY29tcGlsZWQvbWluaS1jc3MtZXh0cmFjdC1wbHVnaW4vaG1yL2hvdE1vZHVsZVJlcGxhY2VtZW50LmpzXCIpKG1vZHVsZS5pZCwge1wicHVibGljUGF0aFwiOlwiL19uZXh0L1wiLFwiZXNNb2R1bGVcIjpmYWxzZSxcImxvY2Fsc1wiOnRydWV9KTtcbiAgICAgIG1vZHVsZS5ob3QuZGlzcG9zZShjc3NSZWxvYWQpO1xuICAgICAgXG4gICAgfVxuICBcbm1vZHVsZS5leHBvcnRzLl9fY2hlY2tzdW0gPSBcIjMyNzY1M2QwODY0OVwiXG4iXSwibmFtZXMiOltdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(app-pages-browser)/./src/app/articles/[uid]/page.module.scss\n"));
+
+/***/ })
+
+});

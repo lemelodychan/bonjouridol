@@ -1,0 +1,109 @@
+{
+  "id": "setlist",
+  "type": "SharedSlice",
+  "name": "Setlist",
+  "description": "Setlist",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "song": {
+          "type": "Group",
+          "config": {
+            "label": "Song",
+            "repeat": true,
+            "fields": {
+              "title_en": {
+                "type": "Text",
+                "config": {
+                  "label": "Title (EN)",
+                  "placeholder": ""
+                }
+              },
+              "title_jp": {
+                "type": "Text",
+                "config": {
+                  "label": "Title (JP)",
+                  "placeholder": ""
+                }
+              },
+              "og_artist": {
+                "type": "Text",
+                "config": {
+                  "label": "Original artist (if cover)",
+                  "placeholder": ""
+                }
+              },
+              "members": {
+                "type": "Text",
+                "config": {
+                  "label": "Members",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        },
+        "mc_break": {
+          "type": "Group",
+          "config": {
+            "label": "MC",
+            "repeat": true,
+            "fields": {
+              "mc_name": {
+                "type": "Text",
+                "config": {
+                  "label": "MC Name",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        },
+        "encore_song": {
+          "type": "Group",
+          "config": {
+            "label": "Encore Song",
+            "repeat": true,
+            "fields": {
+              "title_en": {
+                "type": "Text",
+                "config": {
+                  "label": "Title (EN)",
+                  "placeholder": ""
+                }
+              },
+              "title_jp": {
+                "type": "Text",
+                "config": {
+                  "label": "Title (JP)",
+                  "placeholder": ""
+                }
+              },
+              "og_artist": {
+                "type": "Text",
+                "config": {
+                  "label": "Original artist (if cover)",
+                  "placeholder": ""
+                }
+              },
+              "members": {
+                "type": "Text",
+                "config": {
+                  "label": "Members",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

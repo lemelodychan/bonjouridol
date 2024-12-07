@@ -4,20 +4,18 @@
  * @param {ImageProps}
  */
 import { PrismicNextImage } from "@prismicio/next";
+import styles from "./page.module.scss";
 
 const Image = ({ slice }) => {
   const isFullwidth = !!slice.primary.is_fullwidth;
   const width = slice.primary.image_width;
 
   return (
-    <section
-      data-slice-type={slice.slice_type}
-      data-slice-variation={slice.variation}
-    >
+    <section className={styles.SingleImageContainer}>
       <PrismicNextImage
         field={slice.primary.image}
         alt={slice.primary.image.alt || ""}
-        className={isFullwidth ? "FullWidth" : ""}
+        className={`${styles.SingleImage} ${isFullwidth ? styles.FullWidth : ""}`}
         style={!isFullwidth ? { width: `${width}px` } : undefined}
       />
     </section>

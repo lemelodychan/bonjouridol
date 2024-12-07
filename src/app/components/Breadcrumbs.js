@@ -6,21 +6,28 @@ import styles from "./Breadcrumbs.module.scss";
 
 import { HiChevronRight } from "react-icons/hi";
 
-const Breadcrumbs = ({ category, title, subtitle, uid }) => {
+const Breadcrumbs = ({ category, title, subtitle, uid, type }) => {
 
     let parentCat;
+    let titleCat;
     if (category === "Live report") {
         parentCat = "livereports";
+        titleCat = "Live Reports";
     } else if (category === "Discovery") {
-        parentCat = "discovery";
+        parentCat = "discoveries";
+        titleCat = "Discoveries";
     } else if (category === "Press release") {
         parentCat = "pressrelease";
+        titleCat = "Press Releases";
     } else if (category === "Gallery") {
-        parentCat = "gallery";
+        parentCat = "gallerries";
+        titleCat = "Galleries";
     }
 
     return (
-    <div className={styles.Breadcrumbs}>
+    <div 
+        className={`${styles.Breadcrumbs} ${type === "white" ? styles.white : ""}`}
+    >
         <Link 
             href={`/`} >
             Home
@@ -28,7 +35,7 @@ const Breadcrumbs = ({ category, title, subtitle, uid }) => {
         <HiChevronRight />
         <Link 
             href={`/${parentCat}`} >
-            {category}
+            {titleCat}
         </Link>
         <HiChevronRight />
         <a className={styles.active}>{title}: {subtitle}</a>

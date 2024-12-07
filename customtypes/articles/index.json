@@ -98,6 +98,24 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "authors": {
+              "type": "SharedSlice"
+            },
+            "single_button": {
+              "type": "SharedSlice"
+            },
+            "video": {
+              "type": "SharedSlice"
+            },
+            "quote": {
+              "type": "SharedSlice"
+            },
+            "setlist": {
+              "type": "SharedSlice"
+            },
+            "gallery": {
+              "type": "SharedSlice"
+            },
             "image": {
               "type": "SharedSlice"
             },

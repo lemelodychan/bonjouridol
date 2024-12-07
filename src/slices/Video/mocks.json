@@ -1,0 +1,19 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"youtube_id": {
+				"__TYPE__": "FieldContent",
+				"value": "gradually",
+				"type": "Text"
+			},
+			"caption": {
+				"__TYPE__": "FieldContent",
+				"value": "dozen",
+				"type": "Text"
+			}
+		},
+		"items": []
+	}
+]

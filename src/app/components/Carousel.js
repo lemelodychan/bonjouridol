@@ -7,7 +7,6 @@ import { PrismicNextImage } from "@prismicio/next";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
-
 import styles from "./Carousel.module.scss";
 
 const Carousel = ({ images }) => {

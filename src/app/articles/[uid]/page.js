@@ -22,13 +22,6 @@ export async function generateMetadata({ params }) {
     description: article.data.meta_description,
   };
 }
-export async function generateStaticParams() {
-  const client = createClient();
-  const articles = await client.getAllByType("articles");
-  return articles.map((article) => {
-    return { uid: article.uid };
-  });
-}
 
 
 export default async function Page({ params }) {
@@ -58,6 +51,8 @@ export default async function Page({ params }) {
       },
   });
 
+  const imageUrl = article.data.featured_image.url;
+
   const author = article.data.author;
   const photo = article.data.photographer;
 
@@ -74,75 +69,72 @@ export default async function Page({ params }) {
   return (
     <>
         <article className={styles.container}>
-          <Breadcrumbs 
-            category={article.data.type} 
-            title={article.data.title} 
-            subtitle={article.data.subtitle}
-            uid={article.uid}
-          />
+          <div 
+            className={styles.header}
+            style={{ backgroundImage: `url(${imageUrl})` }}
+          >
+            <Breadcrumbs 
+              type="white"
+              category={article.data.type} 
+              title={article.data.title} 
+              subtitle={article.data.subtitle}
+              uid={article.uid}
+            />
 
-          <div className={styles.header}>
-            <div className={styles.tag}>
-              {article.data.event_date && (
-                <span className={styles.date}>
-                  <HiOutlineCalendar />
-                  {formattedEventDate}
-                </span>
-              )}
-              {article.data.venue && (
-                <span className={styles.venue}>
-                  <HiOutlineLocationMarker />
-                  {article.data.venue}
-                </span>
-              )}
-            </div>
-            <h1 className={styles.title}>
-              {article.data.title}
-            </h1>
-            {article.data.subtitle && (
-              <h2 className={styles.subtitle}>
-                {article.data.subtitle}
-              </h2>
-            )}
-            <div className={styles.information}>
-              {article.data.author && (
-                <div className={styles.author}>
-                  <span className={styles.authorImg}>
-                    <PrismicNextImage field={article.data.author?.data?.profile_picture} />
+            <div className={styles.HeaderContent}>
+              <div className={styles.tag}>
+                {article.data.event_date && (
+                  <span className={styles.date}>
+                    <HiOutlineCalendar />
+                    {formattedEventDate}
                   </span>
-                  <span className={styles.authorInfo}>
-                    <span className={styles.authorName}>{article.data.author?.data?.name || "Unknown Author"}</span>
-                    <span className={styles.date}>{formattedDate}</span>
+                )}
+                {article.data.venue && (
+                  <span className={styles.venue}>
+                    <HiOutlineLocationMarker />
+                    {article.data.venue}
                   </span>
-                </div>
-              )}
-              <SharingOptions 
-                className={styles.Sharing}
-                uid={article.uid} 
-                title={article.data.meta_title} 
-                idol={article.data.idol_name} 
-              />
+                )}
+              </div>
+
+              <div className={styles.TitleContainer}>
+                <h1 className={styles.title}>
+                  <span>{article.data.title}</span>
+                </h1>
+                {article.data.subtitle && (
+                  <h2 className={styles.subtitle}>
+                    <span>{article.data.subtitle}</span>
+                  </h2>
+                )}
+              </div>
+              
             </div>
           </div>    
-          {article.data.featured_image && (
-            <PrismicNextImage 
-              className={styles.featuredimage}
-              field={article.data.featured_image} 
-              alt=""
-              fallbackAlt=""
+
+          <div className={styles.information}>
+            {article.data.author && (
+              <div className={styles.author}>
+                <span className={styles.authorImg}>
+                  <PrismicNextImage field={article.data.author?.data?.profile_picture} />
+                </span>
+                <span className={styles.authorInfo}>
+                  <span className={styles.authorName}>{article.data.author?.data?.name || "Unknown Author"}</span>
+                  <span className={styles.date}>{formattedDate}</span>
+                </span>
+              </div>
+            )}
+            <SharingOptions 
+              className={styles.Sharing}
+              uid={article.uid} 
+              title={article.data.meta_title} 
+              idol={article.data.idol_name} 
             />
-          )}
+          </div>
 
           <div className={styles.content}>
               <SliceZone slices={article.data.slices} components={components} />
           </div>
-
-          <div className={styles.credits}>
-              <Author author={author} type="Written" />
-              {author && photo && author.uid !== photo.uid && 
-                <Author author={photo} type="Photographed" />
-              }
-          </div>
+          
         </article>
     </>
   );

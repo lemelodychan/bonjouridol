@@ -5,7 +5,8 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
-    margin: 24px 0;
+    margin: 24px auto;
+    max-width: 1000px;
 
     .Content {
         display: flex;

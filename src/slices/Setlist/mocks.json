@@ -1,0 +1,111 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"song": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"title_en",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "especially",
+									"type": "Text"
+								}
+							],
+							[
+								"title_jp",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "thought",
+									"type": "Text"
+								}
+							],
+							[
+								"og_artist",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "bank",
+									"type": "Text"
+								}
+							],
+							[
+								"members",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "blood",
+									"type": "Text"
+								}
+							]
+						]
+					}
+				]
+			},
+			"mc_break": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"mc_name",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "bigger",
+									"type": "Text"
+								}
+							]
+						]
+					}
+				]
+			},
+			"encore_song": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"title_en",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "aboard",
+									"type": "Text"
+								}
+							],
+							[
+								"title_jp",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "case",
+									"type": "Text"
+								}
+							],
+							[
+								"og_artist",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "sheep",
+									"type": "Text"
+								}
+							],
+							[
+								"members",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "friend",
+									"type": "Text"
+								}
+							]
+						]
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

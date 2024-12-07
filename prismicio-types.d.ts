@@ -5,6 +5,12 @@ import type * as prismic from "@prismicio/client";
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
 type ArticlesDocumentDataSlicesSlice =
+  | AuthorsSlice
+  | SingleButtonSlice
+  | VideoSlice
+  | QuoteSlice
+  | SetlistSlice
+  | GallerySlice
   | ImageSlice
   | RichTextSlice
   | CarouselSlice;
@@ -437,6 +443,61 @@ export type AllDocumentTypes =
   | PageDocument;
 
 /**
+ * Primary content in *Authors → Default → Primary*
+ */
+export interface AuthorsSliceDefaultPrimary {
+  /**
+   * Author field in *Authors → Default → Primary*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: authors.default.primary.author
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  author: prismic.ContentRelationshipField<"author">;
+
+  /**
+   * Photographer field in *Authors → Default → Primary*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: authors.default.primary.photographer
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  photographer: prismic.ContentRelationshipField<"author">;
+}
+
+/**
+ * Default variation for Authors Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type AuthorsSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<AuthorsSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Authors*
+ */
+type AuthorsSliceVariation = AuthorsSliceDefault;
+
+/**
+ * Authors Shared Slice
+ *
+ * - **API ID**: `authors`
+ * - **Description**: Authors
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type AuthorsSlice = prismic.SharedSlice<
+  "authors",
+  AuthorsSliceVariation
+>;
+
+/**
  * Item in *Carousel → Default → Primary → Slides*
  */
 export interface CarouselSliceDefaultPrimarySlidesItem {
@@ -494,6 +555,76 @@ type CarouselSliceVariation = CarouselSliceDefault;
 export type CarouselSlice = prismic.SharedSlice<
   "carousel",
   CarouselSliceVariation
+>;
+
+/**
+ * Item in *Gallery → Default → Primary → Images*
+ */
+export interface GallerySliceDefaultPrimaryImagesItem {
+  /**
+   * Image field in *Gallery → Default → Primary → Images*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery.default.primary.images[].image
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  image: prismic.ImageField<never>;
+}
+
+/**
+ * Primary content in *Gallery → Default → Primary*
+ */
+export interface GallerySliceDefaultPrimary {
+  /**
+   * Gallery tag field in *Gallery → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery.default.primary.gallery_tag
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  gallery_tag: prismic.KeyTextField;
+
+  /**
+   * Images field in *Gallery → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery.default.primary.images[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  images: prismic.GroupField<Simplify<GallerySliceDefaultPrimaryImagesItem>>;
+}
+
+/**
+ * Default variation for Gallery Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type GallerySliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<GallerySliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Gallery*
+ */
+type GallerySliceVariation = GallerySliceDefault;
+
+/**
+ * Gallery Shared Slice
+ *
+ * - **API ID**: `gallery`
+ * - **Description**: Gallery
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type GallerySlice = prismic.SharedSlice<
+  "gallery",
+  GallerySliceVariation
 >;
 
 /**
@@ -560,6 +691,58 @@ type ImageSliceVariation = ImageSliceDefault;
 export type ImageSlice = prismic.SharedSlice<"image", ImageSliceVariation>;
 
 /**
+ * Primary content in *Quote → Default → Primary*
+ */
+export interface QuoteSliceDefaultPrimary {
+  /**
+   * Quote field in *Quote → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: quote.default.primary.quote
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  quote: prismic.RichTextField;
+
+  /**
+   * Author field in *Quote → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: quote.default.primary.author
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  author: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for Quote Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type QuoteSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<QuoteSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Quote*
+ */
+type QuoteSliceVariation = QuoteSliceDefault;
+
+/**
+ * Quote Shared Slice
+ *
+ * - **API ID**: `quote`
+ * - **Description**: Quote
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type QuoteSlice = prismic.SharedSlice<"quote", QuoteSliceVariation>;
+
+/**
  * Primary content in *RichText → Default → Primary*
  */
 export interface RichTextSliceDefaultPrimary {
@@ -614,6 +797,292 @@ export type RichTextSlice = prismic.SharedSlice<
   RichTextSliceVariation
 >;
 
+/**
+ * Item in *Setlist → Default → Primary → Song*
+ */
+export interface SetlistSliceDefaultPrimarySongItem {
+  /**
+   * Title (EN) field in *Setlist → Default → Primary → Song*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: setlist.default.primary.song[].title_en
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title_en: prismic.KeyTextField;
+
+  /**
+   * Title (JP) field in *Setlist → Default → Primary → Song*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: setlist.default.primary.song[].title_jp
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title_jp: prismic.KeyTextField;
+
+  /**
+   * Original artist (if cover) field in *Setlist → Default → Primary → Song*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: setlist.default.primary.song[].og_artist
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  og_artist: prismic.KeyTextField;
+
+  /**
+   * Members field in *Setlist → Default → Primary → Song*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: setlist.default.primary.song[].members
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  members: prismic.KeyTextField;
+}
+
+/**
+ * Item in *Setlist → Default → Primary → MC*
+ */
+export interface SetlistSliceDefaultPrimaryMcBreakItem {
+  /**
+   * MC Name field in *Setlist → Default → Primary → MC*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: setlist.default.primary.mc_break[].mc_name
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  mc_name: prismic.KeyTextField;
+}
+
+/**
+ * Item in *Setlist → Default → Primary → Encore Song*
+ */
+export interface SetlistSliceDefaultPrimaryEncoreSongItem {
+  /**
+   * Title (EN) field in *Setlist → Default → Primary → Encore Song*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: setlist.default.primary.encore_song[].title_en
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title_en: prismic.KeyTextField;
+
+  /**
+   * Title (JP) field in *Setlist → Default → Primary → Encore Song*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: setlist.default.primary.encore_song[].title_jp
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title_jp: prismic.KeyTextField;
+
+  /**
+   * Original artist (if cover) field in *Setlist → Default → Primary → Encore Song*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: setlist.default.primary.encore_song[].og_artist
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  og_artist: prismic.KeyTextField;
+
+  /**
+   * Members field in *Setlist → Default → Primary → Encore Song*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: setlist.default.primary.encore_song[].members
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  members: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *Setlist → Default → Primary*
+ */
+export interface SetlistSliceDefaultPrimary {
+  /**
+   * Song field in *Setlist → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: setlist.default.primary.song[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  song: prismic.GroupField<Simplify<SetlistSliceDefaultPrimarySongItem>>;
+
+  /**
+   * MC field in *Setlist → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: setlist.default.primary.mc_break[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  mc_break: prismic.GroupField<Simplify<SetlistSliceDefaultPrimaryMcBreakItem>>;
+
+  /**
+   * Encore Song field in *Setlist → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: setlist.default.primary.encore_song[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  encore_song: prismic.GroupField<
+    Simplify<SetlistSliceDefaultPrimaryEncoreSongItem>
+  >;
+}
+
+/**
+ * Default variation for Setlist Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SetlistSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<SetlistSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Setlist*
+ */
+type SetlistSliceVariation = SetlistSliceDefault;
+
+/**
+ * Setlist Shared Slice
+ *
+ * - **API ID**: `setlist`
+ * - **Description**: Setlist
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SetlistSlice = prismic.SharedSlice<
+  "setlist",
+  SetlistSliceVariation
+>;
+
+/**
+ * Item in *Buttons → Default → Primary → Button*
+ */
+export interface SingleButtonSliceDefaultPrimaryButtonItem {
+  /**
+   * Link field in *Buttons → Default → Primary → Button*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: single_button.default.primary.button[].link
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  link: prismic.LinkField;
+}
+
+/**
+ * Primary content in *Buttons → Default → Primary*
+ */
+export interface SingleButtonSliceDefaultPrimary {
+  /**
+   * Button field in *Buttons → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: single_button.default.primary.button[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  button: prismic.GroupField<
+    Simplify<SingleButtonSliceDefaultPrimaryButtonItem>
+  >;
+}
+
+/**
+ * Default variation for Buttons Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SingleButtonSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<SingleButtonSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Buttons*
+ */
+type SingleButtonSliceVariation = SingleButtonSliceDefault;
+
+/**
+ * Buttons Shared Slice
+ *
+ * - **API ID**: `single_button`
+ * - **Description**: SingleButton
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SingleButtonSlice = prismic.SharedSlice<
+  "single_button",
+  SingleButtonSliceVariation
+>;
+
+/**
+ * Primary content in *Video → Default → Primary*
+ */
+export interface VideoSliceDefaultPrimary {
+  /**
+   * Youtube ID field in *Video → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: video.default.primary.youtube_id
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  youtube_id: prismic.KeyTextField;
+
+  /**
+   * Caption field in *Video → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: video.default.primary.caption
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  caption: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for Video Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type VideoSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<VideoSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Video*
+ */
+type VideoSliceVariation = VideoSliceDefault;
+
+/**
+ * Video Shared Slice
+ *
+ * - **API ID**: `video`
+ * - **Description**: Video
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type VideoSlice = prismic.SharedSlice<"video", VideoSliceVariation>;
+
 declare module "@prismicio/client" {
   interface CreateClient {
     (
@@ -648,19 +1117,48 @@ declare module "@prismicio/client" {
       PageDocumentData,
       PageDocumentDataSlicesSlice,
       AllDocumentTypes,
+      AuthorsSlice,
+      AuthorsSliceDefaultPrimary,
+      AuthorsSliceVariation,
+      AuthorsSliceDefault,
       CarouselSlice,
       CarouselSliceDefaultPrimarySlidesItem,
       CarouselSliceDefaultPrimary,
       CarouselSliceVariation,
       CarouselSliceDefault,
+      GallerySlice,
+      GallerySliceDefaultPrimaryImagesItem,
+      GallerySliceDefaultPrimary,
+      GallerySliceVariation,
+      GallerySliceDefault,
       ImageSlice,
       ImageSliceDefaultPrimary,
       ImageSliceVariation,
       ImageSliceDefault,
+      QuoteSlice,
+      QuoteSliceDefaultPrimary,
+      QuoteSliceVariation,
+      QuoteSliceDefault,
       RichTextSlice,
       RichTextSliceDefaultPrimary,
       RichTextSliceVariation,
       RichTextSliceDefault,
+      SetlistSlice,
+      SetlistSliceDefaultPrimarySongItem,
+      SetlistSliceDefaultPrimaryMcBreakItem,
+      SetlistSliceDefaultPrimaryEncoreSongItem,
+      SetlistSliceDefaultPrimary,
+      SetlistSliceVariation,
+      SetlistSliceDefault,
+      SingleButtonSlice,
+      SingleButtonSliceDefaultPrimaryButtonItem,
+      SingleButtonSliceDefaultPrimary,
+      SingleButtonSliceVariation,
+      SingleButtonSliceDefault,
+      VideoSlice,
+      VideoSliceDefaultPrimary,
+      VideoSliceVariation,
+      VideoSliceDefault,
     };
   }
 }

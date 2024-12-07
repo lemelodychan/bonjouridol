@@ -1,0 +1,39 @@
+{
+  "id": "authors",
+  "type": "SharedSlice",
+  "name": "Authors",
+  "description": "Authors",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "author": {
+          "type": "Link",
+          "config": {
+            "label": "Author",
+            "select": "document",
+            "customtypes": [
+              "author"
+            ]
+          }
+        },
+        "photographer": {
+          "type": "Link",
+          "config": {
+            "label": "Photographer",
+            "select": "document",
+            "customtypes": [
+              "author"
+            ]
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}
