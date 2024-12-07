@@ -17,11 +17,11 @@
     "date-fns": "^4.1.0",
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.13",
-    "next": "^13.5.7",
+    "next": "^15.0.4",
     "next-share": "^0.25.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-icons": "^4.10.1",
+    "react-icons": "^4.12.0",
     "swiper": "^11.1.15"
   },
   "devDependencies": {

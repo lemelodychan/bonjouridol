@@ -48,10 +48,17 @@
           "placeholder": ""
         }
       },
-      "event": {
+      "venue": {
         "type": "Text",
         "config": {
-          "label": "Event",
+          "label": "Venue",
+          "placeholder": ""
+        }
+      },
+      "event_date": {
+        "type": "Date",
+        "config": {
+          "label": "Event date",
           "placeholder": ""
         }
       },
@@ -60,6 +67,14 @@
         "config": {
           "label": "Publication date",
           "placeholder": ""
+        }
+      },
+      "author": {
+        "type": "Link",
+        "config": {
+          "label": "Author",
+          "select": "document",
+          "customtypes": ["author"]
         }
       },
       "featured_image": {
