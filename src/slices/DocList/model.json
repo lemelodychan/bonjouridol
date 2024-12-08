@@ -1,0 +1,34 @@
+{
+  "id": "doc_list",
+  "type": "SharedSlice",
+  "name": "DocList",
+  "description": "DocList",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "type": {
+          "type": "Select",
+          "config": {
+            "label": "Type",
+            "placeholder": "",
+            "options": [
+              "Live reports",
+              "Discoveries",
+              "Interviews",
+              "Press Releases",
+              "Galleries",
+              "All documents"
+            ]
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

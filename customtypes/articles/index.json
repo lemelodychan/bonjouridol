@@ -36,6 +36,7 @@
             "Press release",
             "Interview",
             "Discovery",
+            "Gallery",
             "Other"
           ],
           "default_value": "Live report"

@@ -20,7 +20,7 @@ const Breadcrumbs = ({ category, title, subtitle, uid, type }) => {
         parentCat = "pressrelease";
         titleCat = "Press Releases";
     } else if (category === "Gallery") {
-        parentCat = "gallerries";
+        parentCat = "galleries";
         titleCat = "Galleries";
     }
 

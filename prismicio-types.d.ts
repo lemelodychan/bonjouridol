@@ -54,7 +54,12 @@ interface ArticlesDocumentData {
    * - **Documentation**: https://prismic.io/docs/field#select
    */
   type: prismic.SelectField<
-    "Live report" | "Press release" | "Interview" | "Discovery" | "Other",
+    | "Live report"
+    | "Press release"
+    | "Interview"
+    | "Discovery"
+    | "Gallery"
+    | "Other",
     "filled"
   >;
 
@@ -321,6 +326,40 @@ type GalleryDocumentDataSlicesSlice = never;
  */
 interface GalleryDocumentData {
   /**
+   * Type field in *Gallery*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: Gallery
+   * - **API ID Path**: gallery.type
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#select
+   */
+  type: prismic.SelectField<"Gallery" | "Other", "filled">;
+
+  /**
+   * Title field in *Gallery*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery.title
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title: prismic.KeyTextField;
+
+  /**
+   * Featured image field in *Gallery*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery.featured_image
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  featured_image: prismic.ImageField<never>;
+
+  /**
    * Artist name field in *Gallery*
    *
    * - **Field Type**: Text
@@ -522,7 +561,15 @@ export type HomepageDocument<Lang extends string = string> =
     Lang
   >;
 
-type PageDocumentDataSlicesSlice = RichTextSlice | CarouselSlice | ImageSlice;
+type PageDocumentDataSlicesSlice =
+  | VideoSlice
+  | QuoteSlice
+  | DocListSlice
+  | GallerySlice
+  | SingleButtonSlice
+  | RichTextSlice
+  | CarouselSlice
+  | ImageSlice;
 
 /**
  * Content for Page documents
@@ -714,6 +761,58 @@ type CarouselSliceVariation = CarouselSliceDefault;
 export type CarouselSlice = prismic.SharedSlice<
   "carousel",
   CarouselSliceVariation
+>;
+
+/**
+ * Primary content in *DocList → Default → Primary*
+ */
+export interface DocListSliceDefaultPrimary {
+  /**
+   * Type field in *DocList → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: doc_list.default.primary.type
+   * - **Documentation**: https://prismic.io/docs/field#select
+   */
+  type: prismic.SelectField<
+    | "Live reports"
+    | "Discoveries"
+    | "Interviews"
+    | "Press Releases"
+    | "Galleries"
+    | "All documents"
+  >;
+}
+
+/**
+ * Default variation for DocList Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type DocListSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<DocListSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *DocList*
+ */
+type DocListSliceVariation = DocListSliceDefault;
+
+/**
+ * DocList Shared Slice
+ *
+ * - **API ID**: `doc_list`
+ * - **Description**: DocList
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type DocListSlice = prismic.SharedSlice<
+  "doc_list",
+  DocListSliceVariation
 >;
 
 /**
@@ -1334,6 +1433,10 @@ declare module "@prismicio/client" {
       CarouselSliceDefaultPrimary,
       CarouselSliceVariation,
       CarouselSliceDefault,
+      DocListSlice,
+      DocListSliceDefaultPrimary,
+      DocListSliceVariation,
+      DocListSliceDefault,
       GallerySlice,
       GallerySliceDefaultPrimaryImagesItem,
       GallerySliceDefaultPrimary,

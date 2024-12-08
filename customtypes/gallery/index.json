@@ -12,6 +12,30 @@
           "label": "UID"
         }
       },
+      "type": {
+        "type": "Select",
+        "config": {
+          "label": "Type",
+          "placeholder": "",
+          "options": ["Gallery", "Other"],
+          "default_value": "Gallery"
+        }
+      },
+      "title": {
+        "type": "Text",
+        "config": {
+          "label": "Title",
+          "placeholder": ""
+        }
+      },
+      "featured_image": {
+        "type": "Image",
+        "config": {
+          "label": "Featured image",
+          "constraint": {},
+          "thumbnails": []
+        }
+      },
       "artist_name": {
         "type": "Text",
         "config": {
