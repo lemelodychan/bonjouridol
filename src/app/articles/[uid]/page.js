@@ -55,10 +55,9 @@ export default async function Page({ params }) {
   const author = article.data.author;
   const photo = article.data.photographer;
   const galleryLink = article.data.gallery_link;
+  const galleryCount = galleryLink.data.gallery.length;
 
   const imageUrl = article.data.featured_image.url;
-
-  console.log('Gallery Images:', galleryLink?.data?.gallery); // Log the gallery data
 
   const publicationDate = article.data.publication_date || article.first_publication_date;
   const formattedDate = publicationDate 
@@ -140,7 +139,10 @@ export default async function Page({ params }) {
           </div>
 
           <div className={styles.Gallery}>
-            <h2>Full Gallery</h2>
+            <h2>
+                <span>Full Gallery</span>
+                <span className={styles.Counter}>{galleryCount} photos</span>
+            </h2>
             {galleryLink?.data?.gallery && galleryLink.data.gallery.length > 0 ? (
               <Gallery 
                 images={galleryLink.data.gallery.map(item => ({
