@@ -93,11 +93,22 @@
           "thumbnails": []
         }
       },
+      "gallery_link": {
+        "type": "Link",
+        "config": {
+          "label": "Gallery Link",
+          "select": "document",
+          "customtypes": ["gallery"]
+        }
+      },
       "slices": {
         "type": "Slices",
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "gallery_link": {
+              "type": "SharedSlice"
+            },
             "authors": {
               "type": "SharedSlice"
             },
@@ -111,9 +122,6 @@
               "type": "SharedSlice"
             },
             "setlist": {
-              "type": "SharedSlice"
-            },
-            "gallery": {
               "type": "SharedSlice"
             },
             "image": {

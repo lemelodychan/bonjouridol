@@ -18,6 +18,7 @@ export const routes = [
   { type: "homepage", path: "/" },
   { type: "page", path: "/:uid" },
   { type: "articles", path: "/articles/:uid" },
+  { type: "gallery", path: "/galleries/:uid" },
 ];
 
 export const linkResolver = (doc) => {
@@ -28,6 +29,8 @@ export const linkResolver = (doc) => {
       return `/${doc.uid}`;
     case "articles":
       return `/articles/${doc.uid}`;
+    case "gallery":
+      return `/galleries/${doc.uid}`;
     default:
       return "/";
   }

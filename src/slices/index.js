@@ -6,6 +6,7 @@ export const components = {
   authors: dynamic(() => import("./Authors")),
   carousel: dynamic(() => import("./Carousel")),
   gallery: dynamic(() => import("./Gallery")),
+  gallery_link: dynamic(() => import("./GalleryLink")),
   image: dynamic(() => import("./Image")),
   quote: dynamic(() => import("./Quote")),
   rich_text: dynamic(() => import("./RichText")),

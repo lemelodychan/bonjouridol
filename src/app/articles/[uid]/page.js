@@ -9,6 +9,7 @@ import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText, PrismicText, SliceZone } from "@prismicio/react";
 import SharingOptions from '../../components/SharingOptions';
 import Author from '@/app/components/Author';
+import Gallery from '@/app/components/Gallery';
 
 import { HiOutlineLocationMarker, HiOutlineCalendar } from "react-icons/hi";
 
@@ -22,7 +23,6 @@ export async function generateMetadata({ params }) {
     description: article.data.meta_description,
   };
 }
-
 
 export default async function Page({ params }) {
   const { uid } = await params;
@@ -45,16 +45,20 @@ export default async function Page({ params }) {
         "photographer.twitter",
         "photographer.instagram",
         "photographer.website",
+        "gallery.gallery"
       ],
       fetchOptions: {
         cache: 'no-store',
       },
   });
 
-  const imageUrl = article.data.featured_image.url;
-
   const author = article.data.author;
   const photo = article.data.photographer;
+  const galleryLink = article.data.gallery_link;
+
+  const imageUrl = article.data.featured_image.url;
+
+  console.log('Gallery Images:', galleryLink?.data?.gallery); // Log the gallery data
 
   const publicationDate = article.data.publication_date || article.first_publication_date;
   const formattedDate = publicationDate 
@@ -133,6 +137,19 @@ export default async function Page({ params }) {
 
           <div className={styles.content}>
               <SliceZone slices={article.data.slices} components={components} />
+          </div>
+
+          <div className={styles.Gallery}>
+            <h2>Gallery</h2>
+            {galleryLink?.data?.gallery && galleryLink.data.gallery.length > 0 ? (
+              <Gallery 
+                images={galleryLink.data.gallery.map(item => ({
+                  image: item.image,
+                }))}
+              />
+            ) : (
+              <p>No gallery images available.</p>
+            )}
           </div>
           
         </article>

@@ -1,0 +1,29 @@
+{
+  "id": "gallery_link",
+  "type": "SharedSlice",
+  "name": "GalleryLink",
+  "description": "GalleryLink",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "gallery": {
+          "type": "Link",
+          "config": {
+            "label": "Gallery",
+            "select": "document",
+            "customtypes": [
+              "gallery"
+            ]
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

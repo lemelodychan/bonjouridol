@@ -5,12 +5,12 @@ import type * as prismic from "@prismicio/client";
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
 type ArticlesDocumentDataSlicesSlice =
+  | GalleryLinkSlice
   | AuthorsSlice
   | SingleButtonSlice
   | VideoSlice
   | QuoteSlice
   | SetlistSlice
-  | GallerySlice
   | ImageSlice
   | RichTextSlice
   | CarouselSlice;
@@ -134,6 +134,17 @@ interface ArticlesDocumentData {
    * - **Documentation**: https://prismic.io/docs/field#image
    */
   featured_image: prismic.ImageField<never>;
+
+  /**
+   * Gallery Link field in *Articles*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: articles.gallery_link
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  gallery_link: prismic.ContentRelationshipField<"gallery">;
 
   /**
    * Slice Zone field in *Articles*
@@ -288,6 +299,153 @@ interface AuthorDocumentData {
 export type AuthorDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<AuthorDocumentData>, "author", Lang>;
 
+/**
+ * Item in *Gallery → Gallery*
+ */
+export interface GalleryDocumentDataGalleryItem {
+  /**
+   * Image field in *Gallery → Gallery*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery.gallery[].image
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  image: prismic.ImageField<never>;
+}
+
+type GalleryDocumentDataSlicesSlice = never;
+
+/**
+ * Content for Gallery documents
+ */
+interface GalleryDocumentData {
+  /**
+   * Artist name field in *Gallery*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery.artist_name
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  artist_name: prismic.KeyTextField;
+
+  /**
+   * Event date field in *Gallery*
+   *
+   * - **Field Type**: Date
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery.event_date
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#date
+   */
+  event_date: prismic.DateField;
+
+  /**
+   * Venue field in *Gallery*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery.venue
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  venue: prismic.KeyTextField;
+
+  /**
+   * Official photos? field in *Gallery*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: gallery.is_official_photos
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#boolean
+   */
+  is_official_photos: prismic.BooleanField;
+
+  /**
+   * Photographer field in *Gallery*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery.photographer
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  photographer: prismic.ContentRelationshipField<"author">;
+
+  /**
+   * Gallery field in *Gallery*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery.gallery[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  gallery: prismic.GroupField<Simplify<GalleryDocumentDataGalleryItem>>;
+
+  /**
+   * Slice Zone field in *Gallery*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#slices
+   */
+  slices: prismic.SliceZone<GalleryDocumentDataSlicesSlice> /**
+   * Meta Title field in *Gallery*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: gallery.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Gallery*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: gallery.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Gallery*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Gallery document from Prismic
+ *
+ * - **API ID**: `gallery`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type GalleryDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<GalleryDocumentData>,
+    "gallery",
+    Lang
+  >;
+
 type HomepageDocumentDataSlicesSlice = never;
 
 /**
@@ -439,6 +597,7 @@ export type PageDocument<Lang extends string = string> =
 export type AllDocumentTypes =
   | ArticlesDocument
   | AuthorDocument
+  | GalleryDocument
   | HomepageDocument
   | PageDocument;
 
@@ -625,6 +784,51 @@ type GallerySliceVariation = GallerySliceDefault;
 export type GallerySlice = prismic.SharedSlice<
   "gallery",
   GallerySliceVariation
+>;
+
+/**
+ * Primary content in *GalleryLink → Default → Primary*
+ */
+export interface GalleryLinkSliceDefaultPrimary {
+  /**
+   * Gallery field in *GalleryLink → Default → Primary*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery_link.default.primary.gallery
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  gallery: prismic.ContentRelationshipField<"gallery">;
+}
+
+/**
+ * Default variation for GalleryLink Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type GalleryLinkSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<GalleryLinkSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *GalleryLink*
+ */
+type GalleryLinkSliceVariation = GalleryLinkSliceDefault;
+
+/**
+ * GalleryLink Shared Slice
+ *
+ * - **API ID**: `gallery_link`
+ * - **Description**: GalleryLink
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type GalleryLinkSlice = prismic.SharedSlice<
+  "gallery_link",
+  GalleryLinkSliceVariation
 >;
 
 /**
@@ -1110,6 +1314,10 @@ declare module "@prismicio/client" {
       ArticlesDocumentDataSlices1Slice,
       AuthorDocument,
       AuthorDocumentData,
+      GalleryDocument,
+      GalleryDocumentData,
+      GalleryDocumentDataGalleryItem,
+      GalleryDocumentDataSlicesSlice,
       HomepageDocument,
       HomepageDocumentData,
       HomepageDocumentDataSlicesSlice,
@@ -1131,6 +1339,10 @@ declare module "@prismicio/client" {
       GallerySliceDefaultPrimary,
       GallerySliceVariation,
       GallerySliceDefault,
+      GalleryLinkSlice,
+      GalleryLinkSliceDefaultPrimary,
+      GalleryLinkSliceVariation,
+      GalleryLinkSliceDefault,
       ImageSlice,
       ImageSliceDefaultPrimary,
       ImageSliceVariation,
