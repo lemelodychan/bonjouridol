@@ -1,0 +1,60 @@
+@use "../../app/styles/mixins.scss" as *;
+@use "../../app/styles/variables.scss";
+
+.SocialLinksContainer {
+    width: 100%;
+    padding: 24px 64px;
+    background-color: var(--light-grey);
+    margin-top: 24px;
+
+    > div {
+        width: 100%;
+        margin: auto;
+        display: grid;
+        grid-template-columns: max-content auto;
+        grid-gap: 24px;
+        align-items: center;
+
+        span {
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0.4;
+        }
+
+        .SocialLinks {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            align-content: center;
+
+            a {
+                text-decoration: none !important;
+                border: none;
+                border-radius: 8px;
+
+                font-family: var(--font-text);
+                font-weight: 600;
+                font-size: 14px;
+                line-height: 1.5;
+                letter-spacing: 0.7px;
+                text-transform: uppercase;
+
+                gap: 8px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 8px 12px;
+
+                transition: var(--transi);
+
+                color: var(--bi-pink);
+
+                &:hover{
+                    color: var(--bi-indigo);
+                }
+            }
+        }
+    }
+}

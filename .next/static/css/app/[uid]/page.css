@@ -574,6 +574,145 @@ button.swiper-pagination-bullet {
   transform: scale(100%);
   transition: var(--transi);
 }
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/SocialLinks/page.module.scss ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.page_SocialLinksContainer__naish {
+  width: 100%;
+  padding: 24px 64px;
+  background-color: var(--light-grey);
+  margin-top: 24px;
+}
+.page_SocialLinksContainer__naish > div {
+  width: 100%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: max-content auto;
+  grid-gap: 24px;
+  align-items: center;
+}
+.page_SocialLinksContainer__naish > div span {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.4;
+}
+.page_SocialLinksContainer__naish > div .page_SocialLinks__RuCDg {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  align-content: center;
+}
+.page_SocialLinksContainer__naish > div .page_SocialLinks__RuCDg a {
+  text-decoration: none !important;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  gap: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  transition: var(--transi);
+  color: var(--bi-pink);
+}
+.page_SocialLinksContainer__naish > div .page_SocialLinks__RuCDg a:hover {
+  color: var(--bi-indigo);
+}
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Setlist/page.module.scss ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.page_SetlistContainer__DJtUo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 24px auto;
+  padding: 0 32px;
+  width: 100%;
+  max-width: 1000px;
+}
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: var(--light-grey);
+  border-radius: 24px;
+  padding: 32px;
+  width: 100%;
+}
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy h3 {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  font-family: var(--font-title);
+  color: var(--dark-grey);
+}
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy h3:after {
+  width: -webkit-fill-available;
+  height: 2px;
+  display: block;
+  content: "";
+  background-image: linear-gradient(to right, var(--bi-pink), var(--bi-indigo));
+}
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy div {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li {
+  display: grid;
+  grid-template-columns: 40px 1fr 1fr 72px;
+  grid-gap: 12px;
+  align-items: baseline;
+  font-size: 14px;
+  line-height: 24px;
+}
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li .page_Number__qVrEW {
+  font-weight: 600;
+  color: var(--bi-pink);
+  text-align: right;
+}
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li .page_Jp__UGz_P {
+  color: var(--medium-grey);
+  font-size: 12px;
+}
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li a {
+  text-decoration: none !important;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  gap: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+  transition: var(--transi);
+  color: var(--white);
+  background-image: var(--bi-gradient-1);
+  background-position: center right;
+  background-size: 200% 100%;
+}
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li a:hover {
+  background-position: center left;
+}
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/RichText/page.module.scss ***!
   \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -590,6 +729,50 @@ button.swiper-pagination-bullet {
   gap: 16px;
   font-size: 16px;
   line-height: 28px;
+}
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Quote/page.module.scss ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.page_Quote__wB5bm {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 24px auto;
+  padding: 0 32px;
+  max-width: 1000px;
+}
+.page_Quote__wB5bm .page_QuoteContainer__OlEGR {
+  display: grid;
+  grid-template-columns: 2px auto;
+  grid-gap: 24px;
+  padding: 32px;
+  background-color: var(--light-grey);
+  border-radius: 24px;
+  height: 100%;
+  position: relative;
+}
+.page_Quote__wB5bm .page_QuoteContainer__OlEGR:before {
+  width: 2px;
+  height: 100%;
+  display: block;
+  content: "";
+  background-image: linear-gradient(to bottom, var(--bi-pink), var(--bi-indigo));
+}
+.page_Quote__wB5bm .page_QuoteContainer__OlEGR > div {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.page_Quote__wB5bm .page_QuoteContainer__OlEGR > div .page_QuoteText__YvZ_F {
+  font-family: var(--font-text-serif);
+  font-style: italic;
+  font-size: 20px;
+  line-height: 32px;
+}
+.page_Quote__wB5bm .page_QuoteContainer__OlEGR > div .page_QuoteAuthor__S7cXJ {
+  font-family: var(--font-title);
+  font-size: 16px;
+  line-height: 24px;
 }
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Image/page.module.scss ***!
@@ -649,7 +832,6 @@ button.swiper-pagination-bullet {
   margin: auto;
   display: flex;
   flex-direction: row;
-  margin-top: 40px;
   gap: 24px;
   border-top: 1px solid var(--light-grey);
   border-bottom: 1px solid var(--light-grey);

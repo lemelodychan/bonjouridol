@@ -26,37 +26,21 @@
 								}
 							],
 							[
-								"og_artist",
+								"number",
 								{
 									"__TYPE__": "FieldContent",
-									"value": "bank",
+									"value": "move",
 									"type": "Text"
 								}
 							],
 							[
-								"members",
+								"link",
 								{
-									"__TYPE__": "FieldContent",
-									"value": "blood",
-									"type": "Text"
-								}
-							]
-						]
-					}
-				]
-			},
-			"mc_break": {
-				"__TYPE__": "GroupContentType",
-				"value": [
-					{
-						"__TYPE__": "GroupItemContent",
-						"value": [
-							[
-								"mc_name",
-								{
-									"__TYPE__": "FieldContent",
-									"value": "bigger",
-									"type": "Text"
+									"__TYPE__": "LinkContent",
+									"value": {
+										"__TYPE__": "ExternalLink",
+										"url": "https://prismic.io"
+									}
 								}
 							]
 						]
@@ -86,19 +70,14 @@
 								}
 							],
 							[
-								"og_artist",
+								"link",
 								{
-									"__TYPE__": "FieldContent",
-									"value": "sheep",
-									"type": "Text"
-								}
-							],
-							[
-								"members",
-								{
-									"__TYPE__": "FieldContent",
-									"value": "friend",
-									"type": "Text"
+									"__TYPE__": "LinkContent",
+									"key": "d3f420f1-3d1f-4475-b048-f20afa5a68d8",
+									"value": {
+										"__TYPE__": "ExternalLink",
+										"url": "https://prismic.io"
+									}
 								}
 							]
 						]

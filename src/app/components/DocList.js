@@ -13,13 +13,13 @@ export default async function DocListContent({ type }) {
     let postType;
     if (type === "Live reports") {
         postType = "Live report";
-        category = "livereports";
+        category = "articles";
     } else if (type === "Discovery") {
         postType = "Discovery";
-        category = "discoveries";
+        category = "articles";
     } else if (type === "Press release") {
         postType = "Press release";
-        category = "pressrelease";
+        category = "articles";
     } else if (type === "Galleries") {
         postType = "Gallery";
         category = "galleries";

@@ -13,5 +13,6 @@ export const components = {
   rich_text: dynamic(() => import("./RichText")),
   setlist: dynamic(() => import("./Setlist")),
   single_button: dynamic(() => import("./Buttons")),
+  social_links: dynamic(() => import("./SocialLinks")),
   video: dynamic(() => import("./Video")),
 };

@@ -140,7 +140,7 @@ export default async function Page({ params }) {
           </div>
 
           <div className={styles.Gallery}>
-            <h2>Gallery</h2>
+            <h2>Full Gallery</h2>
             {galleryLink?.data?.gallery && galleryLink.data.gallery.length > 0 ? (
               <Gallery 
                 images={galleryLink.data.gallery.map(item => ({

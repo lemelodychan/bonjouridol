@@ -165,6 +165,7 @@
   --font-jp: "Noto Sans JP";
   --font-text: "DM Sans", var(--font-jp), Helvetica, Arial, sans-serif;
   --font-title: "Poppins", var(--font-jp), Helvetica, Arial, sans-serif;
+  --font-text-serif: "DM Serif Display", var(--font-jp), Times New Roman, serif;
 
   --bi-dark-pink: #FF3194;
   --bi-pink: #FF61A9;

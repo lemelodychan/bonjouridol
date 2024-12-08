@@ -107,6 +107,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "social_links": {
+              "type": "SharedSlice"
+            },
             "gallery_link": {
               "type": "SharedSlice"
             },

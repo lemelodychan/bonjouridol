@@ -18,6 +18,13 @@
             "label": "Song",
             "repeat": true,
             "fields": {
+              "number": {
+                "type": "Text",
+                "config": {
+                  "label": "Number",
+                  "placeholder": ""
+                }
+              },
               "title_en": {
                 "type": "Text",
                 "config": {
@@ -32,34 +39,14 @@
                   "placeholder": ""
                 }
               },
-              "og_artist": {
-                "type": "Text",
+              "link": {
+                "type": "Link",
                 "config": {
-                  "label": "Original artist (if cover)",
-                  "placeholder": ""
-                }
-              },
-              "members": {
-                "type": "Text",
-                "config": {
-                  "label": "Members",
-                  "placeholder": ""
-                }
-              }
-            }
-          }
-        },
-        "mc_break": {
-          "type": "Group",
-          "config": {
-            "label": "MC",
-            "repeat": true,
-            "fields": {
-              "mc_name": {
-                "type": "Text",
-                "config": {
-                  "label": "MC Name",
-                  "placeholder": ""
+                  "label": "Link",
+                  "placeholder": "",
+                  "allowTargetBlank": true,
+                  "select": null,
+                  "allowText": false
                 }
               }
             }
@@ -85,18 +72,14 @@
                   "placeholder": ""
                 }
               },
-              "og_artist": {
-                "type": "Text",
+              "link": {
+                "type": "Link",
                 "config": {
-                  "label": "Original artist (if cover)",
-                  "placeholder": ""
-                }
-              },
-              "members": {
-                "type": "Text",
-                "config": {
-                  "label": "Members",
-                  "placeholder": ""
+                  "label": "Link",
+                  "placeholder": "",
+                  "allowTargetBlank": true,
+                  "select": null,
+                  "allowText": false
                 }
               }
             }

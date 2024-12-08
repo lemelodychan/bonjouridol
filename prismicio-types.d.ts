@@ -5,6 +5,7 @@ import type * as prismic from "@prismicio/client";
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
 type ArticlesDocumentDataSlicesSlice =
+  | SocialLinksSlice
   | GalleryLinkSlice
   | AuthorsSlice
   | SingleButtonSlice
@@ -1105,6 +1106,16 @@ export type RichTextSlice = prismic.SharedSlice<
  */
 export interface SetlistSliceDefaultPrimarySongItem {
   /**
+   * Number field in *Setlist → Default → Primary → Song*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: setlist.default.primary.song[].number
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  number: prismic.KeyTextField;
+
+  /**
    * Title (EN) field in *Setlist → Default → Primary → Song*
    *
    * - **Field Type**: Text
@@ -1125,39 +1136,14 @@ export interface SetlistSliceDefaultPrimarySongItem {
   title_jp: prismic.KeyTextField;
 
   /**
-   * Original artist (if cover) field in *Setlist → Default → Primary → Song*
+   * Link field in *Setlist → Default → Primary → Song*
    *
-   * - **Field Type**: Text
+   * - **Field Type**: Link
    * - **Placeholder**: *None*
-   * - **API ID Path**: setlist.default.primary.song[].og_artist
-   * - **Documentation**: https://prismic.io/docs/field#key-text
+   * - **API ID Path**: setlist.default.primary.song[].link
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
    */
-  og_artist: prismic.KeyTextField;
-
-  /**
-   * Members field in *Setlist → Default → Primary → Song*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: setlist.default.primary.song[].members
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  members: prismic.KeyTextField;
-}
-
-/**
- * Item in *Setlist → Default → Primary → MC*
- */
-export interface SetlistSliceDefaultPrimaryMcBreakItem {
-  /**
-   * MC Name field in *Setlist → Default → Primary → MC*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: setlist.default.primary.mc_break[].mc_name
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  mc_name: prismic.KeyTextField;
+  link: prismic.LinkField;
 }
 
 /**
@@ -1185,24 +1171,14 @@ export interface SetlistSliceDefaultPrimaryEncoreSongItem {
   title_jp: prismic.KeyTextField;
 
   /**
-   * Original artist (if cover) field in *Setlist → Default → Primary → Encore Song*
+   * Link field in *Setlist → Default → Primary → Encore Song*
    *
-   * - **Field Type**: Text
+   * - **Field Type**: Link
    * - **Placeholder**: *None*
-   * - **API ID Path**: setlist.default.primary.encore_song[].og_artist
-   * - **Documentation**: https://prismic.io/docs/field#key-text
+   * - **API ID Path**: setlist.default.primary.encore_song[].link
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
    */
-  og_artist: prismic.KeyTextField;
-
-  /**
-   * Members field in *Setlist → Default → Primary → Encore Song*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: setlist.default.primary.encore_song[].members
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  members: prismic.KeyTextField;
+  link: prismic.LinkField;
 }
 
 /**
@@ -1218,16 +1194,6 @@ export interface SetlistSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/field#group
    */
   song: prismic.GroupField<Simplify<SetlistSliceDefaultPrimarySongItem>>;
-
-  /**
-   * MC field in *Setlist → Default → Primary*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: setlist.default.primary.mc_break[]
-   * - **Documentation**: https://prismic.io/docs/field#group
-   */
-  mc_break: prismic.GroupField<Simplify<SetlistSliceDefaultPrimaryMcBreakItem>>;
 
   /**
    * Encore Song field in *Setlist → Default → Primary*
@@ -1332,6 +1298,66 @@ type SingleButtonSliceVariation = SingleButtonSliceDefault;
 export type SingleButtonSlice = prismic.SharedSlice<
   "single_button",
   SingleButtonSliceVariation
+>;
+
+/**
+ * Item in *SocialLinks → Default → Primary → Links*
+ */
+export interface SocialLinksSliceDefaultPrimaryLinksItem {
+  /**
+   * Link field in *SocialLinks → Default → Primary → Links*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: social_links.default.primary.links[].link
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  link: prismic.LinkField;
+}
+
+/**
+ * Primary content in *SocialLinks → Default → Primary*
+ */
+export interface SocialLinksSliceDefaultPrimary {
+  /**
+   * Links field in *SocialLinks → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: social_links.default.primary.links[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  links: prismic.GroupField<Simplify<SocialLinksSliceDefaultPrimaryLinksItem>>;
+}
+
+/**
+ * Default variation for SocialLinks Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SocialLinksSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<SocialLinksSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *SocialLinks*
+ */
+type SocialLinksSliceVariation = SocialLinksSliceDefault;
+
+/**
+ * SocialLinks Shared Slice
+ *
+ * - **API ID**: `social_links`
+ * - **Description**: SocialLinks
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SocialLinksSlice = prismic.SharedSlice<
+  "social_links",
+  SocialLinksSliceVariation
 >;
 
 /**
@@ -1460,7 +1486,6 @@ declare module "@prismicio/client" {
       RichTextSliceDefault,
       SetlistSlice,
       SetlistSliceDefaultPrimarySongItem,
-      SetlistSliceDefaultPrimaryMcBreakItem,
       SetlistSliceDefaultPrimaryEncoreSongItem,
       SetlistSliceDefaultPrimary,
       SetlistSliceVariation,
@@ -1470,6 +1495,11 @@ declare module "@prismicio/client" {
       SingleButtonSliceDefaultPrimary,
       SingleButtonSliceVariation,
       SingleButtonSliceDefault,
+      SocialLinksSlice,
+      SocialLinksSliceDefaultPrimaryLinksItem,
+      SocialLinksSliceDefaultPrimary,
+      SocialLinksSliceVariation,
+      SocialLinksSliceDefault,
       VideoSlice,
       VideoSliceDefaultPrimary,
       VideoSliceVariation,
