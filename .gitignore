@@ -18,3 +18,6 @@ dist/
 .env*
 .idea/
 .vscode/
+
+# Ignore Git metadata files
+.git/
