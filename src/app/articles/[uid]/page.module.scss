@@ -9,23 +9,31 @@
     gap: 0px;
 
     .header {
-        width: calc(100% - 64px);
+        width: 100%;
 
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         margin: 0 auto;
         position: relative;
+        z-index: 2;
 
         background-size: cover;
         background-position: center;
         overflow: hidden;
 
-        aspect-ratio: 2/1;
+        aspect-ratio: 1.5/1;
         height: auto;
         min-height: 440px;
-        border-radius: 24px;
-        padding: 32px 32px 48px 32px;
+        border-radius: 0px;
+        padding: 88px 24px 64px 24px;
+
+        @include md {
+            aspect-ratio: 2/1;
+            width: calc(100% - 64px);
+            padding: 32px;
+            border-radius: 24px;
+        }
 
         &:before {
             display: block;
@@ -41,6 +49,14 @@
                 radial-gradient(320px 320px at 0% 100%, var(--bi-indigo) 0%, rgba(114, 114, 252, 0) 100%),
                 rgba(0,0,0,0.2)
             ;
+        }
+
+        > div:first-of-type {
+            opacity: 0;
+
+            @include md {
+                opacity: 1;
+            }
         }
 
         .HeaderContent {
@@ -96,16 +112,21 @@
                     width: fit-content;
                     font-family: var(--font-title);
                     color: var(--bi-dark-pink);
-                    border-radius: 16px 0px 0px 0px;
+                    border-radius: 16px 16px 0px 0px;
                     overflow: hidden;
                     margin: 0;
-                    max-width: 1000px;
+                    max-width: calc(100% - 8px);
+
+                    @include md {
+                        max-width: 1000px;
+                    }
         
                     > span {
                         background-color: var(--white);
-                        border-radius: 0px 16px 16px 0px;
+                        border-radius: 0px 0px 16px 0px;
                         overflow: hidden;
                         padding: 2px 12px;
+                        line-height: 48px;
         
                         box-decoration-break: clone;
                         -webkit-box-decoration-break: clone;
@@ -140,7 +161,7 @@
                         }
 
                         background-color: var(--white);
-                        border-radius: 0px 0px 16px 0px;
+                        border-radius: 0px 16px 16px 0px;
                         overflow: hidden;
                         padding: 2px 12px;
         
@@ -156,7 +177,7 @@
     }
 
     .information {
-        width: calc(100% - 64px);
+        width: 100%;
         margin: 0 auto 24px auto;
         display: flex;
         flex-direction: row;
@@ -164,6 +185,20 @@
         padding: 24px 32px;
         border-bottom: 1px solid var(--light-grey);
         background-color: white;
+        border-radius: 24px 24px 0 0;
+
+        margin-top: -40px;
+        margin-bottom: 0px;
+
+        position: relative;
+        z-index: 4;
+
+        @include md {
+            margin-top: 0px;
+            margin-bottom: 0px;
+            width: calc(100% - 64px);
+            border-radius: 0px;
+        }
 
         .author {
             display: flex;
@@ -237,7 +272,11 @@
         gap: 24px;
         margin: 0;
         background-color: var(--light-grey);
-        padding: 32px;
+        padding: 24px;
+
+        @include md {
+            padding: 32px;
+        }
     
         h2 {
             font-size: 28px;

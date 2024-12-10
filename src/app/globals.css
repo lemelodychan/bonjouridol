@@ -104,15 +104,25 @@ h3 {
 
 .masonry-grid {
   display: flex;
-  margin-left: -24px; /* Adjust based on gap */
+  margin-left: -24px;
   width: auto;
 }
-
 .masonry-grid_column {
-  padding-left: 24px; /* Adjust based on gap */
+  padding-left: 24px;
   background-clip: padding-box;
 }
-
 .masonry-item {
   margin-bottom: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .masonry-grid {
+    margin-left: -16px;
+  }
+  .masonry-grid_column { 
+    padding-left: 16px;
+  }
+  .masonry-item {
+    margin-bottom: 16px;
+  }
 }

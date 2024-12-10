@@ -4,9 +4,14 @@
 .Carousel {
     display: block;
     width: 100%;
-    padding: 0 32px;
+    padding: 0 24px;
     height: auto;
 
     max-width: 1000px;
     margin: 16px auto;
+
+    @include md {
+        padding: 0 32px;
+        margin: 24px auto;
+    }
 }

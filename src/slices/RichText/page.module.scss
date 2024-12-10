@@ -8,6 +8,12 @@
     margin: 24px auto;
     max-width: 1000px;
 
+    padding: 0 24px;
+
+    @include md {
+        padding: 0px;
+    }
+
     .Content {
         display: flex;
         flex-direction: column;

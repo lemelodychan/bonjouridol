@@ -1,22 +1,43 @@
+@use "../../app/styles/mixins.scss" as *;
+@use "../../app/styles/variables.scss";
+
 .credits {
-    width: calc(100% - 64px);
+    width: 100%;
     margin: auto;
     display: flex;
-    flex-direction: row;
-    gap: 24px;
+    flex-direction: column;
+    gap: 0px;
     border-top: 1px solid var(--light-grey);
     border-bottom: 1px solid var(--light-grey);
     background-color: white;
 
+    @include md {
+        flex-direction: row;
+        width: calc(100% - 64px);
+    }
+
     > div {
-        width: 50%;
-        padding: 24px 32px;
+        width: 100%;
+        padding: 24px;
+
+        @include md {
+            width: 50%;
+            padding: 24px 32px;
+        }
 
         &:first-child {
-            border-right: 1px solid var(--light-grey);
+            border-bottom: 1px solid var(--light-grey);
+
+            @include md {
+                border-right: 1px solid var(--light-grey);
+            }
         }
         &:last-child {
-            border-right: 0px !important;
+            border-bottom: 0px !important;
+
+            @include md {
+                border-bottom: 0px !important;
+            }
         }
     }
 }
