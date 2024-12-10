@@ -54,7 +54,7 @@
         
                 li {
                     display: grid;
-                    grid-template-columns: 40px 1fr 72px;
+                    grid-template-columns: 40px 1fr 24px;
                     grid-template-rows: 24px 24px;
 
                     grid-gap: 4px 12px;
@@ -63,7 +63,7 @@
                     line-height: 24px;
 
                     @include md {
-                        grid-template-columns: 40px 1fr 1fr 72px;
+                        grid-template-columns: 40px 1fr 1fr 24px;
                         grid-template-rows: 24px;
                         grid-gap: 12px;
                     }
@@ -93,12 +93,12 @@
 
                         text-decoration: none !important;
                         border: none;
-                        border-radius: 8px;
+                        border-radius: 12px;
 
                         font-family: var(--font-text);
                         font-weight: 600;
                         font-size: 12px;
-                        line-height: 1.5;
+                        line-height: 24px;
                         letter-spacing: 0.7px;
                         text-transform: uppercase;
 
@@ -106,7 +106,9 @@
                         display: flex;
                         justify-content: center;
                         align-items: center;
-                        padding: 4px;
+                        width: 24px;
+                        height: 24px;
+                        padding: 0 4px;
 
                         transition: var(--transi);
 

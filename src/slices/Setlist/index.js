@@ -25,7 +25,7 @@ const Setlist = ({ slice }) => {
                 <span>{item.title_en}</span>
                 <span className={styles.Jp}>{item.title_jp}</span>
                 {item.link.url && (
-                  <PrismicNextLink field={item.link}><FaPlay /> Play</PrismicNextLink>
+                  <PrismicNextLink field={item.link}><FaPlay /></PrismicNextLink>
                 )}
               </li>
             ))}
@@ -37,7 +37,7 @@ const Setlist = ({ slice }) => {
                 <span>{item.title_en}</span>
                 <span className={styles.Jp}>{item.title_jp}</span>
                 {item.link.url && (
-                  <PrismicNextLink field={item.link}><FaPlay /> Play</PrismicNextLink>
+                  <PrismicNextLink field={item.link}><FaPlay /></PrismicNextLink>
                 )}
               </li>
             ))}
