@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
+import Masonry from "react-masonry-css";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css"; // Import the lightbox styles
 import { PrismicNextImage } from "@prismicio/next";
 import styles from "./Gallery.module.scss";
 
-import { HiChevronRight, HiChevronLeft, HiX } from "react-icons/hi";
+import { HiChevronRight, HiChevronLeft, HiX, HiOutlineZoomIn } from "react-icons/hi";
+
 
 const Gallery = ({ images }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,12 +28,23 @@ const Gallery = ({ images }) => {
     thumbnail: item.image.url, // You can use the same URL for now or create a smaller thumbnail URL
   }));
 
+  const breakpointColumnsObj = {
+    default: 4,
+    1100: 3,
+    700: 2,
+    500: 1,
+  };
+
   return (
-    <section className={styles.Gallery}>
+    <Masonry
+      breakpointCols={breakpointColumnsObj}
+      className={`masonry-grid ${styles.Gallery}`}
+      columnClassName="masonry-grid_column"
+    >
       {images.map((item, index) => (
         <div
           key={index}
-          className={styles.GalleryItem}
+          className={`masonry-item ${styles.GalleryItem}`}
           onClick={() => openLightbox(index)}
         >
           <PrismicNextImage
@@ -40,6 +53,9 @@ const Gallery = ({ images }) => {
             width={400}
             height={400}
           />
+          <div className={styles.ViewItem}>
+            <span><HiOutlineZoomIn /></span>
+          </div>
         </div>
       ))}
 
@@ -60,7 +76,7 @@ const Gallery = ({ images }) => {
           thumbs={lightboxImages.map(image => image.thumbnail)} // Thumbnails for navigation
         />
       )}
-    </section>
+    </Masonry>
   );
 };
 

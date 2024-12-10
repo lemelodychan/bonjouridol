@@ -264,6 +264,21 @@ h3 {
 .yarl__slide_image {
   border-radius: 24px;
 }
+
+.masonry-grid {
+  display: flex;
+  margin-left: -24px; /* Adjust based on gap */
+  width: auto;
+}
+
+.masonry-grid_column {
+  padding-left: 24px; /* Adjust based on gap */
+  background-clip: padding-box;
+}
+
+.masonry-item {
+  margin-bottom: 24px;
+}
 /*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[2].use[1]!./node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js??ruleSet[1].rules[13].oneOf[2].use[2]!./node_modules/next/font/google/target.css?{"path":"src/app/layout.js","import":"DM_Sans","arguments":[{"subsets":["latin"]}],"variableName":"DMSans"} ***!
   \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/

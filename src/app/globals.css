@@ -101,3 +101,18 @@ h3 {
 .yarl__slide_image {
   border-radius: 24px;
 }
+
+.masonry-grid {
+  display: flex;
+  margin-left: -24px; /* Adjust based on gap */
+  width: auto;
+}
+
+.masonry-grid_column {
+  padding-left: 24px; /* Adjust based on gap */
+  background-clip: padding-box;
+}
+
+.masonry-item {
+  margin-bottom: 24px;
+}
