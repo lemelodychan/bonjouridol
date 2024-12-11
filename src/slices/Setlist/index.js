@@ -22,23 +22,31 @@ const Setlist = ({ slice }) => {
             {slice.primary.song.map((item, index) => (
               <li key={index} className={styles.Song}>
                 <span className={styles.Number}>{item.number}.</span>
-                <span>{item.title_en}</span>
-                <span className={styles.Jp}>{item.title_jp}</span>
-                {item.link.url && (
-                  <PrismicNextLink field={item.link}><FaPlay /></PrismicNextLink>
+                <div className={styles.Name}>
+                  <span>{item.title_en}</span>
+                </div>
+                {item.title_jp && (
+                  <span className={styles.Jp}>{item.title_jp}</span>
                 )}
+                {item.link.url && (
+                    <PrismicNextLink field={item.link}><FaPlay /></PrismicNextLink>
+                  )}
               </li>
             ))}
           </ul>
           <ul className={styles.Encore}>
             {slice.primary.encore_song.map((item, index) => (
               <li key={index} className={styles.Song}>
-                <span className={styles.Number}>{`EN${String(index + 1).padStart(2, '0')}`}.</span>
-                <span>{item.title_en}</span>
+                <span className={styles.Number}>
+                  {`EN${String(index + 1).padStart(2, '0')}`}.
+                </span>
+                <div className={styles.Name}>
+                  <span>{item.title_en}</span>
+                </div>
                 <span className={styles.Jp}>{item.title_jp}</span>
                 {item.link.url && (
-                  <PrismicNextLink field={item.link}><FaPlay /></PrismicNextLink>
-                )}
+                    <PrismicNextLink field={item.link}><FaPlay /></PrismicNextLink>
+                  )}
               </li>
             ))}
           </ul>

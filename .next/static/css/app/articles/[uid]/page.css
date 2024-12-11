@@ -3,10 +3,17 @@
   \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 .page_container__nbpj5 {
   margin: 0 auto;
-  padding: 0;
+  padding: 32px 0;
+  background-color: white;
+  max-width: 1440px;
   display: flex;
   flex-direction: column;
   gap: 0px;
+}
+@media (min-width: 769px) {
+  .page_container__nbpj5 {
+    padding: 0;
+  }
 }
 .page_container__nbpj5 .page_header__3X_lA {
   width: 100%;
@@ -1006,8 +1013,13 @@ button.swiper-pagination-bullet {
   gap: 16px;
   background-color: var(--light-grey);
   border-radius: 24px;
-  padding: 32px;
+  padding: 24px;
   width: 100%;
+}
+@media (min-width: 769px) {
+  .page_SetlistContainer__DJtUo .page_Setlist__1CMhy {
+    padding: 32px;
+  }
 }
 .page_SetlistContainer__DJtUo .page_Setlist__1CMhy h3 {
   display: flex;
@@ -1037,25 +1049,44 @@ button.swiper-pagination-bullet {
 }
 .page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li {
   display: grid;
-  grid-template-columns: 40px 1fr 24px;
-  grid-template-rows: 24px 24px;
-  grid-gap: 4px 12px;
+  grid-template-columns: 44px 1fr 44px;
+  grid-template-rows: 24px;
+  border-radius: 4px;
+  grid-gap: 0px 8px;
   align-items: baseline;
   font-size: 14px;
   line-height: 24px;
 }
 @media (min-width: 769px) {
   .page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li {
-    grid-template-columns: 40px 1fr 1fr 24px;
+    grid-template-columns: 44px 1fr 1fr 44px;
     grid-template-rows: 24px;
-    grid-gap: 12px;
+    grid-gap: 4px;
   }
+}
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li:hover {
+  background-color: rgba(0, 0, 0, 0.03);
 }
 .page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li .page_Number__qVrEW {
   font-weight: 600;
   color: var(--bi-pink);
   text-align: right;
   grid-column: 1/2;
+}
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li .page_Name__GgrSJ {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+@media (min-width: 769px) {
+  .page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li .page_Name__GgrSJ {
+    padding-left: 12px;
+  }
+}
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li .page_Name__GgrSJ span {
+  display: inline-block;
+  width: 100%;
 }
 .page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li .page_Jp__UGz_P {
   color: var(--medium-grey);
@@ -1067,11 +1098,14 @@ button.swiper-pagination-bullet {
   .page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li .page_Jp__UGz_P {
     grid-column: 3/4;
     grid-row: 1/2;
+    padding-left: 12px;
   }
 }
 .page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li a {
   grid-column: 3/4;
-  grid-row: 1/2;
+  grid-row: 1/3;
+  align-self: center;
+  justify-self: flex-end;
   text-decoration: none !important;
   border: none;
   border-radius: 12px;
@@ -1089,18 +1123,17 @@ button.swiper-pagination-bullet {
   height: 24px;
   padding: 0 4px;
   transition: var(--transi);
-  color: var(--white);
-  background-image: var(--bi-gradient-1);
-  background-position: center right;
-  background-size: 200% 100%;
-}
-.page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li a:hover {
-  background-position: center left;
+  color: var(--bi-pink);
 }
 @media (min-width: 769px) {
   .page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li a {
     grid-column: 4/5;
+    grid-row: 1/2;
+    justify-self: flex-start;
   }
+}
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li a:hover {
+  color: var(--bi-indigo);
 }
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/RichText/page.module.scss ***!
