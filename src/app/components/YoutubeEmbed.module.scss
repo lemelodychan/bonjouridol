@@ -1,0 +1,21 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.Video_Container {
+    display: block;
+
+    .Video {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16/9;
+        border-radius: 16px;
+
+        iframe {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16/9;
+            border-radius: 16px;
+        }
+    }
+}
