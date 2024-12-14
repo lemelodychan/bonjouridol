@@ -943,13 +943,13 @@ button.swiper-pagination-bullet {
   width: 100%;
   height: auto;
   aspect-ratio: 16/9;
-  border-radius: 16px;
+  border-radius: 24px;
 }
 .YoutubeEmbed_Video_Container__rP5jZ .YoutubeEmbed_Video__9WeX0 iframe {
   width: 100%;
   height: auto;
   aspect-ratio: 16/9;
-  border-radius: 16px;
+  border-radius: 24px;
 }
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Video/page.module.scss ***!
