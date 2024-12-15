@@ -955,20 +955,6 @@ button.swiper-pagination-bullet {
 .SingleImage_SingleImageContainer__yn1yI.SingleImage_Loaded__p3P_C .SingleImage_SingleImage__hWvcP {
   opacity: 1;
 }
-/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/DocList.module.scss ***!
-  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-@keyframes DocList_rotate__iGNPg {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-.DocList_DocList__cRs1G {
-  display: block;
-}
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./node_modules/yet-another-react-lightbox/dist/styles.css ***!
   \*****************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -1488,6 +1474,20 @@ button.swiper-pagination-bullet {
   line-height: 40px;
   color: var(--bi-dark-pink);
 }
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/DocList.module.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes DocList_rotate__iGNPg {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.DocList_DocList__cRs1G {
+  display: block;
+}
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Carousel/page.module.scss ***!
   \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -1563,4 +1563,53 @@ button.swiper-pagination-bullet {
     border-bottom: 0px !important;
     border-right: 0px !important;
   }
+}
+.page_credits__G22_R .page_OfficialPhotos__y3UoB {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  padding: 24px;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+.page_credits__G22_R .page_OfficialPhotos__y3UoB .page_authorImg__P2jUr {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 50%;
+}
+.page_credits__G22_R .page_OfficialPhotos__y3UoB .page_authorImg__P2jUr img {
+  height: 48px;
+  width: 48px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.page_credits__G22_R .page_OfficialPhotos__y3UoB .page_authorImg__P2jUr:before {
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  display: block;
+  content: "";
+  border-radius: 50%;
+  border: 1px solid var(--light-grey);
+}
+.page_credits__G22_R .page_OfficialPhotos__y3UoB .page_AuthorInfo__Kh_TN {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-content: center;
+}
+.page_credits__G22_R .page_OfficialPhotos__y3UoB .page_AuthorInfo__Kh_TN h4 {
+  font-size: 16px;
+  line-height: 32px;
+  font-weight: 400;
+}
+.page_credits__G22_R .page_OfficialPhotos__y3UoB .page_AuthorInfo__Kh_TN h4 span {
+  font-weight: 600;
 }

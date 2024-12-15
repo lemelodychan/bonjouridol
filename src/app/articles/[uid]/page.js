@@ -9,7 +9,6 @@ import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText, PrismicText, SliceZone } from "@prismicio/react";
 import SingleImage from '@/app/components/SingleImage';
 import SharingOptions from '../../components/SharingOptions';
-import Author from '@/app/components/Author';
 import Gallery from '@/app/components/Gallery';
 
 import { HiOutlineLocationMarker, HiOutlineCalendar } from "react-icons/hi";
@@ -125,7 +124,10 @@ export default async function Page({ params }) {
             {article.data.author && (
               <div className={styles.author}>
                 <span className={styles.authorImg}>
-                  <PrismicNextImage field={article.data.author?.data?.profile_picture} />
+                  <PrismicNextImage 
+                    field={article.data.author?.data?.profile_picture}
+                    fallbackAlt=""
+                  />
                 </span>
                 <span className={styles.authorInfo}>
                   <span className={styles.authorName}>{article.data.author?.data?.name || "Unknown Author"}</span>

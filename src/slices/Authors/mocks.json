@@ -12,11 +12,14 @@
 			},
 			"photographer": {
 				"__TYPE__": "LinkContent",
-				"key": "242592db-e526-4852-a3b2-9091db13cdf0",
 				"value": {
 					"__TYPE__": "DocumentLink",
 					"id": "mock_document_id"
 				}
+			},
+			"official_photos": {
+				"__TYPE__": "BooleanContent",
+				"value": false
 			}
 		},
 		"items": []

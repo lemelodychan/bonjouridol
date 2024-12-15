@@ -31,6 +31,7 @@ const SingleImage = ({ image, alt, color = "default" }) => {
             <PrismicNextImage
                 field={image}
                 alt={alt || ""}
+                fallbackAlt=""
                 className={styles.SingleImage}
                 onLoadingComplete={() => setLoading(false)} // Called when the image is fully loaded
             />

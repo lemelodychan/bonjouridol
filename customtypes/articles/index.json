@@ -42,6 +42,14 @@
           "default_value": "Live report"
         }
       },
+      "featured_image": {
+        "type": "Image",
+        "config": {
+          "label": "Featured Image",
+          "constraint": {},
+          "thumbnails": []
+        }
+      },
       "idol_name": {
         "type": "Text",
         "config": {
@@ -76,22 +84,6 @@
           "label": "Author",
           "select": "document",
           "customtypes": ["author"]
-        }
-      },
-      "photographer": {
-        "type": "Link",
-        "config": {
-          "label": "Photographer",
-          "select": "document",
-          "customtypes": ["author"]
-        }
-      },
-      "featured_image": {
-        "type": "Image",
-        "config": {
-          "label": "Featured Image",
-          "constraint": {},
-          "thumbnails": []
         }
       },
       "gallery_link": {

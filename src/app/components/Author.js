@@ -25,6 +25,7 @@ const Author = ({ author, type }) => {
                     <PrismicNextImage
                         field={profile_picture}
                         alt={`${name}'s Profile Picture`}
+                        fallbackAlt=""
                         width={100}
                         height={100}
                     />

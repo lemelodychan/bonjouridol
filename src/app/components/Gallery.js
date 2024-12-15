@@ -61,6 +61,7 @@ const Gallery = ({ images }) => {
               <PrismicNextImage
                 field={item.image}
                 alt={`Gallery Image ${index + 1}`}
+                fallbackAlt=""
                 onLoadingComplete={() => setLoading(false)}
                 width={400}
                 height={400}

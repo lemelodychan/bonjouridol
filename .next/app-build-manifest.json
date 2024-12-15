@@ -23,12 +23,6 @@
       "static/chunks/main-app.js",
       "static/css/app/[uid]/page.css",
       "static/chunks/app/[uid]/page.js"
-    ],
-    "/galleries/[uid]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/galleries/[uid]/page.css",
-      "static/chunks/app/galleries/[uid]/page.js"
     ]
   }
 }

@@ -22,6 +22,15 @@
             ]
           }
         },
+        "official_photos": {
+          "type": "Boolean",
+          "config": {
+            "label": "Official photos?",
+            "placeholder_false": "false",
+            "placeholder_true": "true",
+            "default_value": false
+          }
+        },
         "photographer": {
           "type": "Link",
           "config": {

@@ -65,6 +65,17 @@ interface ArticlesDocumentData {
   >;
 
   /**
+   * Featured Image field in *Articles*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: articles.featured_image
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  featured_image: prismic.ImageField<never>;
+
+  /**
    * Group/Idol field in *Articles*
    *
    * - **Field Type**: Text
@@ -118,28 +129,6 @@ interface ArticlesDocumentData {
    * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
    */
   author: prismic.ContentRelationshipField<"author">;
-
-  /**
-   * Photographer field in *Articles*
-   *
-   * - **Field Type**: Content Relationship
-   * - **Placeholder**: *None*
-   * - **API ID Path**: articles.photographer
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
-   */
-  photographer: prismic.ContentRelationshipField<"author">;
-
-  /**
-   * Featured Image field in *Articles*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: articles.featured_image
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  featured_image: prismic.ImageField<never>;
 
   /**
    * Gallery Link field in *Articles*
@@ -662,6 +651,17 @@ export interface AuthorsSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
    */
   author: prismic.ContentRelationshipField<"author">;
+
+  /**
+   * Official photos? field in *Authors → Default → Primary*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: authors.default.primary.official_photos
+   * - **Documentation**: https://prismic.io/docs/field#boolean
+   */
+  official_photos: prismic.BooleanField;
 
   /**
    * Photographer field in *Authors → Default → Primary*
