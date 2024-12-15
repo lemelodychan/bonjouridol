@@ -1,0 +1,26 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.SingleImageContainer {
+    width: 100%;
+    height: 100%;
+    
+    .SingleImage {
+        width: 100%;
+        height: 100%;
+        margin: auto;
+        transition: var(--transi);
+    }
+
+    &.Loading {
+        .SingleImage {
+            opacity: 0;
+        }
+    }
+
+    &.Loaded {
+        .SingleImage {
+            opacity: 1;
+        }
+    }
+}

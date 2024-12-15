@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import Breadcrumbs from '@/app/components/Breadcrumbs';
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText, PrismicText, SliceZone } from "@prismicio/react";
+import SingleImage from '@/app/components/SingleImage';
 import SharingOptions from '../../components/SharingOptions';
 import Author from '@/app/components/Author';
 import Gallery from '@/app/components/Gallery';
@@ -74,8 +75,13 @@ export default async function Page({ params }) {
         <article className={styles.container}>
           <div 
             className={styles.header}
-            style={{ backgroundImage: `url(${imageUrl})` }}
           >
+            <span className={styles.FeaturedImage}>
+              <SingleImage 
+                image={article.data.featured_image}
+                alt={article.data.featured_image.alt}
+              />
+            </span>
             <Breadcrumbs 
               type="white"
               className={styles.Breadcrumbs}

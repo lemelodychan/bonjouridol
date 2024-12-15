@@ -25,7 +25,7 @@
         z-index: 1;
         background-color: var(--dark-grey);
 
-        > img {
+        > div > img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -85,12 +85,81 @@
             width: fit-content;
             font-family: var(--font-title);
             color: var(--bi-dark-pink);
-            border-radius: 16px 0px 0px 16px;
+            border-radius: 16px 0px 0px 0px;
             overflow: hidden;
             margin: 0;
             max-width: 720px;
+            line-height: 36px;
+
+            @include md {
+                font-size: 32px;
+                line-height: 48px;
+            }
 
             > span {
+                background-color: var(--white);
+                border-radius: 0px 16px 16px 0px;
+                overflow: hidden;
+                padding: 2px 8px;
+
+                box-decoration-break: clone;
+                -webkit-box-decoration-break: clone;
+
+                font-size: 24px;
+                line-height: 32px;
+
+                @include md {
+                    padding: 2px 12px;
+                    font-size: 32px;
+                    line-height: 48px;
+                }
+            }
+        }
+
+        > h2 {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 0px 0px 0px 16px;
+            overflow: hidden;
+            margin-top: -16px;
+
+            @include md {
+                margin-top: -16px;
+                font-size: 24px;
+            }
+
+            &::after {
+                display: none;
+            }
+
+            > span {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--bi-pink);
+                font-size: 20px;
+                padding: 2px 8px;
+
+                @include md {
+                    padding: 2px 12px;
+                    font-size: 24px;
+                }
+
+                &:before {
+                    width: 24px;
+                    height: 2px;
+                    background-image: var(--bi-gradient-1);
+                    background-size: 200% 100%;
+                    background-position: center left;
+                    content: "";
+                    display: block;
+
+                    @include md {
+                        width: 64px;
+                    }
+                }
+
                 background-color: var(--white);
                 border-radius: 0px 16px 16px 0px;
                 overflow: hidden;
@@ -98,12 +167,8 @@
 
                 box-decoration-break: clone;
                 -webkit-box-decoration-break: clone;
-
-                @include md {
-                    font-size: 32px;
-                    line-height: 48px;
-                }
             }
+
         }
 
         button {
@@ -113,7 +178,7 @@
 
     &:hover {
         .FeaturedImage {
-            > img {
+            > div > img {
                 transform: scale(105%);
             }
         }

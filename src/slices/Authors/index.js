@@ -17,6 +17,7 @@ const Authors = ({ slice }) => {
       data-slice-variation={slice.variation}
     >
         <Author author={author} type="Written" />
+        
         {author && photo && author.uid !== photo.uid && 
           <Author author={photo} type="Photographed" />
         }

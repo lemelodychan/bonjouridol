@@ -1,3 +1,6 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
 .Gallery {
     display: flex;
     gap: 0px;
@@ -23,6 +26,19 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
+            transition: var(--transi);
+        }
+
+        &.Loading {
+            img {
+                opacity: 0;
+            }
+        }
+    
+        &.Loaded {
+            img {
+                opacity: 1;
+            }
         }
 
         .ViewItem {

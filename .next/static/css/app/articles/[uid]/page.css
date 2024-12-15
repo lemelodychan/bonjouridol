@@ -1,9 +1,17 @@
 /*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/articles/[uid]/page.module.scss ***!
   \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes page_rotate__3nn5T {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .page_container__nbpj5 {
   margin: 0 auto;
-  padding: 32px 0;
+  padding: 0;
   background-color: white;
   max-width: 1440px;
   display: flex;
@@ -21,14 +29,16 @@
   flex-direction: column;
   justify-content: space-between;
   margin: 0 auto;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: 2;
+  background-color: var(--light-grey);
   background-size: cover;
   background-position: center;
   overflow: hidden;
   aspect-ratio: 1.5/1;
-  height: auto;
-  min-height: 440px;
+  height: 440px;
   border-radius: 0px;
   padding: 88px 24px 64px 24px;
 }
@@ -38,6 +48,7 @@
     width: calc(100% - 64px);
     padding: 32px;
     border-radius: 24px;
+    position: relative;
   }
 }
 .page_container__nbpj5 .page_header__3X_lA:before {
@@ -59,6 +70,23 @@
     opacity: 1;
   }
 }
+.page_container__nbpj5 .page_header__3X_lA .page_FeaturedImage__a1yQc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.page_container__nbpj5 .page_header__3X_lA .page_FeaturedImage__a1yQc img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
 .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy {
   display: flex;
   flex-direction: column;
@@ -68,6 +96,7 @@
 }
 .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_tag__RWZFp {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   flex-direction: row;
 }
@@ -116,18 +145,23 @@
   overflow: hidden;
   margin: 0;
   max-width: calc(100% - 8px);
+  font-size: 24px;
+  line-height: 36px;
 }
 @media (min-width: 769px) {
   .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h1 {
+    font-size: 32px;
+    line-height: 48px;
     max-width: 1000px;
   }
 }
 .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h1 > span {
   background-color: var(--white);
-  border-radius: 0px 0px 16px 0px;
+  border-radius: 0px 16px 16px 0px;
   overflow: hidden;
   padding: 2px 12px;
-  line-height: 48px;
+  font-size: 24px;
+  line-height: 36px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
@@ -143,6 +177,12 @@
   gap: 8px;
   border-radius: 0px 0px 0px 16px;
   overflow: hidden;
+  font-size: 16px;
+}
+@media (min-width: 769px) {
+  .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h2 {
+    font-size: 24px;
+  }
 }
 .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h2 > span {
   display: inline-flex;
@@ -156,7 +196,7 @@
   -webkit-box-decoration-break: clone;
 }
 .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h2 > span:before {
-  width: 64px;
+  width: 24px;
   height: 2px;
   background-image: var(--bi-gradient-1);
   background-size: 200% 100%;
@@ -164,17 +204,22 @@
   content: "";
   display: block;
 }
+@media (min-width: 769px) {
+  .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h2 > span:before {
+    width: 64px;
+  }
+}
 .page_container__nbpj5 .page_information__L_gSF {
   width: 100%;
   margin: 0 auto 24px auto;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 24px 32px;
+  padding: 24px;
   border-bottom: 1px solid var(--light-grey);
   background-color: white;
   border-radius: 24px 24px 0 0;
-  margin-top: -40px;
+  margin-top: 400px;
   margin-bottom: 0px;
   position: relative;
   z-index: 4;
@@ -185,6 +230,7 @@
     margin-bottom: 0px;
     width: calc(100% - 64px);
     border-radius: 0px;
+    padding: 24px 32px;
   }
 }
 .page_container__nbpj5 .page_information__L_gSF .page_author__NY3nz {
@@ -237,6 +283,8 @@
   border-radius: 24px;
 }
 .page_container__nbpj5 .page_content__6AVtH {
+  position: relative;
+  z-index: 4;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -244,6 +292,8 @@
   background-color: white;
 }
 .page_container__nbpj5 .page_Gallery__PMysB {
+  position: relative;
+  z-index: 4;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -290,11 +340,20 @@
 /*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/Author.module.scss ***!
   \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes Author_rotate__mLi9x {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .Author_AuthorBlock__qtl_0 {
   display: flex;
   flex-direction: row;
   gap: 16px;
   align-items: flex-start;
+  padding: 24px;
 }
 .Author_AuthorBlock__qtl_0 .Author_authorImg__T0Fme {
   width: 56px;
@@ -842,6 +901,14 @@ button.swiper-pagination-bullet {
 /*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/Carousel.module.scss ***!
   \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes Carousel_rotate__c59pt {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .Carousel_Carousel__SR1hb {
   display: block;
   --swiper-theme-color: var(--bi-pink);
@@ -861,6 +928,47 @@ button.swiper-pagination-bullet {
   height: 100%;
   object-fit: cover;
 }
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/SingleImage.module.scss ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes SingleImage_rotate__O5AW5 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.SingleImage_SingleImageContainer__yn1yI {
+  width: 100%;
+  height: 100%;
+}
+.SingleImage_SingleImageContainer__yn1yI .SingleImage_SingleImage__hWvcP {
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  transition: var(--transi);
+}
+.SingleImage_SingleImageContainer__yn1yI.SingleImage_Loading__9aItX .SingleImage_SingleImage__hWvcP {
+  opacity: 0;
+}
+.SingleImage_SingleImageContainer__yn1yI.SingleImage_Loaded__p3P_C .SingleImage_SingleImage__hWvcP {
+  opacity: 1;
+}
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/DocList.module.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes DocList_rotate__iGNPg {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.DocList_DocList__cRs1G {
+  display: block;
+}
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./node_modules/yet-another-react-lightbox/dist/styles.css ***!
   \*****************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -868,6 +976,14 @@ button.swiper-pagination-bullet {
 /*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/Gallery.module.scss ***!
   \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes Gallery_rotate__ApquW {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .Gallery_Gallery__kufPe {
   display: flex;
   gap: 0px;
@@ -890,6 +1006,13 @@ button.swiper-pagination-bullet {
   height: 100%;
   object-fit: cover;
   object-position: center;
+  transition: var(--transi);
+}
+.Gallery_Gallery__kufPe .Gallery_GalleryItem___8cHW.Gallery_Loading___zvil img {
+  opacity: 0;
+}
+.Gallery_Gallery__kufPe .Gallery_GalleryItem___8cHW.Gallery_Loaded__lqRAs img {
+  opacity: 1;
 }
 .Gallery_Gallery__kufPe .Gallery_GalleryItem___8cHW .Gallery_ViewItem__tALAN {
   opacity: 0;
@@ -935,6 +1058,14 @@ button.swiper-pagination-bullet {
 /*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/YoutubeEmbed.module.scss ***!
   \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes YoutubeEmbed_rotate__fzGGz {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .YoutubeEmbed_Video_Container__rP5jZ {
   display: block;
 }
@@ -954,6 +1085,14 @@ button.swiper-pagination-bullet {
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Video/page.module.scss ***!
   \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes page_rotate__MePwu {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .page_Video__KOOjU {
   width: 100%;
   padding: 0 24px;
@@ -969,9 +1108,17 @@ button.swiper-pagination-bullet {
 /*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/SocialLinks/page.module.scss ***!
   \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes page_rotate__Pj_Tb {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .page_SocialLinksContainer__naish {
   width: 100%;
-  padding: 24px 32px;
+  padding: 24px;
   background-color: var(--light-grey);
   margin-top: 16px;
 }
@@ -985,9 +1132,17 @@ button.swiper-pagination-bullet {
   width: 100%;
   margin: auto;
   display: grid;
-  grid-template-columns: max-content auto;
-  grid-gap: 24px;
+  grid-template-columns: 1fr;
+  grid-template-rows: max-content max-content;
+  grid-gap: 16px;
   align-items: center;
+}
+@media (min-width: 769px) {
+  .page_SocialLinksContainer__naish > div {
+    grid-template-columns: max-content auto;
+    grid-template-rows: auto;
+    grid-gap: 24px;
+  }
 }
 .page_SocialLinksContainer__naish > div span {
   text-transform: uppercase;
@@ -999,8 +1154,13 @@ button.swiper-pagination-bullet {
 .page_SocialLinksContainer__naish > div .page_SocialLinks__RuCDg {
   display: flex;
   gap: 16px;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-content: center;
+}
+@media (min-width: 769px) {
+  .page_SocialLinksContainer__naish > div .page_SocialLinks__RuCDg {
+    justify-content: flex-end;
+  }
 }
 .page_SocialLinksContainer__naish > div .page_SocialLinks__RuCDg a {
   text-decoration: none !important;
@@ -1017,6 +1177,7 @@ button.swiper-pagination-bullet {
   justify-content: center;
   align-items: center;
   padding: 8px 12px;
+  background-color: white;
   transition: var(--transi);
   color: var(--bi-pink);
 }
@@ -1026,6 +1187,14 @@ button.swiper-pagination-bullet {
 /*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Setlist/page.module.scss ***!
   \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes page_rotate__ThgBE {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .page_SetlistContainer__DJtUo {
   display: flex;
   flex-direction: column;
@@ -1081,10 +1250,14 @@ button.swiper-pagination-bullet {
   flex-direction: column;
   gap: 4px;
 }
+.page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul.page_Encore___yKVc {
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
 .page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li {
   display: grid;
   grid-template-columns: 44px 1fr 44px;
-  grid-template-rows: 24px;
+  grid-template-rows: minmax(24px, auto);
   border-radius: 4px;
   grid-gap: 0px 8px;
   align-items: baseline;
@@ -1138,7 +1311,7 @@ button.swiper-pagination-bullet {
 .page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li a {
   grid-column: 3/4;
   grid-row: 1/3;
-  align-self: center;
+  align-self: flex-start;
   justify-self: flex-end;
   text-decoration: none !important;
   border: none;
@@ -1151,7 +1324,7 @@ button.swiper-pagination-bullet {
   text-transform: uppercase;
   gap: 8px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 24px;
   height: 24px;
@@ -1163,7 +1336,6 @@ button.swiper-pagination-bullet {
   .page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li a {
     grid-column: 4/5;
     grid-row: 1/2;
-    justify-self: flex-start;
   }
 }
 .page_SetlistContainer__DJtUo .page_Setlist__1CMhy div ul li a:hover {
@@ -1172,6 +1344,14 @@ button.swiper-pagination-bullet {
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/RichText/page.module.scss ***!
   \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes page_rotate__4X9I_ {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .page_RichText__UhBI8 {
   display: flex;
   flex-direction: column;
@@ -1195,12 +1375,21 @@ button.swiper-pagination-bullet {
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Quote/page.module.scss ***!
   \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes page_rotate__N_MVW {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .page_Quote__wB5bm {
   display: flex;
   flex-direction: column;
   gap: 24px;
   margin: 16px auto;
   padding: 0 24px;
+  width: 100%;
   max-width: 1000px;
 }
 @media (min-width: 769px) {
@@ -1216,6 +1405,7 @@ button.swiper-pagination-bullet {
   padding: 32px;
   background-color: var(--light-grey);
   border-radius: 24px;
+  width: 100%;
   height: 100%;
   position: relative;
 }
@@ -1245,25 +1435,42 @@ button.swiper-pagination-bullet {
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Image/page.module.scss ***!
   \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.page_SingleImageContainer__owQWo {
+@keyframes page_rotate__y1AjJ {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.page_ImageSlice__j_4_F {
   width: 100%;
   padding: 0 24px;
   max-width: 1000px;
   margin: 16px auto;
+  border-radius: 24px;
+  overflow: hidden;
 }
 @media (min-width: 769px) {
-  .page_SingleImageContainer__owQWo {
+  .page_ImageSlice__j_4_F {
     margin: 24px auto;
     padding: 0 32px;
   }
 }
-.page_SingleImageContainer__owQWo .page_SingleImage__K3Ekg {
+.page_ImageSlice__j_4_F > div {
+  border-radius: 24px;
+  overflow: hidden;
+}
+.page_ImageSlice__j_4_F .page_Image__VYX36 {
   height: auto;
   border-radius: 24px;
+  overflow: hidden;
   margin: auto;
 }
-.page_SingleImageContainer__owQWo .page_SingleImage__K3Ekg.page_FullWidth__bFd4x {
+.page_ImageSlice__j_4_F .page_Image__VYX36.page_FullWidth__bFd4x {
   width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
 }
 /*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Gallery/page.module.scss ***!
@@ -1281,15 +1488,17 @@ button.swiper-pagination-bullet {
   line-height: 40px;
   color: var(--bi-dark-pink);
 }
-/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/DocList.module.scss ***!
-  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.DocList_DocList__cRs1G {
-  display: block;
-}
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Carousel/page.module.scss ***!
   \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes page_rotate__AGIHO {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .page_Carousel__rw_Tp {
   display: block;
   width: 100%;
@@ -1307,14 +1516,20 @@ button.swiper-pagination-bullet {
 /*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Authors/page.module.scss ***!
   \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes page_rotate__3qNvQ {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .page_credits__G22_R {
   width: 100%;
   margin: auto;
   display: flex;
   flex-direction: column;
   gap: 0px;
-  border-top: 1px solid var(--light-grey);
-  border-bottom: 1px solid var(--light-grey);
   background-color: white;
 }
 @media (min-width: 769px) {
@@ -1325,27 +1540,27 @@ button.swiper-pagination-bullet {
 }
 .page_credits__G22_R > div {
   width: 100%;
-  padding: 24px;
 }
 @media (min-width: 769px) {
   .page_credits__G22_R > div {
-    width: 50%;
-    padding: 24px 32px;
+    width: -webkit-fill-available;
   }
 }
-.page_credits__G22_R > div:first-child {
+.page_credits__G22_R > div:first-of-type {
   border-bottom: 1px solid var(--light-grey);
 }
 @media (min-width: 769px) {
-  .page_credits__G22_R > div:first-child {
+  .page_credits__G22_R > div:first-of-type {
+    border-bottom: 0px !important;
     border-right: 1px solid var(--light-grey);
   }
 }
-.page_credits__G22_R > div:last-child {
+.page_credits__G22_R > div:last-of-type {
   border-bottom: 0px !important;
 }
 @media (min-width: 769px) {
-  .page_credits__G22_R > div:last-child {
+  .page_credits__G22_R > div:last-of-type {
     border-bottom: 0px !important;
+    border-right: 0px !important;
   }
 }

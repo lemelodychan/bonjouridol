@@ -126,3 +126,39 @@ h3 {
     margin-bottom: 16px;
   }
 }
+
+.Placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  background-color: var(--light-grey);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bi-pink);
+}
+.Placeholder.GreyBg {
+  background-color: white;
+}
+.Placeholder.DarkBg {
+  background-color: var(--dark-grey);
+}
+
+.Placeholder > span {
+  display: block;
+  width: 24px;
+  height: 24px;
+  animation: rotate 1s linear infinite !important;
+  transform: rotate(0deg);
+  transition: var(--transi);
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

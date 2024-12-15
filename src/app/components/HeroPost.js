@@ -2,6 +2,7 @@ import { createClient } from "@/prismicio";
 import { Article } from "../articles/[uid]/page.js";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicLink, PrismicText, useAllPrismicDocumentsByType } from '@prismicio/react'
+import SingleImage from "./SingleImage.js";
 
 import Button from './IconButton.js';
 import { IoArrowForwardOutline } from "react-icons/io5";
@@ -40,13 +41,18 @@ export default async function HeroPost() {
                             {latestPost.data.title}
                         </span>
                     </h1>
+                    <h2>
+                        <span>
+                            {latestPost.data.subtitle}
+                        </span>
+                    </h2>
                     <Button variant={"Pink"} textValue={"Read more"} icon={<IoArrowForwardOutline />} />
                 </div>
                 <div className={styles.FeaturedImage}>
-                    <PrismicNextImage 
-                        field={latestPost.data.featured_image} 
-                        alt=""
-                        fallbackAlt=""
+                    <SingleImage 
+                        image={latestPost.data.featured_image}
+                        alt={latestPost.data.featured_image.alt || ""}  
+                        color="dark"
                     />
                 </div>
             </div>

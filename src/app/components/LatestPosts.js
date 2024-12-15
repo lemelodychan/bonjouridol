@@ -3,6 +3,7 @@ import { PrismicNextImage } from "@prismicio/next";
 import { PrismicLink, PrismicText, useAllPrismicDocumentsByType } from '@prismicio/react'
 
 import HeroPost from './HeroPost.js';
+import SingleImage from "./SingleImage.js";
 import Button from './IconButton.js';
 import { IoArrowForwardOutline } from "react-icons/io5";
 
@@ -38,10 +39,9 @@ export default async function LatestPost() {
                 {results.map((item) => (
                     <PrismicLink key={item.id} className={styles.OtherPost} href={`/articles/${item.uid}`}>
                         <div className={styles.FeaturedImage}>
-                            <PrismicNextImage 
-                                field={item.data.featured_image} 
-                                alt=""
-                                fallbackAlt=""
+                            <SingleImage 
+                                image={item.data.featured_image}
+                                alt={item.data.featured_image.alt || ""}  
                             />
                         </div>
                         <div className={styles.Content}>
@@ -50,10 +50,15 @@ export default async function LatestPost() {
                                     <span key={item} className={styles.Tag}>{item}</span>
                                 ))}
                             </div>
-                            <h3>
-                                <span>{item.data.title}</span>
-                                <span className={styles.icon}><IoArrowForwardOutline /></span>
-                            </h3>
+                            <div className={styles.Title}>
+                                <h3>
+                                    <span>{item.data.title}</span>
+                                    <span className={styles.icon}><IoArrowForwardOutline /></span>
+                                </h3>
+                                {item.data.subtitle && (
+                                    <span>{item.data.subtitle}</span>
+                                )}
+                            </div>
                         </div>
                     </PrismicLink>
                 ))}

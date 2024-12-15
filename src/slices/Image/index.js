@@ -3,7 +3,7 @@
  * @typedef {import("@prismicio/react").SliceComponentProps<ImageSlice>} ImageProps
  * @param {ImageProps}
  */
-import { PrismicNextImage } from "@prismicio/next";
+import SingleImage from "@/app/components/SingleImage";
 import styles from "./page.module.scss";
 
 const Image = ({ slice }) => {
@@ -11,11 +11,11 @@ const Image = ({ slice }) => {
   const width = slice.primary.image_width;
 
   return (
-    <section className={styles.SingleImageContainer}>
-      <PrismicNextImage
-        field={slice.primary.image}
-        alt={slice.primary.image.alt || ""}
-        className={`${styles.SingleImage} ${isFullwidth ? styles.FullWidth : ""}`}
+    <section className={styles.ImageSlice}>
+      <SingleImage 
+        image={slice.primary.image}
+        alt={slice.primary.image.alt}
+        className={`${styles.Image} ${isFullwidth ? styles.FullWidth : ""}`}
         style={!isFullwidth ? { width: `${width}px` } : undefined}
       />
     </section>
