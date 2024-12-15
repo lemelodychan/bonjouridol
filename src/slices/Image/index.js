@@ -15,8 +15,11 @@ const Image = ({ slice }) => {
       <SingleImage 
         image={slice.primary.image}
         alt={slice.primary.image.alt}
+        ratio="3/2"
         className={`${styles.Image} ${isFullwidth ? styles.FullWidth : ""}`}
-        style={!isFullwidth ? { width: `${width}px` } : undefined}
+        style={!isFullwidth ? { 
+          width: `${width}px` 
+        } : undefined}
       />
     </section>
   );

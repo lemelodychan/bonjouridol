@@ -30,7 +30,11 @@ const Carousel = ({ images }) => {
       {images.map((item, index) => {
         return (
           <SwiperSlide key={index} className={styles.Slide}>
-            <SingleImage image={item.image} alt={item.image.alt || ""} />
+            <SingleImage 
+              image={item.image} 
+              ratio="3/2"
+              alt={item.image.alt || ""} 
+            />
           </SwiperSlide>
         );
       })}

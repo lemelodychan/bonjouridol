@@ -79,6 +79,7 @@ export default async function Page({ params }) {
               <SingleImage 
                 image={article.data.featured_image}
                 alt={article.data.featured_image.alt}
+                ratio="3/2"
               />
             </span>
             <Breadcrumbs 
