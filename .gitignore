@@ -21,3 +21,7 @@ dist/
 
 # Ignore Git metadata files
 .git/
+*.gz
+*.pack.gz
+*.hot-update.js
+*.hot-update.json
