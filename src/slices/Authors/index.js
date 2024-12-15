@@ -26,7 +26,7 @@ const Authors = ({ slice }) => {
           <div className={styles.OfficialPhotos}>
             <span className={styles.authorImg}>
               <Image 
-                href={Logo}
+                src={Logo}
                 alt="Bonjour Idol Logo" 
                 height={48}
               />
