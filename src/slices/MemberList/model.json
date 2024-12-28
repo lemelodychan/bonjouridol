@@ -1,0 +1,36 @@
+{
+  "id": "image_list",
+  "type": "SharedSlice",
+  "name": "MemberList",
+  "description": "MemberList",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "members": {
+          "type": "Group",
+          "config": {
+            "label": "Members",
+            "repeat": true,
+            "fields": {
+              "member": {
+                "type": "Link",
+                "config": {
+                  "label": "Member",
+                  "select": "document",
+                  "customtypes": ["author"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

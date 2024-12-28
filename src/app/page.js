@@ -25,6 +25,9 @@ export default async function Page() {
       <div className={styles.container}>
         <LatestPosts />
         <Discoveries />
+        <div className={styles.Slices}>
+          <SliceZone slices={page.data.slices} components={components} />
+        </div>
       </div>
     </div>
   );

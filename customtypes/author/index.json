@@ -12,6 +12,13 @@
           "label": "UID"
         }
       },
+      "display_order": {
+        "type": "Number",
+        "config": {
+          "label": "Display order",
+          "placeholder": ""
+        }
+      },
       "name": {
         "type": "Text",
         "config": {
@@ -25,6 +32,13 @@
           "label": "Profile picture",
           "constraint": {},
           "thumbnails": []
+        }
+      },
+      "specialization": {
+        "type": "Text",
+        "config": {
+          "label": "Specialization",
+          "placeholder": ""
         }
       },
       "description": {

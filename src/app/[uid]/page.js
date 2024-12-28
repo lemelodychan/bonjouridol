@@ -31,7 +31,7 @@ export default async function Page({ params }) {
     <div className={styles.container}>
         <h1>{page.data.title}</h1>
         <div className={styles.pageContent}>
-            <SliceZone slices={page.data.slices} components={components} />
+          <SliceZone slices={page.data.slices} components={components} />
         </div>
     </div>
   );

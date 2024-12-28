@@ -1143,6 +1143,74 @@ button.swiper-pagination-bullet {
     padding: 0 32px;
   }
 }
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Taglist/page.module.scss ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes page_rotate__fcTKS {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.page_Taglist__2jSzB {
+  width: 100%;
+  padding: 24px 16px;
+  background: white;
+  z-index: 3;
+}
+@media (min-width: 769px) {
+  .page_Taglist__2jSzB {
+    padding: 0 32px;
+  }
+}
+.page_Taglist__2jSzB .page_TaglistContainer__rBPux {
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2px;
+  align-items: baseline;
+  justify-content: center;
+}
+@media (min-width: 769px) {
+  .page_Taglist__2jSzB .page_TaglistContainer__rBPux {
+    gap: 4px;
+  }
+}
+.page_Taglist__2jSzB .page_TaglistContainer__rBPux strong {
+  text-decoration: none !important;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  gap: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 8px;
+  background-color: white;
+  transition: var(--transi);
+  color: var(--bi-dark-pink);
+}
+.page_Taglist__2jSzB .page_TaglistContainer__rBPux strong:nth-child(even) {
+  color: var(--bi-light-pink);
+}
+@media (min-width: 769px) {
+  .page_Taglist__2jSzB .page_TaglistContainer__rBPux strong {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
+.page_Taglist__2jSzB .page_TaglistContainer__rBPux strong:hover {
+  color: var(--bi-indigo);
+  cursor: pointer;
+}
 /*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/SocialLinks/page.module.scss ***!
   \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -1762,6 +1830,109 @@ button.swiper-pagination-bullet {
 .page_Purchase__gQCkP .page_Buttons__PV1AH a:first-of-type:hover {
   color: var(--white);
   background-color: var(--bi-indigo);
+}
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/MemberListContent.module.scss ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes MemberListContent_rotate__M9oTE {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.MemberListContent_MemberList__yipOy {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 24px;
+  background-color: var(--light-grey);
+  padding: 24px;
+  border-radius: 24px;
+}
+@media (min-width: 640px) {
+  .MemberListContent_MemberList__yipOy {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (min-width: 769px) {
+  .MemberListContent_MemberList__yipOy {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+@media (min-width: 1025px) {
+  .MemberListContent_MemberList__yipOy {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+.MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 16px;
+  background-color: white;
+}
+.MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f .MemberListContent_ProfilePicture__1HSuH {
+  border-radius: 8px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+}
+.MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f .MemberListContent_ProfilePicture__1HSuH img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transi);
+  transform: scale(100%);
+}
+.MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f .MemberListContent_ProfilePicture__1HSuH:hover img {
+  transform: scale(106%);
+}
+.MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f h3 {
+  font-weight: 600;
+  margin-top: 8px;
+}
+.MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f span {
+  font-size: 16px;
+  font-weight: 600;
+  flex-grow: 1;
+}
+.MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f .MemberListContent_Description__x2vgo {
+  font-size: 14px;
+  margin-top: 8px;
+  flex-grow: 1;
+}
+.MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f .MemberListContent_SocialLinks__3UD0I {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+.MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f .MemberListContent_SocialLinks__3UD0I a {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--light-grey);
+  color: var(--bi-dark-pink);
+  transition: var(--transi);
+}
+.MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f .MemberListContent_SocialLinks__3UD0I a:hover {
+  color: var(--bi-indigo);
+}
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/MemberList/page.module.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.page_MemberList__F7a63 {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 0 auto;
+  padding: 24px;
 }
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Image/page.module.scss ***!

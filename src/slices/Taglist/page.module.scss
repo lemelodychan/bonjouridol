@@ -1,0 +1,65 @@
+@use "../../app/styles/mixins.scss" as *;
+@use "../../app/styles/variables.scss";
+
+.Taglist {
+    width: 100%;
+    padding: 24px 16px;
+    background: white;
+    z-index: 3;
+
+    @include md {
+        padding: 0 32px;
+    }
+    
+    .TaglistContainer {
+        margin: auto;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 2px;
+        align-items: baseline;
+        justify-content: center;
+
+        @include md {
+            gap: 4px;
+        }
+
+        strong {
+            text-decoration: none !important;
+            border: none;
+            border-radius: 8px;
+
+            font-family: var(--font-text);
+            font-weight: 600;
+            font-size: 12px;
+            line-height: 1.5;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+
+            gap: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 6px 8px;
+            background-color: white;
+
+            transition: var(--transi);
+
+            color: var(--bi-dark-pink);
+
+            &:nth-child(even) {
+                color: var(--bi-light-pink);
+            }
+
+            @include md {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+
+            &:hover{
+                color: var(--bi-indigo);
+                cursor: pointer;
+            }
+        }
+    }
+}

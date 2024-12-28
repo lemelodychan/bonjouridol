@@ -9,11 +9,13 @@ export const components = {
   gallery: dynamic(() => import("./Gallery")),
   gallery_link: dynamic(() => import("./GalleryLink")),
   image: dynamic(() => import("./Image")),
+  image_list: dynamic(() => import("./MemberList")),
   purchase: dynamic(() => import("./Purchase")),
   quote: dynamic(() => import("./Quote")),
   rich_text: dynamic(() => import("./RichText")),
   setlist: dynamic(() => import("./Setlist")),
   single_button: dynamic(() => import("./Buttons")),
   social_links: dynamic(() => import("./SocialLinks")),
+  taglist: dynamic(() => import("./Taglist")),
   video: dynamic(() => import("./Video")),
 };

@@ -217,6 +217,17 @@ export type ArticlesDocument<Lang extends string = string> =
  */
 interface AuthorDocumentData {
   /**
+   * Display order field in *Author*
+   *
+   * - **Field Type**: Number
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.display_order
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#number
+   */
+  display_order: prismic.NumberField;
+
+  /**
    * Name field in *Author*
    *
    * - **Field Type**: Text
@@ -237,6 +248,17 @@ interface AuthorDocumentData {
    * - **Documentation**: https://prismic.io/docs/field#image
    */
   profile_picture: prismic.ImageField<never>;
+
+  /**
+   * Specialization field in *Author*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: author.specialization
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  specialization: prismic.KeyTextField;
 
   /**
    * Description field in *Author*
@@ -476,7 +498,7 @@ export type GalleryDocument<Lang extends string = string> =
     Lang
   >;
 
-type HomepageDocumentDataSlicesSlice = never;
+type HomepageDocumentDataSlicesSlice = TaglistSlice;
 
 /**
  * Content for Homepage documents
@@ -553,6 +575,12 @@ export type HomepageDocument<Lang extends string = string> =
   >;
 
 type PageDocumentDataSlicesSlice =
+  | ImageListSlice
+  | SetlistSlice
+  | TaglistSlice
+  | SocialLinksSlice
+  | PurchaseSlice
+  | AuthorsSlice
   | VideoSlice
   | QuoteSlice
   | DocListSlice
@@ -1034,6 +1062,68 @@ type ImageSliceVariation = ImageSliceDefault;
  * - **Documentation**: https://prismic.io/docs/slice
  */
 export type ImageSlice = prismic.SharedSlice<"image", ImageSliceVariation>;
+
+/**
+ * Item in *MemberList → Default → Primary → Members*
+ */
+export interface ImageListSliceDefaultPrimaryMembersItem {
+  /**
+   * Member field in *MemberList → Default → Primary → Members*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: image_list.default.primary.members[].member
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  member: prismic.ContentRelationshipField<"author">;
+}
+
+/**
+ * Primary content in *MemberList → Default → Primary*
+ */
+export interface ImageListSliceDefaultPrimary {
+  /**
+   * Members field in *MemberList → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: image_list.default.primary.members[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  members: prismic.GroupField<
+    Simplify<ImageListSliceDefaultPrimaryMembersItem>
+  >;
+}
+
+/**
+ * Default variation for MemberList Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ImageListSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<ImageListSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *MemberList*
+ */
+type ImageListSliceVariation = ImageListSliceDefault;
+
+/**
+ * MemberList Shared Slice
+ *
+ * - **API ID**: `image_list`
+ * - **Description**: MemberList
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ImageListSlice = prismic.SharedSlice<
+  "image_list",
+  ImageListSliceVariation
+>;
 
 /**
  * Item in *Purchase → Default → Primary → Links*
@@ -1522,6 +1612,66 @@ export type SocialLinksSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Item in *Taglist → Default → Primary → Tags*
+ */
+export interface TaglistSliceDefaultPrimaryTagsItem {
+  /**
+   * Tag field in *Taglist → Default → Primary → Tags*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: taglist.default.primary.tags[].tag
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  tag: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *Taglist → Default → Primary*
+ */
+export interface TaglistSliceDefaultPrimary {
+  /**
+   * Tags field in *Taglist → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: taglist.default.primary.tags[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  tags: prismic.GroupField<Simplify<TaglistSliceDefaultPrimaryTagsItem>>;
+}
+
+/**
+ * Default variation for Taglist Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type TaglistSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<TaglistSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Taglist*
+ */
+type TaglistSliceVariation = TaglistSliceDefault;
+
+/**
+ * Taglist Shared Slice
+ *
+ * - **API ID**: `taglist`
+ * - **Description**: Taglist
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type TaglistSlice = prismic.SharedSlice<
+  "taglist",
+  TaglistSliceVariation
+>;
+
+/**
  * Primary content in *Video → Default → Primary*
  */
 export interface VideoSliceDefaultPrimary {
@@ -1637,6 +1787,11 @@ declare module "@prismicio/client" {
       ImageSliceDefaultPrimary,
       ImageSliceVariation,
       ImageSliceDefault,
+      ImageListSlice,
+      ImageListSliceDefaultPrimaryMembersItem,
+      ImageListSliceDefaultPrimary,
+      ImageListSliceVariation,
+      ImageListSliceDefault,
       PurchaseSlice,
       PurchaseSliceDefaultPrimaryLinksItem,
       PurchaseSliceDefaultPrimary,
@@ -1666,6 +1821,11 @@ declare module "@prismicio/client" {
       SocialLinksSliceDefaultPrimary,
       SocialLinksSliceVariation,
       SocialLinksSliceDefault,
+      TaglistSlice,
+      TaglistSliceDefaultPrimaryTagsItem,
+      TaglistSliceDefaultPrimary,
+      TaglistSliceVariation,
+      TaglistSliceDefault,
       VideoSlice,
       VideoSliceDefaultPrimary,
       VideoSliceVariation,
