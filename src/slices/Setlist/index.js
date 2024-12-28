@@ -34,22 +34,28 @@ const Setlist = ({ slice }) => {
               </li>
             ))}
           </ul>
-          <ul className={styles.Encore}>
-            {slice.primary.encore_song.map((item, index) => (
-              <li key={index} className={styles.Song}>
-                <span className={styles.Number}>
-                  {`EN${String(index + 1).padStart(2, '0')}`}.
-                </span>
-                <div className={styles.Name}>
-                  <span>{item.title_en}</span>
-                </div>
-                <span className={styles.Jp}>{item.title_jp}</span>
-                {item.link.url && (
-                    <PrismicNextLink field={item.link}><FaPlay /></PrismicNextLink>
-                  )}
-              </li>
-            ))}
-          </ul>
+
+          {slice.primary.encore_song?.some(item => item.title_en) && (
+            <ul className={styles.Encore}>
+              {slice.primary.encore_song.map((item, index) => (
+                item.title_en && (
+                  <li key={index} className={styles.Song}>
+                    <span className={styles.Number}>
+                      {`EN${String(index + 1).padStart(2, '0')}`}.
+                    </span>
+                    <div className={styles.Name}>
+                      <span>{item.title_en}</span>
+                    </div>
+                    <span className={styles.Jp}>{item.title_jp}</span>
+                    {item.link?.url && (
+                      <PrismicNextLink field={item.link}><FaPlay /></PrismicNextLink>
+                    )}
+                  </li>
+                )
+              ))}
+            </ul>
+          )}
+
         </div>
       </div>
 

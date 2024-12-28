@@ -5,6 +5,7 @@ import { PrismicPreview, PrismicNextImage } from '@prismicio/next'
 import { repositoryName } from '@/prismicio'
 
 import Navbar from './components/Navbar'
+import Topbar from './components/Topbar'
 
 const DMSans = DM_Sans({ subsets: ['latin'] })
 
@@ -25,6 +26,7 @@ export default function RootLayout({ children }) {
         <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"></link>
       </head>
       <body>
+        <Topbar />
         <Navbar />
         {children}
         <PrismicPreview repositoryName={repositoryName} />

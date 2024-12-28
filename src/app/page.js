@@ -1,5 +1,6 @@
 import styles from './page.module.scss'
 import LatestPosts from './components/LatestPosts.js';
+import Discoveries from './components/Discoveries';
 
 import { createClient } from "@/prismicio";
 import { SliceZone } from "@prismicio/react";
@@ -23,6 +24,7 @@ export default async function Page() {
     <div className={styles.main}>
       <div className={styles.container}>
         <LatestPosts />
+        <Discoveries />
       </div>
     </div>
   );

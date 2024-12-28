@@ -1,4 +1,6 @@
 import { createClient } from "@/prismicio";
+import * as prismic from "@prismicio/client";
+
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicLink, PrismicText, useAllPrismicDocumentsByType } from '@prismicio/react'
 
@@ -25,6 +27,12 @@ export default async function LatestPost() {
             field: 'document.first_publication_date',
             direction: 'desc',
           },
+        ],
+        filters: [
+            prismic.filter.any(
+                'document.tags',
+                ['Live Report', 'Interview']
+            ),
         ],
     })
     delete results[0];

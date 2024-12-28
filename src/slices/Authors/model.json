@@ -40,6 +40,36 @@
               "author"
             ]
           }
+        },
+        "translator_jp": {
+          "type": "Link",
+          "config": {
+            "label": "Translator - JP",
+            "select": "document",
+            "customtypes": [
+              "author"
+            ]
+          }
+        },
+        "translator_en": {
+          "type": "Link",
+          "config": {
+            "label": "Translator - EN",
+            "select": "document",
+            "customtypes": [
+              "author"
+            ]
+          }
+        },
+        "translator_fr": {
+          "type": "Link",
+          "config": {
+            "label": "Translator - FR",
+            "select": "document",
+            "customtypes": [
+              "author"
+            ]
+          }
         }
       },
       "items": {}

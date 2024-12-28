@@ -20,6 +20,28 @@
 			"official_photos": {
 				"__TYPE__": "BooleanContent",
 				"value": false
+			},
+			"translator_en": {
+				"__TYPE__": "LinkContent",
+				"value": {
+					"__TYPE__": "DocumentLink",
+					"id": "mock_document_id"
+				}
+			},
+			"translator_jp": {
+				"__TYPE__": "LinkContent",
+				"value": {
+					"__TYPE__": "DocumentLink",
+					"id": "mock_document_id"
+				}
+			},
+			"translator_fr": {
+				"__TYPE__": "LinkContent",
+				"key": "9391d79d-230e-4251-bd37-c58b3852172f",
+				"value": {
+					"__TYPE__": "DocumentLink",
+					"id": "mock_document_id"
+				}
 			}
 		},
 		"items": []

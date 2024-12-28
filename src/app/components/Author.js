@@ -9,7 +9,7 @@ import { HiOutlineLink } from 'react-icons/hi';
 import { FaInstagram } from "react-icons/fa6";
 import { FaXTwitter } from "react-icons/fa6";
 
-const Author = ({ author, type }) => {
+const Author = ({ author, type, translator }) => {
     const { 
         name, 
         profile_picture, 
@@ -17,6 +17,7 @@ const Author = ({ author, type }) => {
         twitter, 
         instagram, 
         website } = author.data;
+
 
     return (
         <div className={styles.AuthorBlock}>
@@ -32,10 +33,23 @@ const Author = ({ author, type }) => {
                 </span>
             )}
             <div className={styles.AuthorInfo}>
+
+            
+            {translator ? (
+                <>
+                    <h4>
+                        {type} by&nbsp;
+                        <span className={styles.AuthorName}>{name}</span>
+                    </h4>
+                    <span className={styles.Translation} dangerouslySetInnerHTML={{ __html: translator }} />
+                </>
+                ) : (
                 <h4>
                     {type} by&nbsp;
                     <span className={styles.AuthorName}>{name}</span>
                 </h4>
+            )}
+
                 {description && 
                     <div className={styles.Description}>
                         <PrismicRichText field={description} />

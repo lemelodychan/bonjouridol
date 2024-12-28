@@ -11,10 +11,11 @@ export default async function DocListContent({ type }) {
 
     let category;
     let postType;
+
     if (type === "Live reports") {
         postType = "Live report";
         category = "articles";
-    } else if (type === "Discovery") {
+    } else if (type === "Discoveries") {
         postType = "Discovery";
         category = "articles";
     } else if (type === "Press release") {
@@ -25,7 +26,7 @@ export default async function DocListContent({ type }) {
         category = "galleries";
     }
 
-    let results = []; 
+    let results = [];
     const articles = await client.getAllByType("articles", {
         fetchOptions: {
             cache: 'no-store',
@@ -38,6 +39,7 @@ export default async function DocListContent({ type }) {
             },
         ],
     });
+
     const filteredArticles = articles.filter(
         (article) => article.data.type === postType
     );
@@ -70,7 +72,7 @@ export default async function DocListContent({ type }) {
     return (
         <div className={styles.DocList}>
             {results.map((item) => (
-                <PrismicLink key={item.id} className={styles.Post} href={`/${category}/${item.uid}`}>
+                <PrismicLink key={item.id} className={styles.Post} href={`/articles/${item.uid}`}>
                     {item.data.featured_image && (
                         <div className={styles.FeaturedImage}>
                             <PrismicNextImage 

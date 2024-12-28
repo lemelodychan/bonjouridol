@@ -51,6 +51,19 @@
             }
         }
 
+        .Translation {
+            font-size: 14px;
+            line-height: 24px;
+            font-weight: 400;
+            margin-bottom: 8px;
+            color: var(--medium-grey);
+
+            strong {
+                font-weight: 600;
+                color: var(--dark-grey);
+            }
+        }
+
         .Description {
             font-size: 14px;
             line-height: 24px;

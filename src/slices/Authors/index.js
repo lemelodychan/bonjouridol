@@ -13,6 +13,29 @@ const Authors = ({ slice }) => {
   const author = slice.primary.author;
   const photo = slice.primary.photographer;
   const isOfficial = slice.primary.official_photos;
+  const translatorJP = slice.primary.translator_jp;
+  const translatorFR = slice.primary.translator_fr;
+  const translatorEN = slice.primary.translator_en;
+
+  const getTranslationString = (translatorFR, translatorEN, translatorJP) => {
+    const translators = [];
+  
+    if (translatorFR?.data?.name) {
+      translators.push(`French by <strong>${translatorFR.data.name}</strong>`);
+    }
+    if (translatorEN?.data?.name) {
+      translators.push(`English by <strong>${translatorEN.data.name}</strong>`);
+    }
+    if (translatorJP?.data?.name) {
+      translators.push(`Japanese by <strong>${translatorJP.data.name}</strong>`);
+    }
+  
+    if (translators.length === 0) return null;
+  
+    return `Translated to ${translators.join(" and ")}`;
+  };
+  
+  const translation = getTranslationString(translatorFR, translatorEN, translatorJP);
 
   return (
     <div 
@@ -21,11 +44,13 @@ const Authors = ({ slice }) => {
       data-slice-variation={slice.variation}
     >
       {author && photo && author.uid === photo.uid ? (
-        <Author author={author} type="Written and photographed" />
+        <>
+          <Author author={author} type="Written and photographed" translator={translation} />
+        </>
       ) : (
         <>
-          <Author author={author} type="Written" />
-          
+          <Author author={author} type="Written" translator={translation} />
+
           {isOfficial ? (
             <div className={styles.OfficialPhotos}>
               <span className={styles.authorImg}>

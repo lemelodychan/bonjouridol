@@ -672,6 +672,36 @@ export interface AuthorsSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
    */
   photographer: prismic.ContentRelationshipField<"author">;
+
+  /**
+   * Translator - JP field in *Authors → Default → Primary*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: authors.default.primary.translator_jp
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  translator_jp: prismic.ContentRelationshipField<"author">;
+
+  /**
+   * Translator - EN field in *Authors → Default → Primary*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: authors.default.primary.translator_en
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  translator_en: prismic.ContentRelationshipField<"author">;
+
+  /**
+   * Translator - FR field in *Authors → Default → Primary*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: authors.default.primary.translator_fr
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  translator_fr: prismic.ContentRelationshipField<"author">;
 }
 
 /**

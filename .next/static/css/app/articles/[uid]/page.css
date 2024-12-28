@@ -37,14 +37,15 @@
   background-size: cover;
   background-position: center;
   overflow: hidden;
-  aspect-ratio: 1.5/1;
-  height: 440px;
+  aspect-ratio: 1.62/1;
+  min-height: 460px;
   border-radius: 0px;
   padding: 88px 24px 64px 24px;
 }
 @media (min-width: 769px) {
   .page_container__nbpj5 .page_header__3X_lA {
     aspect-ratio: 2/1;
+    height: auto;
     width: calc(100% - 64px);
     padding: 32px;
     border-radius: 24px;
@@ -392,6 +393,17 @@
 }
 .Author_AuthorBlock__qtl_0 .Author_AuthorInfo__Romdr h4 span {
   font-weight: 600;
+}
+.Author_AuthorBlock__qtl_0 .Author_AuthorInfo__Romdr .Author_Translation__WsxfO {
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 400;
+  margin-bottom: 8px;
+  color: var(--medium-grey);
+}
+.Author_AuthorBlock__qtl_0 .Author_AuthorInfo__Romdr .Author_Translation__WsxfO strong {
+  font-weight: 600;
+  color: var(--dark-grey);
 }
 .Author_AuthorBlock__qtl_0 .Author_AuthorInfo__Romdr .Author_Description__3yIwR {
   font-size: 14px;
