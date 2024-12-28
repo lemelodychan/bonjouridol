@@ -19,6 +19,7 @@
 
     @include md {
         position: relative;
+        max-height: 96px;
         align-items: flex-end;
         justify-content: flex-start;
         background-color: var(--white);
@@ -57,6 +58,9 @@
 
         @include md {
             display: flex;
+            max-height: 96px;
+            height: 100%;
+            top: 0px;
         }
     }
   

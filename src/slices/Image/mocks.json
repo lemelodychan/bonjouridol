@@ -34,6 +34,11 @@
 				"__TYPE__": "FieldContent",
 				"value": "85",
 				"type": "Number"
+			},
+			"comment": {
+				"__TYPE__": "FieldContent",
+				"value": "carefully",
+				"type": "Text"
 			}
 		},
 		"items": []

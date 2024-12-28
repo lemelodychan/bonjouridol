@@ -99,6 +99,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "purchase": {
+              "type": "SharedSlice"
+            },
             "social_links": {
               "type": "SharedSlice"
             },

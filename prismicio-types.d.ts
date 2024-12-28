@@ -5,6 +5,7 @@ import type * as prismic from "@prismicio/client";
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
 type ArticlesDocumentDataSlicesSlice =
+  | PurchaseSlice
   | SocialLinksSlice
   | GalleryLinkSlice
   | AuthorsSlice
@@ -995,6 +996,16 @@ export interface ImageSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/field#number
    */
   image_width: prismic.NumberField;
+
+  /**
+   * Comment field in *Image → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: image.default.primary.comment
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  comment: prismic.KeyTextField;
 }
 
 /**
@@ -1023,6 +1034,106 @@ type ImageSliceVariation = ImageSliceDefault;
  * - **Documentation**: https://prismic.io/docs/slice
  */
 export type ImageSlice = prismic.SharedSlice<"image", ImageSliceVariation>;
+
+/**
+ * Item in *Purchase → Default → Primary → Links*
+ */
+export interface PurchaseSliceDefaultPrimaryLinksItem {
+  /**
+   * Link field in *Purchase → Default → Primary → Links*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: purchase.default.primary.links[].link
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  link: prismic.LinkField;
+}
+
+/**
+ * Primary content in *Purchase → Default → Primary*
+ */
+export interface PurchaseSliceDefaultPrimary {
+  /**
+   * CD Cover field in *Purchase → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: purchase.default.primary.cd_cover
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  cd_cover: prismic.ImageField<never>;
+
+  /**
+   * Title field in *Purchase → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: purchase.default.primary.title
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title: prismic.KeyTextField;
+
+  /**
+   * Artist field in *Purchase → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: purchase.default.primary.artist
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  artist: prismic.KeyTextField;
+
+  /**
+   * Release date field in *Purchase → Default → Primary*
+   *
+   * - **Field Type**: Date
+   * - **Placeholder**: *None*
+   * - **API ID Path**: purchase.default.primary.release_date
+   * - **Documentation**: https://prismic.io/docs/field#date
+   */
+  release_date: prismic.DateField;
+
+  /**
+   * Links field in *Purchase → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: purchase.default.primary.links[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  links: prismic.GroupField<Simplify<PurchaseSliceDefaultPrimaryLinksItem>>;
+}
+
+/**
+ * Default variation for Purchase Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type PurchaseSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<PurchaseSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Purchase*
+ */
+type PurchaseSliceVariation = PurchaseSliceDefault;
+
+/**
+ * Purchase Shared Slice
+ *
+ * - **API ID**: `purchase`
+ * - **Description**: Purchase
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type PurchaseSlice = prismic.SharedSlice<
+  "purchase",
+  PurchaseSliceVariation
+>;
 
 /**
  * Primary content in *Quote → Default → Primary*
@@ -1526,6 +1637,11 @@ declare module "@prismicio/client" {
       ImageSliceDefaultPrimary,
       ImageSliceVariation,
       ImageSliceDefault,
+      PurchaseSlice,
+      PurchaseSliceDefaultPrimaryLinksItem,
+      PurchaseSliceDefaultPrimary,
+      PurchaseSliceVariation,
+      PurchaseSliceDefault,
       QuoteSlice,
       QuoteSliceDefaultPrimary,
       QuoteSliceVariation,

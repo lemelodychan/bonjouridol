@@ -25,6 +25,7 @@
 }
 .page_container__nbpj5 .page_header__3X_lA {
   width: 100%;
+  max-width: 100vw;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -40,7 +41,7 @@
   aspect-ratio: 1.62/1;
   min-height: 460px;
   border-radius: 0px;
-  padding: 88px 24px 64px 24px;
+  padding: 88px 24px 48px 24px;
 }
 @media (min-width: 769px) {
   .page_container__nbpj5 .page_header__3X_lA {
@@ -65,10 +66,14 @@
 }
 .page_container__nbpj5 .page_header__3X_lA > div:first-of-type {
   opacity: 0;
+  width: 0%;
+  max-width: calc(100vw - 32px);
+  height: 24px;
 }
 @media (min-width: 769px) {
   .page_container__nbpj5 .page_header__3X_lA > div:first-of-type {
     opacity: 1;
+    width: 100%;
   }
 }
 .page_container__nbpj5 .page_header__3X_lA .page_FeaturedImage__a1yQc {
@@ -78,6 +83,7 @@
   padding: 0;
   width: 100%;
   height: 100%;
+  max-width: 100vw;
   position: absolute;
   top: 0;
   left: 0;
@@ -87,9 +93,11 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
+  max-width: 100vw;
 }
 .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy {
   display: flex;
+  max-width: calc(100vw - 32px);
   flex-direction: column;
   gap: 16px;
   position: relative;
@@ -97,6 +105,7 @@
 }
 .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_tag__RWZFp {
   display: flex;
+  max-width: 100%;
   flex-wrap: wrap;
   gap: 8px;
   flex-direction: row;
@@ -132,14 +141,15 @@
   background-color: var(--bi-pink);
 }
 .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn {
+  width: 100%;
   display: grid;
-  grid-template-rows: 36px max-content;
+  grid-template-rows: max-content max-content;
   grid-gap: 0;
   gap: 0;
 }
 @media (min-width: 769px) {
   .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn {
-    grid-template-rows: 58px max-content;
+    grid-template-rows: minmax(56px, max-content) max-content;
   }
 }
 .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h1 {
@@ -158,7 +168,7 @@
 @media (min-width: 769px) {
   .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h1 {
     font-size: 40px;
-    line-height: 64px;
+    line-height: 56px;
     max-width: 1000px;
   }
 }
@@ -175,9 +185,8 @@
 @media (min-width: 769px) {
   .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h1 > span {
     font-size: 40px;
-    line-height: 64px;
-    position: relative;
-    top: -4px;
+    line-height: 56px;
+    padding: 0px 12px;
   }
 }
 .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h2 {
@@ -198,11 +207,16 @@
   align-items: center;
   gap: 8px;
   background-color: var(--white);
-  border-radius: 0px 0px 16px 0px;
+  border-radius: 0px 16px 16px 0px;
   overflow: hidden;
   padding: 2px 12px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
+}
+@media (min-width: 769px) {
+  .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h2 > span {
+    border-radius: 0px 16px 16px 0px;
+  }
 }
 .page_container__nbpj5 .page_information__L_gSF {
   width: 100%;
@@ -278,7 +292,7 @@
   border-radius: 24px;
 }
 .page_container__nbpj5 .page_content__6AVtH {
-  margin-top: 16px;
+  padding-top: 16px;
   position: relative;
   z-index: 4;
   width: 100%;
@@ -973,6 +987,20 @@ button.swiper-pagination-bullet {
 .SingleImage_SingleImageContainer__yn1yI.SingleImage_Loaded__p3P_C .SingleImage_SingleImage__hWvcP {
   opacity: 1;
 }
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/DocList.module.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes DocList_rotate__iGNPg {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.DocList_DocList__cRs1G {
+  display: block;
+}
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./node_modules/yet-another-react-lightbox/dist/styles.css ***!
   \*****************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -1163,13 +1191,15 @@ button.swiper-pagination-bullet {
 }
 .page_SocialLinksContainer__naish > div .page_SocialLinks__RuCDg {
   display: flex;
-  gap: 16px;
+  gap: 8px;
   justify-content: flex-start;
+  flex-wrap: wrap;
   align-content: center;
 }
 @media (min-width: 769px) {
   .page_SocialLinksContainer__naish > div .page_SocialLinks__RuCDg {
     justify-content: flex-end;
+    gap: 16px;
   }
 }
 .page_SocialLinksContainer__naish > div .page_SocialLinks__RuCDg a {
@@ -1474,37 +1504,264 @@ button.swiper-pagination-bullet {
 }
 .page_Quote__wB5bm .page_QuoteContainer__OlEGR {
   display: grid;
-  grid-template-columns: 2px auto;
+  grid-template-columns: 1fr;
   grid-gap: 24px;
   padding: 32px;
   background-color: var(--light-grey);
   border-radius: 24px;
   width: 100%;
+  min-width: 100% !important;
   height: 100%;
   position: relative;
 }
-.page_Quote__wB5bm .page_QuoteContainer__OlEGR:before {
+.page_Quote__wB5bm .page_QuoteContainer__OlEGR > div {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  position: relative;
+  gap: 16px;
+  min-width: 100% !important;
+  width: 100%;
+  height: -moz-fit-content;
+  height: fit-content;
+  margin-left: 24px;
+}
+.page_Quote__wB5bm .page_QuoteContainer__OlEGR > div:before {
+  position: absolute;
+  top: 0px;
+  left: -24px;
   width: 2px;
   height: 100%;
   display: block;
   content: "";
   background-image: linear-gradient(to bottom, var(--bi-pink), var(--bi-indigo));
 }
-.page_Quote__wB5bm .page_QuoteContainer__OlEGR > div {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
 .page_Quote__wB5bm .page_QuoteContainer__OlEGR > div .page_QuoteText__YvZ_F {
   font-family: var(--font-text-serif);
   font-style: italic;
   font-size: 20px;
   line-height: 32px;
+  width: calc(100% - 24px);
+  min-width: calc(100% - 24px);
 }
 .page_Quote__wB5bm .page_QuoteContainer__OlEGR > div .page_QuoteAuthor__S7cXJ {
   font-family: var(--font-title);
   font-size: 16px;
   line-height: 24px;
+  width: calc(100% - 24px);
+  min-width: calc(100% - 24px);
+}
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Purchase/page.module.scss ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes page_rotate__hB_O3 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.page_Purchase__gQCkP {
+  width: 100%;
+  height: auto;
+  max-width: 936px;
+  margin: 16px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background-color: var(--light-grey);
+  padding: 24px;
+  border-radius: 24px;
+}
+@media (min-width: 769px) {
+  .page_Purchase__gQCkP {
+    padding: 24px;
+    margin: 24px auto;
+  }
+}
+.page_Purchase__gQCkP h3 {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  font-family: var(--font-title);
+  color: var(--dark-grey);
+  text-wrap: nowrap;
+}
+@media (min-width: 769px) {
+  .page_Purchase__gQCkP h3 {
+    font-size: 20px;
+  }
+}
+.page_Purchase__gQCkP h3:after {
+  width: -webkit-fill-available;
+  height: 2px;
+  display: block;
+  content: "";
+  background-image: linear-gradient(to right, var(--bi-pink), var(--bi-indigo));
+}
+.page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 {
+  display: grid;
+  grid-template-columns: 112px auto;
+  grid-gap: 24px;
+  width: 100%;
+}
+@media (min-width: 769px) {
+  .page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 {
+    grid-template-columns: max-content auto;
+    grid-gap: 32px;
+  }
+}
+.page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 > .page_ImageContainer__GVTo7 {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  max-width: 112px;
+  max-height: 112px;
+  border-radius: 16px;
+  position: relative;
+}
+@media (min-width: 769px) {
+  .page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 > .page_ImageContainer__GVTo7 {
+    max-width: 200px;
+    max-height: 200px;
+  }
+}
+.page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 > .page_ImageContainer__GVTo7:before {
+  width: 100%;
+  height: 100%;
+  content: "";
+  display: block;
+  border-radius: 16px;
+  background-color: white;
+  top: 0;
+  left: 0;
+  transform: rotate(15deg);
+  z-index: 1;
+}
+.page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 > .page_ImageContainer__GVTo7 > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  overflow: hidden;
+  z-index: 2;
+  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 .page_Info__zu_vX {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 .page_Info__zu_vX h4 {
+  font-size: 16px;
+  color: var(--bi-dark-pink);
+  font-weight: 600;
+}
+@media (min-width: 769px) {
+  .page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 .page_Info__zu_vX h4 {
+    font-size: 20px;
+  }
+}
+.page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 .page_Info__zu_vX .page_Artist__6R5sx {
+  color: var(--bi-pink);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 32px;
+}
+.page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 .page_Info__zu_vX .page_Release__nKDwD strong {
+  font-weight: 600;
+}
+.page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 .page_Info__zu_vX .page_Buttons__PV1AH {
+  display: none;
+  flex-wrap: wrap;
+  gap: 16px;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 16px 0 0 0;
+}
+@media (min-width: 769px) {
+  .page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 .page_Info__zu_vX .page_Buttons__PV1AH {
+    display: flex;
+  }
+}
+.page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 .page_Info__zu_vX .page_Buttons__PV1AH a {
+  text-decoration: none !important;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  gap: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: white;
+  transition: var(--transi);
+  color: var(--bi-pink);
+}
+.page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 .page_Info__zu_vX .page_Buttons__PV1AH a:hover {
+  color: var(--bi-indigo);
+}
+.page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 .page_Info__zu_vX .page_Buttons__PV1AH a:first-of-type {
+  background-color: var(--bi-dark-pink);
+  color: var(--white);
+}
+.page_Purchase__gQCkP .page_PurchaseContainer__sBMq4 .page_Info__zu_vX .page_Buttons__PV1AH a:first-of-type:hover {
+  color: var(--white);
+  background-color: var(--bi-indigo);
+}
+.page_Purchase__gQCkP .page_Buttons__PV1AH {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+}
+@media (min-width: 769px) {
+  .page_Purchase__gQCkP .page_Buttons__PV1AH {
+    display: none;
+  }
+}
+.page_Purchase__gQCkP .page_Buttons__PV1AH a {
+  text-decoration: none !important;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  gap: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: white;
+  transition: var(--transi);
+  color: var(--bi-pink);
+}
+.page_Purchase__gQCkP .page_Buttons__PV1AH a:hover {
+  color: var(--bi-indigo);
+}
+.page_Purchase__gQCkP .page_Buttons__PV1AH a:first-of-type {
+  background-color: var(--bi-dark-pink);
+  color: var(--white);
+}
+.page_Purchase__gQCkP .page_Buttons__PV1AH a:first-of-type:hover {
+  color: var(--white);
+  background-color: var(--bi-indigo);
 }
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Image/page.module.scss ***!
@@ -1521,9 +1778,11 @@ button.swiper-pagination-bullet {
   width: 100%;
   padding: 0 24px;
   max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
   margin: 16px auto;
-  border-radius: 24px;
-  overflow: hidden;
 }
 @media (min-width: 769px) {
   .page_ImageSlice__j_4_F {
@@ -1531,20 +1790,43 @@ button.swiper-pagination-bullet {
     padding: 0 32px;
   }
 }
-.page_ImageSlice__j_4_F > div {
+.page_ImageSlice__j_4_F > .page_ImageContainer__mnzxA {
+  width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  margin: auto;
+}
+.page_ImageSlice__j_4_F > .page_ImageContainer__mnzxA.page_FullWidth__bFd4x {
+  width: 100%;
+  border-radius: 24px;
+  padding: 0 !important;
+  overflow: hidden;
+}
+@media (min-width: 769px) {
+  .page_ImageSlice__j_4_F > .page_ImageContainer__mnzxA.page_FullWidth__bFd4x {
+    padding: 0 32px;
+  }
+}
+.page_ImageSlice__j_4_F > .page_ImageContainer__mnzxA > div {
   border-radius: 24px;
   overflow: hidden;
 }
-.page_ImageSlice__j_4_F .page_Image__VYX36 {
+.page_ImageSlice__j_4_F > .page_ImageContainer__mnzxA .page_Image__VYX36 {
   height: auto;
   border-radius: 24px;
   overflow: hidden;
   margin: auto;
 }
-.page_ImageSlice__j_4_F .page_Image__VYX36.page_FullWidth__bFd4x {
+.page_ImageSlice__j_4_F > .page_ImageContainer__mnzxA .page_Image__VYX36.page_FullWidth__bFd4x {
   width: 100%;
   border-radius: 24px;
   overflow: hidden;
+}
+.page_ImageSlice__j_4_F .page_Caption__zRRup {
+  width: 100%;
+  font-size: 14px;
+  text-align: center;
+  color: var(--medium-grey);
 }
 /*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Gallery/page.module.scss ***!
@@ -1561,20 +1843,6 @@ button.swiper-pagination-bullet {
   font-size: 32px;
   line-height: 40px;
   color: var(--bi-dark-pink);
-}
-/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/DocList.module.scss ***!
-  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-@keyframes DocList_rotate__iGNPg {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-.DocList_DocList__cRs1G {
-  display: block;
 }
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Carousel/page.module.scss ***!

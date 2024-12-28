@@ -51,6 +51,7 @@
 @media (min-width: 769px) {
   .navbar_menu__n4h96 {
     position: relative;
+    max-height: 96px;
     align-items: flex-end;
     justify-content: flex-start;
     background-color: var(--white);
@@ -90,6 +91,9 @@
 @media (min-width: 769px) {
   .navbar_menu__n4h96 .navbar_navbar__oAVrm {
     display: flex;
+    max-height: 96px;
+    height: 100%;
+    top: 0px;
   }
 }
 
@@ -157,6 +161,8 @@
     flex-direction: row;
     gap: 24px;
     width: auto;
+    align-items: center;
+    height: 96px;
   }
 }
 .Menu_menuContent__b2cWS li a {

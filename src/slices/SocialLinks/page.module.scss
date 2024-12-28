@@ -37,12 +37,14 @@
 
         .SocialLinks {
             display: flex;
-            gap: 16px;
+            gap: 8px;
             justify-content: flex-start;
+            flex-wrap: wrap;
             align-content: center;
 
             @include md {
                 justify-content: flex-end;
+                gap: 16px;
             }
 
             a {

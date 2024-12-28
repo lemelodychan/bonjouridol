@@ -35,6 +35,13 @@
             "label": "Image width",
             "placeholder": ""
           }
+        },
+        "comment": {
+          "type": "Text",
+          "config": {
+            "label": "Comment",
+            "placeholder": ""
+          }
         }
       },
       "items": {}
