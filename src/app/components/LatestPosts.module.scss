@@ -5,28 +5,44 @@
     width: 100%;
     margin: 0 auto;
     position: relative;
+    top: -36px;
+    height: 1200px;
 
     @include md {
+        height: auto;
         display: grid;
         grid-template-columns: auto minmax(320px, 33%);
         grid-gap: 24px;
+        top: 0px;
+    }
+
+    > a:first-of-type {
+        display: block;
+        height: 640px;
+
+        @include md {
+            height: 100%;
+        }
     }
 
     > .OtherPosts {
         position: relative;
-        top: 70vh;
+        top: -36px;
         z-index: 2;
         padding: 24px 24px;
         background-color: var(--white);
-        border-radius: 24px;
+        border-radius: 24px 24px 0 0;
         display: flex;
         flex-direction: column;
         gap: 16px;
-        height: -webkit-fill-available;
+        height: 640px;
+        min-height: 440px;
 
         @include md {
+            border-radius: 24px;
             background-color: var(--light-grey);
             top: 0;
+            min-height: unset;
             height: -webkit-fill-available;
         }
 
@@ -53,6 +69,7 @@
             display: grid;
             grid-gap: 16px;
             grid-template-columns: minmax(0%, 112px) auto;
+            height: fit-content;
 
             @include md {
                 grid-template-columns: 33% auto;

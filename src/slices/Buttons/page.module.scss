@@ -1,0 +1,63 @@
+@use "../../app/styles/mixins.scss" as *;
+@use "../../app/styles/variables.scss";
+
+.ButtonsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    margin: 0 auto 16px auto;
+    padding: 0 24px;
+    width: 100%;
+    max-width: 1000px;
+
+    @include md {
+        margin: 0px auto 24px auto;
+        padding: 0 32px;
+    }
+
+    .Text {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        font-size: 16px;
+        line-height: 28px;
+    }
+
+    > .Buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 8px 0;
+    
+        a {
+            text-decoration: none !important;
+            border: none;
+            border-radius: 8px;
+
+            font-family: var(--font-text);
+            font-weight: 600;
+            font-size: 12px;
+            line-height: 1.5;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+
+            gap: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 6px 8px;
+            background: transparent;
+            color: var(--bi-dark-pink);
+            border: 1px solid var(--bi-light-pink);
+
+            transition: var(--transi);
+
+            &:hover{
+                color: var(--bi-indigo);
+                border: 1px solid var(--bi-indigo);
+            }
+        }
+    }
+}

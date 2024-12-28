@@ -286,18 +286,31 @@ h3 {
   color: var(--bi-dark-pink);
 }
 
+.swiper {
+  height: auto !important;
+  aspect-ratio: unset !important;
+  overflow: visible !important;
+  margin-bottom: 48px;
+}
+.swiper-wrapper {
+  border-radius: 24px;
+  overflow: hidden;
+}
+
 .swiper-pagination-fraction, 
 .swiper-pagination-custom, 
 .swiper-horizontal > .swiper-pagination-bullets, 
 .swiper-pagination-bullets.swiper-pagination-horizontal {
-  bottom: 16px !important;
+  bottom: -32px !important;
 }
 .swiper-pagination-bullet {
   opacity: 1 !important;
-  background: white !important;
+  background: transparent !important;
+  border: 1px solid var(--bi-pink);
 }
 .swiper-pagination-bullet-active {
   background: var(--bi-pink) !important;
+  border: 1px solid var(--bi-pink);
 }
 
 .yarl__button {

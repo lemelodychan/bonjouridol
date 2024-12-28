@@ -23,8 +23,12 @@ export default async function Discoveries() {
         limit: 5,
         orderings: [
             {
-                field: 'document.first_publication_date',
-                direction: 'desc',
+              field: 'my.articles.publication_date',
+              direction: 'desc',
+            },
+            {
+              field: 'document.first_publication_date',
+              direction: 'desc',
             },
         ],
         filters: [
@@ -34,14 +38,14 @@ export default async function Discoveries() {
             ),
         ],
     });        
-
-    console.log(results);
     
     return (
         <div className={styles.Discoveries}>
             <h2><span>Discoveries</span></h2>
 
-            <div className={styles.DiscoveriesScroll}>
+            <div 
+                className={styles.DiscoveriesScroll}
+            >
                 <div className={styles.DiscoveriesContainer}>
                     {results.map((item) => (
                         <PrismicLink key={item.id} className={styles.DiscoveryPost} href={`/articles/${item.uid}`}>

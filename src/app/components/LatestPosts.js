@@ -35,7 +35,17 @@ export default async function LatestPost() {
             ),
         ],
     })
-    delete results[0];
+
+    const sortedResults = results.sort((a, b) => {
+        const dateA =
+          a.data.publication_date ||
+          a.first_publication_date;
+        const dateB =
+          b.data.publication_date ||
+          b.first_publication_date;
+        return new Date(dateB) - new Date(dateA);
+      });
+    delete sortedResults[0];
     
     return (
         <div className={styles.LatestPosts}>
@@ -44,7 +54,7 @@ export default async function LatestPost() {
             <div className={styles.OtherPosts}>
                 <h2><span>Other Posts</span></h2>
 
-                {results.map((item) => (
+                {sortedResults.map((item) => (
                     <PrismicLink key={item.id} className={styles.OtherPost} href={`/articles/${item.uid}`}>
                         <div className={styles.FeaturedImage}>
                             <SingleImage 

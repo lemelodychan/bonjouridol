@@ -22,17 +22,18 @@ export default async function HeroPost() {
         limit: 1,
         orderings: [
           {
+            field: 'my.articles.publication_date',
+            direction: 'desc',
+          },
+          {
             field: 'document.first_publication_date',
             direction: 'desc',
           },
         ],
         filters: [
-            prismic.filter.any(
-                'document.tags',
-                ['Live Report', 'Interview']
-            ),
+          prismic.filter.any('document.tags', ['Live Report', 'Interview']),
         ],
-      })
+    });
     const latestPost = results[0]
     
     return (

@@ -133,9 +133,13 @@
             }
     
             .TitleContainer {
-                display: flex;
-                flex-direction: column;
+                display: grid;
+                grid-template-rows: 36px max-content;
                 gap: 0;
+
+                @include md {
+                    grid-template-rows: 58px max-content;
+                }
 
                 h1 {
                     display: inline-block;
@@ -151,8 +155,8 @@
                     line-height: 36px;
 
                     @include md {
-                        font-size: 32px;
-                        line-height: 48px;
+                        font-size: 40px;
+                        line-height: 64px;
                         max-width: 1000px;
                     }
         
@@ -168,8 +172,10 @@
                         -webkit-box-decoration-break: clone;
         
                         @include md {
-                            font-size: 32px;
-                            line-height: 48px;
+                            font-size: 40px;
+                            line-height: 64px;
+                            position: relative;
+                            top: -4px;
                         }
                     }
                 }
@@ -191,22 +197,8 @@
                         align-items: center;
                         gap: 8px;
 
-                        &:before {
-                            width: 24px;
-                            height: 2px;
-                            background-image: var(--bi-gradient-1);
-                            background-size: 200% 100%;
-                            background-position: center left;
-                            content: "";
-                            display: block;
-
-                            @include md {
-                                width: 64px;
-                            }
-                        }
-
                         background-color: var(--white);
-                        border-radius: 0px 16px 16px 0px;
+                        border-radius: 0px 0px 16px 0px;
                         overflow: hidden;
                         padding: 2px 12px;
         
@@ -305,6 +297,7 @@
     }
 
     .content{
+        margin-top: 16px;
         position: relative;
         z-index: 4;
         width: 100%;
@@ -320,22 +313,34 @@
         display: flex;
         flex-direction: column;
         gap: 24px;
-        margin: 0;
+
+        width: 100%;
+        max-width: 100%;
+        margin: 0px auto;
+
         background-color: var(--light-grey);
         padding: 24px;
 
         @include md {
             padding: 32px;
+            max-width: calc(100% - 64px);
+            border-radius: 24px;
+            margin: 24px auto;
         }
     
         h2 {
-            font-size: 28px;
-            line-height: 40px;
+            font-size: 24px;
+            line-height: 32px;
             color: var(--dark-grey);
             display: grid;
             grid-template-columns: max-content auto max-content;
             align-items: center;
             grid-gap: 16px;
+
+            @include md {
+                font-size: 28px;
+                line-height: 40px;
+            }
 
             .Counter {
                 text-align: center;

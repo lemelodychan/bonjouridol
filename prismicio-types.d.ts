@@ -1288,6 +1288,26 @@ export interface SingleButtonSliceDefaultPrimaryButtonItem {
  */
 export interface SingleButtonSliceDefaultPrimary {
   /**
+   * Title field in *Buttons → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: single_button.default.primary.title
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title: prismic.KeyTextField;
+
+  /**
+   * Text field in *Buttons → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: single_button.default.primary.text
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  text: prismic.RichTextField;
+
+  /**
    * Button field in *Buttons → Default → Primary*
    *
    * - **Field Type**: Group

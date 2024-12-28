@@ -7,6 +7,8 @@
 
     .GalleryItem {
         position: relative;
+        border-radius: 16px;
+        overflow: hidden;
 
         &:hover {
             cursor: pointer;
@@ -30,6 +32,9 @@
         }
 
         &.Loading {
+            aspect-ratio: 3/2;
+            height: auto;
+
             img {
                 opacity: 0;
             }

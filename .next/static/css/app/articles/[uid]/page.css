@@ -132,9 +132,15 @@
   background-color: var(--bi-pink);
 }
 .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 36px max-content;
+  grid-gap: 0;
   gap: 0;
+}
+@media (min-width: 769px) {
+  .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn {
+    grid-template-rows: 58px max-content;
+  }
 }
 .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h1 {
   display: inline-block;
@@ -151,8 +157,8 @@
 }
 @media (min-width: 769px) {
   .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h1 {
-    font-size: 32px;
-    line-height: 48px;
+    font-size: 40px;
+    line-height: 64px;
     max-width: 1000px;
   }
 }
@@ -168,8 +174,10 @@
 }
 @media (min-width: 769px) {
   .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h1 > span {
-    font-size: 32px;
-    line-height: 48px;
+    font-size: 40px;
+    line-height: 64px;
+    position: relative;
+    top: -4px;
   }
 }
 .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h2 {
@@ -190,25 +198,11 @@
   align-items: center;
   gap: 8px;
   background-color: var(--white);
-  border-radius: 0px 16px 16px 0px;
+  border-radius: 0px 0px 16px 0px;
   overflow: hidden;
   padding: 2px 12px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-}
-.page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h2 > span:before {
-  width: 24px;
-  height: 2px;
-  background-image: var(--bi-gradient-1);
-  background-size: 200% 100%;
-  background-position: center left;
-  content: "";
-  display: block;
-}
-@media (min-width: 769px) {
-  .page_container__nbpj5 .page_header__3X_lA .page_HeaderContent__7VOpy .page_TitleContainer__NM_xn h2 > span:before {
-    width: 64px;
-  }
 }
 .page_container__nbpj5 .page_information__L_gSF {
   width: 100%;
@@ -284,6 +278,7 @@
   border-radius: 24px;
 }
 .page_container__nbpj5 .page_content__6AVtH {
+  margin-top: 16px;
   position: relative;
   z-index: 4;
   width: 100%;
@@ -298,23 +293,34 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0px auto;
   background-color: var(--light-grey);
   padding: 24px;
 }
 @media (min-width: 769px) {
   .page_container__nbpj5 .page_Gallery__PMysB {
     padding: 32px;
+    max-width: calc(100% - 64px);
+    border-radius: 24px;
+    margin: 24px auto;
   }
 }
 .page_container__nbpj5 .page_Gallery__PMysB h2 {
-  font-size: 28px;
-  line-height: 40px;
+  font-size: 24px;
+  line-height: 32px;
   color: var(--dark-grey);
   display: grid;
   grid-template-columns: max-content auto max-content;
   align-items: center;
   grid-gap: 16px;
+}
+@media (min-width: 769px) {
+  .page_container__nbpj5 .page_Gallery__PMysB h2 {
+    font-size: 28px;
+    line-height: 40px;
+  }
 }
 .page_container__nbpj5 .page_Gallery__PMysB h2 .page_Counter__xKDng {
   text-align: center;
@@ -988,6 +994,8 @@ button.swiper-pagination-bullet {
 }
 .Gallery_Gallery__kufPe .Gallery_GalleryItem___8cHW {
   position: relative;
+  border-radius: 16px;
+  overflow: hidden;
 }
 .Gallery_Gallery__kufPe .Gallery_GalleryItem___8cHW:hover {
   cursor: pointer;
@@ -1005,6 +1013,10 @@ button.swiper-pagination-bullet {
   object-fit: cover;
   object-position: center;
   transition: var(--transi);
+}
+.Gallery_Gallery__kufPe .Gallery_GalleryItem___8cHW.Gallery_Loading___zvil {
+  aspect-ratio: 3/2;
+  height: auto;
 }
 .Gallery_Gallery__kufPe .Gallery_GalleryItem___8cHW.Gallery_Loading___zvil img {
   opacity: 0;
@@ -1181,6 +1193,70 @@ button.swiper-pagination-bullet {
 }
 .page_SocialLinksContainer__naish > div .page_SocialLinks__RuCDg a:hover {
   color: var(--bi-indigo);
+}
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Buttons/page.module.scss ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes page_rotate__6BW2j {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.page_ButtonsContainer__DYcfz {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 auto 16px auto;
+  padding: 0 24px;
+  width: 100%;
+  max-width: 1000px;
+}
+@media (min-width: 769px) {
+  .page_ButtonsContainer__DYcfz {
+    margin: 0px auto 24px auto;
+    padding: 0 32px;
+  }
+}
+.page_ButtonsContainer__DYcfz .page_Text__5KMwi {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 16px;
+  line-height: 28px;
+}
+.page_ButtonsContainer__DYcfz > .page_Buttons__yQec4 {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 8px 0;
+}
+.page_ButtonsContainer__DYcfz > .page_Buttons__yQec4 a {
+  text-decoration: none !important;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  gap: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 8px;
+  background: transparent;
+  color: var(--bi-dark-pink);
+  border: 1px solid var(--bi-light-pink);
+  transition: var(--transi);
+}
+.page_ButtonsContainer__DYcfz > .page_Buttons__yQec4 a:hover {
+  color: var(--bi-indigo);
+  border: 1px solid var(--bi-indigo);
 }
 /*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Setlist/page.module.scss ***!

@@ -34,8 +34,12 @@ export default async function DocListContent({ type }) {
         },
         orderings: [
             {
-                field: 'document.first_publication_date',
-                direction: 'desc',
+              field: 'my.articles.publication_date',
+              direction: 'desc',
+            },
+            {
+              field: 'document.first_publication_date',
+              direction: 'desc',
             },
         ],
     });
@@ -52,8 +56,12 @@ export default async function DocListContent({ type }) {
             },
             orderings: [
                 {
-                    field: 'document.first_publication_date',
-                    direction: 'desc',
+                  field: 'my.gallery.event_date',
+                  direction: 'desc',
+                },
+                {
+                  field: 'document.first_publication_date',
+                  direction: 'desc',
                 },
             ],
         });

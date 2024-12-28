@@ -18,12 +18,14 @@ export default function Topbar() {
                     <IoArrowForwardOutline />
                 </span>
             </Link>
-            <Link href="/">
+
+            {/* <Link href="/">
                 <span>Français</span>
                 <span className={styles.Icon}>
                     <IoArrowForwardOutline />
                 </span>
-            </Link>
+            </Link> */}
+            
         </div>
     )
 }
