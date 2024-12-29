@@ -6,33 +6,59 @@
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
     gap: 24px;
     background-color: white;
     z-index: 3;
     position: relative;
     padding: 24px;
 
-    @include md {
-        align-items: center;
-    }
-
     > a:first-of-type {
         display: block;
         width: 100%;
 
         @include md {
+            margin-top: 8px;
             width: fit-content;
+            display: none;
         }
     }
 
     h2 {
         margin: 0;
 
-        span {
+        @include md {
+            font-size: 32px;
+            line-height: 48px;
+            display: grid;
+            grid-template-columns: max-content auto max-content !important;
+        }
+
+        &:after {
+            order: 2;
+        }
+
+        > span {
+            order: 1;
+
             @include md {
                 font-size: 32px;
                 line-height: 48px;
+            }
+        }
+
+        a {
+            order: 3;
+            display: none;
+
+            @include md {
+                display: block;
+            }
+
+            button {
+                svg {
+                    order: 2;
+                }
             }
         }
     }
@@ -46,11 +72,10 @@
         .PostContainer {
             display: grid;
             grid-template-columns: 1fr;
-            grid-gap: 16px;
+            grid-gap: 24px;
 
             @include md {
                 grid-template-columns: repeat(3, 1fr);
-                grid-gap: 24px;
             }
 
             > a.Post {

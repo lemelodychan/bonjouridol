@@ -3,8 +3,9 @@
 
 .navigation {
     width: 100%;
-    max-width: 100%;
+    max-width: 100vw;
     position: fixed;
+    z-index: 99;
 
     @include md {
         background-image: var(--bi-gradient-2);

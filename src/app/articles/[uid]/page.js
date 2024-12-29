@@ -14,6 +14,7 @@ import Gallery from '@/app/components/Gallery';
 import { HiOutlineLocationMarker, HiOutlineCalendar } from "react-icons/hi";
 
 export const dynamicParams = false;
+
 export async function generateMetadata({ params }) {
   const { uid } = await params;
   const client = createClient();

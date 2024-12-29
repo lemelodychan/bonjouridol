@@ -1,33 +1,54 @@
 .Main {
-    border: none;
-    border-radius: 16px;
-    font-family: var(--font-text);
-    font-weight: 500;
-    font-size: var(--font-size);
-    line-height: 1.5;
-    letter-spacing: 0.7px;
-    text-transform: uppercase;
+  border: none;
+  border-radius: 16px;
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: var(--font-size);
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 
-    gap: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 8px 12px;
+  gap: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
 
-    transition: var(--transi);
+  transition: var(--transi);
 
-    > span {
-      text-decoration: none !important;
-    }
+  > span {
+    text-decoration: none !important;
+    display: inline-block;
+    position: relative;
+    top: 1px;
   }
+}
 
-  .Pink {
-    color: var(--white);
-    background-image: var(--bi-gradient-1);
-    background-position: center right;
-    background-size: 200% 100%;
-  
-    &:hover{
-      background-position: center left;
-    }
+.Pink {
+  color: var(--white);
+  background-image: var(--bi-gradient-1);
+  background-position: center right;
+  background-size: 200% 100%;
+
+  &:hover{
+    background-position: center left;
   }
+}
+
+.White {
+  color: var(--bi-dark-pink);
+  background-color: white;
+
+  &:hover{
+    color: var(--bi-indigo);
+  }
+}
+
+.Grey {
+  color: var(--bi-dark-pink);
+  background-color: var(--light-grey);
+
+  &:hover{
+    color: var(--bi-indigo);
+  }
+}

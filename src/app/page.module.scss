@@ -65,6 +65,11 @@
       gap: 32px;
     }
 
+    .swiper-wrapper {
+      width: fit-content !important;
+      border-radius: 0px !important;
+    }
+
     .Slices {
       background-color: white;
       z-index: 3;

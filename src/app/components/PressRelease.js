@@ -48,7 +48,12 @@ export default async function PressRelease() {
     
     return (
         <div className={styles.PressRelease}>
-            <h2><span>Press Release</span></h2>
+            <h2>
+                <span>Press Release</span>
+                <Link href="/pressrelease" className={styles.btn}>
+                    <Button variant={"White"} textValue={"See more articles"} icon={<IoArrowForwardOutline />} />
+                </Link>
+            </h2>
 
             <div className={styles.PostContainer}>
                 {sortedResults.map((item) => {
@@ -96,7 +101,7 @@ export default async function PressRelease() {
                 })}
             </div>
 
-            <Link href="https://bonjouridol.com/" className={styles.btn}>
+            <Link href="/pressrelease" className={styles.btn}>
                 <Button variant={"Pink"} textValue={"See more articles"} icon={<IoArrowForwardOutline />} />
             </Link>
         </div>

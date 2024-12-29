@@ -86,7 +86,7 @@ export default async function LatestPost() {
                     );
                 })}
 
-                <Link href="https://bonjouridol.com/" className={styles.btn}>
+                <Link href="/livereports" className={styles.btn}>
                     <Button variant={"Pink"} textValue={"See more articles"} icon={<IoArrowForwardOutline />} />
                 </Link>
 
