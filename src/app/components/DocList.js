@@ -79,32 +79,38 @@ export default async function DocListContent({ type }) {
     
     return (
         <div className={styles.DocList}>
-            {results.map((item) => (
-                <PrismicLink key={item.id} className={styles.Post} href={`/articles/${item.uid}`}>
-                    {item.data.featured_image && (
-                        <div className={styles.FeaturedImage}>
-                            <PrismicNextImage 
-                                field={item.data.featured_image} 
-                                alt=""
-                                fallbackAlt=""
-                            />
-                        </div>
-                    )}
-                    <div className={styles.Content}>
-                        {item.tags && (
-                            <div className={styles.Tags}>
-                                {item.tags.map((item) => (
-                                    <span key={item} className={styles.Tag}>{item}</span>
-                                ))}
+            {results.map((item) => {
+                const linkPath = type === "Galleries" 
+                ? `/galleries/${item.uid}` 
+                : `/articles/${item.uid}`;
+
+                return (
+                    <PrismicLink key={item.id} className={styles.Post} href={linkPath}>
+                        {item.data.featured_image && (
+                            <div className={styles.FeaturedImage}>
+                                <PrismicNextImage 
+                                    field={item.data.featured_image} 
+                                    alt=""
+                                    fallbackAlt=""
+                                />
                             </div>
-                         )}
-                        <h3>
-                            <span>{item.data.title}</span>
-                            <span className={styles.icon}><IoArrowForwardOutline /></span>
-                        </h3>
-                    </div>
-                </PrismicLink>
-            ))}
+                        )}
+                        <div className={styles.Content}>
+                            {item.tags && (
+                                <div className={styles.Tags}>
+                                    {item.tags.map((item) => (
+                                        <span key={item} className={styles.Tag}>{item}</span>
+                                    ))}
+                                </div>
+                            )}
+                            <h3>
+                                <span>{item.data.title}</span>
+                                <span className={styles.icon}><IoArrowForwardOutline /></span>
+                            </h3>
+                        </div>
+                    </PrismicLink>
+                );
+            })}
         </div>
     );
 }
