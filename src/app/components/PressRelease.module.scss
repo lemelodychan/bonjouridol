@@ -1,0 +1,189 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.PressRelease {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    background-color: white;
+    z-index: 3;
+    position: relative;
+    padding: 24px;
+
+    @include md {
+        align-items: center;
+    }
+
+    > a:first-of-type {
+        display: block;
+        width: 100%;
+
+        @include md {
+            width: fit-content;
+        }
+    }
+
+    h2 {
+        margin: 0;
+
+        span {
+            @include md {
+                font-size: 32px;
+                line-height: 48px;
+            }
+        }
+    }
+
+        .btn {
+            > button {
+                width: 100%;
+            }
+        }
+
+        .PostContainer {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-gap: 16px;
+
+            @include md {
+                grid-template-columns: repeat(3, 1fr);
+                grid-gap: 24px;
+            }
+
+            > a.Post {
+                cursor: pointer;
+                color: var(--dark-gray);
+                display: grid;
+                grid-gap: 16px;
+                grid-template-columns: minmax(0%, 112px) auto;
+                height: fit-content;
+
+                @include md {
+                    grid-template-columns: 33% auto;
+                }
+
+                .FeaturedImage {
+                    width: 100%;
+                    max-width: 112px;
+                    aspect-ratio: 1;
+                    overflow: hidden;
+                    border-radius: 16px;
+
+                    @include md {
+                        max-width: unset;
+                    }
+
+                    > div > img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        object-position: center;
+                        transform: scale(100%);
+                        transition: all ease 0.3s;
+                    }
+                }
+
+                > .Content {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 8px;
+                    text-align: left;
+
+                    .Tags {
+                        display: flex;
+                        gap: 8px;
+                        margin-bottom: 4px;
+            
+                        > .Tag {
+                            display: inline-block;
+                            padding: 4px 8px;
+                            border-radius: 4px;
+            
+                            color: var(--white);
+                            text-transform: uppercase;
+                            font-weight: bold;
+                            font-size: var(--font-size-sm);
+                            letter-spacing: 0.5px;
+                        
+                            &.livereport, &.interview {
+                                background-color: var(--bi-indigo);
+                                order: 2;
+                            }
+                            &.pr {
+                                background-color: var(--bi-dark-pink);
+                                order: 1;
+                            }
+                            &:empty { display: none; }
+                        }
+                    }
+
+                    .Title { 
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 8px;
+                        text-align: left;
+                        margin-bottom: 4px;
+
+                        > h3 {
+                            display: inline-block;
+                            width: fit-content;
+                            font-size: 16px;
+                            line-height: 24px;
+                            margin: 0;
+                            font-weight: 600;
+                            color: var(--dark-gray);
+                            transition: var(--transi);
+        
+                            > .icon {
+                                display: inline-flex;
+                                align-items: center;
+                                margin-left: 4px;
+                                width: 16px;
+                                height: 16px;
+                                position: relative;
+                                overflow: hidden;
+        
+                                > svg {
+                                    position: relative;
+                                    top: 2px;
+                                    left: -24px;
+                                    opacity: 0;
+                                    transition: var(--transi);
+                                }
+                            }
+                    
+                        }
+
+                    }
+
+                    .Date {
+                        margin-top: 8px;
+                        color: var(--medium-grey);
+                    }
+                }
+
+                &:hover {
+                    .FeaturedImage {
+                        > div > img {
+                            transform: scale(105%);
+                        }
+                    }
+                    
+                    > .Content {
+                        h3 {
+                            color: var(--bi-dark-pink);
+                            > .icon svg {
+                                left: 0px;
+                                opacity: 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+}

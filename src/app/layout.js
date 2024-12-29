@@ -6,6 +6,7 @@ import { repositoryName } from '@/prismicio'
 
 import Navbar from './components/Navbar'
 import Topbar from './components/Topbar'
+import Footer from './components/Footer'
 
 const DMSans = DM_Sans({ subsets: ['latin'] })
 
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
         <Navbar />
         {children}
         <PrismicPreview repositoryName={repositoryName} />
+        <Footer />
       </body>
     </html>
   )

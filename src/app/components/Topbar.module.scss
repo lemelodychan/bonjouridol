@@ -3,56 +3,70 @@
 
 .Topbar {
     background: var(--bi-gradient-2);
-    padding: 6px 32px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 24px;
-
-    width: -webkit-fill-available;
-    max-width: 1440px;
+    position: relative;
+    z-index: 999;
     margin: 0 auto;
 
     color: white;
+    overflow: hidden;
+    display: none;
 
-    a {
-        color: white;
-        text-decoration: none;
-        text-transform: uppercase;
-        font-weight: 500;
-        font-size: 12px;
-        line-height: 24px;
-        letter-spacing: 0.5px;
-        position: relative;
-        display: inline-flex;
+    width: 100%;
+    max-width: 100%;
+
+    @include md {
+        display: block;
+        width: -webkit-fill-available;
+        max-width: 1440px;
+    }
+
+    > div {
+        padding: 6px 32px;
+        display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 4px;
+        justify-content: flex-end;
+        gap: 24px;
 
-        .Icon {
-            width: 0px;
-            overflow: hidden;
+        a {
+            color: white;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 500;
+            font-size: 12px;
+            line-height: 24px;
+            letter-spacing: 0.5px;
+            position: relative;
             display: inline-flex;
+            flex-direction: row;
             align-items: center;
-            justify-content: center;
-            transition: var(--transi);
+            gap: 4px;
+            z-index: 9999;
 
-            svg {
-                opacity: 0;
-                position: relative;
-                left: -16px;
+            .Icon {
+                width: 0px;
+                overflow: hidden;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
                 transition: var(--transi);
+
+                svg {
+                    opacity: 0;
+                    position: relative;
+                    left: -16px;
+                    transition: var(--transi);
+                }
+
             }
 
-        }
-
-        &:hover .Icon {
-            width: 12px;
-        
-            svg {
-                opacity: 1;
-                left: 0px;
+            &:hover .Icon {
+                width: 12px;
+            
+                svg {
+                    opacity: 1;
+                    left: 0px;
+                }
             }
         }
     }

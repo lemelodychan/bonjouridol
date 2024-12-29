@@ -20,5 +20,28 @@
         gap: 16px;
         font-size: 16px;
         line-height: 28px;
+
+        a {
+            color: var(--bi-dark-pink) !important;
+            text-decoration: none !important;
+            border-bottom: 1px solid;
+            font-weight: 500;
+
+            &:hover {
+                color: var(--bi-indigo) !important;
+            }
+        }
+
+        ul {
+            margin-block: 0;
+            list-style-type: none;
+
+            li:before {
+                content: "・";
+                color: var(--bi-dark-pink);
+                font-weight: 600;
+                margin-right: 4px;
+            }
+        }
     }
 }

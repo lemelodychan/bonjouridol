@@ -2,11 +2,13 @@
 @use "../styles/variables.scss";
 
 .LatestPosts {
+    --margin: 36px;
+
     width: 100%;
     margin: 0 auto;
     position: relative;
-    top: -36px;
-    height: 1200px;
+    top: calc(-1 * var(--margin));
+    height: calc(1200px + var(--margin) + 16px);
 
     @include md {
         height: auto;
@@ -27,7 +29,7 @@
 
     > .OtherPosts {
         position: relative;
-        top: -36px;
+        top: 0px;
         z-index: 2;
         padding: 24px 24px;
         background-color: var(--white);
@@ -35,15 +37,14 @@
         display: flex;
         flex-direction: column;
         gap: 16px;
-        height: 640px;
-        min-height: 440px;
+        height: -webkit-fill-available;
 
         @include md {
             border-radius: 24px;
             background-color: var(--light-grey);
             top: 0;
+            gap: 24px;
             min-height: unset;
-            height: -webkit-fill-available;
         }
 
         h2 {
@@ -100,12 +101,13 @@
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 16px;
+                gap: 8px;
                 text-align: left;
 
                 .Tags {
                     display: flex;
                     gap: 8px;
+                    margin-bottom: 4px;
         
                     > .Tag {
                         display: inline-block;
@@ -118,11 +120,13 @@
                         font-size: var(--font-size-sm);
                         letter-spacing: 0.5px;
                     
-                        &:nth-child(odd) {
+                        &.livereport, &.interview {
                             background-color: var(--bi-indigo);
+                            order: 2;
                         }
-                        &:nth-child(even) {
+                        &.pr {
                             background-color: var(--bi-dark-pink);
+                            order: 1;
                         }
                         &:empty { display: none; }
                     }
@@ -134,11 +138,13 @@
                     align-items: flex-start;
                     gap: 8px;
                     text-align: left;
+                    margin-bottom: 4px;
 
                     > h3 {
                         display: inline-block;
                         width: fit-content;
                         font-size: 16px;
+                        font-weight: 600;
                         line-height: 24px;
                         margin: 0;
                         color: var(--dark-gray);
@@ -164,6 +170,11 @@
                 
                     }
 
+                }
+
+                .Date {
+                    margin-top: 4px;
+                    color: var(--medium-grey);
                 }
             }
 

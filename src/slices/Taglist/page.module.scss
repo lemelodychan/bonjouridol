@@ -8,7 +8,7 @@
     z-index: 3;
 
     @include md {
-        padding: 0 32px;
+        padding: 0;
     }
     
     .TaglistContainer {
@@ -16,12 +16,16 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        gap: 2px;
+        gap: 4px;
         align-items: baseline;
         justify-content: center;
+        background-color: var(--light-grey);
+        padding: 16px;
+        border-radius: 24px;
 
         @include md {
-            gap: 4px;
+            gap: 8px;
+            padding: 24px;
         }
 
         strong {
@@ -53,7 +57,6 @@
 
             @include md {
                 font-size: 14px;
-                padding: 8px 12px;
             }
 
             &:hover{

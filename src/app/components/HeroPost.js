@@ -1,5 +1,6 @@
 import { createClient } from "@/prismicio";
 import * as prismic from "@prismicio/client";
+import { format } from 'date-fns';
 
 import { Article } from "../articles/[uid]/page.js";
 import { PrismicNextImage } from "@prismicio/next";
@@ -35,6 +36,11 @@ export default async function HeroPost() {
         ],
     });
     const latestPost = results[0]
+
+    const publicationDate = latestPost.data.publication_date || latestPost.first_publication_date;
+    const formattedDate = publicationDate 
+        ? format(new Date(publicationDate), "MMMM d, yyyy") 
+        : "Unknown date";
     
     return (
         <PrismicLink href={`/articles/${latestPost.uid}`}>
@@ -44,6 +50,7 @@ export default async function HeroPost() {
                         {latestPost.tags.map((item) => (
                             <span key={item} className={styles.Tag}>{item}</span>
                         ))}
+                        <span className={styles.Date}>{formattedDate}</span>
                     </div>
                     <h1>
                         <span>

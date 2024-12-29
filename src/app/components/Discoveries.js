@@ -1,5 +1,6 @@
 import { createClient } from "@/prismicio";
 import * as prismic from "@prismicio/client";
+import { format } from 'date-fns';
 
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicLink, PrismicText, useAllPrismicDocumentsByType } from '@prismicio/react'
@@ -47,29 +48,46 @@ export default async function Discoveries() {
                 className={styles.DiscoveriesScroll}
             >
                 <div className={styles.DiscoveriesContainer}>
-                    {results.map((item) => (
-                        <PrismicLink key={item.id} className={styles.DiscoveryPost} href={`/articles/${item.uid}`}>
-                            <div className={styles.FeaturedImage}>
-                                <SingleImage 
-                                    image={item.data.featured_image}
-                                    alt={item.data.featured_image.alt || ""}  
-                                />
-                            </div>
-                            <div className={styles.Content}>
-                                <div className={styles.Tags}>
-                                    {item.tags.map((item) => (
-                                        <span key={item} className={styles.Tag}>{item}</span>
-                                    ))}
+                    {results.map((item) => {
+                        const publicationDate = item.data.publication_date || item.first_publication_date;
+                        const formattedDate = publicationDate
+                            ? format(new Date(publicationDate), "MMMM d, yyyy")
+                            : "Unknown date";
+
+                        return (
+                            <PrismicLink key={item.id} className={styles.DiscoveryPost} href={`/articles/${item.uid}`}>
+                                <div className={styles.FeaturedImage}>
+                                    <SingleImage 
+                                        image={item.data.featured_image}
+                                        alt={item.data.featured_image.alt || ""}  
+                                    />
                                 </div>
-                                <div className={styles.Title}>
-                                    <h3>
-                                        <span>{item.data.title}</span>
-                                        <span className={styles.icon}><IoArrowForwardOutline /></span>
-                                    </h3>
+                                <div className={styles.Content}>
+                                    <div className={styles.Tags}>
+                                        {item.tags.map((tag) => {
+                                            const sanitizedTag = tag
+                                                .normalize("NFD")
+                                                .replace(/[\u0300-\u036f]/g, "")
+                                                .replace(/\s+/g, "")
+                                                .toLowerCase();
+                                            return (
+                                                <span key={tag} className={`${styles.Tag} ${styles[sanitizedTag]}`}>
+                                                    {tag}
+                                                </span>
+                                            );
+                                        })}
+                                    </div>
+                                    <div className={styles.Title}>
+                                        <h3>
+                                            <span>{item.data.title}</span>
+                                            <span className={styles.icon}><IoArrowForwardOutline /></span>
+                                        </h3>
+                                    </div>
+                                    <span className={styles.Date}>{formattedDate}</span>
                                 </div>
-                            </div>
-                        </PrismicLink>
-                    ))}
+                            </PrismicLink>
+                        );
+                    })}
                 </div>
             </div>
             <div className={styles.DiscoveriesFooter}>

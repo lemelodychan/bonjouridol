@@ -46,6 +46,10 @@ html, body {
   color: var(--dark-grey);
 }
 
+body {
+  overflow-x: hidden;
+}
+
 .overflowHidden {
   overflow: hidden !important;
 }

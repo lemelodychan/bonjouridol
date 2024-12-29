@@ -20,10 +20,31 @@
 
     h2 {
         padding: 0 24px 4px 24px;
+
+        @include md {
+            font-size: 32px;
+            line-height: 48px;
+        }
     }
 
     .DiscoveriesFooter {
         padding: 0 24px;
+
+        a {
+            width: 100%;
+
+            @include md {
+                width: fit-content;
+            }
+
+            button {
+                width: 100%;
+
+                @include md {
+                    width: fit-content;
+                }
+            }
+        }
     }
 
     .DiscoveriesScroll {
@@ -128,11 +149,13 @@
                             font-size: var(--font-size-sm);
                             letter-spacing: 0.5px;
                         
-                            &:nth-child(odd) {
+                            &.discovery  {
                                 background-color: var(--bi-indigo);
+                                order: 2;
                             }
-                            &:nth-child(even) {
+                            &.pr {
                                 background-color: var(--bi-dark-pink);
+                                order: 1;
                             }
                             &:empty { display: none; }
                         }
@@ -177,6 +200,11 @@
                     
                         }
 
+                    }
+
+                    .Date {
+                        margin-top: 4px;
+                        color: white;
                     }
                 }
 

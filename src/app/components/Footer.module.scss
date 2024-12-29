@@ -1,0 +1,117 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.Footer {
+    position: relative;
+    background: var(--light-grey);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: space-between;
+    gap: 24px;
+    z-index: 99;
+
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+
+    color: var(--medium-grey);
+
+    @include md {
+        text-align: unset;
+        width: -webkit-fill-available;
+        max-width: 1440px;
+        flex-direction: row;
+    }
+
+    &:before {
+        opacity: 1;
+        content: "";
+        display: block;
+        position: absolute;
+        z-index: 0;
+        height: calc(24px* 2);
+        width: calc(24px* 2);
+        border-bottom: 24px solid var(--light-grey);
+        border-left: 24px solid var(--light-grey);
+        top: -48px;
+        left: calc(-1* 24px);
+        border-radius: 0 0 0 calc(24px* 2);
+    }
+    &:after {
+        opacity: 1;
+        content: "";
+        display: block;
+        position: absolute;
+        z-index: 0;
+        height: calc(24px* 2);
+        width: calc(24px* 2);
+        border-bottom: 24px solid var(--light-grey);
+        border-right: 24px solid var(--light-grey);
+        top: -48px;
+        right: calc(-1* 24px);
+        border-radius: 0 0 calc(24px* 2) 0;
+    }
+
+    .SocialLinks {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+
+        a {
+            width: fit-content;
+            height: 36px;
+            font-size: 16px;
+            display: flex;
+            padding: 0 12px;
+            align-items: center;
+            justify-content: flex-start;
+            border-radius: 8px;
+            background-color: white;
+            color: var(--bi-dark-pink);
+            transition: var(--transi);
+            text-decoration: none;
+
+            &:hover {
+                color: var(--bi-indigo);
+            }
+
+            > span {
+                transition: var(--transi);
+                width: 0px;
+                display: inline-block;
+                font-size: 14px;
+                letter-spacing: 0.5px;
+                text-decoration: none;
+                text-transform: uppercase;
+                font-weight: 600;
+                overflow: hidden;
+
+                > span {
+                    transition: var(--transi);
+                    margin-left: 8px;
+                    opacity: 0;
+                    transform: translateX(-100%);
+                }
+            }
+
+            @include md {
+                &:hover > span {
+                    width: var(--width);
+    
+                    > span {
+                        opacity: 1;
+                        transform: translateX(0%);
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+    }
+
+    .Credits {
+        line-height: 32px;
+    }
+}
