@@ -18,7 +18,7 @@ export default async function DocListContent({ type }) {
     } else if (type === "Discoveries") {
         postType = "Discovery";
         category = "articles";
-    } else if (type === "Press release") {
+    } else if (type === "Press Releases") {
         postType = "Press release";
         category = "articles";
     } else if (type === "Galleries") {
