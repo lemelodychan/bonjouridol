@@ -27,8 +27,8 @@ const Buttons = ({ slice }) => {
       }
 
       <div className={styles.Buttons}>
-        {slice.primary.button.map((item) => (
-          <PrismicNextLink field={item.link} />
+        {slice.primary.button.map((item, index) => (
+          <PrismicNextLink key={index} field={item.link} />
         ))}
       </div>
     </section>

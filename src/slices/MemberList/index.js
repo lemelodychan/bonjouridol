@@ -13,6 +13,7 @@ const MemberList = ({ slice }) => {
       data-slice-variation={slice.variation}
       className={styles.MemberList}
     >
+      <h1><span>Meet the team</span></h1>
       <MemberListContent />
     </section>
   );

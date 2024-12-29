@@ -1872,37 +1872,34 @@ button.swiper-pagination-bullet {
 }
 .MemberListContent_MemberList__yipOy {
   display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 24px;
-  background-color: var(--light-grey);
-  padding: 24px;
-  border-radius: 24px;
-}
-@media (min-width: 640px) {
-  .MemberListContent_MemberList__yipOy {
-    grid-template-columns: 1fr 1fr;
-  }
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 48px 24px;
 }
 @media (min-width: 769px) {
   .MemberListContent_MemberList__yipOy {
     grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 48px 32px;
   }
 }
 @media (min-width: 1025px) {
   .MemberListContent_MemberList__yipOy {
     grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 48px 32px;
   }
 }
 .MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 16px;
-  border-radius: 16px;
+  gap: 4px;
   background-color: white;
 }
+@media (min-width: 769px) {
+  .MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f {
+    gap: 8px;
+  }
+}
 .MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f .MemberListContent_ProfilePicture__1HSuH {
-  border-radius: 8px;
+  border-radius: 16px;
   width: 100%;
   height: auto;
   aspect-ratio: 1/1;
@@ -1920,12 +1917,24 @@ button.swiper-pagination-bullet {
 }
 .MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f h3 {
   font-weight: 600;
-  margin-top: 8px;
+  margin-top: 4px;
+  font-size: 20px;
+}
+@media (min-width: 769px) {
+  .MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f h3 {
+    margin-top: 8px;
+    font-size: 24px;
+  }
 }
 .MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f span {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   flex-grow: 1;
+}
+@media (min-width: 769px) {
+  .MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f span {
+    font-size: 16px;
+  }
 }
 .MemberListContent_MemberList__yipOy .MemberListContent_MemberCard__6IO9f .MemberListContent_Description__x2vgo {
   font-size: 14px;
@@ -1955,12 +1964,81 @@ button.swiper-pagination-bullet {
 /*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/MemberList/page.module.scss ***!
   \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes page_rotate__y6p_5 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .page_MemberList__F7a63 {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  margin: 0 auto;
-  padding: 24px;
+  margin: 0 24px;
+  margin-top: 48px;
+}
+@media (min-width: 769px) {
+  .page_MemberList__F7a63 {
+    gap: 32px;
+    margin: 0 32px;
+    margin-top: 64px;
+  }
+}
+.page_MemberList__F7a63 h1 {
+  width: 100%;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+}
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/ImageGrid/page.module.scss ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes page_rotate__LkM9W {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.page_ImageGrid__KVkhX {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 24px 0px 24px;
+  background-color: var(--light-grey);
+}
+@media (min-width: 769px) {
+  .page_ImageGrid__KVkhX {
+    margin: 0 32px;
+    border-radius: 24px;
+  }
+}
+.page_ImageGrid__KVkhX h2 {
+  font-size: 24px;
+  line-height: 32px;
+  color: var(--dark-grey);
+  display: grid;
+  grid-template-columns: max-content auto;
+  align-items: center;
+  grid-gap: 16px;
+}
+@media (min-width: 769px) {
+  .page_ImageGrid__KVkhX h2 {
+    font-size: 28px;
+    line-height: 40px;
+  }
+}
+.page_ImageGrid__KVkhX h2:after {
+  width: 100%;
+  height: 2px;
+  display: block;
+  content: "";
+  background-image: linear-gradient(to right, var(--bi-pink), var(--bi-indigo));
+  order: 2;
 }
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/slices/Image/page.module.scss ***!

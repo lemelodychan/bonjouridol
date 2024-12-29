@@ -24,6 +24,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "image_grid": {
+              "type": "SharedSlice"
+            },
             "image_list": {
               "type": "SharedSlice"
             },

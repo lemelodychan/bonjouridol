@@ -44,11 +44,12 @@
   }
 }
 
-.Grey {
+.WhiteGrey {
   color: var(--bi-dark-pink);
-  background-color: var(--light-grey);
+  background-color: white;
 
   &:hover{
     color: var(--bi-indigo);
+    background-color: var(--light-grey);
   }
 }

@@ -24,8 +24,6 @@ export default async function MemberListContent() {
         ],
     });
 
-    console.log(members);
-
     return (
         <div className={styles.MemberList}>
             {members.map((member) => {
@@ -37,7 +35,6 @@ export default async function MemberListContent() {
                             <div className={styles.ProfilePicture}>
                                 <PrismicNextImage
                                     field={profile_picture}
-                                    alt={`${name}'s profile picture`}
                                     fallbackAlt=""
                                 />
                             </div>

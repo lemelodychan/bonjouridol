@@ -9,6 +9,7 @@ export const components = {
   gallery: dynamic(() => import("./Gallery")),
   gallery_link: dynamic(() => import("./GalleryLink")),
   image: dynamic(() => import("./Image")),
+  image_grid: dynamic(() => import("./ImageGrid")),
   image_list: dynamic(() => import("./MemberList")),
   purchase: dynamic(() => import("./Purchase")),
   quote: dynamic(() => import("./Quote")),
