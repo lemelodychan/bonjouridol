@@ -1,6 +1,162 @@
 @use "../styles/mixins.scss" as *;
 @use "../styles/variables.scss";
 
-.DocList {
-    display: block;
+.DocListContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding: 0 32px;
+
+    .DocList {
+        display: flex;
+        flex-direction: column;
+        gap: 48px;
+
+        .Post {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: max-content auto;
+            grid-gap: 24px;
+            text-decoration: none;
+            color: var(--dark-grey);
+
+            @include md {
+                grid-template-columns: 380px auto;
+                grid-template-rows: max-content;
+            }
+
+            &:hover {
+                cursor: pointer;
+
+                .FeaturedImage img {
+                    transform: scale(106%);
+                }
+
+                > .Content {
+                    h3 {
+                        > .icon svg {
+                            left: 0px;
+                            opacity: 1;
+                        }
+                    }
+                }
+            }
+
+            .FeaturedImage {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 3/2;
+                border-radius: 16px;
+                overflow: hidden;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: var(--transi);
+                    transform-origin: center;
+                    transform: scale(100%);
+                }
+            }
+
+            .Content {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+                justify-content: flex-start;
+
+                .Tags {
+                    display: flex;
+                    gap: 8px;
+                    margin-bottom: 4px;
+
+                    > .Tag {
+                        display: inline-block;
+                        padding: 4px 8px;
+                        border-radius: 4px;
+
+                        color: var(--white);
+                        text-transform: uppercase;
+                        font-weight: bold;
+                        font-size: var(--font-size-sm);
+                        letter-spacing: 0.5px;
+                    
+                        &.livereport, &.interview, &.discovery {
+                            background-color: var(--bi-indigo);
+                            order: 2;
+                        }
+                        &.pr {
+                            background-color: var(--bi-dark-pink);
+                            order: 1;
+                        }
+                        &:empty { display: none; }
+                    }
+                }
+
+                h3 { 
+                    display: flex;
+                    flex-direction: row;
+                    gap: 8px;
+                    text-align: left;
+                    align-items: center;
+
+                    > span:first-of-type {
+                        display: inline-block;
+                        width: fit-content;
+                        margin: 0;
+                        transition: var(--transi);
+                    }
+                    > .icon {
+                        display: none;
+                        align-items: center;
+                        margin-left: 4px;
+                        width: 20px;
+                        height: 20px;
+                        position: relative;
+                        overflow: hidden;
+
+                        @include md {
+                            display: inline-flex;
+                        }
+
+                        > svg {
+                            position: relative;
+                            left: -24px;
+                            opacity: 0;
+                            transition: var(--transi);
+                        }
+                    }
+
+                }
+
+                .Subtitle {
+                    font-size: 16px;
+                    line-height: 32px;
+                    font-weight: 600;
+                }
+
+                .Excerpt {
+                    margin-top: 8px;
+                    color: var(--medium-grey);
+                    font-size: 14px;
+                    line-height: 24px;
+                    display: -webkit-box;
+                    width: 100%;
+                    -webkit-line-clamp: 4;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+
+                button {
+                    padding: 8px 0px;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+
 }

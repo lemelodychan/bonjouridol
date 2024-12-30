@@ -1,0 +1,54 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.pagination {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    margin-top: 16px;
+    padding: 0 16px;
+
+    .pageInfo {
+        font-size: 14px;
+        line-height: 32px;
+        height: 32px;
+    }
+
+    > span {
+        display: flex;
+        width: 96px;
+        
+        &:first-of-type {
+            justify-content: flex-start;
+
+            button {
+                span {
+                    order: 2;
+                }
+                svg {
+                    order: 1;
+                }
+            }
+        }
+
+        &:last-of-type {
+            justify-content: flex-end;
+        }
+
+        .pageButton {
+            &:hover {
+                cursor: pointer;
+            }
+    
+            button {
+                padding: 8px 0px;
+
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}

@@ -607,6 +607,21 @@ interface PageDocumentData {
   title: prismic.KeyTextField;
 
   /**
+   * Type field in *Page*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: Live reports
+   * - **API ID Path**: page.type
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#select
+   */
+  type: prismic.SelectField<
+    "Live reports" | "Discoveries" | "Press Releases" | "Galleries" | "Other",
+    "filled"
+  >;
+
+  /**
    * Slice Zone field in *Page*
    *
    * - **Field Type**: Slice Zone
