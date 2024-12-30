@@ -29,6 +29,10 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
             const paragraphs = richTextSlice?.primary?.text?.map((block) => block.text) || [];
             const joinedText = paragraphs.join(" ");
 
+            const photographerName = item.data.photographer.uid || "Bonjour Idol";
+
+            console.log(photographerName);
+
             return (
               <div key={item.id} className={styles.Post}>
                 {item.data.featured_image && (
@@ -66,7 +70,12 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
                   {item.data.subtitle && (
                     <span className={styles.Subtitle}>{item.data.subtitle}</span>
                   )}
-                  <span className={styles.Date}>{formattedDate}</span>
+                  <span className={styles.Date}>
+                    <span>{formattedDate}</span>
+                    {postType === "Gallery" && (
+                        <span className={styles.Photographer}>&nbsp;ー Shot by <strong>{photographerName}</strong></span>
+                    )}
+                  </span>
 
                   {joinedText && (
                     <p className={styles.Excerpt}>{joinedText}</p>

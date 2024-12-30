@@ -81,6 +81,7 @@ export default async function Page({ params, searchParams }) {
 
   if (category === "galleries") {
     const galleries = await client.getByType("gallery", {
+      ref: client.masterRef,
       fetchOptions: {
         cache: 'no-store',
       },
@@ -89,6 +90,9 @@ export default async function Page({ params, searchParams }) {
       orderings: [
         { field: 'my.gallery.event_date', direction: 'desc' },
         { field: 'document.first_publication_date', direction: 'desc' },
+      ],
+      fetchLinks: [
+        "my.gallery.photographer.name", 
       ],
       filters: [
         prismic.filter.not('my.gallery.is_official_photos', true),
