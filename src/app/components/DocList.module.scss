@@ -108,6 +108,7 @@
                     gap: 8px;
                     text-align: left;
                     align-items: center;
+                    font-weight: 600;
 
                     > span:first-of-type {
                         display: inline-block;
@@ -151,7 +152,7 @@
                     line-height: 24px;
                     display: -webkit-box;
                     width: 100%;
-                    -webkit-line-clamp: 4;
+                    -webkit-line-clamp: 3;
                     -webkit-box-orient: vertical;
                     overflow: hidden;
                 }
@@ -254,6 +255,14 @@
 
                     h3 { 
                         color: white;
+                        font-size: 16px;
+                        line-height: 28px;
+                        font-weight: 600;
+
+                        @include md {
+                            font-size: 24px;
+                            line-height: 32px;
+                        }
                     }
     
                     .Date {
@@ -268,7 +277,13 @@
 
                     button {
                         margin-top: 8px;
-                        padding: 8px 12px;
+                        padding: 4px 8px;
+                        border-radius: 8px;
+
+                        @include md {
+                            padding: 8px 12px;
+                            border-radius: 16px;
+                        }
                     }
                 }
             }

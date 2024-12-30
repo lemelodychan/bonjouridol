@@ -1,67 +1,132 @@
 @use "../styles/mixins.scss" as *;
 @use "../styles/variables.scss";
 
-.menuContent {
-    list-style-type: none;
+.Menu {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    width: 100%;
-    height: -webkit-fill-available;
+    gap: 32px;
     justify-content: center;
 
-    @include md {
-        flex-direction: row;
-        gap: 24px;
-        width: auto;
-        align-items: center;
-        height: 96px;
-    }
+    .menuContent {
+        list-style-type: none;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+        height: fit-content;
+        justify-content: center;
 
-    li {
-        a {
-            color: var(--white);
-            font-family: var(--font-title);
-            font-size: var(--font-size-xl);
-            line-height: 56px;
-            letter-spacing: 0.5px;
-            padding: 4px 0;
-            transition: var(--transi);
-            text-decoration: none;
+        @include md {
+            flex-direction: row;
+            gap: 24px;
+            width: auto;
+            align-items: center;
+            height: 96px;
+        }
 
-            @include md {
-                font-family: var(--font-text);
-                color: var(--bi-dark-pink);
-                font-size: var(--font-size-md);
-                line-height: 24px;
-                letter-spacing: 0.32px;
-                font-weight: 600;
-            }
+        li {
+            width: fit-content;
 
-            &:hover  {
-                transform: scaleX(100%) !important;
-            }
-
-            &::after {
-                display: block;
-                height: 2px;
-                background-color: var(--bi-dark-pink);
-                content: " ";
-                position: relative;
-                top: 4px;
-                width: 100%;
+            a {
+                display: inline-block;
+                width: fit-content;
+                color: var(--white);
+                font-family: var(--font-title);
+                font-size: var(--font-size-xl);
+                letter-spacing: 0.5px;
+                padding: 4px 0;
                 transition: var(--transi);
-                transform-origin: left;
-                transform: scaleX(0%);
-            }
-            &:hover::after {
-                transform: scaleX(100%) !important;
-            }
-            &.active {
-                &::after {
+                text-decoration: none;
+
+                @include md {
+                    font-family: var(--font-text);
+                    color: var(--bi-dark-pink);
+                    font-size: var(--font-size-md);
+                    line-height: 24px;
+                    letter-spacing: 0.32px;
+                    font-weight: 600;
+                }
+
+                &:hover  {
                     transform: scaleX(100%) !important;
+                }
+
+                &::after {
+                    display: block;
+                    height: 2px;
+                    background-color: var(--bi-dark-pink);
+                    content: " ";
+                    position: relative;
+                    top: 4px;
+                    width: 100%;
+                    transition: var(--transi);
+                    transform-origin: left;
+                    transform: scaleX(0%);
+                }
+                &:hover::after {
+                    transform: scaleX(100%) !important;
+                }
+                &.active {
+                    &::after {
+                        transform: scaleX(100%) !important;
+                    }
                 }
             }
         }
     }
+
+    .menuSecondary {
+        list-style-type: none;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+        height: fit-content;
+        justify-content: center;
+
+        @include md {
+            display: none;
+        }
+
+        li {
+            width: fit-content;
+
+            a {
+                display: inline-block;
+                width: fit-content;
+                color: var(--white);
+                font-size: 20px;
+                letter-spacing: 0.5px;
+                padding: 4px 0;
+                transition: var(--transi);
+                text-decoration: none;
+
+                &:hover  {
+                    transform: scaleX(100%) !important;
+                }
+
+                &::after {
+                    display: block;
+                    height: 2px;
+                    background-color: var(--bi-dark-pink);
+                    content: " ";
+                    position: relative;
+                    top: 4px;
+                    width: 100%;
+                    transition: var(--transi);
+                    transform-origin: left;
+                    transform: scaleX(0%);
+                }
+                &:hover::after {
+                    transform: scaleX(100%) !important;
+                }
+                &.active {
+                    &::after {
+                        transform: scaleX(100%) !important;
+                    }
+                }
+            }
+        }
+    }
+
 }

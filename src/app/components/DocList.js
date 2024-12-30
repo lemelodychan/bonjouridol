@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import Link from "next/link";
 import { IoArrowForwardOutline } from "react-icons/io5";
 import Button from "./IconButton";
 import SingleImage from "./SingleImage";
@@ -28,13 +29,11 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
             );
             const paragraphs = richTextSlice?.primary?.text?.map((block) => block.text) || [];
             const joinedText = paragraphs.join(" ");
-
+            
             const photographerName = item.data.photographer?.uid || "Bonjour Idol";
 
-            console.log(photographerName);
-
             return (
-              <div key={item.id} className={styles.Post}>
+              <Link key={item.id} className={styles.Post} href={linkPath}>
                 {item.data.featured_image && (
                   <div className={styles.FeaturedImage}>
                     <SingleImage 
@@ -81,9 +80,9 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
                     <p className={styles.Excerpt}>{joinedText}</p>
                   )}
 
-                  <Button variant={"White"} textValue={"Read more"} icon={<IoArrowForwardOutline />} />
+                  <Button variant={"White"} textValue={`${postType === "Gallery" ? "View" : "Read more"}`} icon={<IoArrowForwardOutline />} />
                 </div>
-              </div>
+              </Link>
             );
           })
         ) : (
