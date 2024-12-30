@@ -3,7 +3,7 @@ import { IoArrowForwardOutline } from "react-icons/io5";
 import Button from "./IconButton";
 import SingleImage from "./SingleImage";
 import Breadcrumbs from "./Breadcrumbs";
-import DocListPagination from "./DocListPagination"; // Import pagination component
+import DocListPagination from "./DocListPagination";
 
 import styles from "./DocList.module.scss";
 
@@ -11,14 +11,14 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
   return (
     <div className={styles.DocListContainer}>
       <Breadcrumbs className={styles.Breadcrumbs} category={postType} />
-      <div className={styles.DocList}>
+      <div className={`${styles.DocList} ${postType === "Gallery" ? styles.Galleries : ""}`}>
         {results.length > 0 ? (
           results.map((item) => {
             const linkPath = postType === "Gallery"
               ? `/galleries/${item.uid}`
               : `/articles/${item.uid}`;
 
-            const publicationDate = item.data.publication_date || item.first_publication_date;
+            const publicationDate = item.data.publication_date || item.data.event_date || item.first_publication_date;
             const formattedDate = publicationDate
               ? format(new Date(publicationDate), "MMMM d, yyyy")
               : "Unknown date";
@@ -38,6 +38,9 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
                       alt={item.data.featured_image.alt || ""}  
                     />
                   </div>
+                )}
+                {postType === "Gallery" && (
+                     <span className={styles.Artist}>{item.data.artist_name}</span>
                 )}
                 <div className={styles.Content}>
                   {item.tags && (
@@ -64,7 +67,8 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
                     <span className={styles.Subtitle}>{item.data.subtitle}</span>
                   )}
                   <span className={styles.Date}>{formattedDate}</span>
-                  {paragraphs && (
+
+                  {joinedText && (
                     <p className={styles.Excerpt}>{joinedText}</p>
                   )}
 
@@ -77,8 +81,6 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
           <p>No results found.</p>
         )}
       </div>
-
-      {/* Pagination controls */}
       <DocListPagination currentPage={currentPage} totalPages={totalPages} />
     </div>
   );

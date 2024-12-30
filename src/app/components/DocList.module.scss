@@ -82,7 +82,7 @@
                         font-size: var(--font-size-sm);
                         letter-spacing: 0.5px;
                     
-                        &.livereport, &.interview, &.discovery {
+                        &.livereport, &.interview, &.discovery, &.gallery {
                             background-color: var(--bi-indigo);
                             order: 2;
                         }
@@ -153,6 +153,88 @@
 
                     &:hover {
                         cursor: pointer;
+                    }
+                }
+            }
+        }
+
+        &.Galleries {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 32px;
+
+            .Post {
+                position: relative;
+                display: grid;
+                grid-template-columns: 1fr;
+
+                .FeaturedImage {
+                    position: relative;
+
+                    &:before {
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                        content: "";
+                        position: absolute;
+                        transition: var(--transi);
+                        top: 0;
+                        left: 0;
+                        z-index: 1;
+                        opacity: 1;
+                        background: 
+                            radial-gradient(320px 320px at 100% 0%, var(--bi-dark-pink) 0%, rgba(255, 49, 148, 0) 100%), 
+                            radial-gradient(320px 320px at 0% 100%, var(--bi-indigo) 0%, rgba(114, 114, 252, 0) 100%),
+                            linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0.2))
+                        ;
+                    }
+                }
+
+                &:hover {
+                    .FeaturedImage {
+                        &::before {
+                            opacity: 0.5;
+                        }
+                    }
+                }
+
+                .Artist {
+                    z-index: 3;
+                    position: absolute;
+                    top: 24px;
+                    left: 24px;
+                    display: inline-block;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    width: fit-content;
+
+                    color: var(--white);
+                    text-transform: uppercase;
+                    font-weight: bold;
+                    font-size: var(--font-size-sm);
+                    letter-spacing: 0.5px;
+                    background-color: var(--bi-dark-pink);
+                }
+
+                .Content {
+                    z-index: 3;
+                    position: absolute;
+                    left: 24px;
+                    bottom: 24px;
+                    width: calc(100% - 48px);
+                    border-radius: 16px;
+
+                    h3 { 
+                        color: white;
+                    }
+    
+                    .Date {
+                        color: white;
+                    }
+
+                    button {
+                        margin-top: 8px;
+                        padding: 8px 12px;
                     }
                 }
             }
