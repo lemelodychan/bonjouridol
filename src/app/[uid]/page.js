@@ -90,6 +90,9 @@ export default async function Page({ params, searchParams }) {
         { field: 'my.gallery.event_date', direction: 'desc' },
         { field: 'document.first_publication_date', direction: 'desc' },
       ],
+      filters: [
+        prismic.filter.not('my.gallery.is_official_photos', true),
+      ],
     });
     results = galleries.results;
     totalPages = Math.ceil(galleries.total_results_size / defaultPageSize); 
