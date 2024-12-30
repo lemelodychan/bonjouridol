@@ -159,6 +159,7 @@ export default async function Page({ params }) {
                 images={galleryLink.data.gallery.map(item => ({
                   image: item.image,
                 }))}
+                color="white"
               />
             </div>
           )}

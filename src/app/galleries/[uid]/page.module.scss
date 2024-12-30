@@ -86,6 +86,9 @@
                     align-items: center;
         
                     .photographerImg {
+                        order: 1;
+                        border-radius: 50% !important;
+                        position: relative;
                         width: 56px;
                         height: 56px;
                         display: flex;
@@ -93,8 +96,6 @@
                         align-items: center;
                         justify-items: center;
                         justify-content: center;
-                        position: relative;
-                        order: 1;
 
                         @include md {
                             order: 2;
@@ -106,7 +107,8 @@
                             object-fit: cover;
                             border-radius: 50%;
                         }
-        
+            
+
                         &:before {
                             position: absolute;
                             width: 54px;
@@ -116,8 +118,9 @@
                             border-radius: 50%;
                             border: 1px solid var(--light-grey);
                         }
+                
                     }
-                    
+
                     .photographerInfo {
                         font-size: 12px;
                         color: var(--medium-grey);

@@ -38,7 +38,8 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
                   <div className={styles.FeaturedImage}>
                     <SingleImage 
                       image={item.data.featured_image}
-                      alt={item.data.featured_image.alt || ""}  
+                      alt={item.data.featured_image.alt || ""}
+                      color="GreyBg"  
                     />
                   </div>
                 )}

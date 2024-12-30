@@ -23,6 +23,7 @@ const Image = ({ slice }) => {
           alt={slice.primary.image.alt || "Image"}
           ratio="3/2"
           className={styles.Image}
+          color="GreyBg"
         />
       </div>
       {slice.primary.comment && 

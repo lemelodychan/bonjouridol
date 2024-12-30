@@ -34,6 +34,7 @@ const Carousel = ({ images }) => {
               image={item.image} 
               ratio="3/2"
               alt={item.image.alt || ""} 
+              color="GreyBg"
             />
           </SwiperSlide>
         );

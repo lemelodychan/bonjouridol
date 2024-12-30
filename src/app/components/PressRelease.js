@@ -67,7 +67,8 @@ export default async function PressRelease() {
                             <div className={styles.FeaturedImage}>
                                 <SingleImage 
                                     image={item.data.featured_image}
-                                    alt={item.data.featured_image.alt || ""}  
+                                    alt={item.data.featured_image.alt || ""}
+                                    color="GreyBg"  
                                 />
                             </div>
                             <div className={styles.Content}>

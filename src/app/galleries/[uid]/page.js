@@ -88,7 +88,7 @@ export default async function Page({ params }) {
 
           <div className={styles.content}>
             <section className={styles.GalleryContainer}>
-              <Gallery images={gallery.data.gallery} />
+              <Gallery images={gallery.data.gallery} color="GreyBg" />
             </section>
           </div>
           

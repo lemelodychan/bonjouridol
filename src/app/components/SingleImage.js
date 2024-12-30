@@ -38,7 +38,7 @@ const SingleImage = ({ image, alt, ratio = "auto", color = "default" }) => {
                 onLoadingComplete={() => setLoading(false)} // Called when the image is fully loaded
             />
         ) : (
-            <div className={placeholderClass}>
+            <div className={`${styles.Placeholder} ${placeholderClass}`}>
                 <span>
                     <TbLoader2 size={24} />
                 </span>
