@@ -27,8 +27,10 @@ export default function Navbar() {
   };
 
   const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
-    document.body.classList.remove("overflowHidden");
+    setTimeout(() => {
+      setMobileMenuOpen(false);
+      document.body.classList.remove("overflowHidden");
+    }, 300); // Delay of 300ms for synchronization
   };
 
   useEffect(() => {
