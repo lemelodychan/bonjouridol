@@ -29,7 +29,7 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
             const paragraphs = richTextSlice?.primary?.text?.map((block) => block.text) || [];
             const joinedText = paragraphs.join(" ");
 
-            const photographerName = item.data.photographer.uid || "Bonjour Idol";
+            const photographerName = item.data.photographer?.uid || "Bonjour Idol";
 
             console.log(photographerName);
 
