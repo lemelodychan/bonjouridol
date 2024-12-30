@@ -1,2 +1,156 @@
 @use "../../styles/mixins.scss" as *;
 @use "../../styles/variables.scss";
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    max-width: 1440px;
+    width: 100%;
+    background-color: white !important;
+    margin: 0 auto;
+    padding-top: 24px;
+
+
+    .header {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        padding: 0 24px;
+
+        @include md {
+            padding: 0 32px;
+        }
+
+        .HeaderContent {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+
+            @include md {
+                display: grid;
+                grid-template-columns: auto max-content;
+                grid-gap: 16px;
+            }
+
+            .HeaderTitle {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+
+                .tag {
+                    display: flex;
+                    max-width: 100%;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                    flex-direction: row;
+
+                    .venue {
+                        display: inline-flex;
+                        gap: 6px;
+                        align-items: center;
+                        width: fit-content;
+                        padding: 4px 8px;
+                        border-radius: 4px;
+                        color: white;
+                        text-transform: uppercase;
+                        font-weight: bold;
+                        font-size: var(--font-size-sm);
+                        letter-spacing: 0.5px;
+                        background-color: var(--bi-indigo);
+                    }
+                }
+
+                h1 {
+                    font-size: 28px;
+                    line-height: 32px;
+
+                    @include md {
+                        font-size: 32px;
+                        line-height: 40px;
+                    }
+                }
+            }
+
+            .information {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                align-content: flex-end;
+                align-items: flex-end;
+        
+                .photographer {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 16px;
+                    align-items: center;
+        
+                    .photographerImg {
+                        width: 56px;
+                        height: 56px;
+                        display: flex;
+                        text-align: center;
+                        align-items: center;
+                        justify-items: center;
+                        justify-content: center;
+                        position: relative;
+                        order: 1;
+
+                        @include md {
+                            order: 2;
+                        }
+        
+                        img {
+                            height: 48px;
+                            width: 48px;
+                            object-fit: cover;
+                            border-radius: 50%;
+                        }
+        
+                        &:before {
+                            position: absolute;
+                            width: 54px;
+                            height: 54px;
+                            display: block;
+                            content: "";
+                            border-radius: 50%;
+                            border: 1px solid var(--light-grey);
+                        }
+                    }
+                    
+                    .photographerInfo {
+                        font-size: 12px;
+                        color: var(--medium-grey);
+                        display: flex;
+                        flex-direction: column;
+                        gap: 8px;
+                        width: fit-content;
+                        order: 2;
+
+                        @include md {
+                            order: 1;
+                        }
+
+                        @include md {
+                            align-content: flex-end;
+                            text-align: right;
+                        }
+        
+                        .photographerName {
+                            font-size: 14px;
+                            color: var(--dark-grey);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .content {
+        padding: 0 24px;
+
+        @include md {
+            padding: 0 32px;
+        }
+    }
+}

@@ -6,12 +6,9 @@ import { format } from 'date-fns';
 
 import Breadcrumbs from '@/app/components/Breadcrumbs';
 import { PrismicNextImage } from "@prismicio/next";
-import { SliceZone } from "@prismicio/react";
-import SharingOptions from '../../components/SharingOptions';
 import Gallery from '@/app/components/Gallery';
-import Author from '@/app/components/Author';
 
-import { HiOutlineLocationMarker, HiOutlineCalendar } from "react-icons/hi";
+import { HiOutlineLocationMarker } from "react-icons/hi";
 
 export const dynamicParams = false;
 export async function generateMetadata({ params }) {
@@ -23,7 +20,6 @@ export async function generateMetadata({ params }) {
     description: gallery.data.meta_description,
   };
 }
-
 
 export default async function Page({ params }) {
   const { uid } = await params;
@@ -51,73 +47,51 @@ export default async function Page({ params }) {
       : "Unknown date";
 
   return (
-    <>
-        <gallery className={styles.container}>
-          <div 
-            className={styles.header}
-          >
+        <div className={styles.container}>
+
+          <div className={styles.header}>
             <Breadcrumbs 
               type="default"
               category="Gallery" 
-              title={gallery.data.artist_name} 
+              title={gallery.data.title}
               subtitle={formattedEventDate}
               uid={gallery.uid}
             />
 
             <div className={styles.HeaderContent}>
-              <div className={styles.tag}>
-                {gallery.data.event_date && (
-                  <span className={styles.date}>
-                    <HiOutlineCalendar />
-                    {formattedEventDate}
-                  </span>
-                )}
-                {gallery.data.venue && (
-                  <span className={styles.venue}>
-                    <HiOutlineLocationMarker />
-                    {gallery.data.venue}
-                  </span>
-                )}
-
-                <h1>
-                    {gallery.data.artist_name}
-                </h1>
+              <div className={styles.HeaderTitle}>
+                <div className={styles.tag}>
+                  {gallery.data.venue && (
+                    <span className={styles.venue}><HiOutlineLocationMarker />{gallery.data.venue}</span>
+                  )}
+                </div>
+                <h1>{gallery.data.title}</h1>
               </div>
-              
+              <div className={styles.information}>
+                {gallery.data.photographer && (
+                  <div className={styles.photographer}>
+                    <span className={styles.photographerInfo}>
+                      <span className={styles.photographerName}>
+                        Shot by <strong>{gallery.data.photographer?.data?.name || "Bonjour Idol"}</strong>
+                      </span>
+                      <span className={styles.date}>{formattedEventDate}</span>
+                    </span>
+                    <span className={styles.photographerImg}>
+                      <PrismicNextImage field={gallery.data.photographer?.data?.profile_picture} />
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
+
           </div>    
 
-          <div className={styles.information}>
-            {gallery.data.photographer && (
-              <div className={styles.photographer}>
-                <span className={styles.photographerImg}>
-                  <PrismicNextImage field={gallery.data.photographer?.data?.profile_picture} />
-                </span>
-                <span className={styles.photographerInfo}>
-                  <span className={styles.photographerName}>
-                    {gallery.data.photographer?.data?.name || "Unknown photographer"}
-                  </span>
-                  <span className={styles.date}>{formattedEventDate}</span>
-                </span>
-              </div>
-            )}
-            <SharingOptions 
-              className={styles.Sharing}
-              uid={gallery.uid} 
-              title={gallery.data.meta_title} 
-              idol={gallery.data.artist_name} 
-            />
-          </div>
-
           <div className={styles.content}>
-                <section className={styles.GalleryContainer}>
-                    <Gallery
-                        images={gallery.data.gallery}
-                    />
-                </section>
+            <section className={styles.GalleryContainer}>
+              <Gallery images={gallery.data.gallery} />
+            </section>
           </div>
           
-        </gallery>
-    </>
+        </div>
   );
 }
