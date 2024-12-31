@@ -31,7 +31,7 @@ export default function ContactForm() {
     const { name, company, email, subject, message, purpose } = formData;
 
     // Email details
-    const mailto = `mailto:melody@bonjouridol.com?cc=&bcc=melody@bonjouridol.com,melody@bonjouridol.com&subject=${encodeURIComponent(
+    const mailto = `mailto:info@bonjouridol.com?cc=&bcc=nathangey@bonjouridol.com,melody@bonjouridol.com&subject=${encodeURIComponent(
       subject
     )}&body=${encodeURIComponent(
       `Name: ${name}
