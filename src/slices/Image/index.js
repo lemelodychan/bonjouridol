@@ -21,7 +21,6 @@ const Image = ({ slice }) => {
         <SingleImage 
           image={slice.primary.image}
           alt={slice.primary.image.alt || "Image"}
-          ratio="3/2"
           className={styles.Image}
           color="GreyBg"
         />

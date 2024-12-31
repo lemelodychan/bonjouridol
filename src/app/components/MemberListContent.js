@@ -1,6 +1,7 @@
 import { createClient } from "@/prismicio";
 import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
+import SingleImage from "./SingleImage";
 
 import styles from "./MemberListContent.module.scss";
 
@@ -33,9 +34,10 @@ export default async function MemberListContent() {
                     <div key={member.id} className={styles.MemberCard}>
                         {profile_picture && (
                             <div className={styles.ProfilePicture}>
-                                <PrismicNextImage
-                                    field={profile_picture}
-                                    fallbackAlt=""
+                                <SingleImage 
+                                    image={profile_picture}
+                                    alt={`${name}'s Profile Picture` || "Member profile picture"}
+                                    color="GreyBg"
                                 />
                             </div>
                         )}

@@ -77,7 +77,10 @@ export default async function Page({ params }) {
                       <span className={styles.date}>{formattedEventDate}</span>
                     </span>
                     <span className={styles.photographerImg}>
-                      <PrismicNextImage field={gallery.data.photographer?.data?.profile_picture} />
+                      <PrismicNextImage 
+                        field={gallery.data.photographer?.data?.profile_picture}
+                        fallbackAlt=""
+                      />
                     </span>
                   </div>
                 )}

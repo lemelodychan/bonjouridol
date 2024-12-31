@@ -4,6 +4,7 @@
 .SingleImageContainer {
     width: 100%;
     height: 100%;
+    max-width: 100%;
     
     .SingleImage {
         width: 100%;
@@ -15,16 +16,24 @@
     &.Loading {
         .SingleImage {
             opacity: 0;
+            max-width: 100%;
+            height: auto;
         }
     }
 
     &.Loaded {
         .SingleImage {
             opacity: 1;
+            max-width: 100%;
+            height: auto;
         }
     }
 
     .Placeholder {
-        aspect-ratio: 3/2;
+        max-width: 100%;
+        width: 100%;
+        height: 100%;
+        padding: 16px;
+        min-height: 240px;
     }
 }

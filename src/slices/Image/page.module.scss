@@ -18,6 +18,8 @@
 
     > .ImageContainer {
         width: 100%;
+        max-width: 100%;
+        height: auto;
         border-radius: 24px;
         overflow: hidden;
         margin: auto;
@@ -25,6 +27,7 @@
         &.FullWidth {
             width: 100%;
             border-radius: 24px;
+            height: auto;
             padding: 0 !important;
             overflow: hidden;
     

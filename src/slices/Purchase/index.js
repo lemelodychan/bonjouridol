@@ -34,15 +34,15 @@ const Purchase = ({ slice }) => {
           <span className={styles.Artist}>{slice.primary.artist}</span>
           <span className={styles.Release}>Released on <strong>{release}</strong></span>
           <div className={styles.Buttons}>
-            {slice.primary.links.map((item) => (
-              <PrismicNextLink field={item.link} />
+            {slice.primary.links.map((item, index) => (
+              <PrismicNextLink key={index} field={item.link} />
             ))}
           </div>
         </div>
       </div>
       <div className={styles.Buttons}>
-        {slice.primary.links.map((item) => (
-          <PrismicNextLink field={item.link} />
+        {slice.primary.links.map((item, index) => (
+          <PrismicNextLink key={index} field={item.link} />
         ))}
       </div>
     </section>

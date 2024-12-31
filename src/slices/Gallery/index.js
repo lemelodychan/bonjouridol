@@ -20,6 +20,7 @@ const GallerySlice = ({ slice }) => {
         <h2>Gallery</h2>
         <Gallery
           images={images}
+          color="white"
         />
     </section>
   );

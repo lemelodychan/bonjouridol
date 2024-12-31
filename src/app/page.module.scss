@@ -14,11 +14,13 @@
   background-color: var(--white);
   position: relative;
   top: -64px;
+  margin-bottom: -64px;
 
   @include md {
     padding: 0 32px;
     top: 0px;
     max-width: 1440px;
+    margin-bottom: 0;
   }
 
   /* ------ TITLES STYLES ------ */

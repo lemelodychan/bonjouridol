@@ -39,5 +39,12 @@
             font-weight: 400;
             color: var(--medium-grey);
         }
+
+        &:last-of-type {
+            max-width: -webkit-fill-available;
+            text-overflow: ellipsis;
+            text-wrap: nowrap;
+            overflow: hidden;
+        }
     }
 }
