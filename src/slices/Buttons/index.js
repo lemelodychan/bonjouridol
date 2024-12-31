@@ -20,7 +20,7 @@ const Buttons = ({ slice }) => {
         <h3>{slice.primary.title}</h3>
       }
 
-      {slice.primary.text && 
+      {slice.primary.text.length > 0 && 
         <div className={styles.Text}>
           <PrismicRichText field={slice.primary.text} />
         </div>
