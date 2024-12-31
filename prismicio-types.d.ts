@@ -7,7 +7,6 @@ type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 type ArticlesDocumentDataSlicesSlice =
   | PurchaseSlice
   | SocialLinksSlice
-  | GalleryLinkSlice
   | AuthorsSlice
   | SingleButtonSlice
   | VideoSlice
@@ -575,6 +574,7 @@ export type HomepageDocument<Lang extends string = string> =
   >;
 
 type PageDocumentDataSlicesSlice =
+  | ContactFormSlice
   | ImageGridSlice
   | ImageListSlice
   | SetlistSlice
@@ -840,6 +840,36 @@ export type CarouselSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Default variation for ContactForm Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ContactFormSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Record<string, never>,
+  never
+>;
+
+/**
+ * Slice variation for *ContactForm*
+ */
+type ContactFormSliceVariation = ContactFormSliceDefault;
+
+/**
+ * ContactForm Shared Slice
+ *
+ * - **API ID**: `contact_form`
+ * - **Description**: ContactForm
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ContactFormSlice = prismic.SharedSlice<
+  "contact_form",
+  ContactFormSliceVariation
+>;
+
+/**
  * Primary content in *DocList → Default → Primary*
  */
 export interface DocListSliceDefaultPrimary {
@@ -959,51 +989,6 @@ type GallerySliceVariation = GallerySliceDefault;
 export type GallerySlice = prismic.SharedSlice<
   "gallery",
   GallerySliceVariation
->;
-
-/**
- * Primary content in *GalleryLink → Default → Primary*
- */
-export interface GalleryLinkSliceDefaultPrimary {
-  /**
-   * Gallery field in *GalleryLink → Default → Primary*
-   *
-   * - **Field Type**: Content Relationship
-   * - **Placeholder**: *None*
-   * - **API ID Path**: gallery_link.default.primary.gallery
-   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
-   */
-  gallery: prismic.ContentRelationshipField<"gallery">;
-}
-
-/**
- * Default variation for GalleryLink Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type GalleryLinkSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<GalleryLinkSliceDefaultPrimary>,
-  never
->;
-
-/**
- * Slice variation for *GalleryLink*
- */
-type GalleryLinkSliceVariation = GalleryLinkSliceDefault;
-
-/**
- * GalleryLink Shared Slice
- *
- * - **API ID**: `gallery_link`
- * - **Description**: GalleryLink
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type GalleryLinkSlice = prismic.SharedSlice<
-  "gallery_link",
-  GalleryLinkSliceVariation
 >;
 
 /**
@@ -1876,6 +1861,9 @@ declare module "@prismicio/client" {
       CarouselSliceDefaultPrimary,
       CarouselSliceVariation,
       CarouselSliceDefault,
+      ContactFormSlice,
+      ContactFormSliceVariation,
+      ContactFormSliceDefault,
       DocListSlice,
       DocListSliceDefaultPrimary,
       DocListSliceVariation,
@@ -1885,10 +1873,6 @@ declare module "@prismicio/client" {
       GallerySliceDefaultPrimary,
       GallerySliceVariation,
       GallerySliceDefault,
-      GalleryLinkSlice,
-      GalleryLinkSliceDefaultPrimary,
-      GalleryLinkSliceVariation,
-      GalleryLinkSliceDefault,
       ImageSlice,
       ImageSliceDefaultPrimary,
       ImageSliceVariation,

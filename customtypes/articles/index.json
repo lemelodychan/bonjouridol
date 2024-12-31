@@ -105,9 +105,6 @@
             "social_links": {
               "type": "SharedSlice"
             },
-            "gallery_link": {
-              "type": "SharedSlice"
-            },
             "authors": {
               "type": "SharedSlice"
             },

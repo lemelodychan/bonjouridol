@@ -1,0 +1,14 @@
+@use "../../app/styles/mixins.scss" as *;
+@use "../../app/styles/variables.scss";
+
+.ContactFormContainer {
+    margin: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    @include md {
+        margin: 0 32px;
+        border-radius: 24px;
+    }
+}

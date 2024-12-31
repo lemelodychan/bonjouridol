@@ -5,9 +5,9 @@ import dynamic from "next/dynamic";
 export const components = {
   authors: dynamic(() => import("./Authors")),
   carousel: dynamic(() => import("./Carousel")),
+  contact_form: dynamic(() => import("./ContactForm")),
   doc_list: dynamic(() => import("./DocList")),
   gallery: dynamic(() => import("./Gallery")),
-  gallery_link: dynamic(() => import("./GalleryLink")),
   image: dynamic(() => import("./Image")),
   image_grid: dynamic(() => import("./ImageGrid")),
   image_list: dynamic(() => import("./MemberList")),
