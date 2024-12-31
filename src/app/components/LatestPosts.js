@@ -73,7 +73,6 @@ export default async function LatestPost() {
                                 <div className={styles.Title}>
                                     <h3>
                                         <span>{item.data.title}</span>
-                                        <span className={styles.icon}><IoArrowForwardOutline /></span>
                                     </h3>
                                     {item.data.subtitle && (
                                         <span>{item.data.subtitle}</span>

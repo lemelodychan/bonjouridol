@@ -148,29 +148,6 @@
                         margin: 0;
                         color: var(--dark-gray);
                         transition: var(--transi);
-
-                        > span {
-                            padding-right: 20px;
-                        }
-    
-                        > .icon {
-                            display: inline-flex;
-                            align-items: center;
-                            margin-left: 4px;
-                            width: 16px;
-                            height: 16px;
-                            position: relative;
-                            overflow: hidden;
-    
-                            > svg {
-                                position: relative;
-                                top: 2px;
-                                left: -24px;
-                                opacity: 0;
-                                transition: var(--transi);
-                            }
-                        }
-                
                     }
 
                 }
@@ -191,10 +168,6 @@
                 > .Content {
                     h3 {
                         color: var(--bi-dark-pink);
-                        > .icon svg {
-                            left: 0px;
-                            opacity: 1;
-                        }
                     }
                 }
             }
