@@ -22,7 +22,6 @@ export default async function LatestPost() {
             cache: 'no-store',
             next: { tags: ['prismic', 'articles'] },
         },
-        limit: 4,
         filters: [
             prismic.filter.any('document.tags', ['Live Report', 'Interview']),
             prismic.filter.not('document.tags', ['PR']),
@@ -33,7 +32,7 @@ export default async function LatestPost() {
         const dateB = b.data.publication_date || b.first_publication_date;
         return new Date(dateB) - new Date(dateA); // Descending order
     });
-    const resultsWithoutLatest = sortedResults.slice(1);
+    const resultsWithoutLatest = sortedResults.slice(1, 4);
 
     return (
         <div className={styles.LatestPosts}>
