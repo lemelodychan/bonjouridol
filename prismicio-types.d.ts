@@ -61,7 +61,7 @@ interface ArticlesDocumentData {
     | "Press release"
     | "Interview"
     | "Discovery"
-    | "Gallery"
+    | "Behind the scenes"
     | "Other",
     "filled"
   >;

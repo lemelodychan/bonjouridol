@@ -77,7 +77,7 @@ export default async function Page({ params, searchParams }) {
             prismic.filter.any(
                 'my.articles.type', 
                 postType === 'Live report' 
-                    ? ['Live report', 'Interview']
+                    ? ['Live report', 'Interview', 'Behind the scenes', 'Other']
                     : postType === 'Press release' 
                     ? []
                     : [postType] 
