@@ -31,6 +31,7 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
             const joinedText = paragraphs.join(" ");
             
             const photographerName = item.data.photographer?.uid || "Bonjour Idol";
+            const photographerName2 = item.data.photographer_2?.uid;
 
             return (
               <Link key={item.id} className={styles.Post} href={linkPath}>
@@ -72,8 +73,11 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
                   )}
                   <span className={styles.Date}>
                     <span>{formattedDate}</span>
-                    {postType === "Gallery" && (
+                    {postType === "Gallery" && !item.data.photographer_2.uid && (
                         <span className={styles.Photographer}>&nbsp;ー Shot by <strong>{photographerName}</strong></span>
+                    )}
+                    {postType === "Gallery" && item.data.photographer_2.uid && (
+                        <span className={styles.Photographer}>&nbsp;ー Shot by <strong>{photographerName}</strong> and <strong>{photographerName2}</strong></span>
                     )}
                   </span>
 
