@@ -1,0 +1,20 @@
+{
+    "redirects": [
+      {
+        "source": "/category/live-report/",
+        "destination": "/livereports", 
+        "permanent": true
+      },
+      {
+        "source": "/category/discoveries/",
+        "destination": "/discoveries", 
+        "permanent": true
+      },
+      {
+        "source": "/contact-us/",
+        "destination": "/contact", 
+        "permanent": true
+      }
+    ]
+  }
+  
