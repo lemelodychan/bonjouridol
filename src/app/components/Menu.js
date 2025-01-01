@@ -4,6 +4,8 @@ import { useState } from "react";
 import styles from "./Menu.module.scss";
 import Link from "next/link.js";
 
+import { IoArrowForwardOutline } from "react-icons/io5";
+
 import { usePathname} from 'next/navigation';
 
 export default function Menu({ onLinkClick }) {
@@ -18,7 +20,10 @@ export default function Menu({ onLinkClick }) {
                         href="/livereports"
                         onClick={onLinkClick}
                         className={pathname == "/livereports" ? "active" : ""} >
-                            Live Reports & Interviews
+                            <span>Live Reports & Interviews</span>
+                            <span className={styles.Icon}>
+                                <IoArrowForwardOutline />
+                            </span>
                     </Link>
                 </li>
                 <li>
@@ -26,7 +31,10 @@ export default function Menu({ onLinkClick }) {
                         href="/discoveries"
                         onClick={onLinkClick}
                         className={pathname == "/discoveries" ? "active" : ""} >
-                            Discoveries
+                            <span>Discoveries</span>
+                            <span className={styles.Icon}>
+                                <IoArrowForwardOutline />
+                            </span>
                     </Link>
                 </li>
                 <li>
@@ -34,7 +42,10 @@ export default function Menu({ onLinkClick }) {
                         href="/pressrelease"
                         onClick={onLinkClick}
                         className={pathname == "/pressrelease" ? "active" : ""} >
-                            Press Release
+                            <span>Press Release</span>
+                            <span className={styles.Icon}>
+                                <IoArrowForwardOutline />
+                            </span>
                     </Link>
                 </li>
                 <li>
@@ -42,7 +53,10 @@ export default function Menu({ onLinkClick }) {
                         href="/galleries"
                         onClick={onLinkClick}
                         className={pathname == "/galleries" ? "active" : ""} >
-                            Galleries
+                            <span>Galleries</span>
+                            <span className={styles.Icon}>
+                                <IoArrowForwardOutline />
+                            </span>
                     </Link>
                 </li>
             </ul>
@@ -53,7 +67,10 @@ export default function Menu({ onLinkClick }) {
                         href="/about"
                         onClick={onLinkClick}
                         className={pathname == "/about" ? "active" : ""} >
-                            About
+                            <span>About</span>
+                            <span className={styles.Icon}>
+                                <IoArrowForwardOutline />
+                            </span>
                     </Link>
                 </li>
                 <li>
@@ -61,7 +78,10 @@ export default function Menu({ onLinkClick }) {
                         href="/contact"
                         onClick={onLinkClick}
                         className={pathname == "/contact" ? "active" : ""} >
-                            Contact
+                            <span>Contact</span>
+                            <span className={styles.Icon}>
+                                <IoArrowForwardOutline />
+                            </span>
                     </Link>
                 </li>
                 <li>
@@ -69,7 +89,10 @@ export default function Menu({ onLinkClick }) {
                         href="https://archives.bonjouridol.com/"
                         target="_blank"
                         onClick={onLinkClick}>
-                            Archives
+                            <span>Archives</span>
+                            <span className={styles.Icon}>
+                                <IoArrowForwardOutline />
+                            </span>
                     </Link>
                 </li>
             </ul>

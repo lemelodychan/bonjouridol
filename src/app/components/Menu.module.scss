@@ -28,7 +28,10 @@
             width: fit-content;
 
             a {
-                display: inline-block;
+                display: flex;
+                flex-direction: row;
+                gap: 4px;
+                align-items: center;
                 width: fit-content;
                 color: var(--white);
                 font-family: var(--font-title);
@@ -38,37 +41,65 @@
                 transition: var(--transi);
                 text-decoration: none;
 
+                .Icon {
+                    display: flex;
+                    width: 24px;
+                    height: 24px;
+                    overflow: hidden;
+                    position: relative;
+                    align-items: center;
+                    justify-content: center;
+
+                    svg {
+                        transition: var(--transi);
+                        position: relative;
+                        left: -24px;
+                        opacity: 0;
+                    }
+                }
+
+                &:hover .Icon svg {
+                    left: 0px;
+                    opacity: 1;
+                }
+
                 @include md {
+                    display: inline-block;
+                    width: fit-content;
                     font-family: var(--font-text);
                     color: var(--bi-dark-pink);
                     font-size: var(--font-size-md);
                     line-height: 24px;
                     letter-spacing: 0.32px;
                     font-weight: 600;
-                }
 
-                &:hover  {
-                    transform: scaleX(100%) !important;
-                }
+                    .Icon {
+                        display: none;
+                    }
 
-                &::after {
-                    display: block;
-                    height: 2px;
-                    background-color: var(--bi-dark-pink);
-                    content: " ";
-                    position: relative;
-                    top: 4px;
-                    width: 100%;
-                    transition: var(--transi);
-                    transform-origin: left;
-                    transform: scaleX(0%);
-                }
-                &:hover::after {
-                    transform: scaleX(100%) !important;
-                }
-                &.active {
-                    &::after {
+                    &:hover  {
                         transform: scaleX(100%) !important;
+                    }
+
+                    &::after {
+                        display: block;
+                        height: 2px;
+                        background-color: var(--bi-dark-pink);
+                        content: " ";
+                        position: relative;
+                        top: 4px;
+                        width: 100%;
+                        transition: var(--transi);
+                        transform-origin: left;
+                        transform: scaleX(0%);
+                    }
+                    &:hover::after {
+                        transform: scaleX(100%) !important;
+                    }
+                    &.active {
+                        &::after {
+                            transform: scaleX(100%) !important;
+                        }
                     }
                 }
             }
@@ -86,13 +117,20 @@
 
         @include md {
             display: none;
+
+            .Icon {
+                display: none;
+            }
         }
 
         li {
             width: fit-content;
 
             a {
-                display: inline-block;
+                display: flex;
+                flex-direction: row;
+                gap: 4px;
+                align-items: center;
                 width: fit-content;
                 color: var(--white);
                 font-size: 20px;
@@ -101,29 +139,27 @@
                 transition: var(--transi);
                 text-decoration: none;
 
-                &:hover  {
-                    transform: scaleX(100%) !important;
+                .Icon {
+                    display: flex;
+                    width: 24px;
+                    height: 24px;
+                    overflow: hidden;
+                    position: relative;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+
+                    svg {
+                        transition: var(--transi);
+                        position: relative;
+                        left: -24px;
+                        opacity: 0;
+                    }
                 }
 
-                &::after {
-                    display: block;
-                    height: 2px;
-                    background-color: var(--bi-dark-pink);
-                    content: " ";
-                    position: relative;
-                    top: 4px;
-                    width: 100%;
-                    transition: var(--transi);
-                    transform-origin: left;
-                    transform: scaleX(0%);
-                }
-                &:hover::after {
-                    transform: scaleX(100%) !important;
-                }
-                &.active {
-                    &::after {
-                        transform: scaleX(100%) !important;
-                    }
+                &:hover .Icon svg {
+                    left: 0px;
+                    opacity: 1;
                 }
             }
         }
