@@ -19,6 +19,12 @@ export default function Topbar() {
                         <IoArrowForwardOutline />
                     </span>
                 </Link>
+                <Link href="https://archives.bonjouridol.com/" target="_blank">
+                    <span>Archives</span>
+                    <span className={styles.Icon}>
+                        <IoArrowForwardOutline />
+                    </span>
+                </Link>
 
                 {/* <Link href="/">
                     <span>Français</span>

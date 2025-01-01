@@ -5,6 +5,8 @@ import { SliceZone } from "@prismicio/react";
 import { components } from "@/slices";
 import DocListContainer from "../components/DocList";
 
+import FeaturedImage from "@/app/assets/FeaturedImage.png";
+
 import styles from "./page.module.scss";
 
 export async function generateMetadata({ params }) {
@@ -13,8 +15,9 @@ export async function generateMetadata({ params }) {
   const page = await client.getByUID("page", uid);
 
   return {
-    title: page.data.meta_title,
-    description: page.data.meta_description,
+    title: page.data.meta_title  || `${page.data.title} | BONJOUR IDOL`,
+    description: page.data.meta_description || "Bonjour Idol is a French bilingual media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content. Check it out!",
+    image: page.data.meta_image || FeaturedImage,
   };
 }
 export async function generateStaticParams() {

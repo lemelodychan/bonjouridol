@@ -11,6 +11,8 @@ import LogoMobileWhite from "../assets/logo_croissant_white.svg";
 import LogoMobilePink from "../assets/logo_croissant_pink.svg";
 import LogoMobileMenu from "../assets/logo_normal_white.svg";
 
+import { FaXTwitter, FaInstagram, FaYoutube } from "react-icons/fa6";
+
 import Menu from "./Menu";
 import styles from "./navbar.module.scss";
 
@@ -108,6 +110,17 @@ export default function Navbar() {
             />
           </Link>
           <Menu onLinkClick={closeMobileMenu} />
+          <div className={styles.SocialLinks}>
+              <Link href="https://x.com/bonjour_idol">
+                  <FaXTwitter />
+              </Link>
+              <Link href="https://www.instagram.com/bonjour_idol/">
+                  <FaInstagram />
+              </Link>
+              <Link href="https://www.youtube.com/@bonjouridol">
+                  <FaYoutube />
+              </Link>
+          </div>
         </nav>
       </div>
     </div>

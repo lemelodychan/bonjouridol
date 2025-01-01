@@ -11,6 +11,9 @@ import SingleImage from '@/app/components/SingleImage';
 import SharingOptions from '../../components/SharingOptions';
 import Gallery from '@/app/components/Gallery';
 
+import FeaturedImage from "@/app/assets/FeaturedImage.png";
+import LogoBI from "@/app/assets/Square_Logo_Pink.png";
+
 import { HiOutlineLocationMarker, HiOutlineCalendar } from "react-icons/hi";
 
 export const dynamicParams = false;
@@ -20,8 +23,9 @@ export async function generateMetadata({ params }) {
   const client = createClient();
   const article = await client.getByUID("articles", uid);
   return {
-    title: article.data.meta_title,
-    description: article.data.meta_description,
+    title: article.data.meta_title || `${article.data.title}${article.data.subtitle ? `: ${article.data.subtitle}` : ""} | BONJOUR IDOL`,
+    description: article.data.meta_description || "Bonjour Idol is a French bilingual media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content. Check it out!",
+    image: article.data.meta_image || FeaturedImage,
   };
 }
 
@@ -127,12 +131,12 @@ export default async function Page({ params }) {
               <div className={styles.author}>
                 <span className={styles.authorImg}>
                   <PrismicNextImage 
-                    field={article.data.author?.data?.profile_picture}
+                    field={article.data.author?.data?.profile_picture || LogoBI}
                     fallbackAlt=""
                   />
                 </span>
                 <span className={styles.authorInfo}>
-                  <span className={styles.authorName}>{article.data.author?.data?.name || "Unknown Author"}</span>
+                  <span className={styles.authorName}>{article.data.author?.data?.name || "Bonjour Idol"}</span>
                   <span className={styles.date}>{formattedDate}</span>
                 </span>
               </div>

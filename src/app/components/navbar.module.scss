@@ -158,6 +158,36 @@
             .logo img {
                 margin-bottom: 2rem;
             }
-         }
+        }
+
+        .SocialLinks {
+            display: flex;
+            flex-direction: row;
+            gap: 12px;
+            color: white;
+            height: fit-content;
+    
+            @include md {
+                display: none;
+            }
+            
+            a {
+                color: white;
+                font-size: 20px;
+                padding: 4px;
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: transparent;
+                transition: var(--transi);
+
+                &:hover {
+                    background-color: white;
+                    color: var(--bi-dark-pink);
+                }
+            }
+        }
     }
 }

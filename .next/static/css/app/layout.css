@@ -317,6 +317,35 @@
 .navbar_navigation__fSLmK .navbar_mobileMenu__6HEkA .navbar_navbar__oAVrm .navbar_logo__uf6Cx img {
   margin-bottom: 2rem;
 }
+.navbar_navigation__fSLmK .navbar_mobileMenu__6HEkA .navbar_SocialLinks__rpLUv {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  color: white;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+@media (min-width: 769px) {
+  .navbar_navigation__fSLmK .navbar_mobileMenu__6HEkA .navbar_SocialLinks__rpLUv {
+    display: none;
+  }
+}
+.navbar_navigation__fSLmK .navbar_mobileMenu__6HEkA .navbar_SocialLinks__rpLUv a {
+  color: white;
+  font-size: 20px;
+  padding: 4px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  transition: var(--transi);
+}
+.navbar_navigation__fSLmK .navbar_mobileMenu__6HEkA .navbar_SocialLinks__rpLUv a:hover {
+  background-color: white;
+  color: var(--bi-dark-pink);
+}
 /*!*****************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./src/app/globals.css ***!
   \*****************************************************************************************************************************************************************************************************************************************************************/

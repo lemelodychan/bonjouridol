@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import styles from "./Menu.module.scss";
 import Link from "next/link.js";
+
 import { usePathname} from 'next/navigation';
 
 export default function Menu({ onLinkClick }) {
@@ -61,6 +62,14 @@ export default function Menu({ onLinkClick }) {
                         onClick={onLinkClick}
                         className={pathname == "/contact" ? "active" : ""} >
                             Contact
+                    </Link>
+                </li>
+                <li>
+                    <Link 
+                        href="https://archives.bonjouridol.com/"
+                        target="_blank"
+                        onClick={onLinkClick}>
+                            Archives
                     </Link>
                 </li>
             </ul>

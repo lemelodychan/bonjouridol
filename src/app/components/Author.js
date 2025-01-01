@@ -5,6 +5,8 @@ import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
 import styles from './Author.module.scss';
 
+import LogoBI from "@/app/assets/Square_Logo_Pink.png";
+
 import { HiOutlineLink } from 'react-icons/hi';
 import { FaInstagram } from "react-icons/fa6";
 import { FaXTwitter } from "react-icons/fa6";
@@ -29,7 +31,7 @@ const Author = ({ author, author2, type, translator }) => {
                 {profile_picture && (
                     <span className={styles.authorImg}>
                         <PrismicNextImage
-                            field={profile_picture}
+                            field={profile_picture || LogoBI}
                             alt={`${name}'s Profile Picture`}
                             fallbackAlt=""
                             width={100}

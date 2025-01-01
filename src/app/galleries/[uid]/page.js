@@ -8,6 +8,9 @@ import Breadcrumbs from '@/app/components/Breadcrumbs';
 import { PrismicNextImage } from "@prismicio/next";
 import Gallery from '@/app/components/Gallery';
 
+import FeaturedImage from "@/app/assets/FeaturedImage.png";
+import LogoBI from "@/app/assets/Square_Logo_Pink.png";
+
 import { HiOutlineLocationMarker } from "react-icons/hi";
 
 export const dynamicParams = false;
@@ -16,8 +19,10 @@ export async function generateMetadata({ params }) {
   const client = createClient();
   const gallery = await client.getByUID("gallery", uid);
   return {
-    title: gallery.data.meta_title,
-    description: gallery.data.meta_description,
+    title: gallery.data.meta_title || `Gallery - ${gallery.data.title} | BONJOUR IDOL`,
+    description: gallery.data.meta_description 
+      || "Bonjour Idol is a French bilingual media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content. Check it out!",
+    image: gallery.data.meta_image || FeaturedImage,
   };
 }
 
@@ -84,7 +89,7 @@ export default async function Page({ params }) {
                     <span className={`${styles.photographerImgContainer} ${gallery.data.photographer_2?.data?.profile_picture? styles.withAuthor2 : ""}`}>
                       <span className={styles.photographerImg}>
                         <PrismicNextImage 
-                          field={gallery.data.photographer?.data?.profile_picture}
+                          field={gallery.data.photographer?.data?.profile_picture || LogoBI}
                           fallbackAlt=""
                         />
                       </span>
