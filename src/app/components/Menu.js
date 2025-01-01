@@ -18,7 +18,7 @@ export default function Menu({ onLinkClick }) {
                         href="/livereports"
                         onClick={onLinkClick}
                         className={pathname == "/livereports" ? "active" : ""} >
-                            Live Reports
+                            Live Reports & Interviews
                     </Link>
                 </li>
                 <li>

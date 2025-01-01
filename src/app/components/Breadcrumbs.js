@@ -12,7 +12,10 @@ const Breadcrumbs = ({ category, title = null, subtitle = null, uid = null, type
     let titleCat;
     if (category === "Live report") {
         parentCat = "livereports";
-        titleCat = "Live Reports";
+        titleCat = "Live Reports & Interviews";
+    } else if (category === "Interview") {
+        parentCat = "livereports";
+        titleCat = "Live Reports & Interviews";
     } else if (category === "Discovery") {
         parentCat = "discoveries";
         titleCat = "Discoveries";
