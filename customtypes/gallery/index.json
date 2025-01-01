@@ -74,6 +74,14 @@
           "customtypes": ["author"]
         }
       },
+      "photographer_2": {
+        "type": "Link",
+        "config": {
+          "label": "Photographer 2",
+          "select": "document",
+          "customtypes": ["author"]
+        }
+      },
       "gallery": {
         "type": "Group",
         "config": {

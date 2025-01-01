@@ -73,14 +73,29 @@ export default async function Page({ params }) {
                     <span className={styles.photographerInfo}>
                       <span className={styles.photographerName}>
                         Shot by <strong>{gallery.data.photographer?.data?.name || "Bonjour Idol"}</strong>
+                        {gallery.data.photographer_2 && (
+                          <>
+                            &nbsp;and <strong>{gallery.data.photographer_2?.data?.name || "Bonjour Idol"}</strong>
+                          </>
+                        )}
                       </span>
                       <span className={styles.date}>{formattedEventDate}</span>
                     </span>
-                    <span className={styles.photographerImg}>
-                      <PrismicNextImage 
-                        field={gallery.data.photographer?.data?.profile_picture}
-                        fallbackAlt=""
-                      />
+                    <span className={`${styles.photographerImgContainer} ${gallery.data.photographer_2? styles.withAuthor2 : ""}`}>
+                      <span className={styles.photographerImg}>
+                        <PrismicNextImage 
+                          field={gallery.data.photographer?.data?.profile_picture}
+                          fallbackAlt=""
+                        />
+                      </span>
+                      {gallery.data.photographer_2 && (
+                        <span className={styles.photographerImg}>
+                          <PrismicNextImage 
+                            field={gallery.data.photographer_2?.data?.profile_picture}
+                            fallbackAlt=""
+                          />
+                        </span>
+                      )}
                     </span>
                   </div>
                 )}

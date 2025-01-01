@@ -12,6 +12,7 @@ import styles from "./page.module.scss";
 const Authors = ({ slice }) => {
   const author = slice.primary.author;
   const photo = slice.primary.photographer;
+  const photo2 = slice.primary.photographer_2;
   const isOfficial = slice.primary.official_photos;
   const translatorJP = slice.primary.translator_jp;
   const translatorFR = slice.primary.translator_fr;
@@ -69,7 +70,7 @@ const Authors = ({ slice }) => {
             </div>
           ) : (
             photo && photo.data && (
-              <Author author={photo} type="Photographed" />
+              <Author author={photo} author2={photo2} type="Photographed" />
             )
           )}
         </>

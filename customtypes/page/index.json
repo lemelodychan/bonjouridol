@@ -72,9 +72,6 @@
             "doc_list": {
               "type": "SharedSlice"
             },
-            "gallery": {
-              "type": "SharedSlice"
-            },
             "single_button": {
               "type": "SharedSlice"
             },

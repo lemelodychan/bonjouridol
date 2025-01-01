@@ -1,0 +1,60 @@
+{
+  "id": "interview",
+  "type": "SharedSlice",
+  "name": "Interview",
+  "description": "Interview",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "question": {
+          "type": "Group",
+          "config": {
+            "label": "Question",
+            "repeat": true,
+            "fields": {
+              "question_en": {
+                "type": "Text",
+                "config": {
+                  "label": "Question (EN)",
+                  "placeholder": ""
+                }
+              },
+              "question_jp": {
+                "type": "Text",
+                "config": {
+                  "label": "Question (JP)",
+                  "placeholder": ""
+                }
+              },
+              "answer_en": {
+                "type": "StructuredText",
+                "config": {
+                  "label": "Answer (EN)",
+                  "placeholder": "",
+                  "allowTargetBlank": true,
+                  "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                }
+              },
+              "answer_jp": {
+                "type": "StructuredText",
+                "config": {
+                  "label": "Answer (JP)",
+                  "placeholder": "",
+                  "allowTargetBlank": true,
+                  "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

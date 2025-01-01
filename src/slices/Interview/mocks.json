@@ -1,0 +1,63 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"question": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"question_en",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "younger",
+									"type": "Text"
+								}
+							],
+							[
+								"question_jp",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "temperature",
+									"type": "Text"
+								}
+							],
+							[
+								"answer_en",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Nisi duis consequat nostrud dolore id labore fugiat non quis esse eiusmod consectetur ipsum commodo magna. Culpa commodo aliqua et velit exercitation laboris non eiusmod eu ut ut ex enim."
+											}
+										}
+									]
+								}
+							],
+							[
+								"answer_jp",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Ut Lorem ex labore laborum voluptate reprehenderit in et."
+											}
+										}
+									]
+								}
+							]
+						]
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

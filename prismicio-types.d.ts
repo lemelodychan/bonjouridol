@@ -5,6 +5,7 @@ import type * as prismic from "@prismicio/client";
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
 type ArticlesDocumentDataSlicesSlice =
+  | InterviewSlice
   | PurchaseSlice
   | SocialLinksSlice
   | AuthorsSlice
@@ -428,6 +429,17 @@ interface GalleryDocumentData {
   photographer: prismic.ContentRelationshipField<"author">;
 
   /**
+   * Photographer 2 field in *Gallery*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: gallery.photographer_2
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  photographer_2: prismic.ContentRelationshipField<"author">;
+
+  /**
    * Gallery field in *Gallery*
    *
    * - **Field Type**: Group
@@ -585,7 +597,6 @@ type PageDocumentDataSlicesSlice =
   | VideoSlice
   | QuoteSlice
   | DocListSlice
-  | GallerySlice
   | SingleButtonSlice
   | RichTextSlice
   | CarouselSlice
@@ -717,6 +728,16 @@ export interface AuthorsSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
    */
   photographer: prismic.ContentRelationshipField<"author">;
+
+  /**
+   * Photographer 2 field in *Authors → Default → Primary*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: authors.default.primary.photographer_2
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  photographer_2: prismic.ContentRelationshipField<"author">;
 
   /**
    * Translator - JP field in *Authors → Default → Primary*
@@ -919,76 +940,6 @@ type DocListSliceVariation = DocListSliceDefault;
 export type DocListSlice = prismic.SharedSlice<
   "doc_list",
   DocListSliceVariation
->;
-
-/**
- * Item in *Gallery → Default → Primary → Images*
- */
-export interface GallerySliceDefaultPrimaryImagesItem {
-  /**
-   * Image field in *Gallery → Default → Primary → Images*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: gallery.default.primary.images[].image
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  image: prismic.ImageField<never>;
-}
-
-/**
- * Primary content in *Gallery → Default → Primary*
- */
-export interface GallerySliceDefaultPrimary {
-  /**
-   * Gallery tag field in *Gallery → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: gallery.default.primary.gallery_tag
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  gallery_tag: prismic.KeyTextField;
-
-  /**
-   * Images field in *Gallery → Default → Primary*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: gallery.default.primary.images[]
-   * - **Documentation**: https://prismic.io/docs/field#group
-   */
-  images: prismic.GroupField<Simplify<GallerySliceDefaultPrimaryImagesItem>>;
-}
-
-/**
- * Default variation for Gallery Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type GallerySliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<GallerySliceDefaultPrimary>,
-  never
->;
-
-/**
- * Slice variation for *Gallery*
- */
-type GallerySliceVariation = GallerySliceDefault;
-
-/**
- * Gallery Shared Slice
- *
- * - **API ID**: `gallery`
- * - **Description**: Gallery
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type GallerySlice = prismic.SharedSlice<
-  "gallery",
-  GallerySliceVariation
 >;
 
 /**
@@ -1214,6 +1165,98 @@ type ImageListSliceVariation = ImageListSliceDefault;
 export type ImageListSlice = prismic.SharedSlice<
   "image_list",
   ImageListSliceVariation
+>;
+
+/**
+ * Item in *Interview → Default → Primary → Question*
+ */
+export interface InterviewSliceDefaultPrimaryQuestionItem {
+  /**
+   * Question (EN) field in *Interview → Default → Primary → Question*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: interview.default.primary.question[].question_en
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  question_en: prismic.KeyTextField;
+
+  /**
+   * Question (JP) field in *Interview → Default → Primary → Question*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: interview.default.primary.question[].question_jp
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  question_jp: prismic.KeyTextField;
+
+  /**
+   * Answer (EN) field in *Interview → Default → Primary → Question*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: interview.default.primary.question[].answer_en
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  answer_en: prismic.RichTextField;
+
+  /**
+   * Answer (JP) field in *Interview → Default → Primary → Question*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: interview.default.primary.question[].answer_jp
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  answer_jp: prismic.RichTextField;
+}
+
+/**
+ * Primary content in *Interview → Default → Primary*
+ */
+export interface InterviewSliceDefaultPrimary {
+  /**
+   * Question field in *Interview → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: interview.default.primary.question[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  question: prismic.GroupField<
+    Simplify<InterviewSliceDefaultPrimaryQuestionItem>
+  >;
+}
+
+/**
+ * Default variation for Interview Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type InterviewSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<InterviewSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Interview*
+ */
+type InterviewSliceVariation = InterviewSliceDefault;
+
+/**
+ * Interview Shared Slice
+ *
+ * - **API ID**: `interview`
+ * - **Description**: Interview
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type InterviewSlice = prismic.SharedSlice<
+  "interview",
+  InterviewSliceVariation
 >;
 
 /**
@@ -1868,11 +1911,6 @@ declare module "@prismicio/client" {
       DocListSliceDefaultPrimary,
       DocListSliceVariation,
       DocListSliceDefault,
-      GallerySlice,
-      GallerySliceDefaultPrimaryImagesItem,
-      GallerySliceDefaultPrimary,
-      GallerySliceVariation,
-      GallerySliceDefault,
       ImageSlice,
       ImageSliceDefaultPrimary,
       ImageSliceVariation,
@@ -1887,6 +1925,11 @@ declare module "@prismicio/client" {
       ImageListSliceDefaultPrimary,
       ImageListSliceVariation,
       ImageListSliceDefault,
+      InterviewSlice,
+      InterviewSliceDefaultPrimaryQuestionItem,
+      InterviewSliceDefaultPrimary,
+      InterviewSliceVariation,
+      InterviewSliceDefault,
       PurchaseSlice,
       PurchaseSliceDefaultPrimaryLinksItem,
       PurchaseSliceDefaultPrimary,

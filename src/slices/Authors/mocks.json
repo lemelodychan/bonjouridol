@@ -37,7 +37,13 @@
 			},
 			"translator_fr": {
 				"__TYPE__": "LinkContent",
-				"key": "9391d79d-230e-4251-bd37-c58b3852172f",
+				"value": {
+					"__TYPE__": "DocumentLink",
+					"id": "mock_document_id"
+				}
+			},
+			"photographer_2": {
+				"__TYPE__": "LinkContent",
 				"value": {
 					"__TYPE__": "DocumentLink",
 					"id": "mock_document_id"

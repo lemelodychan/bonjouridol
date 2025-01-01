@@ -41,6 +41,16 @@
             ]
           }
         },
+        "photographer_2": {
+          "type": "Link",
+          "config": {
+            "label": "Photographer 2",
+            "select": "document",
+            "customtypes": [
+              "author"
+            ]
+          }
+        },
         "translator_jp": {
           "type": "Link",
           "config": {
