@@ -1,0 +1,29 @@
+@use "../../app/styles/mixins.scss" as *;
+@use "../../app/styles/variables.scss";
+
+.separatorContainer {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1000px;
+    padding: 0 24px;
+
+    @include md {
+        padding: 0 32px;
+    }
+
+    .separator {
+        display: block;
+        width: 100%;
+        
+        &.grey {
+            height: 1px;
+            background-color: var(--light-grey);
+        }
+
+        &.gradient {
+            height: 2px;
+            background-image: var(--bi-gradient-2);
+        }
+    }
+}

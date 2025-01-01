@@ -1,0 +1,31 @@
+{
+  "id": "separator",
+  "type": "SharedSlice",
+  "name": "Separator",
+  "description": "Separator",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "style": {
+          "type": "Select",
+          "config": {
+            "label": "Style",
+            "placeholder": "",
+            "options": [
+              "Grey",
+              "Gradient"
+            ],
+            "default_value": "Grey"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

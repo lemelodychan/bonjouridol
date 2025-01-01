@@ -14,6 +14,7 @@ export const components = {
   purchase: dynamic(() => import("./Purchase")),
   quote: dynamic(() => import("./Quote")),
   rich_text: dynamic(() => import("./RichText")),
+  separator: dynamic(() => import("./Separator")),
   setlist: dynamic(() => import("./Setlist")),
   single_button: dynamic(() => import("./Buttons")),
   social_links: dynamic(() => import("./SocialLinks")),

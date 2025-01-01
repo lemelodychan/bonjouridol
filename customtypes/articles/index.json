@@ -99,6 +99,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "separator": {
+              "type": "SharedSlice"
+            },
             "interview": {
               "type": "SharedSlice"
             },

@@ -19,6 +19,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "separator": {
+              "type": "SharedSlice"
+            },
             "taglist": {
               "type": "SharedSlice"
             }

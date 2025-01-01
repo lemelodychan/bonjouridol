@@ -5,6 +5,7 @@ import type * as prismic from "@prismicio/client";
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
 type ArticlesDocumentDataSlicesSlice =
+  | SeparatorSlice
   | InterviewSlice
   | PurchaseSlice
   | SocialLinksSlice
@@ -509,7 +510,7 @@ export type GalleryDocument<Lang extends string = string> =
     Lang
   >;
 
-type HomepageDocumentDataSlicesSlice = TaglistSlice;
+type HomepageDocumentDataSlicesSlice = SeparatorSlice | TaglistSlice;
 
 /**
  * Content for Homepage documents
@@ -586,6 +587,8 @@ export type HomepageDocument<Lang extends string = string> =
   >;
 
 type PageDocumentDataSlicesSlice =
+  | InterviewSlice
+  | SeparatorSlice
   | ContactFormSlice
   | ImageGridSlice
   | ImageListSlice
@@ -1467,6 +1470,52 @@ export type RichTextSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Primary content in *Separator → Default → Primary*
+ */
+export interface SeparatorSliceDefaultPrimary {
+  /**
+   * Style field in *Separator → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: Grey
+   * - **API ID Path**: separator.default.primary.style
+   * - **Documentation**: https://prismic.io/docs/field#select
+   */
+  style: prismic.SelectField<"Grey" | "Gradient", "filled">;
+}
+
+/**
+ * Default variation for Separator Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SeparatorSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<SeparatorSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Separator*
+ */
+type SeparatorSliceVariation = SeparatorSliceDefault;
+
+/**
+ * Separator Shared Slice
+ *
+ * - **API ID**: `separator`
+ * - **Description**: Separator
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SeparatorSlice = prismic.SharedSlice<
+  "separator",
+  SeparatorSliceVariation
+>;
+
+/**
  * Item in *Setlist → Default → Primary → Song*
  */
 export interface SetlistSliceDefaultPrimarySongItem {
@@ -1943,6 +1992,10 @@ declare module "@prismicio/client" {
       RichTextSliceDefaultPrimary,
       RichTextSliceVariation,
       RichTextSliceDefault,
+      SeparatorSlice,
+      SeparatorSliceDefaultPrimary,
+      SeparatorSliceVariation,
+      SeparatorSliceDefault,
       SetlistSlice,
       SetlistSliceDefaultPrimarySongItem,
       SetlistSliceDefaultPrimaryEncoreSongItem,

@@ -1,0 +1,14 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"style": {
+				"__TYPE__": "FieldContent",
+				"value": "Grey",
+				"type": "Select"
+			}
+		},
+		"items": []
+	}
+]

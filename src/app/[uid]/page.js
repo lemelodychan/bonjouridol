@@ -62,7 +62,6 @@ export default async function Page({ params, searchParams }) {
   let totalPages = 0;
   const defaultPageSize = 10;
 
-  // Fetch articles or galleries based on the postType
   if (category === "articles") {
     const articles = await client.getByType("articles", {
       fetchOptions: {
@@ -75,8 +74,8 @@ export default async function Page({ params, searchParams }) {
         { field: 'document.first_publication_date', direction: 'desc' },
       ],
       filters: [
-        prismic.filter.at('my.articles.type', postType),
-      ]
+        prismic.filter.any('my.articles.type', postType === 'Live report' ? ['Live report', 'Interview'] : [postType]),
+      ],       
     });
     results = articles.results;
     totalPages = Math.ceil(articles.total_results_size / defaultPageSize);

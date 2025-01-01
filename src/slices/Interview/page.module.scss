@@ -1,0 +1,66 @@
+@use "../../app/styles/mixins.scss" as *;
+@use "../../app/styles/variables.scss";
+
+.Interview {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 24px auto;
+    width: 100%;
+    max-width: 1000px;
+    padding: 0 24px;
+
+    @include md {
+        padding: 0 32px;
+        gap: 32px;
+    }
+
+
+    .questionContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    
+        .question {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 16px;
+            line-height: 28px;
+
+            .questionEn {
+                color: var(--bi-dark-pink);
+                font-weight: 600;
+            }
+            .questionJp {
+                color: var(--bi-pink);
+                font-size: 14px;
+                line-height: 24px;
+                letter-spacing: 0px;
+            }
+        }
+    
+        .answer {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 16px;
+            line-height: 28px;
+
+            .answerEn {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .answerJp {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                color: var(--medium-grey);
+                font-size: 14px;
+                line-height: 24px;
+                letter-spacing: 0px;
+            }
+        }
+    }   
+}
