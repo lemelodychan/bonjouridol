@@ -6,12 +6,13 @@
 import styles from "./page.module.scss";
 
 const Separator = ({ slice }) => {
-  const { style } = slice.primary.style;
+  let separatorClass = styles.separator;
 
-  const separatorClass = classNames(styles.separator, {
-    [styles.grey]: style === "Grey",
-    [styles.gradient]: style === "Gradient",
-  });
+  if (slice.primary.style === "Grey") {
+    separatorClass += ` ${styles.grey}`;
+  } else if (slice.primary.style === "Gradient") {
+    separatorClass += ` ${styles.gradient}`;
+  }
 
   return (
     <section
