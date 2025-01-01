@@ -12,6 +12,7 @@ import FeaturedImage from "@/app/assets/FeaturedImage.png";
 import LogoBI from "@/app/assets/Square_Logo_Pink.png";
 
 import { HiOutlineLocationMarker } from "react-icons/hi";
+import { FiUsers } from "react-icons/fi";
 
 export const dynamicParams = false;
 export async function generateMetadata({ params }) {
@@ -46,6 +47,9 @@ export default async function Page({ params }) {
       },
   });
 
+  const artistNames = gallery.data.artist_name || "";
+  const artistArray = artistNames.split(',').map(name => name.trim());
+
   const eventDate = gallery.data.event_date || gallery.first_publication_date;
   const formattedEventDate = eventDate 
       ? format(new Date(eventDate), "MMMM d, yyyy") 
@@ -71,6 +75,13 @@ export default async function Page({ params }) {
                   )}
                 </div>
                 <h1>{gallery.data.title}</h1>
+                <div className={styles.artists}>
+                  {artistArray.map((artist, index) => (
+                    <span key={index} className={styles.Artist}>
+                      <FiUsers /> {artist}
+                    </span>
+                  ))}
+                </div>
               </div>
               <div className={styles.information}>
                 {gallery.data.photographer && (
