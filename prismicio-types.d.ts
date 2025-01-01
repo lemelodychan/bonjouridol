@@ -712,6 +712,16 @@ export interface AuthorsSliceDefaultPrimary {
   author: prismic.ContentRelationshipField<"author">;
 
   /**
+   * Translator - PR only field in *Authors → Default → Primary*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: authors.default.primary.translator_pr
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  translator_pr: prismic.ContentRelationshipField<"author">;
+
+  /**
    * Official photos? field in *Authors → Default → Primary*
    *
    * - **Field Type**: Boolean

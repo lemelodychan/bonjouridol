@@ -12,13 +12,14 @@ import { FaInstagram } from "react-icons/fa6";
 import { FaXTwitter } from "react-icons/fa6";
 
 const Author = ({ author, author2, type, translator }) => {
-    const { 
-        name, 
-        profile_picture, 
-        description, 
-        twitter, 
-        instagram, 
-        website } = author.data;
+    const {
+        name = "Bonjour Idol", 
+        profile_picture = null, 
+        description = null, 
+        twitter = null, 
+        instagram = null, 
+        website = null,
+    } = author?.data || {};   
 
     const {
         name: name2, 

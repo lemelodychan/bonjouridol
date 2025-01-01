@@ -22,6 +22,16 @@
             ]
           }
         },
+        "translator_pr": {
+          "type": "Link",
+          "config": {
+            "label": "Translator - PR only",
+            "select": "document",
+            "customtypes": [
+              "author"
+            ]
+          }
+        },
         "official_photos": {
           "type": "Boolean",
           "config": {

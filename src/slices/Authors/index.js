@@ -10,7 +10,7 @@ import Image from "next/image";
 import styles from "./page.module.scss";
 
 const Authors = ({ slice }) => {
-  const author = slice.primary.author;
+  const author = slice.primary.author?.data ? slice.primary.author : slice.primary.translator_pr;
   const photo = slice.primary.photographer;
   const photo2 = slice.primary.photographer_2;
   const isOfficial = slice.primary.official_photos;
@@ -44,13 +44,15 @@ const Authors = ({ slice }) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
     >
-      {author && photo && author.uid === photo.uid ? (
-        <>
-          <Author author={author} type="Written and photographed" translator={translation} />
-        </>
+      {author?.uid === photo?.uid ? (
+        <Author author={author} type="Written and photographed" translator={translation} />
       ) : (
         <>
-          <Author author={author} type="Written" translator={translation} />
+          <Author 
+            author={author} 
+            type={slice.primary.translator_pr ? "PR translated" : "Written"} 
+            translator={translation} 
+          />
 
           {isOfficial ? (
             <div className={styles.OfficialPhotos}>
