@@ -53,8 +53,8 @@ const Slider = ({ slides }) => {
                         <PrismicLink className={styles.DiscoveryPost} href={`/articles/${item.uid}`}>
                         <div className={styles.FeaturedImage}>
                             <SingleImage
-                            image={item.data.featured_image}
-                            alt={item.data.featured_image.alt || ""}
+                                image={item.data.featured_image}
+                                alt={item.data.featured_image.alt || ""}
                             />
                         </div>
                         <div className={styles.Content}>

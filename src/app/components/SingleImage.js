@@ -7,7 +7,7 @@ import styles from "./SingleImage.module.scss";
 
 import { TbLoader2 } from "react-icons/tb";
 
-const SingleImage = ({ image, alt, ratio = "auto", color = "default" }) => {
+const SingleImage = ({ image, alt, color = "default" }) => {
   if (!image || image.length === 0) {
     return null;
   }
@@ -25,7 +25,6 @@ const SingleImage = ({ image, alt, ratio = "auto", color = "default" }) => {
   return (
     <div 
       ref={ref} 
-      style={{ aspectRatio: ratio }}
       className={`${styles.SingleImageContainer} ${loading ? styles.Loading : styles.Loaded}`}
     >
         {inView ? (
@@ -34,7 +33,6 @@ const SingleImage = ({ image, alt, ratio = "auto", color = "default" }) => {
                 alt={alt || ""}
                 fallbackAlt=""
                 className={styles.SingleImage}
-                style={{ aspectRatio: ratio }}
                 onLoadingComplete={() => setLoading(false)} // Called when the image is fully loaded
             />
         ) : (
