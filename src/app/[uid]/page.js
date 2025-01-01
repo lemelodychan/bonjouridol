@@ -64,18 +64,28 @@ export default async function Page({ params, searchParams }) {
 
   if (category === "articles") {
     const articles = await client.getByType("articles", {
-      fetchOptions: {
-        cache: 'no-store',
-      },
-      pageSize: defaultPageSize,
-      page: currentPage,
-      orderings: [
-        { field: 'my.articles.publication_date', direction: 'desc' },
-        { field: 'document.first_publication_date', direction: 'desc' },
-      ],
-      filters: [
-        prismic.filter.any('my.articles.type', postType === 'Live report' ? ['Live report', 'Interview'] : [postType]),
-      ],       
+        fetchOptions: {
+            cache: 'no-store',
+        },
+        pageSize: defaultPageSize,
+        page: currentPage,
+        orderings: [
+            { field: 'my.articles.publication_date', direction: 'desc' },
+            { field: 'document.first_publication_date', direction: 'desc' },
+        ],
+        filters: [
+            prismic.filter.any(
+                'my.articles.type', 
+                postType === 'Live report' 
+                    ? ['Live report', 'Interview']
+                    : postType === 'Press release' 
+                    ? []
+                    : [postType] 
+            ),
+            ...(postType === 'Press release'
+                ? [prismic.filter.at('document.tags', ['PR'])]
+                : []),
+        ],
     });
     results = articles.results;
     totalPages = Math.ceil(articles.total_results_size / defaultPageSize);
