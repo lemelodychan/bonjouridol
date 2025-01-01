@@ -21,7 +21,6 @@ export default async function PressRelease() {
           cache: 'no-store',
           next: { tags: ['prismic', 'articles'] },
         },
-        limit: 4,
         orderings: [
           {
             field: 'document.first_publication_date',
@@ -35,16 +34,13 @@ export default async function PressRelease() {
             ),
         ],
     });
-    
     const sortedResults = results.sort((a, b) => {
-        const dateA =
-          a.data.publication_date ||
-          a.first_publication_date;
-        const dateB =
-          b.data.publication_date ||
-          b.first_publication_date;
-        return new Date(dateB) - new Date(dateA);
-    });   
+        const dateA = a.data.publication_date || a.first_publication_date;
+        const dateB = b.data.publication_date || b.first_publication_date;
+        return new Date(dateB) - new Date(dateA); // Descending order
+    });
+    const latestPR = sortedResults.slice(0, 3);
+
     
     return (
         <div className={styles.PressRelease}>
@@ -56,7 +52,7 @@ export default async function PressRelease() {
             </h2>
 
             <div className={styles.PostContainer}>
-                {sortedResults.map((item) => {
+                {latestPR.map((item) => {
                     const publicationDate = item.data.publication_date || item.first_publication_date;
                     const formattedDate = publicationDate
                         ? format(new Date(publicationDate), "MMMM d, yyyy")
