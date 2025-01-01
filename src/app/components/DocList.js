@@ -33,6 +33,9 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
             const photographerName = item.data.photographer?.uid || "Bonjour Idol";
             const photographerName2 = item.data.photographer_2?.uid;
 
+            const artistNames = item.data.artist_name || "";
+            const artistArray = artistNames.split(',').map(name => name.trim());
+
             return (
               <Link key={item.id} className={styles.Post} href={linkPath}>
                 {item.data.featured_image && (
@@ -45,7 +48,11 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
                   </div>
                 )}
                 {postType === "Gallery" && (
-                     <span className={styles.Artist}>{item.data.artist_name}</span>
+                  artistArray.map((artist, index) => (
+                    <span key={index} className={styles.Artist}>
+                      {artist}
+                    </span>
+                  ))
                 )}
                 <div className={styles.Content}>
                   {item.tags && (

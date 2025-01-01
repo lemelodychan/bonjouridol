@@ -10,7 +10,9 @@ import Image from "next/image";
 import styles from "./page.module.scss";
 
 const Authors = ({ slice }) => {
-  const author = slice.primary.author?.data ? slice.primary.author : slice.primary.translator_pr;
+  const author = slice.primary.author?.data 
+    ? slice.primary.author 
+    : slice.primary.translator_pr;  // Fallback to translator_pr if author is not available
   const photo = slice.primary.photographer;
   const photo2 = slice.primary.photographer_2;
   const isOfficial = slice.primary.official_photos;
@@ -50,7 +52,7 @@ const Authors = ({ slice }) => {
         <>
           <Author 
             author={author} 
-            type={slice.primary.translator_pr ? "PR translated" : "Written"} 
+            type={author === slice.primary.author ? "Written" : "PR translated"} 
             translator={translation} 
           />
 
