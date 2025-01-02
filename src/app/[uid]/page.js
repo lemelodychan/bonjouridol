@@ -141,10 +141,6 @@ export default async function Page({ params, searchParams }) {
       }
     }
 
-    if (!results.length) {
-      return <Custom404 />;
-    }
-
     return (
       <div className={styles.container}>
         <h1>{page.data.title}</h1>
