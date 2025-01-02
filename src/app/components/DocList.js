@@ -47,15 +47,15 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
                     />
                   </div>
                 )}
-                <span className={styles.Artists}>
-                  {postType === "Gallery" && (
-                    artistArray.map((artist, index) => (
+                {postType === "Gallery" && artistArray?.length > 0 && (
+                  <span className={styles.Artists}>
+                    {artistArray.map((artist, index) => (
                       <span key={index} className={styles.Artist}>
                         {artist}
                       </span>
-                    ))
-                  )}
-                </span>
+                    ))}
+                  </span>
+                )}
                 <div className={styles.Content}>
                   {item.tags && (
                     <div className={styles.Tags}>

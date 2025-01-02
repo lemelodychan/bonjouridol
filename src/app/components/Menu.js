@@ -20,7 +20,18 @@ export default function Menu({ onLinkClick }) {
                         href="/livereports"
                         onClick={onLinkClick}
                         className={pathname == "/livereports" ? "active" : ""} >
-                            <span>Live Reports & Interviews</span>
+                            <span>Live Reports</span>
+                            <span className={styles.Icon}>
+                                <IoArrowForwardOutline />
+                            </span>
+                    </Link>
+                </li>
+                <li>
+                    <Link 
+                        href="/features"
+                        onClick={onLinkClick}
+                        className={pathname == "/features" ? "active" : ""} >
+                            <span>Features</span>
                             <span className={styles.Icon}>
                                 <IoArrowForwardOutline />
                             </span>
