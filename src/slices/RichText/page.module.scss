@@ -6,6 +6,7 @@
     flex-direction: column;
     gap: 24px;
     margin: 24px auto;
+    width: 100%;
     max-width: 1000px;
 
     padding: 0 24px;
@@ -33,6 +34,18 @@
         }
 
         ul {
+            margin-block: 0;
+            list-style-type: none;
+
+            li:before {
+                content: "・";
+                color: var(--bi-dark-pink);
+                font-weight: 600;
+                margin-right: 4px;
+            }
+        }
+
+        ol {
             margin-block: 0;
             list-style-type: none;
 

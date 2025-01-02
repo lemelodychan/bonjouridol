@@ -65,8 +65,9 @@
 
         h4 {
             font-size: 16px;
-            line-height: 32px;
+            line-height: 24px;
             font-weight: 400;
+            margin-bottom: 4px;
 
             span {
                 font-weight: 600;
@@ -77,7 +78,6 @@
             font-size: 14px;
             line-height: 24px;
             font-weight: 400;
-            margin-bottom: 8px;
             color: var(--medium-grey);
 
             strong {
@@ -86,31 +86,77 @@
             }
         }
 
-        .Description {
-            font-size: 14px;
-            line-height: 24px;
-            color: var(--medium-grey);
-        }
+        .InfoContent {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-gap: 0px;
+            margin-top: 8px;
 
-        .SocialLinks {
-            margin-top: 16px;
-            display: flex;
-            flex-direction: row;
-            gap: 8px;
+            &.withAuthor2 {
 
-            a {
-                width: 32px;
-                height: 32px;
+                @include lg {
+                    grid-template-columns: 1fr 1fr !important;
+                }
+
+                > div {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0px;
+                }
+
+                > div:first-of-type {
+                    padding-bottom: 16px;
+                    border-bottom: 1px solid var(--light-grey);
+
+                    @include lg {
+                        padding-right: 16px;
+                        border-right: 1px solid var(--light-grey);
+                        padding-bottom: 0px;
+                        border-bottom: 0px solid var(--light-grey);
+                    }
+                }
+                > div:last-of-type {
+                    padding-left: 0px;
+                    padding-top: 16px;
+
+                    @include lg {
+                        padding-left: 16px;
+                        padding-top: 0px;
+                    }
+                }
+            }
+
+            .Description {
+                font-size: 14px;
+                line-height: 24px;
+                color: var(--medium-grey);
+                flex-grow: 1;
+            }
+    
+            .SocialLinks {
+                margin-top: 16px;
                 display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 50%;
-                background-color: var(--bi-pink);
-                color: white;
-                transition: var(--transi);
-
-                &:hover {
-                    background-color: var(--bi-dark-pink);
+                flex-direction: row;
+                gap: 8px;
+    
+                a {
+                    width: 32px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 50%;
+                    background-color: var(--bi-pink);
+                    color: white;
+                    transition: var(--transi);
+    
+                    &:hover {
+                        background-color: var(--bi-dark-pink);
+                    }
+    
+                    &.set2 {
+                        background-color: var(--bi-indigo);
+                    }
                 }
             }
         }
