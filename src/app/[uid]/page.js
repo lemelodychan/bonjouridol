@@ -49,6 +49,10 @@ export default async function Page({ params, searchParams }) {
       postType = "Press release";
       category = "articles";
       break;
+    case "Features":
+      postType = "Features"; 
+      category = "articles";
+      break;
     case "Galleries":
       postType = "Gallery"; 
       category = "galleries";
@@ -74,17 +78,19 @@ export default async function Page({ params, searchParams }) {
             { field: 'document.first_publication_date', direction: 'desc' },
         ],
         filters: [
-            prismic.filter.any(
-                'my.articles.type', 
-                postType === 'Live report' 
-                    ? ['Live report', 'Interview', 'Behind the scenes', 'Other']
-                    : postType === 'Press release' 
-                    ? []
-                    : [postType] 
-            ),
-            ...(postType === 'Press release'
-                ? [prismic.filter.at('document.tags', ['PR'])]
-                : []),
+          prismic.filter.any(
+            'my.articles.type',
+            postType === 'Live report'
+              ? ['Live report']
+              : postType === 'Features'
+              ? []
+              : [postType]
+          ),
+          ...(postType === 'Features'
+            ? [prismic.filter.any('document.tags', ['Interview', 'Behind the scenes', 'Other'])]
+            : postType === 'Press release'
+            ? [prismic.filter.at('document.tags', ['PR'])]
+            : []),
         ],
     });
     results = articles.results;

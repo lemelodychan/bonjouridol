@@ -9,9 +9,14 @@ import DocListPagination from "./DocListPagination";
 import styles from "./DocList.module.scss";
 
 export default function DocListContainer({ results, currentPage, totalPages, postType }) {
+  console.log("DocList results:", results);
+  console.log(postType);
+
+  const folderName = postType;
+
   return (
     <div className={styles.DocListContainer}>
-      <Breadcrumbs className={styles.Breadcrumbs} category={postType} />
+      <Breadcrumbs className={styles.Breadcrumbs} category={folderName} />
       <div className={`${styles.DocList} ${postType === "Gallery" ? styles.Galleries : ""}`}>
         {results.length > 0 ? (
           results.map((item) => {

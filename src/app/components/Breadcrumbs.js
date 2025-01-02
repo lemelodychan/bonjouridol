@@ -12,10 +12,13 @@ const Breadcrumbs = ({ category, title = null, subtitle = null, uid = null, type
     let titleCat;
     if (category === "Live report") {
         parentCat = "livereports";
-        titleCat = "Live Reports & Interviews";
+        titleCat = "Live Reports";
     } else if (category === "Interview") {
-        parentCat = "livereports";
-        titleCat = "Live Reports & Interviews";
+        parentCat = "features";
+        titleCat = "Features";
+    } else if (category === "Behind the scenes") {
+        parentCat = "features";
+        titleCat = "Features";
     } else if (category === "Discovery") {
         parentCat = "discoveries";
         titleCat = "Discoveries";
@@ -25,6 +28,9 @@ const Breadcrumbs = ({ category, title = null, subtitle = null, uid = null, type
     } else if (category === "Gallery") {
         parentCat = "galleries";
         titleCat = "Galleries";
+    } else if (category === "Features") {
+        parentCat = "features";
+        titleCat = "Features";
     }
 
     return (

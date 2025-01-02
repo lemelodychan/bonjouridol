@@ -89,7 +89,7 @@ export default async function Page({ params }) {
             <Breadcrumbs 
               type="white"
               className={styles.Breadcrumbs}
-              category={article.data.type} 
+              category={article.data.type}
               title={article.data.title} 
               subtitle={article.data.subtitle}
               uid={article.uid}

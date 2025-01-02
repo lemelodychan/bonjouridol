@@ -631,7 +631,12 @@ interface PageDocumentData {
    * - **Documentation**: https://prismic.io/docs/field#select
    */
   type: prismic.SelectField<
-    "Live reports" | "Discoveries" | "Press Releases" | "Galleries" | "Other",
+    | "Live reports"
+    | "Discoveries"
+    | "Press Releases"
+    | "Features"
+    | "Galleries"
+    | "Other",
     "filled"
   >;
 
@@ -918,7 +923,7 @@ export interface DocListSliceDefaultPrimary {
   type: prismic.SelectField<
     | "Live reports"
     | "Discoveries"
-    | "Interviews"
+    | "Features"
     | "Press Releases"
     | "Galleries"
     | "All documents"
