@@ -8,6 +8,7 @@
     flex-direction: column;
     gap: 0px;
     background-color: white;
+    border-bottom: 1px solid var(--light-grey);
 
     @include md {
         flex-direction: row;
