@@ -9,7 +9,7 @@ import SingleImage from '@/app/components/SingleImage';
 import SharingOptions from '../../components/SharingOptions';
 import Gallery from '@/app/components/Gallery';
 import FeaturedImage from '@/app/assets/FeaturedImage.png';
-import LogoBI from '@/app/assets/Square_Logo_Pink.png';
+import Image from 'next/image';
 import { HiOutlineLocationMarker, HiOutlineCalendar } from 'react-icons/hi';
 import Custom404 from '@/app/404';
 
@@ -137,7 +137,16 @@ export default async function Page({ params }) {
           {article.data.author && (
             <div className={styles.author}>
               <span className={styles.authorImg}>
-                <PrismicNextImage field={article.data.author?.data?.profile_picture || LogoBI} fallbackAlt="" />
+                {article.data.author?.data?.profile_picture ? (
+                    <PrismicNextImage field={article.data.author?.data?.profile_picture} fallbackAlt="" />
+                    ) : (
+                    <Image
+                        src={'/LogoBI.png'}
+                        alt="Bonjour Idol Logo"
+                        width={100}
+                        height={100}
+                    />
+                )}
               </span>
               <span className={styles.authorInfo}>
                 <span className={styles.authorName}>{article.data.author?.data?.name || 'Bonjour Idol'}</span>

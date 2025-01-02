@@ -3,9 +3,8 @@
 import React from 'react';
 import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
+import Image from 'next/image';
 import styles from './Author.module.scss';
-
-import LogoBI from "@/app/assets/Square_Logo_Pink.png";
 
 import { HiOutlineLink } from 'react-icons/hi';
 import { FaInstagram } from "react-icons/fa6";
@@ -29,14 +28,23 @@ const Author = ({ author, author2, type, translator }) => {
     return (
         <div className={styles.AuthorBlock}>
             <div className={`${styles.authorImgContainer} ${author2?.data ? styles.withAuthor2 : ""}`}>
-                {profile_picture && (
+                {profile_picture ? (
                     <span className={styles.authorImg}>
                         <PrismicNextImage
-                            field={profile_picture || LogoBI}
-                            alt={`${name}'s Profile Picture`}
+                            field={profile_picture}
                             fallbackAlt=""
                             width={100}
                             height={100}
+                        />
+                    </span>
+                    ) : (
+                    <span className={styles.authorImg}>
+                        <Image
+                            src={'/LogoBI.png'}
+                            alt="Bonjour Idol Logo"
+                            width={100}
+                            height={100}
+                            priority
                         />
                     </span>
                 )}
