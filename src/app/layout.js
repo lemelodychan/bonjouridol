@@ -16,7 +16,7 @@ const DMSans = DM_Sans({ subsets: ['latin'] })
 export const metadata = {
   title: 'BONJOUR IDOL',
   description: 'Bonjour Idol is a French bilingual media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content.',
-  image: FeaturedImage,
+  image: '/FeaturedImage.png',
 }
 
 export default function RootLayout({ children }) {

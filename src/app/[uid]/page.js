@@ -19,13 +19,13 @@ export async function generateMetadata({ params }) {
       description:
         page?.data?.meta_description ||
         "Bonjour Idol is a French bilingual media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content. Check it out!",
-      image: page?.data?.meta_image || FeaturedImage,
+      image: page?.data?.meta_image || '/FeaturedImage.png',
     };
   } catch (error) {
     return {
       title: "Page Not Found | BONJOUR IDOL",
       description: "The page you're looking for doesn't exist.",
-      image: FeaturedImage,
+      image: '/FeaturedImage.png',
     };
   }
 }

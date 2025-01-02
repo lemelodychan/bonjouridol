@@ -24,14 +24,14 @@ export async function generateMetadata({ params }) {
     return {
       title: article.data.meta_title || `${article.data.title}${article.data.subtitle ? `: ${article.data.subtitle}` : ''} | BONJOUR IDOL`,
       description: article.data.meta_description || 'Bonjour Idol is a French bilingual media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content. Check it out!',
-      image: article.data.meta_image || FeaturedImage,
+      image: article.data.meta_image || '/FeaturedImage.png',
     };
   } catch (error) {
     console.error('Error fetching metadata for article:', error);
     return {
       title: 'Article Not Found | BONJOUR IDOL',
       description: 'The article you\'re looking for doesn\'t exist.',
-      image: FeaturedImage,
+      image: '/FeaturedImage.png',
     };
   }
 }
