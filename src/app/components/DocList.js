@@ -9,9 +9,6 @@ import DocListPagination from "./DocListPagination";
 import styles from "./DocList.module.scss";
 
 export default function DocListContainer({ results, currentPage, totalPages, postType }) {
-  console.log("DocList results:", results);
-  console.log(postType);
-
   const folderName = postType;
 
   return (

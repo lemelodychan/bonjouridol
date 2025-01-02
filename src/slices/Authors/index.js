@@ -46,39 +46,68 @@ const Authors = ({ slice }) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
     >
-      {author?.uid === photo?.uid ? (
+      {(author?.uid === photo?.uid && !isOfficial) ? (
         <Author author={author} type="Written and photographed" translator={translation} />
       ) : (
         <>
-          <Author 
-            author={author} 
-            type={author === slice.primary.author ? "Written" : "PR translated"} 
-            translator={translation} 
-          />
-
-          {isOfficial ? (
-            <div className={styles.OfficialPhotos}>
-              <span className={styles.authorImg}>
-                <Image 
-                  src={Logo}
-                  alt="Bonjour Idol Logo" 
-                  height={48}
-                />
-              </span>
-              <div className={styles.AuthorInfo}>
+          {(!photo?.uid && isOfficial) ? (
+            <>
+              <Author 
+                author={author || {}} 
+                type="Written" 
+                translator={translation} 
+              />
+              <div className={styles.OfficialPhotos}>
+                <span className={styles.authorImg}>
+                  <Image 
+                    src={Logo}
+                    alt="Bonjour Idol Logo" 
+                    height={48}
+                  />
+                </span>
+                <div className={styles.AuthorInfo}>
                   <h4>
+                    Official photos courtesy of&nbsp;
+                    <span className={styles.AuthorName}>artist management</span>.
+                  </h4>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <Author 
+                author={author} 
+                type={author === slice.primary.author ? "Written" : "PR translated"} 
+                translator={translation} 
+              />
+              
+              {isOfficial && (
+                <div className={styles.OfficialPhotos}>
+                  <span className={styles.authorImg}>
+                    <Image 
+                      src={Logo}
+                      alt="Bonjour Idol Logo" 
+                      height={48}
+                    />
+                  </span>
+                  <div className={styles.AuthorInfo}>
+                    <h4>
                       Official photos courtesy of&nbsp;
                       <span className={styles.AuthorName}>artist management</span>.
-                  </h4>
-              </div>
-            </div>
-          ) : (
-            photo && photo.data && (
-              <Author author={photo} author2={photo2} type="Photographed" />
-            )
+                    </h4>
+                  </div>
+                </div>
+              )}
+
+              {/* Only show the photographer block if photo data exists */}
+              {photo && photo.data && (
+                <Author author={photo} author2={photo2} type="Photographed" />
+              )}
+            </>
           )}
         </>
       )}
+
     </div>
   );
 };
