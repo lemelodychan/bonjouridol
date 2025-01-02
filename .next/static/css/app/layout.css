@@ -22,6 +22,45 @@
 }.__className_05e5f9 {font-family: 'DM Sans', 'DM Sans Fallback';font-style: normal
 }
 
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/404.module.scss ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes __404_rotate___5Vkx {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.__404_container__yNnV8 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+  gap: 24px;
+  text-align: center;
+  background-color: white;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px;
+  height: 560px;
+}
+@media (min-width: 769px) {
+  .__404_container__yNnV8 {
+    padding: 32px;
+  }
+}
+.__404_container__yNnV8 p {
+  font-size: 16px;
+  line-height: 28px;
+  color: var(--dark-grey);
+}
+.__404_container__yNnV8 a {
+  text-decoration: none;
+}
 /*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/Menu.module.scss ***!
   \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -787,4 +826,56 @@ h3 {
 }
 .Footer_Footer__jEjBH .Footer_Credits__kYFYO {
   line-height: 32px;
+}
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/IconButton.module.scss ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.IconButton_Main__dL8Bn {
+  border: none;
+  border-radius: 16px;
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: var(--font-size);
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  gap: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  transition: var(--transi);
+}
+.IconButton_Main__dL8Bn > span {
+  text-decoration: none !important;
+  display: inline-block;
+  position: relative;
+  top: 1px;
+}
+
+.IconButton_Pink__NuvuA {
+  color: var(--white);
+  background-image: var(--bi-gradient-1);
+  background-position: center right;
+  background-size: 200% 100%;
+}
+.IconButton_Pink__NuvuA:hover {
+  background-position: center left;
+}
+
+.IconButton_White__fsKK6 {
+  color: var(--bi-dark-pink);
+  background-color: white;
+}
+.IconButton_White__fsKK6:hover {
+  color: var(--bi-indigo);
+}
+
+.IconButton_WhiteGrey__zexls {
+  color: var(--bi-dark-pink);
+  background-color: white;
+}
+.IconButton_WhiteGrey__zexls:hover {
+  color: var(--bi-indigo);
+  background-color: var(--light-grey);
 }
