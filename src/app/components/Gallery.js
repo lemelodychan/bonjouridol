@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Masonry from "react-masonry-css";
 import Lightbox from "yet-another-react-lightbox";
-import "yet-another-react-lightbox/styles.css"; // Import the lightbox styles
+import "yet-another-react-lightbox/styles.css";
 import { PrismicNextImage } from "@prismicio/next";
 import SingleImage from "./SingleImage";
 import { useInView } from "react-intersection-observer";
