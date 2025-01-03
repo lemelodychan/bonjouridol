@@ -18,7 +18,7 @@ export async function generateMetadata({ params }) {
       title: page?.data?.meta_title || `${page?.data?.title} | BONJOUR IDOL`,
       description:
         page?.data?.meta_description ||
-        "Bonjour Idol is a French bilingual media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content. Check it out!",
+        "Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content. Check it out!",
       image: page?.data?.meta_image || '/FeaturedImage.png',
     };
   } catch (error) {

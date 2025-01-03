@@ -22,7 +22,7 @@ export async function generateMetadata({ params }) {
   return {
     title: gallery.data.meta_title || `Gallery - ${gallery.data.title} | BONJOUR IDOL`,
     description: gallery.data.meta_description 
-      || "Bonjour Idol is a French bilingual media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content. Check it out!",
+      || "Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content. Check it out!",
     image: gallery.data.meta_image || '/FeaturedImage.png',
   };
 }

@@ -23,7 +23,7 @@ export async function generateMetadata({ params }) {
     const article = await client.getByUID('articles', uid);
     return {
       title: article.data.meta_title || `${article.data.title}${article.data.subtitle ? `: ${article.data.subtitle}` : ''} | BONJOUR IDOL`,
-      description: article.data.meta_description || 'Bonjour Idol is a French bilingual media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content. Check it out!',
+      description: article.data.meta_description || 'Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content. Check it out!',
       image: article.data.meta_image || '/FeaturedImage.png',
     };
   } catch (error) {
