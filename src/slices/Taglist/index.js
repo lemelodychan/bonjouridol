@@ -18,7 +18,9 @@ const Taglist = ({ slice }) => {
         {slice.primary.tags
           .sort((a, b) => a.tag.localeCompare(b.tag))
           .map((item, index) => (
-            <strong key={index}>#{item.tag}</strong>
+            <Link href={`/search?artist=${encodeURIComponent(item.tag)}`}>
+              <strong key={index}>#{item.tag}</strong>
+            </Link>
           ))}
       </div>
     </section>

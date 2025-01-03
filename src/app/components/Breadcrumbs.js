@@ -31,6 +31,9 @@ const Breadcrumbs = ({ category, title = null, subtitle = null, uid = null, type
     } else if (category === "Features") {
         parentCat = "features";
         titleCat = "Features";
+    } else if (category === "Search results") {
+        parentCat = "livereports";
+        titleCat = "All articles";
     }
 
     return (

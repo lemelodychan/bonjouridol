@@ -28,7 +28,10 @@
             padding: 24px;
         }
 
-        strong {
+        a {
+            padding: 6px 8px;
+            background-color: white;
+            transition: var(--transi);
             text-decoration: none !important;
             border: none;
             border-radius: 8px;
@@ -39,29 +42,26 @@
             line-height: 1.5;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-
-            gap: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 6px 8px;
-            background-color: white;
-
-            transition: var(--transi);
-
-            color: var(--bi-dark-pink);
-
-            &:nth-child(even) {
-                color: var(--bi-light-pink);
-            }
+            color: var(--bi-dark-pink) !important;
 
             @include md {
                 font-size: 14px;
             }
 
+            &:nth-child(even) {
+                color: var(--bi-light-pink) !important;
+            }
+
             &:hover{
-                color: var(--bi-indigo);
+                color: var(--bi-indigo) !important;
                 cursor: pointer;
+            }
+
+            strong {
+                gap: 8px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
         }
     }
