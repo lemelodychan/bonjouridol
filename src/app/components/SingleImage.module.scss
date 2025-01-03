@@ -5,6 +5,7 @@
     width: 100%;
     height: 100%;
     max-width: 100%;
+    position: relative;
     
     .SingleImage {
         width: 100%;
@@ -40,5 +41,43 @@
         height: 100%;
         padding: 16px;
         min-height: 240px;
+    }
+
+    .ViewItem {
+        transition: var(--transi);
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-items: center;
+        top: 16px;
+        right: 16px;
+        
+        span {
+            transition: var(--transi);
+            display: flex;
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+            border-radius: 50%;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            justify-items: center;
+            color: var(--bi-dark-pink);
+            background-color: var(--white);
+            transform: scale(100%);
+            transform-origin: center;
+        }
+
+        &:hover {
+            cursor: pointer;
+            
+            span {
+                transform: scale(110%);
+                color: var(--white);
+                background-color: var(--bi-pink);
+            }
+        }
     }
 }

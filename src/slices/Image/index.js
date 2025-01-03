@@ -23,6 +23,7 @@ const Image = ({ slice }) => {
           alt={slice.primary.image.alt || "Image"}
           className={styles.Image}
           color="GreyBg"
+          lightbox="true"
         />
       </div>
       {slice.primary.comment && 
