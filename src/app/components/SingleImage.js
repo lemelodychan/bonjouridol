@@ -15,8 +15,8 @@ const SingleImage = ({ image, alt, color = "default", lightbox="false" }) => {
   if (!image || image.length === 0) {
     return null;
   }
-  const hasLightbox = lightbox;
 
+  const hasLightbox = lightbox;
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const openLightbox = (index) => {
@@ -32,12 +32,10 @@ const SingleImage = ({ image, alt, color = "default", lightbox="false" }) => {
   };
 
   const { ref, inView } = useInView({
-    triggerOnce: true, // Load the image only once
-    rootMargin: "200px", // Preload slightly before it enters the viewport
+    triggerOnce: true,
+    rootMargin: "200px",
   });
-
   const [loading, setLoading] = useState(true);
-
   const placeholderClass = `Placeholder ${
     color === "white" ? "GreyBg" : color === "dark" ? "DarkBg" : ""
   }`;
@@ -75,14 +73,20 @@ const SingleImage = ({ image, alt, color = "default", lightbox="false" }) => {
       {isOpen && hasLightbox === "true" && (
         <Lightbox
           render={{
-            iconPrev: () => <HiChevronLeft size={32} />,
-            iconNext: () => <HiChevronRight size={32} />,
             iconClose: () => <HiX size={24} />,
           }}
           open={isOpen}
           close={() => setIsOpen(false)}
           slides={[lightboxImage]}
           thumbs={[lightboxImage.thumbnail]}
+          carousel={{
+            finite: true,
+            preload: 0,
+            slidesToScroll: 1,
+          }}
+          controller={{
+            navigation: false,
+          }}
         />
       )}
     </>

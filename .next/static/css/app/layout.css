@@ -576,6 +576,9 @@ h3 {
 .yarl__slide_image {
   border-radius: 24px;
 }
+.yarl__button:disabled {
+  display: none;
+}
 
 .masonry-grid {
   display: flex;
