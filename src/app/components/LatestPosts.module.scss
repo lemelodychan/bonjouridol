@@ -106,7 +106,6 @@
                 .Tags {
                     display: flex;
                     gap: 8px;
-                    margin-bottom: 4px;
         
                     > .Tag {
                         display: inline-block;
@@ -148,6 +147,14 @@
                         margin: 0;
                         color: var(--dark-gray);
                         transition: var(--transi);
+
+                        span {
+                            display: -webkit-box;
+                            width: 100%;
+                            -webkit-line-clamp: 2;
+                            -webkit-box-orient: vertical;
+                            overflow: hidden;
+                        }
                     }
 
                 }

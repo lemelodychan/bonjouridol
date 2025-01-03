@@ -163,23 +163,13 @@
                             font-weight: 600;
                             color: var(--dark-gray);
                             transition: var(--transi);
-        
-                            > .icon {
-                                display: inline-flex;
-                                align-items: center;
-                                margin-left: 4px;
-                                width: 16px;
-                                height: 16px;
-                                position: relative;
+
+                            span {
+                                display: -webkit-box;
+                                width: 100%;
+                                -webkit-line-clamp: 2;
+                                -webkit-box-orient: vertical;
                                 overflow: hidden;
-        
-                                > svg {
-                                    position: relative;
-                                    top: 2px;
-                                    left: -24px;
-                                    opacity: 0;
-                                    transition: var(--transi);
-                                }
                             }
                     
                         }
@@ -202,10 +192,6 @@
                     > .Content {
                         h3 {
                             color: var(--bi-dark-pink);
-                            > .icon svg {
-                                left: 0px;
-                                opacity: 1;
-                            }
                         }
                     }
                 }
