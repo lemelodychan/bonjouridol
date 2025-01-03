@@ -6,12 +6,17 @@ import DocListContainer from "../components/DocList";
 import styles from "./page.module.scss";
 
 export default async function SearchPage({ searchParams }) {
-  const searchTerm = searchParams.artist || "";
+  const searchTerm = searchParams.keyword || "";
   const currentPage = parseInt(searchParams.page) || 1;
 
-  if (!searchTerm.trim()) {
-    return <p>Please provide a valid artist name in the search query.</p>;
-  }
+    if (!searchTerm.trim()) {
+        return (
+            <div className={styles.SearchPage}>
+                <h1>Search Results</h1>
+                <p>Please provide a valid term in the search query.</p>
+            </div>
+        );
+    }
 
     const client = createClient();
     let results = [];
@@ -30,7 +35,8 @@ export default async function SearchPage({ searchParams }) {
             { field: "document.first_publication_date", direction: "desc" },
         ],
         filters: [
-            prismic.filter.fulltext("my.articles.idol_name", searchTerm),
+            // prismic.filter.fulltext("my.articles.idol_name", searchTerm),
+            prismic.filter.fulltext("document", searchTerm),
         ],
         });
         const results = response.results;

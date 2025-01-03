@@ -80,7 +80,7 @@
             max-width: 1440px;
             position: relative;
             max-height: 96px;
-            align-items: flex-end;
+            align-items: center;
             justify-content: flex-start;
             background-color: var(--white);
             border-radius: 24px 24px 0 0;
@@ -121,6 +121,76 @@
                 max-height: 96px;
                 height: 100%;
                 top: 0px;
+                width: -webkit-fill-available;
+            }
+        }
+
+        .searchBar {
+            position: relative;
+            display: none;
+            align-items: center;
+
+            @include md {
+                display: flex;
+            }
+
+            input {
+                border: 0px solid var(--light-grey);
+                background-color: var(--light-grey);
+                border-radius: 8px;
+                font-size: 14px;
+                font-family: var(--font-text);
+                line-height: 36px;
+                padding: 2px 12px 2px 40px;
+                color: var(--dark-grey);
+                height: 40px;
+                appearance: none;
+                width: 240px;
+            }
+
+            span, button {
+                border: 0;
+                background: transparent;
+                font-size: 16px;
+                color: var(--bi-dark-pink);
+                height: 40px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                justify-items: center;
+            }
+
+            span {
+                width: 40px;
+                position: absolute;
+                top: 0px;
+                left: 0;
+            }
+
+            button {
+                position: absolute;
+                top: 0px;
+                right: 0;
+                width: 40px;
+                overflow: hidden;
+
+                svg {
+                    transition: var(--transi);
+                    position: relative;
+                    right: 0px;
+                    opacity: 1;
+                }
+
+                &:disabled {
+                    cursor: not-allowed;
+                    width: 0;
+
+                    svg {
+                        position: relative;
+                        right: -40px;
+                        opacity: 0;
+                    }
+                }
             }
         }
     

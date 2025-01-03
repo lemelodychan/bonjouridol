@@ -5,6 +5,7 @@ import { HiMenuAlt3, HiX } from "react-icons/hi";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import LogoDesktop from "../assets/logo_croissant_pink.svg";
 import LogoMobileWhite from "../assets/logo_croissant_white.svg";
@@ -12,6 +13,8 @@ import LogoMobilePink from "../assets/logo_croissant_pink.svg";
 import LogoMobileMenu from "../assets/logo_normal_white.svg";
 
 import { FaXTwitter, FaInstagram, FaYoutube } from "react-icons/fa6";
+import { IoArrowForwardOutline } from "react-icons/io5";
+import { HiOutlineSearch } from "react-icons/hi";
 
 import Menu from "./Menu";
 import styles from "./navbar.module.scss";
@@ -20,20 +23,28 @@ export default function Navbar() {
   const pathname = usePathname();
   const isArticleOrHomePage = pathname === "/" || pathname.startsWith("/articles");
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
+  const handleSearch = (event) => {
+    event.preventDefault();
+    if (searchTerm.trim()) {
+      router.push(`/search?keyword=${encodeURIComponent(searchTerm)}`);
+    }
+  };
+
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setScrolled] = useState(false);
-
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
     document.body.classList.toggle("overflowHidden", !isMobileMenuOpen);
   };
-
   const closeMobileMenu = () => {
     setTimeout(() => {
       setMobileMenuOpen(false);
       document.body.classList.remove("overflowHidden");
     }, 300); // Delay of 300ms for synchronization
   };
+
 
   useEffect(() => {
     if (isArticleOrHomePage) {
@@ -93,6 +104,26 @@ export default function Navbar() {
         <nav className={`${styles.navbar} ${styles.desktopNav}`} role="navigation">
           <Menu />
         </nav>
+
+        <div className={styles.searchBar}>
+          <form onSubmit={handleSearch}>
+            <span><HiOutlineSearch /></span>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search articles..."
+              className={styles.searchInput}
+            />
+            <button 
+              type="submit" 
+              className={styles.searchButton}
+              disabled={!searchTerm}
+            >
+              <IoArrowForwardOutline />
+            </button>
+          </form>
+        </div>
       </div>
 
       {/* Mobile Full-Screen Menu */}
