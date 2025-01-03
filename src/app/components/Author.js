@@ -90,7 +90,7 @@ const Author = ({ author, author2, type, translator }) => {
                 <div className={`${styles.InfoContent} ${author2?.data ? styles.withAuthor2 : ""}`}>
                     {description &&
                         <div>
-                            {description && !description2 &&
+                            {description &&
                                 <div className={styles.Description}>
                                     <PrismicRichText field={description} />
                                 </div>
@@ -117,6 +117,11 @@ const Author = ({ author, author2, type, translator }) => {
 
                     {description2 && 
                         <div>
+                            {description2 &&
+                                <div className={styles.Description}>
+                                    <PrismicRichText field={description2} />
+                                </div>
+                            }
                             <div className={styles.SocialLinks}>
                                 {twitter2 && 
                                     <PrismicNextLink className={styles.set2} field={twitter2}>
