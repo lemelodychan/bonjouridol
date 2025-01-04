@@ -1,0 +1,214 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.GalleryListContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 0;
+    margin: 0 24px;
+    width: 100%;
+
+    @include lg {
+        margin: 0 32px;
+    }
+
+    .GalleryList {
+        width: calc(100% - 48px);
+
+        .SwiperContainer {
+            position: relative;
+            margin-bottom: 32px;
+
+            :global(.swiper-wrapper) {
+                width: fit-content !important;
+                border-radius: 0px !important;
+            }
+            :global(.swiper-slide) {
+                width: 280px !important; /* Ensures the slide width matches the content */
+                flex-shrink: 0; /* Prevents the slide from shrinking */
+
+                @include lg {
+                    width: 320px !important;
+                }
+            }
+
+            :global(.custom-prev) {
+                left: 0px !important;
+            }
+            :global(.custom-next) {
+                right: 0px !important;
+            }
+
+            .Hidden {
+                display: none;
+            }
+
+            .Slide {
+                margin-right: 16px;
+
+                &:last-of-type {
+                    margin: 0;
+                }
+            }
+        }
+
+        .Post {
+            width: 280px;
+            height: 212px;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+
+            @include lg {
+                width: 320px;
+                height: 212px;
+            }
+
+            .FeaturedImage {
+                position: absolute;
+                z-index: 1;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+
+                img {
+                    transition: var(--transi);
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    object-position: center;
+                    transform: scale(100%);
+                    transform-origin: center;
+                }
+
+                &:before {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    content: "";
+                    position: absolute;
+                    transition: var(--transi);
+                    top: 0;
+                    left: 0;
+                    z-index: 1;
+                    opacity: 1;
+                    background: 
+                        radial-gradient(180px 180px at 100% 0%, var(--bi-dark-pink) 0%, rgba(255, 49, 148, 0) 100%), 
+                        radial-gradient(180px 180px at 0% 100%, var(--bi-indigo) 0%, rgba(114, 114, 252, 0) 100%),
+                        linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0.2))
+                    ;
+                }
+            }
+
+            &:hover {
+                .FeaturedImage {
+                    &::before {
+                        opacity: 0.5;
+                    }
+                    img {
+                        transform: scale(106%);
+                    }
+                }
+            }
+
+            .Content {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 2;
+                width: 100%;
+                height: 100%;
+                padding: 16px 16px 24px 16px;
+                color: white;
+                display: flex;
+                flex-direction: column;
+                gap: 0px;
+                align-items: flex-start;
+                justify-content: flex-end;
+                border-radius: 16px;
+
+                h3 { 
+                    color: white;
+                    font-size: 18px;
+                    line-height: 28px;
+                    font-weight: 600;
+                }
+
+                .Tags {
+                    display: flex;
+                    gap: 8px;
+                    margin-bottom: 8px;
+
+                    > .Tag {
+                        display: inline-block;
+                        padding: 4px 8px;
+                        border-radius: 4px;
+
+                        color: var(--white);
+                        text-transform: uppercase;
+                        font-weight: bold;
+                        font-size: var(--font-size-sm);
+                        letter-spacing: 0.5px;
+                    
+                        &.livereport, &.interview, 
+                        &.discovery, &.gallery,
+                        &.behindthescenes {
+                            background-color: var(--bi-indigo);
+                            order: 2;
+                        }
+                        &.pr {
+                            background-color: var(--bi-dark-pink);
+                            order: 1;
+                        }
+                        &:empty { display: none; }
+                    }
+                }
+
+                .Date {
+                    color: white;
+                    font-size: 14px;
+                    margin-top: 8px;
+
+                    .Photographer strong {
+                        font-weight: 600;
+                        text-transform: capitalize;
+                    }
+                }
+            }
+        }
+
+        .SeeAll {
+            transition: var(--transi);
+            width: 280px;
+            height: 212px;
+            display: flex;
+            border-radius: 16px;
+            background-color: var(--light-grey);
+            text-decoration: none;
+            padding: 16px;
+
+            font-size: 14px;
+            color: var(--bi-dark-pink);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+
+            align-items: center;
+            justify-content: center;
+
+            > span {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            &:hover {
+                cursor: pointer;
+                color: var(--bi-indigo);
+            }
+        }
+    }
+}
