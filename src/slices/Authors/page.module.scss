@@ -8,11 +8,12 @@
     flex-direction: column;
     gap: 0px;
     background-color: white;
+    border-top: 1px solid var(--light-grey);
     border-bottom: 1px solid var(--light-grey);
 
     @include md {
         flex-direction: row;
-        width: calc(100% - 64px);
+        padding: 0 32px;
     }
 
     > div {
