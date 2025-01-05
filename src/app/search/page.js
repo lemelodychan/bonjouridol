@@ -7,8 +7,8 @@ import GalleryList from "../components/GalleryList";
 import styles from "./page.module.scss";
 
 export default async function SearchPage({ searchParams }) {
-    const searchTerm = searchParams.keyword || "";
-    const currentPage = parseInt(searchParams.page) || 1;
+    const searchTerm = (await searchParams?.keyword) || "";
+    const currentPage = parseInt(await searchParams?.page) || 1;
 
     if (!searchTerm.trim()) {
       return (
