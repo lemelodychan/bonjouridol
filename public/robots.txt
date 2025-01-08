@@ -1,0 +1,34 @@
+# Allow all search engines to crawl the site
+User-agent: *
+Disallow: /api/
+Disallow: /_next/
+Disallow: /_middleware
+Disallow: /*?*         # Blocks URLs with query strings (optional, adjust as needed)
+
+# Allow specific paths
+Allow: /_next/static/
+Allow: /public/
+
+# Sitemap location
+Sitemap: https://www.bonjouridol.com/sitemap.xml
+
+# Delay crawlers if needed
+Crawl-delay: 10
+
+# Block specific crawlers if required
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SEMrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+# Allow Googlebot unrestricted access
+User-agent: Googlebot
+Disallow:
+
+# Allow Bing unrestricted access
+User-agent: Bingbot
+Disallow:
