@@ -21,20 +21,61 @@ export async function generateMetadata({ params }) {
 
   try {
     const article = await client.getByUID('articles', uid);
+
+    const title = article.data.meta_title || `${article.data.title}${article.data.subtitle ? `: ${article.data.subtitle}` : ''} | BONJOUR IDOL`;
+    const description = article.data.meta_description || 'Bonjour Idol is a French media about the Japanese idol scene. Check out exclusive content, interviews, and photo reports.';
+    const imageUrl = article.data.meta_image?.url || '/FeaturedImage.png';
+
     return {
-      title: article.data.meta_title || `${article.data.title}${article.data.subtitle ? `: ${article.data.subtitle}` : ''} | BONJOUR IDOL`,
-      description: article.data.meta_description || 'Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content. Check it out!',
-      image: article.data.meta_image || '/FeaturedImage.png',
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        url: `https://www.bonjouridol.com/articles/${uid}`,
+        images: [
+          {
+            url: imageUrl,
+            width: 1200,
+            height: 630,
+            alt: title,
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [imageUrl],
+      },
     };
   } catch (error) {
     console.error('Error fetching metadata for article:', error);
     return {
       title: 'Article Not Found | BONJOUR IDOL',
       description: 'The article you\'re looking for doesn\'t exist.',
-      image: '/FeaturedImage.png',
+      openGraph: {
+        title: 'Article Not Found | BONJOUR IDOL',
+        description: 'The article you\'re looking for doesn\'t exist.',
+        images: [
+          {
+            url: '/FeaturedImage.png',
+            width: 1200,
+            height: 630,
+            alt: 'Bonjour Idol',
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Article Not Found | BONJOUR IDOL',
+        description: 'The article you\'re looking for doesn\'t exist.',
+        images: ['/FeaturedImage.png'],
+      },
     };
   }
 }
+
 
 export default async function Page({ params }) {
   const { uid } = await params;
