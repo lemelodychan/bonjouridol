@@ -4,6 +4,7 @@ import { DM_Sans, Poppins, Noto_Sans_JP } from 'next/font/google'
 import { PrismicPreview, PrismicNextImage } from '@prismicio/next'
 import { repositoryName } from '@/prismicio'
 import Script from 'next/script';
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 import Navbar from './components/Navbar'
 import Topbar from './components/Topbar'
@@ -44,34 +45,8 @@ export default function RootLayout({ children }) {
         <head>
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <meta name="google-site-verification" content="WOV1O-V5Z53289sOWAWW_caWIAFnluDcQ6PEdiJ0pCU" />
-          <Script
-            src="https://www.googletagmanager.com/gtag/js?id=G-QMRDRH8ZP6"
-            strategy="afterInteractive"
-          />
-          <Script id="google-analytics" strategy="afterInteractive">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-QMRDRH8ZP6');
-            `}
-          </Script>
-          <Script
-            id="iubenda-script" strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-                var _iub = _iub || [];
-                _iub.csConfiguration = {
-                  "siteId": 3888654,
-                  "cookiePolicyId": 26602420,
-                  "lang": "en",
-                  "storage": {
-                    "useSiteId": true
-                  }
-                };`,}} />
-          <script type="text/javascript" src="https://cs.iubenda.com/autoblocking/3888654.js"></script>
-          <script type="text/javascript" src="//cdn.iubenda.com/cs/gpp/stub.js"></script>
-          <script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async></script>
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-QMRDRH8ZP6"></script>
+          <GoogleAnalytics gaId="G-QMRDRH8ZP6" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400;1,9..40,500;1,9..40,700&family=Noto+Sans+JP:wght@400;500;700&family=Poppins:wght@900&display=swap" rel="stylesheet" />
