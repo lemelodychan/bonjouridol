@@ -12,20 +12,20 @@ export async function GET() {
 
   // Generate sitemap entries
   const pages = [
-    { loc: `${baseUrl}/`, lastmod: new Date().toISOString(), changefreq: "daily", priority: 1.0 },
-    { loc: `${baseUrl}/livereports`, lastmod: new Date().toISOString(), changefreq: "monthly", priority: 0.8 },
-    { loc: `${baseUrl}/interviews`, lastmod: new Date().toISOString(), changefreq: "monthly", priority: 0.8 },
-    { loc: `${baseUrl}/features`, lastmod: new Date().toISOString(), changefreq: "monthly", priority: 0.8 },
-    { loc: `${baseUrl}/pressrelease`, lastmod: new Date().toISOString(), changefreq: "monthly", priority: 0.8 },
-    { loc: `${baseUrl}/galleries`, lastmod: new Date().toISOString(), changefreq: "monthly", priority: 0.8 },
-    { loc: `${baseUrl}/about`, lastmod: new Date().toISOString(), changefreq: "monthly", priority: 0.5 },
-    { loc: `${baseUrl}/contact`, lastmod: new Date().toISOString(), changefreq: "monthly", priority: 0.3 },
+    { loc: `${baseUrl}/`, lastmod: new Date().toISOString().split('T')[0], changefreq: "daily", priority: 1.0 },
+    { loc: `${baseUrl}/livereports`, lastmod: new Date().toISOString().split('T')[0], changefreq: "monthly", priority: 0.8 },
+    { loc: `${baseUrl}/interviews`, lastmod: new Date().toISOString().split('T')[0], changefreq: "monthly", priority: 0.8 },
+    { loc: `${baseUrl}/features`, lastmod: new Date().toISOString().split('T')[0], changefreq: "monthly", priority: 0.8 },
+    { loc: `${baseUrl}/pressrelease`, lastmod: new Date().toISOString().split('T')[0], changefreq: "monthly", priority: 0.8 },
+    { loc: `${baseUrl}/galleries`, lastmod: new Date().toISOString().split('T')[0], changefreq: "monthly", priority: 0.8 },
+    { loc: `${baseUrl}/about`, lastmod: new Date().toISOString().split('T')[0], changefreq: "monthly", priority: 0.5 },
+    { loc: `${baseUrl}/contact`, lastmod: new Date().toISOString().split('T')[0], changefreq: "monthly", priority: 0.3 },
   ];
 
   articles.results.forEach((article) => {
     pages.push({
       loc: `${baseUrl}/articles/${article.uid}`,
-      lastmod: article.last_publication_date || article.first_publication_date || new Date().toISOString(),
+      lastmod: article.last_publication_date || article.first_publication_date || new Date().toISOString().split('T')[0],
       changefreq: "weekly",
       priority: 0.8,
     });
@@ -34,7 +34,7 @@ export async function GET() {
   galleries.results.forEach((gallery) => {
     pages.push({
       loc: `${baseUrl}/galleries/${gallery.uid}`,
-      lastmod: gallery.last_publication_date || gallery.first_publication_date || new Date().toISOString(),
+      lastmod: gallery.last_publication_date || gallery.first_publication_date || new Date().toISOString().split('T')[0],
       changefreq: "weekly",
       priority: 0.7,
     });
@@ -42,20 +42,19 @@ export async function GET() {
 
   // Build the XML sitemap
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  ${pages
-    .map(
-      (page) => `
-    <url>
-      <loc>${page.loc}</loc>
-      <lastmod>${page.lastmod}</lastmod>
-      <changefreq>${page.changefreq}</changefreq>
-      <priority>${page.priority}</priority>
-    </url>
-  `
-    )
-    .join("")}
-</urlset>`;
+  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    ${routes
+      .map(
+        (route) => `
+      <url>
+        <loc>${baseUrl}${route.path}</loc>
+        <lastmod>${new Date(route.lastModified || Date.now()).toISOString().split('T')[0]}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+      </url>`
+      )
+      .join('')}
+  </urlset>`;
 
   return new Response(sitemap, {
     headers: {
