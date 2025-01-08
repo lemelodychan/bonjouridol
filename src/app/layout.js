@@ -56,6 +56,22 @@ export default function RootLayout({ children }) {
               gtag('config', 'G-QMRDRH8ZP6');
             `}
           </Script>
+          <Script
+            id="iubenda-script" strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                var _iub = _iub || [];
+                _iub.csConfiguration = {
+                  "siteId": 3888654,
+                  "cookiePolicyId": 26602420,
+                  "lang": "en",
+                  "storage": {
+                    "useSiteId": true
+                  }
+                };`,}} />
+          <script type="text/javascript" src="https://cs.iubenda.com/autoblocking/3888654.js"></script>
+          <script type="text/javascript" src="//cdn.iubenda.com/cs/gpp/stub.js"></script>
+          <script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async></script>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400;1,9..40,500;1,9..40,700&family=Noto+Sans+JP:wght@400;500;700&family=Poppins:wght@900&display=swap" rel="stylesheet" />
