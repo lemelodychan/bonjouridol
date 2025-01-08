@@ -25,20 +25,20 @@ export async function GET() {
   articles.results.forEach((article) => {
     pages.push({
       loc: `${baseUrl}/articles/${article.uid}`,
-      lastmod: article.last_publication_date || article.first_publication_date || new Date().toISOString().split('T')[0],
+      lastmod: new Date(article.last_publication_date || article.first_publication_date || new Date()).toISOString().split('T')[0],
       changefreq: "weekly",
       priority: 0.8,
     });
   });
-
+  
   galleries.results.forEach((gallery) => {
     pages.push({
       loc: `${baseUrl}/galleries/${gallery.uid}`,
-      lastmod: gallery.last_publication_date || gallery.first_publication_date || new Date().toISOString().split('T')[0],
+      lastmod: new Date(gallery.last_publication_date || gallery.first_publication_date || new Date()).toISOString().split('T')[0],
       changefreq: "weekly",
       priority: 0.7,
     });
-  });
+  });  
 
   // Build the XML sitemap
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
