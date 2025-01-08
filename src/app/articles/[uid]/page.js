@@ -22,8 +22,19 @@ export async function generateMetadata({ params }) {
   try {
     const article = await client.getByUID('articles', uid);
 
+    const publicationDate = article.data.publication_date || article.first_publication_date;
+    const formattedDate = publicationDate
+      ? format(new Date(publicationDate), "MMMM d, yyyy")
+      : "Unknown date";
+    const richTextSlice = article.data.slices.find(
+      (slice) => slice.slice_type === "rich_text" && slice.primary?.text
+    );
+    const paragraphs = richTextSlice?.primary?.text;
+    const excerpt = paragraphs && paragraphs.length > 0 ? paragraphs[0].text : null;
+    const articleExcerpt = `Posted on ${formattedDate} - ${excerpt}`;
+
     const title = article.data.meta_title || `${article.data.title}${article.data.subtitle ? `: ${article.data.subtitle}` : ''} | BONJOUR IDOL`;
-    const description = article.data.meta_description || 'Bonjour Idol is a French media about the Japanese idol scene. Check out exclusive content, interviews, and photo reports.';
+    const description = article.data.meta_description || articleExcerpt || 'Bonjour Idol is a French media about the Japanese idol scene. Check out exclusive content, interviews, and photo reports.';
     const imageUrl = article.data.meta_image?.url || '/FeaturedImage.png';
 
     return {
