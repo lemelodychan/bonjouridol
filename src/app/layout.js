@@ -4,7 +4,7 @@ import { DM_Sans, Poppins, Noto_Sans_JP } from 'next/font/google'
 import { PrismicPreview, PrismicNextImage } from '@prismicio/next'
 import { repositoryName } from '@/prismicio'
 import Script from 'next/script';
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleAnalytics } from "@next/third-parties/google"
 
 import Navbar from './components/Navbar'
 import Topbar from './components/Topbar'
