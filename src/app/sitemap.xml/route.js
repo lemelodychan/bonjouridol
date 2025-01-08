@@ -43,14 +43,14 @@ export async function GET() {
   // Build the XML sitemap
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    ${routes
+    ${pages
       .map(
-        (route) => `
+        (page) => `
       <url>
-        <loc>${baseUrl}${route.path}</loc>
-        <lastmod>${new Date(route.lastModified || Date.now()).toISOString().split('T')[0]}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
+        <loc>${page.loc}</loc>
+        <lastmod>${page.lastmod}</lastmod>
+        <changefreq>${page.changefreq}</changefreq>
+        <priority>${page.priority}</priority>
       </url>`
       )
       .join('')}
