@@ -19,19 +19,19 @@ export default function SharingOptions(props) {
     return (
         <div className={styles.Sharing}>
             <TwitterShareButton
-                url={`https://bonjouridol.vercel.app/articles/${uid}`}
+                url={`https://www.bonjouridol.com/articles/${uid}`}
                 title={`${title} | BONJOUR IDOL #bonjouridol #${idolName}`}
             >
                 <TwitterIcon size={32} round />
             </TwitterShareButton>
             <LineShareButton
-                url={`https://bonjouridol.vercel.app/articles/${uid}`}
+                url={`https://www.bonjouridol.com/articles/${uid}`}
                 title={`${title} | BONJOUR IDOL #bonjouridol #${idolName}`}
             >
                 <LineIcon size={32} round />
             </LineShareButton>
             <RedditShareButton
-                url={`https://bonjouridol.vercel.app/articles/${uid}`}
+                url={`https://www.bonjouridol.com/articles/${uid}`}
                 title={`${title} | BONJOUR IDOL #bonjouridol #${idolName}`}
             >
                 <RedditIcon size={32} round />
