@@ -46,6 +46,10 @@
             width: calc(100% - 64px);
         }
 
+        p {
+            width: 100%;
+        }
+
         .DocList {
             > div {
                 padding: 0 !important;
