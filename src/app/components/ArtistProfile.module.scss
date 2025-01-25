@@ -10,9 +10,6 @@
     max-width: 400px;
     height: fit-content;
 
-    grid-row: 2/3;
-    grid-column: 2/3;
-
     @include md {
         display: flex;
         flex-direction: column;
@@ -29,6 +26,14 @@
         img {
             border-radius: 8px !important;
             overflow: hidden;
+            transform: scale(100%);
+            transition: var(--transi);
+            object-fit: cover;
+            transform-origin: center;
+        }
+
+        &:hover img {
+            transform: scale(110%);
         }
     }
 
@@ -36,6 +41,7 @@
         display: flex;
         flex-direction: column;
         gap: 0px;
+        padding: 8px;
 
         .profileName {
             display: flex;
@@ -71,6 +77,8 @@
         .description {
             margin: 8px 0;
             flex: 1;
+            font-size: 14px;
+            line-height: 24px;
         }
 
         .social {

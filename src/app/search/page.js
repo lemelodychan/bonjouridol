@@ -169,13 +169,13 @@ export default async function SearchPage({ searchParams }) {
             <div className={styles.SearchPage}>
               <h1>Search Results for "{searchTerm}"</h1>
 
-              <div className={styles.SearchResults}>
                 {resultsGallery.length > 0 && (
                   <div className={styles.GalleryList}>
                     <GalleryList results={resultsGallery} />
                   </div>
                 )}
         
+              <div className={styles.SearchResults}>
                 {results.length > 0 ? (
                   <div className={styles.DocList}>
                     <DocListContainer
