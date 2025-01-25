@@ -14,7 +14,7 @@
     }
 
     .GalleryList {
-        width: calc(100% - 48px);
+        width: 100%;
 
         .SwiperContainer {
             position: relative;
@@ -182,7 +182,6 @@
 
         .SeeAll {
             transition: var(--transi);
-            width: 280px;
             height: 212px;
             display: flex;
             border-radius: 16px;

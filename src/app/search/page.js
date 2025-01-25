@@ -3,6 +3,7 @@ import * as prismic from "@prismicio/client";
 
 import DocListContainer from "../components/DocList";
 import GalleryList from "../components/GalleryList";
+import ArtistProfile from "../components/ArtistProfile";
 
 import styles from "./page.module.scss";
 
@@ -30,8 +31,24 @@ export default async function SearchPage({ searchParams }) {
     let subtitleResults = [];
     let documentResults = [];
     let combinedResults = [];
+    let exactArtistMatch = null
   
     try {
+        // Fetch exact artist match
+        const exactArtistResponse = await client.getByType("artist", {
+          fetchOptions: {
+            cache: "no-store",
+          },
+          filters: [prismic.filter.fulltext("my.artist.name_en", searchTerm)],
+        })
+
+        if (exactArtistResponse.results.length > 0) {
+          exactArtistMatch = exactArtistResponse.results[0]
+        }
+
+        console.log(exactArtistMatch);
+
+        // Search logic
         const response1 = await client.getByType("articles", {
             fetchOptions: {
             cache: "no-store",
@@ -151,20 +168,31 @@ export default async function SearchPage({ searchParams }) {
         return (
             <div className={styles.SearchPage}>
               <h1>Search Results for "{searchTerm}"</h1>
-              {resultsGallery.length > 0 && (
-                <GalleryList results={resultsGallery} />
-              )}
-      
-              {results.length > 0 ? (
-                <DocListContainer
-                  results={results}
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  postType="Search results"
-                />
-              ) : (
-                <p>No results found.</p>
-              )}
+
+              <div className={styles.SearchResults}>
+                {resultsGallery.length > 0 && (
+                  <div className={styles.GalleryList}>
+                    <GalleryList results={resultsGallery} />
+                  </div>
+                )}
+        
+                {results.length > 0 ? (
+                  <div className={styles.DocList}>
+                    <DocListContainer
+                      results={results}
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      postType="Search results"
+                    />
+                  </div>
+                ) : (
+                  <p>No results found.</p>
+                )}
+
+                {exactArtistMatch && 
+                  <ArtistProfile artist={exactArtistMatch} />
+                }
+              </div>
             </div>
           );
         } catch (error) {

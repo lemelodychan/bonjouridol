@@ -214,6 +214,144 @@ export type ArticlesDocument<Lang extends string = string> =
   >;
 
 /**
+ * Content for Artist documents
+ */
+interface ArtistDocumentData {
+  /**
+   * Profile picture field in *Artist*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.profile_picture
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  profile_picture: prismic.ImageField<never>;
+
+  /**
+   * Name (EN) field in *Artist*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.name_en
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  name_en: prismic.KeyTextField;
+
+  /**
+   * Name (JP) field in *Artist*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.name_jp
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  name_jp: prismic.KeyTextField;
+
+  /**
+   * Debut field in *Artist*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.debut
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  debut: prismic.KeyTextField;
+
+  /**
+   * Disband field in *Artist*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.disband
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  disband: prismic.KeyTextField;
+
+  /**
+   * Description field in *Artist*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.description
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  description: prismic.RichTextField;
+
+  /**
+   * Website field in *Artist*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.website
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  website: prismic.LinkField;
+
+  /**
+   * Twitter field in *Artist*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.twitter
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  twitter: prismic.LinkField;
+
+  /**
+   * Instagram field in *Artist*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.instagram
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  instagram: prismic.LinkField;
+
+  /**
+   * Youtube field in *Artist*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.youtube
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  youtube: prismic.LinkField;
+
+  /**
+   * TikTok field in *Artist*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.tiktok
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  tiktok: prismic.LinkField;
+}
+
+/**
+ * Artist document from Prismic
+ *
+ * - **API ID**: `artist`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type ArtistDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<Simplify<ArtistDocumentData>, "artist", Lang>;
+
+/**
  * Content for Author documents
  */
 interface AuthorDocumentData {
@@ -697,6 +835,7 @@ export type PageDocument<Lang extends string = string> =
 
 export type AllDocumentTypes =
   | ArticlesDocument
+  | ArtistDocument
   | AuthorDocument
   | GalleryDocument
   | HomepageDocument
@@ -1946,6 +2085,8 @@ declare module "@prismicio/client" {
       ArticlesDocumentData,
       ArticlesDocumentDataSlicesSlice,
       ArticlesDocumentDataSlices1Slice,
+      ArtistDocument,
+      ArtistDocumentData,
       AuthorDocument,
       AuthorDocumentData,
       GalleryDocument,

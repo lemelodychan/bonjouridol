@@ -1,0 +1,101 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.artistProfile {
+    display: none;
+    padding: 16px;
+    border: 1px solid var(--light-grey);
+    background-color: var(--light-grey);
+    border-radius: 16px;
+    max-width: 400px;
+    height: fit-content;
+
+    grid-row: 2/3;
+    grid-column: 2/3;
+
+    @include md {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    > div:first-of-type {
+        width: 100%;
+        height: auto;
+        border-radius: 8px !important;
+        overflow: hidden;
+        margin-bottom: 8px;
+
+        img {
+            border-radius: 8px !important;
+            overflow: hidden;
+        }
+    }
+
+    .profileContent { 
+        display: flex;
+        flex-direction: column;
+        gap: 0px;
+
+        .profileName {
+            display: flex;
+            flex-direction: column;
+            gap: 0px;
+            margin-bottom: 8px;
+
+            h2, h3 {
+                font-family: var(--font-text);
+                margin: 0;
+                padding: 0;
+                font-weight: 600;
+            }
+            h2 {
+                font-size: 20px;
+                line-height: 32px;
+                color: var(--dark-grey);
+            }
+            h3 {
+                font-size: 14px;
+                font-weight: normal;
+                line-height: 28px;
+                color: var(--medium-grey);
+            }
+        }
+
+        > span {
+            margin: 4px 0;
+            font-size: 14px;
+            line-height: 21px;
+        }
+
+        .description {
+            margin: 8px 0;
+            flex: 1;
+        }
+
+        .social {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: row;
+            gap: 16px;
+
+            a {
+                color: var(--bi-dark-pink);
+                font-size: 16px;
+                transition: var(--transi);
+
+                &:hover {
+                    color: var(--bi-indigo);
+                }
+
+                svg {
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+        }
+
+    }
+}
+  
+  
