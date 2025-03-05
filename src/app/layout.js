@@ -56,7 +56,6 @@ export default function RootLayout({ children }) {
           <Topbar />
           <Navbar />
           {children}
-          <PrismicPreview repositoryName={repositoryName} />
           <Footer />
           <script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=bonjouridol"></script>
         </body>
