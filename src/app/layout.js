@@ -4,6 +4,7 @@ import { DM_Sans, Poppins, Noto_Sans_JP } from 'next/font/google'
 import { PrismicPreview, PrismicNextImage } from '@prismicio/next'
 import { repositoryName } from '@/prismicio'
 import Script from 'next/script';
+import { Analytics } from "@vercel/analytics/next"
 import { GoogleAnalytics } from "@next/third-parties/google"
 
 import Navbar from './components/Navbar'
@@ -56,6 +57,7 @@ export default function RootLayout({ children }) {
           <Topbar />
           <Navbar />
           {children}
+          <Analytics />
           <Footer />
           <script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=bonjouridol"></script>
         </body>
