@@ -46,7 +46,18 @@ export default function RootLayout({ children }) {
         <head>
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <meta name="google-site-verification" content="WOV1O-V5Z53289sOWAWW_caWIAFnluDcQ6PEdiJ0pCU" />
-          <script async src="https://www.googletagmanager.com/gtag/js?id=G-QMRDRH8ZP6"></script>
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=G-QMRDRH8ZP6`}
+            strategy="afterInteractive"
+          />
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-QMRDRH8ZP6');
+            `}
+          </Script>
           <GoogleAnalytics gaId="G-QMRDRH8ZP6" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
