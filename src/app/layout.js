@@ -11,6 +11,7 @@ import Navbar from './components/Navbar'
 import Topbar from './components/Topbar'
 import Footer from './components/Footer'
 import Custom404 from '@/app/404';
+import GoogleTagManager from './components/GoogleTagManager'
 
 const DMSans = DM_Sans({ subsets: ['latin'] })
 
@@ -51,6 +52,7 @@ export default async function RootLayout({ children }) {
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <meta name="google-site-verification" content="WOV1O-V5Z53289sOWAWW_caWIAFnluDcQ6PEdiJ0pCU" />
           <GoogleAnalytics gaId="G-QMRDRH8ZP6" />
+          <GoogleTagManager />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400;1,9..40,500;1,9..40,700&family=Noto+Sans+JP:wght@400;500;700&family=Poppins:wght@900&display=swap" rel="stylesheet" />
