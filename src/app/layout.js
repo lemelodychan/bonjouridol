@@ -12,6 +12,7 @@ import Topbar from './components/Topbar'
 import Footer from './components/Footer'
 import Custom404 from '@/app/404';
 import GoogleTagManager from './components/GoogleTagManager'
+import ErrorHandler from './components/ErrorHandler'
 
 const DMSans = DM_Sans({ subsets: ['latin'] })
 
@@ -59,6 +60,7 @@ export default async function RootLayout({ children }) {
           <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"></link>
         </head>
         <body>
+          <ErrorHandler />
           <Topbar />
           <Navbar />
           {children}
@@ -76,6 +78,7 @@ export default async function RootLayout({ children }) {
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           </head>
           <body>
+            <ErrorHandler />
             <Topbar />
             <Navbar />
             <Custom404 />

@@ -52,7 +52,7 @@ const SingleImage = ({ image, alt, color = "default", lightbox="false" }) => {
                   alt={alt || ""}
                   fallbackAlt=""
                   className={styles.SingleImage}
-                  onLoadingComplete={() => setLoading(false)} // Called when the image is fully loaded
+                  onLoad={() => setLoading(false)} // Called when the image is fully loaded
               />
           ) : (
               <div className={`${styles.Placeholder} ${placeholderClass}`}>

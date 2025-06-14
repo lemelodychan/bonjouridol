@@ -1,3 +1,234 @@
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[2].use[1]!./node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js??ruleSet[1].rules[13].oneOf[2].use[2]!./node_modules/next/font/google/target.css?{"path":"src/app/layout.js","import":"DM_Sans","arguments":[{"subsets":["latin"]}],"variableName":"DMSans"} ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/* latin-ext */
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url(/_next/static/media/8c0f877bd1202585-s.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url(/_next/static/media/9c18eba18d4baf22-s.p.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}@font-face {font-family: 'DM Sans Fallback';src: local("Arial");ascent-override: 94.90%;descent-override: 29.66%;line-gap-override: 0.00%;size-adjust: 104.53%
+}.__className_989755 {font-family: 'DM Sans', 'DM Sans Fallback';font-style: normal
+}
+
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/404.module.scss ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes __404_rotate___5Vkx {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.__404_container__yNnV8 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+  gap: 24px;
+  text-align: center;
+  background-color: white;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px;
+  height: 560px;
+}
+@media (min-width: 769px) {
+  .__404_container__yNnV8 {
+    padding: 32px;
+  }
+}
+.__404_container__yNnV8 p {
+  font-size: 16px;
+  line-height: 28px;
+  color: var(--dark-grey);
+}
+.__404_container__yNnV8 a {
+  text-decoration: none;
+}
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/Footer.module.scss ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes Footer_rotate__urg_D {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.Footer_Footer__jEjBH {
+  position: relative;
+  background: var(--light-grey);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: space-between;
+  gap: 24px;
+  z-index: 99;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  color: var(--medium-grey);
+}
+@media (min-width: 769px) {
+  .Footer_Footer__jEjBH {
+    text-align: unset;
+    width: -webkit-fill-available;
+    max-width: 1440px;
+    flex-direction: row;
+  }
+}
+.Footer_Footer__jEjBH:before {
+  opacity: 1;
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: 0;
+  height: 48px;
+  width: 48px;
+  border-bottom: 24px solid var(--light-grey);
+  border-left: 24px solid var(--light-grey);
+  top: -48px;
+  left: -24px;
+  border-radius: 0 0 0 48px;
+}
+.Footer_Footer__jEjBH:after {
+  opacity: 1;
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: 0;
+  height: 48px;
+  width: 48px;
+  border-bottom: 24px solid var(--light-grey);
+  border-right: 24px solid var(--light-grey);
+  top: -48px;
+  right: -24px;
+  border-radius: 0 0 48px 0;
+}
+.Footer_Footer__jEjBH .Footer_SocialLinks__UQd2w {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+.Footer_Footer__jEjBH .Footer_SocialLinks__UQd2w a {
+  width: -moz-fit-content;
+  width: fit-content;
+  height: 36px;
+  font-size: 16px;
+  display: flex;
+  padding: 0 12px;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 8px;
+  background-color: white;
+  color: var(--bi-dark-pink);
+  transition: var(--transi);
+  text-decoration: none;
+}
+.Footer_Footer__jEjBH .Footer_SocialLinks__UQd2w a:hover {
+  color: var(--bi-indigo);
+}
+.Footer_Footer__jEjBH .Footer_SocialLinks__UQd2w a > span {
+  transition: var(--transi);
+  width: 0px;
+  display: inline-block;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 600;
+  overflow: hidden;
+}
+.Footer_Footer__jEjBH .Footer_SocialLinks__UQd2w a > span > span {
+  transition: var(--transi);
+  margin-left: 8px;
+  opacity: 0;
+  transform: translateX(-100%);
+}
+@media (min-width: 769px) {
+  .Footer_Footer__jEjBH .Footer_SocialLinks__UQd2w a:hover > span {
+    width: var(--width);
+  }
+  .Footer_Footer__jEjBH .Footer_SocialLinks__UQd2w a:hover > span > span {
+    opacity: 1;
+    transform: translateX(0%);
+    opacity: 1;
+  }
+}
+.Footer_Footer__jEjBH .Footer_Credits__kYFYO {
+  line-height: 32px;
+}
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/IconButton.module.scss ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.IconButton_Main__dL8Bn {
+  border: none;
+  border-radius: 16px;
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: var(--font-size);
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  gap: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  transition: var(--transi);
+}
+.IconButton_Main__dL8Bn > span {
+  text-decoration: none !important;
+  display: inline-block;
+  position: relative;
+  top: 1px;
+}
+
+.IconButton_Pink__NuvuA {
+  color: var(--white);
+  background-image: var(--bi-gradient-1);
+  background-position: center right;
+  background-size: 200% 100%;
+}
+.IconButton_Pink__NuvuA:hover {
+  background-position: center left;
+}
+
+.IconButton_White__fsKK6 {
+  color: var(--bi-dark-pink);
+  background-color: white;
+}
+.IconButton_White__fsKK6:hover {
+  color: var(--bi-indigo);
+}
+
+.IconButton_WhiteGrey__zexls {
+  color: var(--bi-dark-pink);
+  background-color: white;
+}
+.IconButton_WhiteGrey__zexls:hover {
+  color: var(--bi-indigo);
+  background-color: var(--light-grey);
+}
 /*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/Menu.module.scss ***!
   \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -643,30 +874,6 @@ h3 {
   }
 }
 
-/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[2].use[1]!./node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js??ruleSet[1].rules[13].oneOf[2].use[2]!./node_modules/next/font/google/target.css?{"path":"src/app/layout.js","import":"DM_Sans","arguments":[{"subsets":["latin"]}],"variableName":"DMSans"} ***!
-  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/* latin-ext */
-@font-face {
-  font-family: 'DM Sans';
-  font-style: normal;
-  font-weight: 100 1000;
-  font-display: swap;
-  src: url(/_next/static/media/8c0f877bd1202585-s.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'DM Sans';
-  font-style: normal;
-  font-weight: 100 1000;
-  font-display: swap;
-  src: url(/_next/static/media/9c18eba18d4baf22-s.p.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}@font-face {font-family: 'DM Sans Fallback';src: local("Arial");ascent-override: 94.90%;descent-override: 29.66%;line-gap-override: 0.00%;size-adjust: 104.53%
-}.__className_989755 {font-family: 'DM Sans', 'DM Sans Fallback';font-style: normal
-}
-
 /*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/Topbar.module.scss ***!
   \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -739,211 +946,4 @@ h3 {
 .Topbar_Topbar__9GIIP > div a:hover .Topbar_Icon__u1CN0 svg {
   opacity: 1;
   left: 0px;
-}
-/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/Footer.module.scss ***!
-  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-@keyframes Footer_rotate__urg_D {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-.Footer_Footer__jEjBH {
-  position: relative;
-  background: var(--light-grey);
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  justify-content: space-between;
-  gap: 24px;
-  z-index: 99;
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  color: var(--medium-grey);
-}
-@media (min-width: 769px) {
-  .Footer_Footer__jEjBH {
-    text-align: unset;
-    width: -webkit-fill-available;
-    max-width: 1440px;
-    flex-direction: row;
-  }
-}
-.Footer_Footer__jEjBH:before {
-  opacity: 1;
-  content: "";
-  display: block;
-  position: absolute;
-  z-index: 0;
-  height: 48px;
-  width: 48px;
-  border-bottom: 24px solid var(--light-grey);
-  border-left: 24px solid var(--light-grey);
-  top: -48px;
-  left: -24px;
-  border-radius: 0 0 0 48px;
-}
-.Footer_Footer__jEjBH:after {
-  opacity: 1;
-  content: "";
-  display: block;
-  position: absolute;
-  z-index: 0;
-  height: 48px;
-  width: 48px;
-  border-bottom: 24px solid var(--light-grey);
-  border-right: 24px solid var(--light-grey);
-  top: -48px;
-  right: -24px;
-  border-radius: 0 0 48px 0;
-}
-.Footer_Footer__jEjBH .Footer_SocialLinks__UQd2w {
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-}
-.Footer_Footer__jEjBH .Footer_SocialLinks__UQd2w a {
-  width: -moz-fit-content;
-  width: fit-content;
-  height: 36px;
-  font-size: 16px;
-  display: flex;
-  padding: 0 12px;
-  align-items: center;
-  justify-content: flex-start;
-  border-radius: 8px;
-  background-color: white;
-  color: var(--bi-dark-pink);
-  transition: var(--transi);
-  text-decoration: none;
-}
-.Footer_Footer__jEjBH .Footer_SocialLinks__UQd2w a:hover {
-  color: var(--bi-indigo);
-}
-.Footer_Footer__jEjBH .Footer_SocialLinks__UQd2w a > span {
-  transition: var(--transi);
-  width: 0px;
-  display: inline-block;
-  font-size: 14px;
-  letter-spacing: 0.5px;
-  text-decoration: none;
-  text-transform: uppercase;
-  font-weight: 600;
-  overflow: hidden;
-}
-.Footer_Footer__jEjBH .Footer_SocialLinks__UQd2w a > span > span {
-  transition: var(--transi);
-  margin-left: 8px;
-  opacity: 0;
-  transform: translateX(-100%);
-}
-@media (min-width: 769px) {
-  .Footer_Footer__jEjBH .Footer_SocialLinks__UQd2w a:hover > span {
-    width: var(--width);
-  }
-  .Footer_Footer__jEjBH .Footer_SocialLinks__UQd2w a:hover > span > span {
-    opacity: 1;
-    transform: translateX(0%);
-    opacity: 1;
-  }
-}
-.Footer_Footer__jEjBH .Footer_Credits__kYFYO {
-  line-height: 32px;
-}
-/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/IconButton.module.scss ***!
-  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.IconButton_Main__dL8Bn {
-  border: none;
-  border-radius: 16px;
-  font-family: var(--font-text);
-  font-weight: 600;
-  font-size: var(--font-size);
-  line-height: 1.5;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  gap: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 12px;
-  transition: var(--transi);
-}
-.IconButton_Main__dL8Bn > span {
-  text-decoration: none !important;
-  display: inline-block;
-  position: relative;
-  top: 1px;
-}
-
-.IconButton_Pink__NuvuA {
-  color: var(--white);
-  background-image: var(--bi-gradient-1);
-  background-position: center right;
-  background-size: 200% 100%;
-}
-.IconButton_Pink__NuvuA:hover {
-  background-position: center left;
-}
-
-.IconButton_White__fsKK6 {
-  color: var(--bi-dark-pink);
-  background-color: white;
-}
-.IconButton_White__fsKK6:hover {
-  color: var(--bi-indigo);
-}
-
-.IconButton_WhiteGrey__zexls {
-  color: var(--bi-dark-pink);
-  background-color: white;
-}
-.IconButton_WhiteGrey__zexls:hover {
-  color: var(--bi-indigo);
-  background-color: var(--light-grey);
-}
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/404.module.scss ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-@keyframes __404_rotate___5Vkx {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-.__404_container__yNnV8 {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-items: center;
-  justify-content: center;
-  gap: 24px;
-  text-align: center;
-  background-color: white;
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 24px;
-  height: 560px;
-}
-@media (min-width: 769px) {
-  .__404_container__yNnV8 {
-    padding: 32px;
-  }
-}
-.__404_container__yNnV8 p {
-  font-size: 16px;
-  line-height: 28px;
-  color: var(--dark-grey);
-}
-.__404_container__yNnV8 a {
-  text-decoration: none;
 }
