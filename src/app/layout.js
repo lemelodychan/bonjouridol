@@ -5,7 +5,7 @@ import { PrismicPreview, PrismicNextImage } from '@prismicio/next'
 import { repositoryName, createClient } from '@/prismicio'
 import Script from 'next/script';
 import { Analytics } from "@vercel/analytics/next"
-import { GoogleAnalytics } from "@next/third-parties/google"
+import GoogleAnalytics from './components/GoogleTagManager'
 
 import Navbar from './components/Navbar'
 import Topbar from './components/Topbar'
@@ -51,7 +51,7 @@ export default async function RootLayout({ children }) {
         <head>
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <meta name="google-site-verification" content="WOV1O-V5Z53289sOWAWW_caWIAFnluDcQ6PEdiJ0pCU" />
-          <GoogleAnalytics gaId="G-QMRDRH8ZP6" />
+          <GoogleAnalytics />
           <GoogleTagManager />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -63,18 +63,6 @@ export default async function RootLayout({ children }) {
           <Navbar />
           {children}
           <Analytics />
-          <Script
-            src="https://www.googletagmanager.com/gtag/js?id=G-QMRDRH8ZP6"
-            strategy="afterInteractive"
-          />
-          <Script id="google-analytics" strategy="afterInteractive">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-QMRDRH8ZP6');
-            `}
-          </Script>
           <Footer />
           <script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=bonjouridol"></script>
         </body>
