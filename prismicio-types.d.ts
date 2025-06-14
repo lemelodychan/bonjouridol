@@ -1531,6 +1531,16 @@ export interface QuoteSliceDefaultPrimary {
   quote: prismic.RichTextField;
 
   /**
+   * Quote (JP) field in *Quote → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: quote.default.primary.quote_jp
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  quote_jp: prismic.RichTextField;
+
+  /**
    * Author field in *Quote → Default → Primary*
    *
    * - **Field Type**: Text
@@ -1539,6 +1549,16 @@ export interface QuoteSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/field#key-text
    */
   author: prismic.KeyTextField;
+
+  /**
+   * Source field in *Quote → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: quote.default.primary.source
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  source: prismic.LinkField;
 }
 
 /**

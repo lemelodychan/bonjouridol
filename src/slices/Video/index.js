@@ -13,7 +13,12 @@ const Video = ({ slice }) => {
       data-slice-variation={slice.variation}
       className={styles.Video}
     >
-      <YoutubeEmbed videoId={slice.primary.youtube_id} />
+      <YoutubeEmbed videoId={slice.primary.youtube_id} className={styles.VideoPlayer} />
+      {slice.primary.caption && (
+        <div className={styles.Caption}>
+          {slice.primary.caption}
+        </div>
+      )}
     </section>
   );
 };

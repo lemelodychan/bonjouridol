@@ -21,11 +21,30 @@
             "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
           }
         },
+        "quote_jp": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Quote (JP)",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "strong,em"
+          }
+        },
         "author": {
           "type": "Text",
           "config": {
             "label": "Author",
             "placeholder": ""
+          }
+        },
+        "source": {
+          "type": "Link",
+          "config": {
+            "label": "Source",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "select": null,
+            "allowText": true
           }
         }
       },

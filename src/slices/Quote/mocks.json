@@ -18,6 +18,26 @@
 				"__TYPE__": "FieldContent",
 				"value": "shout",
 				"type": "Text"
+			},
+			"quote_jp": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Excepteur sunt ea eiusmod qui ad culpa do ipsum."
+						}
+					}
+				]
+			},
+			"source": {
+				"__TYPE__": "LinkContent",
+				"key": "b407029b-eda8-4f67-996e-5d6ef38dcf8f",
+				"value": {
+					"__TYPE__": "ExternalLink",
+					"url": "https://prismic.io",
+					"text": "shine"
+				}
 			}
 		},
 		"items": []
