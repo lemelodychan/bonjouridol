@@ -2,7 +2,7 @@ import './globals.css'
 import { DM_Sans, Poppins, Noto_Sans_JP } from 'next/font/google'
 
 import { PrismicPreview, PrismicNextImage } from '@prismicio/next'
-import { repositoryName } from '@/prismicio'
+import { repositoryName, createClient } from '@/prismicio'
 import Script from 'next/script';
 import { Analytics } from "@vercel/analytics/next"
 import { GoogleAnalytics } from "@next/third-parties/google"
@@ -14,32 +14,36 @@ import Custom404 from '@/app/404';
 
 const DMSans = DM_Sans({ subsets: ['latin'] })
 
-export const metadata = {
-  title: 'BONJOUR IDOL',
-  description: 'Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content.',
-  openGraph: {
-    title: 'BONJOUR IDOL',
-    description: 'Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content.',
-    url: 'https://www.bonjouridol.com',
-    images: [
-      {
-        url: '/FeaturedImage.png',
-        width: 1200,
-        height: 630,
-        alt: 'Bonjour Idol',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'BONJOUR IDOL',
-    description: 'Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content.',
-    images: ['/FeaturedImage.png'],
-  },
-};
+export async function generateMetadata() {
+  const client = createClient();
+  const homepage = await client.getSingle("homepage");
 
+  return {
+    title: homepage.data.meta_title || 'BONJOUR IDOL',
+    description: homepage.data.meta_description || 'Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content.',
+    openGraph: {
+      title: homepage.data.meta_title || 'BONJOUR IDOL',
+      description: homepage.data.meta_description || 'Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content.',
+      url: 'https://www.bonjouridol.com',
+      images: [
+        {
+          url: homepage.data.meta_image?.url || '/FeaturedImage.png',
+          width: 1200,
+          height: 630,
+          alt: homepage.data.meta_title || 'Bonjour Idol',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: homepage.data.meta_title || 'BONJOUR IDOL',
+      description: homepage.data.meta_description || 'Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content.',
+      images: [homepage.data.meta_image?.url || '/FeaturedImage.png'],
+    },
+  };
+}
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
   try {
     return (
       <html lang="en">

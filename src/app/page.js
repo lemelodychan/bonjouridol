@@ -11,9 +11,32 @@ export async function generateMetadata() {
   const client = createClient();
   const page = await client.getSingle("homepage");
 
+  const title = page.data.meta_title || 'BONJOUR IDOL';
+  const description = page.data.meta_description || 'Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content.';
+  const imageUrl = page.data.meta_image?.url || '/FeaturedImage.png';
+
   return {
-    title: page.data.meta_title,
-    description: page.data.meta_description,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: 'https://www.bonjouridol.com',
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [imageUrl],
+    },
   };
 }
 
