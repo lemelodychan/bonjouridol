@@ -1,0 +1,112 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.videos {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 24px;
+  background-color: white;
+  z-index: 3;
+  position: relative;
+  padding: 24px;
+
+  > a:first-of-type {
+    display: block;
+    width: 100%;
+
+    @include md {
+        margin-top: 8px;
+        width: fit-content;
+        display: none;
+    }
+  }
+
+  .btn {
+    > button {
+        width: 100%;
+    }
+  }
+  
+    h2 {
+      margin: 0;
+
+      @include md {
+          font-size: 32px;
+          line-height: 48px;
+          display: grid;
+          grid-template-columns: max-content auto max-content !important;
+      }
+
+      &:after {
+          order: 2;
+      }
+
+      > span {
+          order: 1;
+
+          @include md {
+              font-size: 32px;
+              line-height: 48px;
+          }
+      }
+
+      a {
+          order: 3;
+          display: none;
+
+          @include md {
+              display: block;
+          }
+
+          button {
+              svg {
+                  order: 2;
+              }
+          }
+      }
+    }
+
+  .grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+
+    > .videoWrapper:first-of-type {
+      grid-column: span 2;
+    }
+
+    @include md {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+
+      > .videoWrapper:first-of-type {
+        grid-column: span 1;
+      }
+    }
+
+    .videoWrapper {
+      position: relative;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 16px;
+      
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+    } 
+  
+  }
+
+}

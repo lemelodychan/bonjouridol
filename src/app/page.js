@@ -1,6 +1,7 @@
 import styles from './page.module.scss'
 import LatestPosts from './components/LatestPosts.js';
 import Discoveries from './components/Discoveries';
+import Videos from './components/Videos';
 import PressRelease from './components/PressRelease';
 
 import { createClient } from "@/prismicio";
@@ -49,6 +50,7 @@ export default async function Page() {
       <div className={styles.container}>
         <LatestPosts />
         <Discoveries />
+        <Videos />
         <PressRelease />
         <div className={styles.Slices}>
           <SliceZone slices={page.data.slices} components={components} />
