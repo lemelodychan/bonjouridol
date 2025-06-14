@@ -20,14 +20,14 @@ const Quote = ({ slice }) => {
           <span className={styles.QuoteText}>
             <PrismicRichText field={slice.primary.quote} />
           </span>
-          {slice.primary.quote_jp && (
+          {slice.primary.quote_jp && slice.primary.quote_jp.length > 0 && (
             <span className={styles.QuoteTextJP}>
               <PrismicRichText field={slice.primary.quote_jp} />
             </span>
           )}
           <div className={styles.QuoteAuthorContainer}>
             <span className={styles.QuoteAuthor}>{slice.primary.author}</span>
-            {slice.primary.source && (
+            {slice.primary.source && slice.primary.source.url && (
               <PrismicLink field={slice.primary.source} className={styles.QuoteLink}>
                 <span>{slice.primary.source.text}</span>
                 <HiOutlineLink />
@@ -36,7 +36,6 @@ const Quote = ({ slice }) => {
           </div>
         </div>
       </div>
-
     </section>
   );
 };
