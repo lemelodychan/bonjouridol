@@ -97,6 +97,17 @@ export default function Menu({ onLinkClick }) {
                 </li>
                 <li>
                     <Link 
+                        href="https://habatake.bonjouridol.com/"
+                        onClick={onLinkClick}
+                        target="_blank" >
+                            <span>アイドル・事務所へ</span>
+                            <span className={styles.Icon}>
+                                <IoArrowForwardOutline />
+                            </span>
+                    </Link>
+                </li>
+                <li>
+                    <Link 
                         href="https://archives.bonjouridol.com/"
                         target="_blank"
                         onClick={onLinkClick}>

@@ -19,6 +19,12 @@ export default function Topbar() {
                         <IoArrowForwardOutline />
                     </span>
                 </Link>
+                <Link href="https://habatake.bonjouridol.com/" target="_blank">
+                    <span>アイドル・事務所へ</span>
+                    <span className={styles.Icon}>
+                        <IoArrowForwardOutline />
+                    </span>
+                </Link>
                 <Link href="https://archives.bonjouridol.com/" target="_blank">
                     <span>Archives</span>
                     <span className={styles.Icon}>
