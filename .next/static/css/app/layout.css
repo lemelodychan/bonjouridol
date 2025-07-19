@@ -61,6 +61,102 @@
 .__404_container__yNnV8 a {
   text-decoration: none;
 }
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/ConsentBanner.module.scss ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@keyframes ConsentBanner_rotate__TF5tD {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.ConsentBanner_consentBanner__cdmE6 {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--white);
+  color: var(--dark-grey);
+  padding: 16px;
+  z-index: 50;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--light-grey);
+}
+.ConsentBanner_consentBanner__cdmE6 .ConsentBanner_container__iHT2m {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+@media (min-width: 769px) {
+  .ConsentBanner_consentBanner__cdmE6 .ConsentBanner_container__iHT2m {
+    flex-direction: row;
+    gap: 24px;
+  }
+}
+.ConsentBanner_consentBanner__cdmE6 .ConsentBanner_text__zfbn4 {
+  flex: 1 1;
+}
+.ConsentBanner_consentBanner__cdmE6 .ConsentBanner_text__zfbn4 p {
+  font-size: var(--font-size);
+  line-height: 24px;
+  margin: 0;
+  text-align: center;
+}
+@media (min-width: 769px) {
+  .ConsentBanner_consentBanner__cdmE6 .ConsentBanner_text__zfbn4 p {
+    text-align: left;
+  }
+}
+.ConsentBanner_consentBanner__cdmE6 .ConsentBanner_buttons__IP6Us {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+@media (min-width: 769px) {
+  .ConsentBanner_consentBanner__cdmE6 .ConsentBanner_buttons__IP6Us {
+    justify-content: flex-end;
+  }
+}
+.ConsentBanner_consentBanner__cdmE6 .ConsentBanner_button__XrFFm {
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: var(--font-size);
+  line-height: 1.5;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: var(--transi);
+  text-decoration: none;
+}
+.ConsentBanner_consentBanner__cdmE6 .ConsentBanner_button__XrFFm.ConsentBanner_decline__qaYAi {
+  background-color: var(--light-grey);
+  color: var(--bi-dark-pink);
+}
+.ConsentBanner_consentBanner__cdmE6 .ConsentBanner_button__XrFFm.ConsentBanner_decline__qaYAi:hover {
+  color: var(--bi-indigo);
+}
+.ConsentBanner_consentBanner__cdmE6 .ConsentBanner_button__XrFFm.ConsentBanner_accept__PVYY7 {
+  background-image: var(--bi-gradient-1);
+  background-position: center right;
+  background-size: 200% 100%;
+  color: var(--white);
+}
+.ConsentBanner_consentBanner__cdmE6 .ConsentBanner_button__XrFFm.ConsentBanner_accept__PVYY7:hover {
+  background-position: center left;
+}
 /*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[7].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[7].use[5]!./src/app/components/Footer.module.scss ***!
   \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/

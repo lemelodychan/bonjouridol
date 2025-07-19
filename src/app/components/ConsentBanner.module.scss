@@ -1,0 +1,94 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.consentBanner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--white);
+  color: var(--dark-grey);
+  padding: 16px;
+  z-index: 50;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--light-grey);
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+
+    @include md {
+      flex-direction: row;
+      gap: 24px;
+    }
+  }
+
+  .text {
+    flex: 1;
+
+    p {
+      font-size: var(--font-size);
+      line-height: 24px;
+      margin: 0;
+      text-align: center;
+
+      @include md {
+        text-align: left;
+      }
+    }
+  }
+
+  .buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    @include md {
+      justify-content: flex-end;
+    }
+  }
+
+  .button {
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-text);
+    font-weight: 600;
+    font-size: var(--font-size);
+    line-height: 1.5;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: var(--transi);
+    text-decoration: none;
+
+    &.decline {
+      background-color: var(--light-grey);
+      color: var(--bi-dark-pink);
+
+      &:hover {
+        color: var(--bi-indigo);
+      }
+    }
+
+    &.accept {
+      background-image: var(--bi-gradient-1);
+      background-position: center right;
+      background-size: 200% 100%;
+      color: var(--white);
+
+      &:hover {
+        background-position: center left;
+      }
+    }
+  }
+} 

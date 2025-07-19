@@ -11,6 +11,7 @@ import Topbar from './components/Topbar'
 import Footer from './components/Footer'
 import Custom404 from '@/app/404';
 import GoogleTagManager from './components/GoogleTagManager'
+import ConsentBanner from './components/ConsentBanner'
 import ErrorHandler from './components/ErrorHandler'
 
 const DMSans = DM_Sans({ subsets: ['latin'] })
@@ -64,6 +65,7 @@ export default async function RootLayout({ children }) {
           {children}
           <Analytics />
           <Footer />
+          <ConsentBanner />
           <script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=bonjouridol"></script>
         </body>
       </html>
@@ -82,6 +84,7 @@ export default async function RootLayout({ children }) {
             <Navbar />
             <Custom404 />
             <Footer />
+            <ConsentBanner />
             <script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=bonjouridol"></script>
           </body>
         </html>
