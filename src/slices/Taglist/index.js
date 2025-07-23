@@ -4,10 +4,23 @@
  * @param {TaglistProps}
  */
 
+"use client";
+
 import Link from "next/link";
 import styles from "./page.module.scss"
 
 const Taglist = ({ slice }) => {
+  const handleTagClick = (tag) => {
+    // Track tag click with Google Analytics
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'search', {
+        'search_term': tag,
+        'event_category': 'engagement',
+        'event_label': 'tag_click'
+      });
+    }
+  };
+
   return (
     <section
       data-slice-type={slice.slice_type}
@@ -18,7 +31,11 @@ const Taglist = ({ slice }) => {
         {slice.primary.tags
           .sort((a, b) => a.tag.localeCompare(b.tag))
           .map((item, index) => (
-            <Link key={index} href={`/search?keyword=${encodeURIComponent(item.tag)}`}>
+            <Link 
+              key={index} 
+              href={`/search?keyword=${encodeURIComponent(item.tag)}`}
+              onClick={() => handleTagClick(item.tag)}
+            >
               <strong>#{item.tag}</strong>
             </Link>
           ))}

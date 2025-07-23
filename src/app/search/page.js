@@ -4,6 +4,7 @@ import * as prismic from "@prismicio/client";
 import DocListContainer from "../components/DocList";
 import GalleryList from "../components/GalleryList";
 import ArtistProfile from "../components/ArtistProfile";
+import SearchTracker from "./SearchTracker";
 
 import styles from "./page.module.scss";
 
@@ -14,6 +15,7 @@ export default async function SearchPage({ searchParams }) {
     if (!searchTerm.trim()) {
       return (
         <div className={styles.SearchPage}>
+          <SearchTracker searchTerm={searchTerm} />
           <h1>Search Results</h1>
           <p>Please provide a valid term in the search query.</p>
         </div>
@@ -167,6 +169,7 @@ export default async function SearchPage({ searchParams }) {
 
         return (
             <div className={styles.SearchPage}>
+              <SearchTracker searchTerm={searchTerm} />
               <h1>Search Results for "{searchTerm}"</h1>
 
                 {resultsGallery.length > 0 && (
@@ -199,6 +202,7 @@ export default async function SearchPage({ searchParams }) {
           console.error("Error fetching search results:", error);
           return (
             <div className={styles.SearchPage}>
+              <SearchTracker searchTerm={searchTerm} />
               <h1>Search Results</h1>
               <p>An error occurred while fetching search results.</p>
             </div>

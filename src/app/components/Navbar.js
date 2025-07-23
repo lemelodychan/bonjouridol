@@ -25,9 +25,19 @@ export default function Navbar() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
+  
   const handleSearch = (event) => {
     event.preventDefault();
     if (searchTerm.trim()) {
+      // Track search query with Google Analytics
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'search', {
+          'search_term': searchTerm.trim(),
+          'event_category': 'engagement',
+          'event_label': 'navbar_search'
+        });
+      }
+      
       router.push(`/search?keyword=${encodeURIComponent(searchTerm)}`);
     }
   };
