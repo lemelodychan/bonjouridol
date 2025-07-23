@@ -16,23 +16,39 @@ export default function SharingOptions(props) {
 
     const idolName = processIdolName(idol);
 
+    // Google Analytics tracking function
+    const trackShareEvent = (platform) => {
+        if (typeof window !== 'undefined' && window.gtag) {
+            window.gtag('event', 'share', {
+                method: platform,
+                content_type: 'article',
+                item_id: uid,
+                content_title: title,
+                idol_name: idol
+            });
+        }
+    };
+
     return (
         <div className={styles.Sharing}>
             <TwitterShareButton
                 url={`https://www.bonjouridol.com/articles/${uid}`}
                 title={`${title} | BONJOUR IDOL #bonjouridol #${idolName}`}
+                onClick={() => trackShareEvent('twitter')}
             >
                 <TwitterIcon size={32} round />
             </TwitterShareButton>
             <LineShareButton
                 url={`https://www.bonjouridol.com/articles/${uid}`}
                 title={`${title} | BONJOUR IDOL #bonjouridol #${idolName}`}
+                onClick={() => trackShareEvent('line')}
             >
                 <LineIcon size={32} round />
             </LineShareButton>
             <RedditShareButton
                 url={`https://www.bonjouridol.com/articles/${uid}`}
                 title={`${title} | BONJOUR IDOL #bonjouridol #${idolName}`}
+                onClick={() => trackShareEvent('reddit')}
             >
                 <RedditIcon size={32} round />
             </RedditShareButton>
