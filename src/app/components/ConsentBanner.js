@@ -15,13 +15,35 @@ export default function ConsentBanner() {
   }, []);
 
   const handleConsent = (granted) => {
+    // Store user choice first
+    localStorage.setItem('analytics-consent', granted ? 'granted' : 'denied');
+    
     // Dispatch custom event for GoogleTagManager to listen to
     window.dispatchEvent(new CustomEvent('analytics-consent', {
       detail: { consent: granted ? 'granted' : 'denied' }
     }));
 
-    // Store user choice
-    localStorage.setItem('analytics-consent', granted ? 'granted' : 'denied');
+    // If consent is granted, initialize Google Analytics
+    if (granted && typeof window.gtag !== 'undefined') {
+      // Update consent settings
+      window.gtag('consent', 'update', {
+        'analytics_storage': 'granted',
+        'ad_storage': 'granted'
+      });
+      
+      // Send page view
+      window.gtag('event', 'page_view', {
+        'page_title': document.title,
+        'page_location': window.location.href,
+        'page_path': window.location.pathname
+      });
+    } else if (!granted && typeof window.gtag !== 'undefined') {
+      // Update consent settings to denied
+      window.gtag('consent', 'update', {
+        'analytics_storage': 'denied',
+        'ad_storage': 'denied'
+      });
+    }
     
     // Hide banner
     setShowBanner(false);

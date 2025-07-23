@@ -3,7 +3,7 @@
 import Script from 'next/script';
 import { useEffect, useState } from 'react';
 
-export default function GoogleAnalytics() {
+export default function GoogleTagManager() {
   const [consentGranted, setConsentGranted] = useState(false);
 
   useEffect(() => {
@@ -11,7 +11,7 @@ export default function GoogleAnalytics() {
     const hasConsent = localStorage.getItem('analytics-consent') === 'granted';
     setConsentGranted(hasConsent);
 
-    // Listen for consent changes
+    // Listen for consent changes from the custom banner
     const handleConsentChange = (event) => {
       if (event.detail.consent === 'granted') {
         setConsentGranted(true);
@@ -77,15 +77,11 @@ export default function GoogleAnalytics() {
     });
   };
 
-  // Only render scripts if consent is granted
-  if (!consentGranted) {
-    return null;
-  }
-
   return (
     <>
+      {/* Always load the gtag script, but configure it to respect consent */}
       <Script
-        src="https://www.googletagmanager.com/gtag/js?id="
+        src="https://www.googletagmanager.com/gtag/js?id=G-QMRDRH8ZP6"
         strategy="afterInteractive"
       />
       <Script id="google-analytics" strategy="afterInteractive">
@@ -103,21 +99,23 @@ export default function GoogleAnalytics() {
           gtag('config', 'G-QMRDRH8ZP6', {
             'send_page_view': false, // Don't send page view until consent is granted
             'cookie_flags': 'SameSite=None;Secure',
-            'debug_mode': true
+            'debug_mode': false
           });
           
-          // Update consent to granted
-          gtag('consent', 'update', {
-            'analytics_storage': 'granted',
-            'ad_storage': 'granted'
-          });
-          
-          // Now send the page view
-          gtag('event', 'page_view', {
-            'page_title': document.title,
-            'page_location': window.location.href,
-            'page_path': window.location.pathname
-          });
+          // If consent was previously granted, update it now
+          if (localStorage.getItem('analytics-consent') === 'granted') {
+            gtag('consent', 'update', {
+              'analytics_storage': 'granted',
+              'ad_storage': 'granted'
+            });
+            
+            // Send the page view
+            gtag('event', 'page_view', {
+              'page_title': document.title,
+              'page_location': window.location.href,
+              'page_path': window.location.pathname
+            });
+          }
         `}
       </Script>
     </>

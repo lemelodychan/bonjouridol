@@ -11,7 +11,6 @@ import Topbar from './components/Topbar'
 import Footer from './components/Footer'
 import Custom404 from '@/app/404';
 import GoogleTagManager from './components/GoogleTagManager'
-import IubendaScript from './components/IubendaScript'
 import ConsentBanner from './components/ConsentBanner'
 import ErrorHandler from './components/ErrorHandler'
 
@@ -65,7 +64,6 @@ export default async function RootLayout({ children }) {
           <Navbar />
           {children}
           <Analytics />
-          <IubendaScript />
           <Footer />
           <ConsentBanner />
           <script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=bonjouridol"></script>
@@ -85,7 +83,6 @@ export default async function RootLayout({ children }) {
             <Topbar />
             <Navbar />
             <Custom404 />
-            <IubendaScript />
             <Footer />
             <ConsentBanner />
             <script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=bonjouridol"></script>
