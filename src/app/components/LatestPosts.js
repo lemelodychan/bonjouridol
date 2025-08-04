@@ -23,16 +23,45 @@ export default async function LatestPost() {
             next: { tags: ['prismic', 'articles'] },
         },
         filters: [
-            prismic.filter.any('document.tags', ['Live Report', 'Interview']),
-            prismic.filter.not('document.tags', ['PR']),
+            prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Behind the scenes']),
+        ],
+        orderings: [
+          {
+            field: 'my.articles.publication_date',
+            direction: 'desc',
+          },
+          {
+            field: 'document.first_publication_date',
+            direction: 'desc',
+          },
         ],
     });
-    const sortedResults = results.sort((a, b) => {
-        const dateA = a.data.publication_date || a.first_publication_date;
-        const dateB = b.data.publication_date || b.first_publication_date;
-        return new Date(dateB) - new Date(dateA); // Descending order
+    
+    // Get the hero post to exclude it from latest articles
+    const heroPost = await client.getAllByType('articles', {
+        fetchOptions: {
+          cache: 'no-store',
+          next: { tags: ['prismic', 'articles'] },
+        },
+        limit: 1,
+        orderings: [
+          {
+            field: 'my.articles.publication_date',
+            direction: 'desc',
+          },
+          {
+            field: 'document.first_publication_date',
+            direction: 'desc',
+          },
+        ],
+        filters: [
+          prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Behind the scenes']),
+        ],
     });
-    const resultsWithoutLatest = sortedResults.slice(1, 4);
+    
+    // Filter out the hero post from the results
+    const resultsWithoutHero = results.filter(article => article.id !== heroPost[0]?.id);
+    const resultsWithoutLatest = resultsWithoutHero.slice(0, 3);
 
     return (
         <div className={styles.LatestPosts}>
