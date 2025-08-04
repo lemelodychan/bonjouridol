@@ -78,19 +78,6 @@ const Gallery = ({ images, color = "default" }) => {
             iconPrev: () => <HiChevronLeft size={32} />,
             iconNext: () => <HiChevronRight size={32} />,
             iconClose: () => <HiX size={24} />,
-            slide: ({ slide, rect, render }) => {
-              const currentSlide = lightboxImages[slide.index];
-              return (
-                <div style={{ position: "relative", width: "100%", height: "100%" }}>
-                  {render.slideImage(slide, rect)}
-                  {currentSlide.alt && (
-                    <div className={styles.AltTextOverlay}>
-                      {currentSlide.alt}
-                    </div>
-                  )}
-                </div>
-              );
-            },
           }}
           open={isOpen}
           close={closeLightbox} // Close lightbox when clicking close button
@@ -100,6 +87,24 @@ const Gallery = ({ images, color = "default" }) => {
             thumbnail: image.thumbnail, // Thumbnails for the lightbox
           }))}
           thumbs={lightboxImages.map((image) => image.thumbnail)} // Thumbnails for navigation
+          carousel={{
+            finite: true,
+          }}
+          controller={{
+            closeOnBackdropClick: true,
+          }}
+          components={{
+            Container: ({ children, ...props }) => (
+              <div {...props}>
+                {children}
+                {lightboxImages[currentIndex]?.alt && (
+                  <div className={styles.AltTextOverlay}>
+                    {lightboxImages[currentIndex].alt}
+                  </div>
+                )}
+              </div>
+            ),
+          }}
         />
       )}
     </Masonry>
