@@ -66,10 +66,10 @@ export const createClient = (config = {}) => {
   const client = prismic.createClient(repositoryName, {
     accessToken: process.env.PRISMIC_ACCESS_TOKEN,
     fetchOptions: {
-      // Choose the caching strategy based on the environment
+      // Remove conflicting cache settings - let individual components handle their own caching
       next: process.env.NODE_ENV === "production"
-        ? { tags: ["prismic"], cache: "force-cache" }
-        : { revalidate: 5 }, // Use short revalidation in development
+        ? { tags: ["prismic"] }
+        : {}, // No global cache settings in development
     },
     ...config,
   });
