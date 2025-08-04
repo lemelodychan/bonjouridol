@@ -54,7 +54,7 @@ const Authors = ({ slice }) => {
             <>
               <Author 
                 author={author || {}} 
-                type="Written" 
+                type={author === slice.primary.author ? "Written" : "Press release translated"} 
                 translator={translation} 
               />
               <div className={styles.OfficialPhotos}>
