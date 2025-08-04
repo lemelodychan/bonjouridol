@@ -1,0 +1,45 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: var(--bi-dark-pink);
+  color: var(--white);
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  font-size: var(--font-size);
+  font-weight: 500;
+  font-family: var(--font-text);
+  animation: slideIn 0.3s ease-out;
+  max-width: 300px;
+  line-height: 1.4;
+
+  @include sm {
+    top: 24px;
+    right: 24px;
+    padding: 16px 24px;
+    font-size: var(--font-size-md);
+  }
+
+  @include md {
+    top: 32px;
+    right: 32px;
+    padding: 20px 28px;
+    max-width: 350px;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+} 

@@ -12,6 +12,7 @@ import FeaturedImage from '@/app/assets/FeaturedImage.png';
 import Image from 'next/image';
 import { HiOutlineLocationMarker, HiOutlineCalendar } from 'react-icons/hi';
 import Custom404 from '@/app/404';
+import RightClickProtection from '@/app/components/RightClickProtection';
 
 export const dynamicParams = false;
 
@@ -142,6 +143,7 @@ export default async function Page({ params }) {
 
   return (
     <>
+      <RightClickProtection articleType={article.data.type} />
       <article className={styles.container}>
         <div className={styles.header}>
           <span className={styles.FeaturedImage}>
