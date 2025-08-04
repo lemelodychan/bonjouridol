@@ -68,7 +68,7 @@ const Authors = ({ slice }) => {
                 <div className={styles.AuthorInfo}>
                   <h4>
                     Official photos courtesy of&nbsp;
-                    <span className={styles.AuthorName}>artist management</span>.
+                    <span className={styles.AuthorName}>event and artist management</span>.
                   </h4>
                 </div>
               </div>
@@ -77,7 +77,7 @@ const Authors = ({ slice }) => {
             <>
               <Author 
                 author={author} 
-                type={author === slice.primary.author ? "Written" : "PR translated"} 
+                type={author === slice.primary.author ? "Written" : "Press release translated"} 
                 translator={translation} 
               />
               
@@ -93,7 +93,7 @@ const Authors = ({ slice }) => {
                   <div className={styles.AuthorInfo}>
                     <h4>
                       Official photos courtesy of&nbsp;
-                      <span className={styles.AuthorName}>artist management</span>.
+                      <span className={styles.AuthorName}>event and artist management</span>.
                     </h4>
                   </div>
                 </div>
