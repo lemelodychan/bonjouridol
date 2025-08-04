@@ -29,6 +29,7 @@ const Gallery = ({ images, color = "default" }) => {
   const lightboxImages = images.map(item => ({
     src: item.image.url, // Full-size image URL
     thumbnail: item.image.url, // You can use the same URL for now or create a smaller thumbnail URL
+    alt: item.image.alt || "", // Include alt text
   }));
 
   const breakpointColumnsObj = {
@@ -77,6 +78,19 @@ const Gallery = ({ images, color = "default" }) => {
             iconPrev: () => <HiChevronLeft size={32} />,
             iconNext: () => <HiChevronRight size={32} />,
             iconClose: () => <HiX size={24} />,
+            slide: ({ slide, rect, render }) => {
+              const currentSlide = lightboxImages[slide.index];
+              return (
+                <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                  {render.slideImage(slide, rect)}
+                  {currentSlide.alt && (
+                    <div className={styles.AltTextOverlay}>
+                      {currentSlide.alt}
+                    </div>
+                  )}
+                </div>
+              );
+            },
           }}
           open={isOpen}
           close={closeLightbox} // Close lightbox when clicking close button
