@@ -29,7 +29,6 @@ const Gallery = ({ images, color = "default" }) => {
   const lightboxImages = images.map(item => ({
     src: item.image.url, // Full-size image URL
     thumbnail: item.image.url, // You can use the same URL for now or create a smaller thumbnail URL
-    alt: item.image.alt || "", // Include alt text
   }));
 
   const breakpointColumnsObj = {
@@ -87,24 +86,6 @@ const Gallery = ({ images, color = "default" }) => {
             thumbnail: image.thumbnail, // Thumbnails for the lightbox
           }))}
           thumbs={lightboxImages.map((image) => image.thumbnail)} // Thumbnails for navigation
-          carousel={{
-            finite: true,
-          }}
-          controller={{
-            closeOnBackdropClick: true,
-          }}
-          components={{
-            Container: ({ children, ...props }) => (
-              <div {...props}>
-                {children}
-                {lightboxImages[currentIndex]?.alt && (
-                  <div className={styles.AltTextOverlay}>
-                    {lightboxImages[currentIndex].alt}
-                  </div>
-                )}
-              </div>
-            ),
-          }}
         />
       )}
     </Masonry>
