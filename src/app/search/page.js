@@ -9,8 +9,9 @@ import SearchTracker from "./SearchTracker";
 import styles from "./page.module.scss";
 
 export default async function SearchPage({ searchParams }) {
-    const searchTerm = (await searchParams?.keyword) || "";
-    const currentPage = parseInt(await searchParams?.page) || 1;
+    const params = await searchParams;
+    const searchTerm = params?.keyword || "";
+    const currentPage = parseInt(params?.page) || 1;
 
     if (!searchTerm.trim()) {
       return (

@@ -253,18 +253,21 @@
                         }
 
                         .TooltipArtists {
-                            display: flex;
-                            flex-direction: column;
-                            gap: 4px;
-                            align-items: flex-end;
+                            text-align: right;
+                            line-height: 1.4;
 
                             .TooltipArtist {
-                                display: block;
+                                display: inline;
                                 color: var(--bi-dark-pink);
                                 text-transform: uppercase;
                                 font-weight: bold;
                                 font-size: var(--font-size-sm);
                                 letter-spacing: 0.5px;
+                                
+                                &:not(:last-child)::after {
+                                    content: ', ';
+                                    color: var(--dark-grey);
+                                }
                             }
                         }
                     }
