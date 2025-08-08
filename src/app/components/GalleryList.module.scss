@@ -178,6 +178,98 @@
                     }
                 }
             }
+
+            .Artists {
+                z-index: 3;
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                display: flex;
+                flex-direction: row;
+                align-items: flex-end;
+                flex-wrap: wrap;
+                gap: 4px;
+
+                @include md {
+                    flex-direction: column;
+                    width: fit-content;
+                    height: 50%;
+                }
+
+                @include lg {
+                    top: 24px;
+                    right: 24px;
+                }
+
+                .Artist {
+                    display: inline-block;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    width: fit-content;
+
+                    color: var(--bi-dark-pink);
+                    text-transform: uppercase;
+                    font-weight: bold;
+                    font-size: var(--font-size-sm);
+                    letter-spacing: 0.5px;
+                    background-color: var(--white);
+
+                    &.ArtistCounter {
+                        cursor: pointer;
+                        transition: var(--transi);
+                        position: relative;
+
+                        &:hover {
+                            background-color: var(--bi-dark-pink);
+                            color: var(--white);
+                        }
+                    }
+                }
+
+                .ArtistTooltip {
+                    position: absolute;
+                    top: 100%;
+                    right: 0;
+                    margin-top: 8px;
+                    z-index: 10;
+                    width: fit-content;
+                    max-width: 300px;
+
+                    .TooltipContent {
+                        background-color: var(--white);
+                        border-radius: 8px;
+                        padding: 12px;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                        border: 1px solid rgba(0, 0, 0, 0.1);
+
+                        strong {
+                            display: block;
+                            color: var(--dark-grey);
+                            font-size: 12px;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            margin-bottom: 8px;
+                        }
+
+                        .TooltipArtists {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 4px;
+                            align-items: flex-end;
+
+                            .TooltipArtist {
+                                display: block;
+                                color: var(--bi-dark-pink);
+                                text-transform: uppercase;
+                                font-weight: bold;
+                                font-size: var(--font-size-sm);
+                                letter-spacing: 0.5px;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         .SeeAll {

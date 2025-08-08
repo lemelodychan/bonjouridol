@@ -52,6 +52,9 @@ export default function GalleryList({ results }) {
                 ? format(new Date(publicationDate), "MMMM d, yyyy")
                 : "Unknown date";
 
+              const artistNames = item.data.artist_name || "";
+              const artistArray = artistNames.split(',').map(name => name.trim());
+
               return (
                 <SwiperSlide key={item.id} className={styles.Slide}>
                   <Link className={styles.Post} href={linkPath}>
@@ -123,5 +126,80 @@ export default function GalleryList({ results }) {
         <p>No galleries found.</p>
       )}
     </div>
+  );
+}
+
+// ArtistTags component with tooltip functionality
+function ArtistTags({ artists }) {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+  
+  const displayArtists = artists.slice(0, 3);
+  const remainingCount = artists.length - 3;
+  const hasMoreArtists = remainingCount > 0;
+
+  // Set desktop detection on mount
+  React.useEffect(() => {
+    const checkIsDesktop = () => {
+      setIsDesktop(window.innerWidth > 768);
+    };
+    
+    checkIsDesktop();
+    window.addEventListener('resize', checkIsDesktop);
+    
+    return () => {
+      window.removeEventListener('resize', checkIsDesktop);
+    };
+  }, []);
+
+  const handleCounterClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowTooltip(!showTooltip);
+  };
+
+  const handleMouseEnter = () => {
+    if (isDesktop) {
+      setShowTooltip(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (isDesktop) {
+      setShowTooltip(false);
+    }
+  };
+
+  return (
+    <span className={styles.Artists}>
+      {displayArtists.map((artist, index) => (
+        <span key={index} className={styles.Artist}>
+          {artist}
+        </span>
+      ))}
+      {hasMoreArtists && (
+        <span 
+          className={`${styles.Artist} ${styles.ArtistCounter}`}
+          onClick={handleCounterClick}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          +{remainingCount}
+          {showTooltip && (
+            <div className={styles.ArtistTooltip}>
+              <div className={styles.TooltipContent}>
+                <div className={styles.TooltipArtists}>
+                  {artists.slice(3).map((artist, index) => (
+                    <span key={index + 3} className={styles.TooltipArtist}>
+                      {artist}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </span>
+      )}
+    </span>
   );
 }

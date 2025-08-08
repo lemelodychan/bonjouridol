@@ -8,7 +8,7 @@ import styles from "./page.module.scss";
 import Custom404 from "@/app/404";
 
 export async function generateMetadata({ params }) {
-  const { uid } = params;
+  const { uid } = await params;
   const client = createClient();
 
   try {
@@ -75,8 +75,8 @@ export async function generateStaticParams() {
 }
 
 export default async function Page({ params, searchParams }) {
-  const { uid } = params;
-  const currentPage = parseInt(searchParams.page) || 1;
+  const { uid } = await params;
+  const currentPage = parseInt((await searchParams).page) || 1;
   const client = createClient();
 
   try {
@@ -89,7 +89,7 @@ export default async function Page({ params, searchParams }) {
 
     const isOtherType = page.data.type === "Other";
     let postType, category;
-    const pageType = page.data.type || searchParams.type || "Live reports";
+    const pageType = page.data.type || (await searchParams).type || "Live reports";
 
     switch (pageType) {
       case "Live reports":

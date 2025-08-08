@@ -1,3 +1,5 @@
+"use client";
+
 import { format } from "date-fns";
 import Link from "next/link";
 import { IoArrowForwardOutline } from "react-icons/io5";
@@ -5,6 +7,8 @@ import Button from "./IconButton";
 import SingleImage from "./SingleImage";
 import Breadcrumbs from "./Breadcrumbs";
 import DocListPagination from "./DocListPagination";
+import { useState } from "react";
+import React from "react";
 
 import styles from "./DocList.module.scss";
 
@@ -50,13 +54,7 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
                   </div>
                 )}
                 {postType === "Gallery" && artistArray?.length > 0 && (
-                  <span className={styles.Artists}>
-                    {artistArray.map((artist, index) => (
-                      <span key={index} className={styles.Artist}>
-                        {artist}
-                      </span>
-                    ))}
-                  </span>
+                  <ArtistTags artists={artistArray} />
                 )}
                 <div className={styles.Content}>
                   {item.tags && (
@@ -107,5 +105,80 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
       </div>
       <DocListPagination currentPage={currentPage} totalPages={totalPages} />
     </div>
+  );
+}
+
+// ArtistTags component with tooltip functionality
+function ArtistTags({ artists }) {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+  
+  const displayArtists = artists.slice(0, 3);
+  const remainingCount = artists.length - 3;
+  const hasMoreArtists = remainingCount > 0;
+
+  // Set desktop detection on mount
+  React.useEffect(() => {
+    const checkIsDesktop = () => {
+      setIsDesktop(window.innerWidth > 768);
+    };
+    
+    checkIsDesktop();
+    window.addEventListener('resize', checkIsDesktop);
+    
+    return () => {
+      window.removeEventListener('resize', checkIsDesktop);
+    };
+  }, []);
+
+  const handleCounterClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowTooltip(!showTooltip);
+  };
+
+  const handleMouseEnter = () => {
+    if (isDesktop) {
+      setShowTooltip(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (isDesktop) {
+      setShowTooltip(false);
+    }
+  };
+
+  return (
+    <span className={styles.Artists}>
+      {displayArtists.map((artist, index) => (
+        <span key={index} className={styles.Artist}>
+          {artist}
+        </span>
+      ))}
+      {hasMoreArtists && (
+        <span 
+          className={`${styles.Artist} ${styles.ArtistCounter}`}
+          onClick={handleCounterClick}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          +{remainingCount}
+          {showTooltip && (
+            <div className={styles.ArtistTooltip}>
+              <div className={styles.TooltipContent}>
+                <div className={styles.TooltipArtists}>
+                  {artists.slice(3).map((artist, index) => (
+                    <span key={index + 3} className={styles.TooltipArtist}>
+                      {artist}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </span>
+      )}
+    </span>
   );
 }
