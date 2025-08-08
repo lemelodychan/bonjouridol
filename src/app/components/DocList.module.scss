@@ -272,7 +272,8 @@
                         margin-top: 8px;
                         z-index: 10;
                         width: fit-content;
-                        max-width: 300px;
+                        min-width: 240px;
+                        max-width: 400px;
 
                         .TooltipContent {
                             background-color: var(--white);
@@ -292,22 +293,14 @@
                             }
 
                             .TooltipArtists {
-                                text-align: right;
-                                line-height: 1.4;
-
-                                .TooltipArtist {
-                                    display: inline;
-                                    color: var(--bi-dark-pink);
-                                    text-transform: uppercase;
-                                    font-weight: bold;
-                                    font-size: var(--font-size-sm);
-                                    letter-spacing: 0.5px;
-                                    
-                                    &:not(:last-child)::after {
-                                        content: ', ';
-                                        color: var(--dark-grey);
-                                    }
-                                }
+                                color: var(--dark-grey);
+                                text-transform: none;
+                                font-weight: normal;
+                                font-size: 12px;
+                                letter-spacing: 0.3px;
+                                line-height: 1.5;
+                                text-align: left;
+                                width: 100%;
                             }
                         }
                     }

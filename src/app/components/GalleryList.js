@@ -189,11 +189,7 @@ function ArtistTags({ artists }) {
             <div className={styles.ArtistTooltip}>
               <div className={styles.TooltipContent}>
                 <div className={styles.TooltipArtists}>
-                  {artists.slice(3).map((artist, index) => (
-                    <span key={index + 3} className={styles.TooltipArtist}>
-                      {artist}
-                    </span>
-                  ))}
+                  {artists.slice(3).join(', ')}
                 </div>
               </div>
             </div>
