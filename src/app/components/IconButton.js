@@ -1,17 +1,36 @@
 import classNames from 'classnames';
-import '../globals.css'
-import styles from './IconButton.module.scss'
+import Link from 'next/link';
+import '../globals.css';
+import styles from './IconButton.module.scss';
 
 function Button(props) {
-    const variant = props
-    const {textValue} = props
-    const {icon} = props
+  const {
+    href,
+    className,
+    variant,
+    textValue,
+    icon,
+    onClick,
+    ...rest
+  } = props;
+
+  const classes = classNames(styles.Main, variant && styles[variant], className);
+
+  if (href) {
     return (
-        <button className={classNames(styles.Main, styles[props.variant])}>
-            <span>{textValue}</span>
-            {icon}
-        </button>
+      <Link href={href} className={classes} {...rest}>
+        <span>{textValue}</span>
+        {icon}
+      </Link>
     );
+  }
+
+  return (
+    <button type="button" className={classes} onClick={onClick} {...rest}>
+      <span>{textValue}</span>
+      {icon}
+    </button>
+  );
 }
 
 export default Button;

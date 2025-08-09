@@ -7,6 +7,8 @@
   line-height: 1.5;
   letter-spacing: 0.5px;
   text-transform: uppercase;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
 
   gap: 8px;
   display: flex;
@@ -21,6 +23,14 @@
     display: inline-block;
     position: relative;
     top: 1px;
+  }
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  &:active {
+    transition: none;
   }
 }
 
@@ -38,9 +48,11 @@
 .White {
   color: var(--bi-dark-pink);
   background-color: white;
+  transition: none;
 
   &:hover{
     color: var(--bi-indigo);
+    transition: none;
   }
 }
 

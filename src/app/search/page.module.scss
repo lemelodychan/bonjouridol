@@ -11,6 +11,7 @@
     flex-direction: column;
     gap: 24px;
     min-height: 500px;
+    overflow: hidden;
     
     @include md {
         padding: 32px 0px;

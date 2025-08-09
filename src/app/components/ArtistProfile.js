@@ -12,8 +12,10 @@ import { FaXTwitter } from "react-icons/fa6";
 import { FaYoutube } from "react-icons/fa6";
 import { FaTiktok } from "react-icons/fa6";
 import Link from "next/link";
+import Button from "./IconButton";
+import { IoArrowForwardOutline } from "react-icons/io5";
 
-export default function ArtistProfile({ artist }) {
+export default function ArtistProfile({ artist, noConstraints = false, hideDescription = false }) {
     const {
         name_en = null, 
         name_jp = null,
@@ -28,8 +30,11 @@ export default function ArtistProfile({ artist }) {
         tiktok = null,
     } = artist?.data || {};   
 
+    const artistDisplayName = name_en || name_jp || "";
+    const searchUrl = `/search?keyword=${encodeURIComponent(artistDisplayName)}`;
+
   return (
-    <div className={styles.artistProfile}>
+    <div className={`${styles.artistProfile} ${noConstraints ? styles.noConstraints : ""}`}>
         <SingleImage 
             image={artist.data.profile_picture}
             fallbackAlt=""
@@ -43,13 +48,17 @@ export default function ArtistProfile({ artist }) {
                     <h3>{artist.data.name_jp}</h3>
                 }
             </div>
-            <span><strong>Debuted:</strong> {artist.data.debut}</span>
+            {!noConstraints && artist.data.debut && (
+                <span><strong>Debuted:</strong> {artist.data.debut}</span>
+            )}
             {artist.data.disband && 
                 <span><strong>Disbanded:</strong> {artist.data.disband}</span>
             }
-            <div className={styles.description}>
-                <PrismicRichText field={artist.data.description} />
-            </div>
+            {!hideDescription && (
+                <div className={styles.description}>
+                    <PrismicRichText field={artist.data.description} />
+                </div>
+            )}
             <div className={styles.social}>
             {artist.data.website && artist.data.website.url && artist.data.website.url !== "null" && (
                 <PrismicNextLink field={artist.data.website}>
@@ -77,6 +86,8 @@ export default function ArtistProfile({ artist }) {
                 </PrismicNextLink>
             )}
             </div>
+
+            <Button href={searchUrl} className={styles.ctaButton} variant={"White"} textValue={'See all articles'} icon={<IoArrowForwardOutline />} />
       </div>
     </div>
   )

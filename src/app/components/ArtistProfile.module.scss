@@ -23,6 +23,7 @@
         border-radius: 8px !important;
         overflow: hidden;
         margin-bottom: 8px;
+        flex: 0 0 auto;
 
         img {
             border-radius: 8px !important;
@@ -104,6 +105,47 @@
             }
         }
 
+        .ctaButton {
+            display: none;
+        }
+
+    }
+}
+
+.noConstraints {
+    max-width: none;
+    min-width: 0;
+    width: 100%;
+    height: auto;
+    display: flex !important;
+    flex-direction: column;
+    gap: 8px;
+
+    .profileContent {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        padding: 0 !important;
+
+        @include lg {
+            padding: 8px;
+        }
+
+        .description {
+            flex: 1 1 auto;
+        }
+
+        .social {
+            flex-grow: 1;
+            align-items: end;
+        }
+
+        .ctaButton {
+            display: flex !important;
+            margin-top: 16px;
+            align-self: stretch;
+            width: 100%;
+        }
     }
 }
   

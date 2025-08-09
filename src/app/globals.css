@@ -38,7 +38,7 @@
   color: white;
   background-color: var(--bi-pink);
 }
-p a:any-link, a:active, a:visited {
+p a:any-link, p a:active, p a:visited {
   color: var(--bi-indigo);
   text-decoration-line: none;
   border-bottom: 1px solid var(--bi-indigo);
