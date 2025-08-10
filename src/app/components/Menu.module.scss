@@ -15,7 +15,7 @@
         list-style-type: none;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 12px;
         width: 100%;
         height: fit-content;
         justify-content: center;
@@ -39,9 +39,10 @@
                 width: fit-content;
                 color: var(--white);
                 font-family: var(--font-title);
-                font-size: var(--font-size-xl);
+                font-size: 20px;
+                line-height: 32px;
                 letter-spacing: 0.5px;
-                padding: 4px 0;
+                padding: 0;
                 transition: var(--transi);
                 text-decoration: none;
 
@@ -114,7 +115,7 @@
         list-style-type: none;
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 8px;
         width: 100%;
         height: fit-content;
         justify-content: center;
@@ -137,9 +138,10 @@
                 align-items: center;
                 width: fit-content;
                 color: var(--white);
-                font-size: 20px;
+                font-size: 14px;
+                line-height: 20px;
                 letter-spacing: 0.5px;
-                padding: 4px 0;
+                padding: 0;
                 transition: var(--transi);
                 text-decoration: none;
 

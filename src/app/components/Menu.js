@@ -70,6 +70,17 @@ export default function Menu({ onLinkClick }) {
                             </span>
                     </Link>
                 </li>
+                <li>
+                    <Link 
+                        href="/directory"
+                        onClick={onLinkClick}
+                        className={pathname == "/directory" ? "active" : ""} >
+                            <span>Artist Directory</span>
+                            <span className={styles.Icon}>
+                                <IoArrowForwardOutline />
+                            </span>
+                    </Link>
+                </li>
             </ul>
 
             <ul className={styles.menuSecondary}>
@@ -101,17 +112,6 @@ export default function Menu({ onLinkClick }) {
                         onClick={onLinkClick}
                         target="_blank" >
                             <span>アイドル・事務所へ</span>
-                            <span className={styles.Icon}>
-                                <IoArrowForwardOutline />
-                            </span>
-                    </Link>
-                </li>
-                <li>
-                    <Link 
-                        href="https://archives.bonjouridol.com/"
-                        target="_blank"
-                        onClick={onLinkClick}>
-                            <span>Archives</span>
                             <span className={styles.Icon}>
                                 <IoArrowForwardOutline />
                             </span>
