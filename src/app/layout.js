@@ -15,6 +15,7 @@ import Footer from './components/Footer'
 // import ConsentBanner from './components/ConsentBanner'
 // Temporarily disabled for debugging
 // import ErrorHandler from './components/ErrorHandler'
+import UmamiTracker from './components/UmamiTracker'
 
 const DMSans = DM_Sans({ subsets: ['latin'] })
 
@@ -86,14 +87,7 @@ export default async function RootLayout({ children }) {
           <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400;1,9..40,500;1,9..40,700&family=Noto+Sans+JP:wght@400;500;700&family=Poppins:wght@900&display=swap" rel="stylesheet" />
           <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"></link>
           {/* <GoogleTagManager /> */}
-          <Script
-            src="https://cloud.umami.is/script.js"
-            strategy="afterInteractive"
-            defer
-            data-website-id="f092e573-6aba-45f6-af52-71e7d3c51bd0"
-            data-host-url="https://cloud.umami.is"
-            data-auto-track="true"
-          />
+          <UmamiTracker />
         </head>
         <body>
           {/* <ErrorHandler /> */}

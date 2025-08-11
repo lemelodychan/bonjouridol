@@ -32,7 +32,7 @@ export default function Navbar() {
       const searchQuery = searchTerm.trim();
       
       // Track search query with Umami
-      if (typeof window !== 'undefined' && window.umami) {
+      if (typeof window !== 'undefined' && window.umami && !window.umami.disabled) {
         try {
           window.umami.track('search_query', {
             search_term: searchQuery
