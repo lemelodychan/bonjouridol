@@ -72,7 +72,7 @@ export default function ArticleLike({ articleSlug, articleType }) {
     setIsAnimating(true)
     
     // Add bubble animation with mix of hearts and croissants
-    const emojis = ['🩷', '🥐', '💖', '🥐', '💘', '🥐'] // Mix of hearts and croissants
+    const emojis = ['🩷', '🥐', '💖', '🥐', '💘', '🥐', '🥐', '🥐'] // Mix of hearts and croissants
     const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)]
     
     const newBubble = {
