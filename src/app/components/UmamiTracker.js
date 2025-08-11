@@ -12,25 +12,23 @@ export default function UmamiTracker() {
     
     const checkIPAndDisable = async () => {
       try {
-        // Get the list of excluded IPs from environment variable
-        const excludedIPs = process.env.NEXT_PUBLIC_UMAMI_EXCLUDED_IPS?.split(',') || []
-        
-        // Fetch the client's IP address
-        const response = await fetch('/api/client-ip')
+        // Use the server-side API to check IP and get environment variables
+        const response = await fetch('/api/umami-check')
         const data = await response.json()
-        const clientIP = data.ip
         
-        // Check if the client's IP is in the excluded list
-        if (excludedIPs.includes(clientIP)) {
-          console.log('Umami tracking disabled for IP:', clientIP)
+        console.log('UmamiTracker debug:', data)
+        
+        if (data.shouldDisable) {
+          console.log('🚫 Umami tracking DISABLED for IP:', data.clientIP)
           setShouldTrack(false)
           // Set the global flag for other components
           window.umami = { disabled: true }
         } else {
+          console.log('✅ Umami tracking ENABLED for IP:', data.clientIP)
           setShouldTrack(true)
         }
       } catch (error) {
-        console.error('Error checking IP for Umami exclusion:', error)
+        console.error('❌ Error checking IP for Umami exclusion:', error)
         // Default to tracking if there's an error
         setShouldTrack(true)
       }
@@ -39,10 +37,17 @@ export default function UmamiTracker() {
     checkIPAndDisable()
   }, [])
 
-  if (!isClient || !shouldTrack) {
+  if (!isClient) {
+    console.log('🚫 UmamiTracker: Not client side yet')
     return null
   }
 
+  if (!shouldTrack) {
+    console.log('🚫 UmamiTracker: Not rendering script (disabled for IP)')
+    return null
+  }
+
+  console.log('✅ UmamiTracker: Rendering script')
   return (
     <Script
       src="https://cloud.umami.is/script.js"
@@ -51,6 +56,7 @@ export default function UmamiTracker() {
       data-website-id="f092e573-6aba-45f6-af52-71e7d3c51bd0"
       data-host-url="https://cloud.umami.is"
       data-auto-track="true"
+      data-do-not-track="false"
     />
   )
 }
