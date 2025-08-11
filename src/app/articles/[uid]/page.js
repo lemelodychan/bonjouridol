@@ -211,7 +211,12 @@ export default async function Page({ params }) {
               </span>
             </div>
           )}
-          <SharingOptions className={styles.Sharing} uid={article.uid} title={article.data.meta_title} idol={article.data.idol_name} />
+          <SharingOptions 
+            className={styles.Sharing} 
+            uid={article.uid} 
+            title={article.data.meta_title || `${article.data.title}${article.data.subtitle ? `: ${article.data.subtitle}` : ''}`} 
+            idol={article.data.idol_name} 
+          />
           <ArticleLike articleSlug={article.uid} articleType={article.data.type} />
         </div>
 
