@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server'
+import { createClient } from '@/prismicio'
+import { extractArtistsFromPrismicArticle } from '@/utils/artistUtils'
 
 // Check if Supabase is configured
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -53,15 +55,31 @@ export async function POST(request) {
     }
 
     if (!existingArticle) {
+      // Try to get article data from Prismic to populate artist field
+      let artists = null
+      let articleType = type
+      
+      try {
+        const prismicClient = createClient()
+        const prismicArticle = await prismicClient.getByUID('articles', slug)
+        
+        if (prismicArticle) {
+          artists = extractArtistsFromPrismicArticle(prismicArticle)
+          articleType = prismicArticle.data.type || type
+        }
+      } catch (error) {
+        console.log(`Article ${slug} not found in Prismic, creating with default values`)
+      }
+
       // Create new article record
       const { error: insertError } = await supabase
         .from('articles')
         .insert({
           slug,
-          type,
+          type: articleType,
           likes: 0,
           views: 0,
-          artist: null // Will be populated later when synced with Prismic
+          artist: artists
         })
 
       if (insertError) {
@@ -220,14 +238,31 @@ export async function GET(request) {
     // If article doesn't exist, create it with default values
     if (!article) {
       console.log('Article not found, creating new record')
+      
+      // Try to get article data from Prismic to populate artist field
+      let artists = null
+      let articleType = 'Live report'
+      
+      try {
+        const prismicClient = createClient()
+        const prismicArticle = await prismicClient.getByUID('articles', slug)
+        
+        if (prismicArticle) {
+          artists = extractArtistsFromPrismicArticle(prismicArticle)
+          articleType = prismicArticle.data.type || 'Live report'
+        }
+      } catch (error) {
+        console.log(`Article ${slug} not found in Prismic, creating with default values`)
+      }
+
       const { error: insertError } = await supabase
         .from('articles')
         .insert({
           slug,
-          type: 'Live report', // Default type, will be updated when user likes
+          type: articleType,
           likes: 0,
           views: 0,
-          artist: null // Will be populated later when synced with Prismic
+          artist: artists
         })
 
       if (insertError) {

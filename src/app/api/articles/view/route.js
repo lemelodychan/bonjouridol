@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server'
+import { createClient } from '@/prismicio'
+import { extractArtistsFromPrismicArticle } from '@/utils/artistUtils'
 
 export async function POST(request) {
   try {
@@ -46,15 +48,31 @@ export async function POST(request) {
     }
 
     if (!existingArticle) {
+      // Try to get article data from Prismic to populate artist field
+      let artists = null
+      let articleType = type
+      
+      try {
+        const prismicClient = createClient()
+        const prismicArticle = await prismicClient.getByUID('articles', slug)
+        
+        if (prismicArticle) {
+          artists = extractArtistsFromPrismicArticle(prismicArticle)
+          articleType = prismicArticle.data.type || type
+        }
+      } catch (error) {
+        console.log(`Article ${slug} not found in Prismic, creating with default values`)
+      }
+
       // Create new article record
       const { error: insertError } = await supabase
         .from('articles')
         .insert({
           slug,
-          type,
+          type: articleType,
           likes: 0,
           views: 0,
-          artist: null // Will be populated later when synced with Prismic
+          artist: artists
         })
 
       if (insertError) {
