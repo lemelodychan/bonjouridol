@@ -60,7 +60,7 @@ export default function ArticleLike({ articleSlug, articleType }) {
         setLocalLikes(data.totalLikes)
         
         // Track database update event in Umami
-        if (typeof window !== 'undefined' && window.umami && !window.umami.disabled) {
+        if (typeof window !== 'undefined' && window.umami && !window.umami.disabled && localStorage.getItem('umami.disabled') !== '1') {
           window.umami.track('likes_saved', {
             article_slug: articleSlug,
             article_liked: count,

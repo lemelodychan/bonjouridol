@@ -10,6 +10,15 @@ export default function UmamiTracker() {
   useEffect(() => {
     setIsClient(true)
     
+    // Check if Umami is already disabled in localStorage
+    const isDisabledInStorage = localStorage.getItem('umami.disabled') === '1'
+    if (isDisabledInStorage) {
+      console.log('🚫 Umami tracking DISABLED (from localStorage)')
+      setShouldTrack(false)
+      window.umami = { disabled: true }
+      return
+    }
+    
     const checkIPAndDisable = async () => {
       try {
         // Use the server-side API to check IP and get environment variables
@@ -23,9 +32,13 @@ export default function UmamiTracker() {
           setShouldTrack(false)
           // Set the global flag for other components
           window.umami = { disabled: true }
+          // Set localStorage to prevent any tracking
+          localStorage.setItem('umami.disabled', '1')
         } else {
           console.log('✅ Umami tracking ENABLED for IP:', data.clientIP)
           setShouldTrack(true)
+          // Remove localStorage flag if it exists
+          localStorage.removeItem('umami.disabled')
         }
       } catch (error) {
         console.error('❌ Error checking IP for Umami exclusion:', error)
