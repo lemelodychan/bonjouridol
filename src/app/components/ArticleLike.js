@@ -58,6 +58,17 @@ export default function ArticleLike({ articleSlug, articleType }) {
           userLikes: data.userLikes
         })
         setLocalLikes(data.totalLikes)
+        
+        // Track database update event in Umami
+        if (typeof window !== 'undefined' && window.umami) {
+          window.umami.track('likes_saved', {
+            article_slug: articleSlug,
+            article_type: articleType,
+            likes_added: count,
+            total_likes: data.totalLikes,
+            user_likes: data.userLikes
+          })
+        }
       }
     } catch (error) {
       console.error('Error updating likes:', error)
@@ -96,6 +107,15 @@ export default function ArticleLike({ articleSlug, articleType }) {
     // Set user liked state immediately on first click (if not already liked)
     if (!hasUserLiked) {
       setHasUserLiked(true)
+      
+      // Track like event in Umami
+      if (typeof window !== 'undefined' && window.umami) {
+        window.umami.track('article_liked', {
+          article_slug: articleSlug,
+          article_type: articleType,
+          total_likes: newLocalLikes
+        })
+      }
     }
     
     // Clear any existing timeout
