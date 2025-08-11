@@ -29,14 +29,26 @@ export default function Navbar() {
   const handleSearch = (event) => {
     event.preventDefault();
     if (searchTerm.trim()) {
+      const searchQuery = searchTerm.trim();
+      
       // Track search query with Umami
       if (typeof window !== 'undefined' && window.umami) {
-        window.umami.track('search_query', {
-          search_term: searchTerm.trim()
-        });
+        try {
+          window.umami.track('search_query', {
+            search_term: searchQuery
+          });
+          console.log('Umami search event tracked:', searchQuery);
+        } catch (error) {
+          console.error('Error tracking search with Umami:', error);
+        }
+      } else {
+        console.log('Umami not available for search tracking');
       }
       
-      router.push(`/search?keyword=${encodeURIComponent(searchTerm)}`);
+      // Small delay to ensure tracking completes before navigation
+      setTimeout(() => {
+        router.push(`/search?keyword=${encodeURIComponent(searchQuery)}`);
+      }, 100);
     }
   };
 
@@ -61,6 +73,16 @@ export default function Navbar() {
       return () => window.removeEventListener("scroll", handleScroll);
     }
   }, [isArticleOrHomePage]);
+
+  // Debug Umami availability
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      console.log('Umami available:', !!window.umami);
+      if (window.umami) {
+        console.log('Umami object:', window.umami);
+      }
+    }
+  }, []);
 
   return (
     <div className={styles.navigation}>

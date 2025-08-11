@@ -11,12 +11,11 @@ import styles from "./page.module.scss"
 
 const Taglist = ({ slice }) => {
   const handleTagClick = (tag) => {
-    // Track tag click with Google Analytics
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'search', {
-        'search_term': tag,
-        'event_category': 'engagement',
-        'event_label': 'tag_click'
+    // Track tag click with Umami
+    if (typeof window !== 'undefined' && window.umami) {
+      window.umami.track('tag_search', {
+        tag_name: tag,
+        click_location: 'homepage'
       });
     }
   };
