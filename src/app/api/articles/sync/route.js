@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/prismicio'
+import { extractArtistsFromPrismicArticle } from '@/utils/artistUtils'
 
 export async function POST(request) {
   try {
@@ -48,6 +49,9 @@ export async function POST(request) {
       )
     }
 
+    // Extract and process artist data from idol_name
+    const artists = extractArtistsFromPrismicArticle(prismicArticle)
+
     if (!supabaseArticle && prismicArticle) {
       // Create article in Supabase with Prismic data
       const { data: newArticle, error: insertError } = await supabase
@@ -56,7 +60,8 @@ export async function POST(request) {
           slug,
           type: prismicArticle.data.type || 'Live report',
           likes: 0, // Start with 0 likes
-          views: 0
+          views: 0,
+          artist: artists
         })
         .select()
         .single()
@@ -72,6 +77,29 @@ export async function POST(request) {
         success: true,
         message: 'Article synced to database',
         article: newArticle
+      })
+    }
+
+    // Update existing article if it doesn't have artist data
+    if (supabaseArticle && prismicArticle && (supabaseArticle.artist === null || supabaseArticle.artist === undefined)) {
+      const { data: updatedArticle, error: updateError } = await supabase
+        .from('articles')
+        .update({ artist: artists })
+        .eq('slug', slug)
+        .select()
+        .single()
+
+      if (updateError) {
+        return NextResponse.json(
+          { error: 'Failed to update article artist data' },
+          { status: 500 }
+        )
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: 'Article artist data updated',
+        article: updatedArticle
       })
     }
 

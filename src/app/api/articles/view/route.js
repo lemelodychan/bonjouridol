@@ -53,7 +53,8 @@ export async function POST(request) {
           slug,
           type,
           likes: 0,
-          views: 0
+          views: 0,
+          artist: null // Will be populated later when synced with Prismic
         })
 
       if (insertError) {

@@ -60,7 +60,8 @@ export async function POST(request) {
           slug,
           type,
           likes: 0,
-          views: 0
+          views: 0,
+          artist: null // Will be populated later when synced with Prismic
         })
 
       if (insertError) {
@@ -225,7 +226,8 @@ export async function GET(request) {
           slug,
           type: 'Live report', // Default type, will be updated when user likes
           likes: 0,
-          views: 0
+          views: 0,
+          artist: null // Will be populated later when synced with Prismic
         })
 
       if (insertError) {
