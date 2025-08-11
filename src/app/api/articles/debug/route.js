@@ -1,8 +1,19 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
 
 export async function GET(request) {
   try {
+    // Import and create Supabase client
+    const { createSupabaseClient } = await import('@/lib/supabase')
+    const supabase = createSupabaseClient()
+    
+    // Check if Supabase is configured
+    if (!supabase) {
+      return NextResponse.json({
+        error: 'Supabase not configured',
+        message: 'Please set up Supabase environment variables in your .env files'
+      }, { status: 500 })
+    }
+
     const { searchParams } = new URL(request.url)
     const slug = searchParams.get('slug')
 
@@ -35,7 +46,7 @@ export async function GET(request) {
   } catch (error) {
     console.error('Debug API error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: error.message },
       { status: 500 }
     )
   }

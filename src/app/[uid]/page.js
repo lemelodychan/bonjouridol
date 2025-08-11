@@ -5,7 +5,7 @@ import { components } from "@/slices";
 import DocListContainer from "../components/DocList";
 import FeaturedImage from "@/app/assets/FeaturedImage.png";
 import styles from "./page.module.scss";
-import Custom404 from "@/app/404";
+import Custom404 from "@/app/not-found";
 
 export async function generateMetadata({ params }) {
   const { uid } = await params;

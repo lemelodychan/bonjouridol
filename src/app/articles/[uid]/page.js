@@ -11,10 +11,12 @@ import Gallery from '@/app/components/Gallery';
 import FeaturedImage from '@/app/assets/FeaturedImage.png';
 import Image from 'next/image';
 import { HiOutlineLocationMarker, HiOutlineCalendar } from 'react-icons/hi';
-import Custom404 from '@/app/404';
 import RightClickProtection from '@/app/components/RightClickProtection';
-import ArticleLike from '@/app/components/ArticleLike';
-import ArticleViewTracker from '@/app/components/ArticleViewTracker';
+import dynamic from 'next/dynamic';
+
+// Static components for build time
+const ArticleLike = () => null;
+const ArticleViewTracker = () => null;
 
 export const dynamicParams = false;
 
@@ -123,11 +125,23 @@ export default async function Page({ params }) {
     });
 
     if (!article) {
-      return <Custom404 />;
+      return (
+        <div style={{ padding: '2rem', textAlign: 'center' }}>
+          <h1>Article Not Found</h1>
+          <p>The article you're looking for doesn't exist.</p>
+          <a href="/" style={{ color: 'inherit' }}>← Back to homepage</a>
+        </div>
+      );
     }
   } catch (error) {
     console.error('Error fetching article:', error);
-    return <Custom404 />;
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h1>Error Loading Article</h1>
+        <p>Something went wrong while loading this article.</p>
+        <a href="/" style={{ color: 'inherit' }}>← Back to homepage</a>
+      </div>
+    );
   }
 
   const author = article.data.author;

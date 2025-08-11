@@ -1,8 +1,19 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
 
 export async function POST(request) {
   try {
+    // Import and create Supabase client
+    const { createSupabaseClient } = await import('@/lib/supabase')
+    const supabase = createSupabaseClient()
+    
+    // Check if Supabase is configured
+    if (!supabase) {
+      return NextResponse.json({
+        error: 'Supabase not configured',
+        message: 'Please set up Supabase environment variables in your .env files'
+      }, { status: 500 })
+    }
+
     const { slug, type } = await request.json()
 
     if (!slug || !type) {
