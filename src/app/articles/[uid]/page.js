@@ -14,9 +14,13 @@ import { HiOutlineLocationMarker, HiOutlineCalendar } from 'react-icons/hi';
 import RightClickProtection from '@/app/components/RightClickProtection';
 import dynamic from 'next/dynamic';
 
-// Static components for build time
-const ArticleLike = () => null;
-const ArticleViewTracker = () => null;
+const ArticleLike = dynamic(() => import('@/app/components/ArticleLike'), {
+  loading: () => null
+});
+
+const ArticleViewTracker = dynamic(() => import('@/app/components/ArticleViewTracker'), {
+  loading: () => null
+});
 
 export const dynamicParams = false;
 
