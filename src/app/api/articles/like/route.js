@@ -1,8 +1,26 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+
+// Check if Supabase is configured
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn('Supabase environment variables not configured. Like system will not work.')
+}
 
 export async function POST(request) {
   try {
+    // Import supabase
+    const { supabase } = await import('@/lib/supabase')
+    
+    // Check if Supabase is configured
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Supabase not configured', message: 'Please set up Supabase environment variables' },
+        { status: 500 }
+      )
+    }
+
     const { slug, type, batchCount = 1 } = await request.json()
 
     if (!slug || !type) {
@@ -152,10 +170,19 @@ export async function POST(request) {
 
 export async function GET(request) {
   try {
+    // Import supabase
+    const { supabase } = await import('@/lib/supabase')
+    
+    // Check if Supabase is configured
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Supabase not configured', message: 'Please set up Supabase environment variables' },
+        { status: 500 }
+      )
+    }
+
     const { searchParams } = new URL(request.url)
     const slug = searchParams.get('slug')
-
-
 
     if (!slug) {
       return NextResponse.json(
