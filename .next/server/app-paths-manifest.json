@@ -1,9 +1,20 @@
 {
+  "/api/articles/debug/route": "app/api/articles/debug/route.js",
+  "/api/articles/sync-likes/route": "app/api/articles/sync-likes/route.js",
   "/api/articles/like/route": "app/api/articles/like/route.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/api/articles/sync/route": "app/api/articles/sync/route.js",
   "/api/articles/view/route": "app/api/articles/view/route.js",
-  "/[uid]/page": "app/[uid]/page.js",
+  "/api/exit-preview/route": "app/api/exit-preview/route.js",
+  "/api/revalidate/route": "app/api/revalidate/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/preview/route": "app/api/preview/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
   "/page": "app/page.js",
+  "/slice-simulator/page": "app/slice-simulator/page.js",
+  "/[uid]/page": "app/[uid]/page.js",
+  "/search/page": "app/search/page.js",
+  "/galleries/[uid]/page": "app/galleries/[uid]/page.js",
+  "/directory/page": "app/directory/page.js",
   "/articles/[uid]/page": "app/articles/[uid]/page.js"
 }
