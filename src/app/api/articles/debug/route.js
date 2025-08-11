@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server'
 
 export async function GET(request) {
   try {
-    // Import supabase
-    const { supabase } = await import('@/lib/supabase')
+    // Import and create Supabase client
+    const { createSupabaseClient } = await import('@/lib/supabase')
+    const supabase = createSupabaseClient()
     
     // Check if Supabase is configured
     if (!supabase) {

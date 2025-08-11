@@ -1,18 +1,28 @@
-import { createClient } from '@supabase/supabase-js'
-
-// Only create client if environment variables are available
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY
-
+// Lazy-load Supabase client to avoid build-time issues
 let supabase = null
 
-// Only create client if environment variables are available
-if (supabaseUrl && supabaseAnonKey) {
+function createSupabaseClient() {
+  if (supabase) return supabase
+  
   try {
-    supabase = createClient(supabaseUrl, supabaseAnonKey)
+    const { createClient } = require('@supabase/supabase-js')
+    
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY
+
+    if (supabaseUrl && supabaseAnonKey) {
+      supabase = createClient(supabaseUrl, supabaseAnonKey)
+    }
   } catch (error) {
-    console.warn('Failed to create Supabase client:', error.message)
+    // Silently fail during build time
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Failed to create Supabase client:', error.message)
+    }
   }
+  
+  return supabase
 }
 
+// Export a function that creates the client when needed
+export { createSupabaseClient }
 export { supabase }

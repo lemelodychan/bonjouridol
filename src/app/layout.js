@@ -9,7 +9,6 @@ import { Analytics } from "@vercel/analytics/next"
 import Navbar from './components/Navbar'
 import Topbar from './components/Topbar'
 import Footer from './components/Footer'
-import Custom404 from '@/app/404';
 import GoogleTagManager from './components/GoogleTagManager'
 import ConsentBanner from './components/ConsentBanner'
 import ErrorHandler from './components/ErrorHandler'
@@ -82,15 +81,15 @@ export default async function RootLayout({ children }) {
       console.error("Error in layout:", error);
       return (
         <html lang="en">
-                  <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <GoogleTagManager />
-        </head>
+          <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <GoogleTagManager />
+          </head>
           <body>
             <ErrorHandler />
             <Topbar />
             <Navbar />
-            <Custom404 />
+            <div>Something went wrong. Please try again.</div>
             <Footer />
             <ConsentBanner />
             <script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=bonjouridol"></script>

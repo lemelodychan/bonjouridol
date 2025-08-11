@@ -3,8 +3,9 @@ import { createClient } from '@/prismicio'
 
 export async function POST(request) {
   try {
-    // Import supabase
-    const { supabase } = await import('@/lib/supabase')
+    // Import and create Supabase client
+    const { createSupabaseClient } = await import('@/lib/supabase')
+    const supabase = createSupabaseClient()
     
     // Check if Supabase is configured
     if (!supabase) {
