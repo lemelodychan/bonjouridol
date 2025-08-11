@@ -44,10 +44,12 @@ const useMasonry = () => {
     };
 
     handleMasonry();
-    window.addEventListener("resize", handleMasonry);
-    return () => {
-      window.removeEventListener("resize", handleMasonry);
-    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener("resize", handleMasonry);
+      return () => {
+        window.removeEventListener("resize", handleMasonry);
+      };
+    }
   }, [items]);
 
   const elementLeft = (el) => {
@@ -55,11 +57,11 @@ const useMasonry = () => {
   };
 
   const elementTop = (el) => {
-    return el.getBoundingClientRect().top + window.scrollY;
+    return el.getBoundingClientRect().top + (typeof window !== 'undefined' ? window.scrollY : 0);
   };
 
   const elementBottom = (el) => {
-    return el.getBoundingClientRect().bottom + window.scrollY;
+    return el.getBoundingClientRect().bottom + (typeof window !== 'undefined' ? window.scrollY : 0);
   };
 
   return masonryContainer;
