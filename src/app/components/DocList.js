@@ -120,15 +120,19 @@ function ArtistTags({ artists }) {
   // Set desktop detection on mount
   React.useEffect(() => {
     const checkIsDesktop = () => {
-      setIsDesktop(window.innerWidth > 768);
+      if (typeof window !== 'undefined') {
+        setIsDesktop(window.innerWidth > 768);
+      }
     };
     
     checkIsDesktop();
-    window.addEventListener('resize', checkIsDesktop);
-    
-    return () => {
-      window.removeEventListener('resize', checkIsDesktop);
-    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', checkIsDesktop);
+      
+      return () => {
+        window.removeEventListener('resize', checkIsDesktop);
+      };
+    }
   }, []);
 
   const handleCounterClick = (e) => {
