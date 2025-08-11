@@ -48,9 +48,9 @@ export default function ArtistProfile({ artist, noConstraints = false, hideDescr
                     <h3>{artist.data.name_jp}</h3>
                 }
             </div>
-            {!noConstraints && artist.data.debut && (
+            {artist.data.debut &&
                 <span><strong>Debuted:</strong> {artist.data.debut}</span>
-            )}
+            }
             {artist.data.disband && 
                 <span><strong>Disbanded:</strong> {artist.data.disband}</span>
             }
