@@ -239,7 +239,7 @@
         margin-bottom: 0px;
 
         position: relative;
-        z-index: 4;
+        z-index: 5;
 
         @include md {
             margin-top: 0px;
@@ -247,6 +247,8 @@
             width: calc(100% - 64px);
             border-radius: 0px;
             padding: 24px 32px;
+            gap: 16px;
+            align-items: center;
         }
 
         .author {
@@ -254,6 +256,7 @@
             flex-direction: row;
             gap: 16px;
             align-items: center;
+            width: 100%;
 
             .authorImg {
                 width: 56px;

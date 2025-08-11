@@ -6,6 +6,28 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
+    "/[uid]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/[uid]/page.css",
+      "static/chunks/app/[uid]/page.js"
+    ],
+    "/articles/[uid]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/articles/[uid]/page.css",
+      "static/chunks/app/articles/[uid]/page.js"
+    ],
+    "/api/articles/like/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/articles/like/route.js"
+    ],
+    "/api/articles/view/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/articles/view/route.js"
+    ],
     "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",

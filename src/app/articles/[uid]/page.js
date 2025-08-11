@@ -13,6 +13,8 @@ import Image from 'next/image';
 import { HiOutlineLocationMarker, HiOutlineCalendar } from 'react-icons/hi';
 import Custom404 from '@/app/404';
 import RightClickProtection from '@/app/components/RightClickProtection';
+import ArticleLike from '@/app/components/ArticleLike';
+import ArticleViewTracker from '@/app/components/ArticleViewTracker';
 
 export const dynamicParams = false;
 
@@ -144,6 +146,7 @@ export default async function Page({ params }) {
   return (
     <>
       <RightClickProtection articleType={article.data.type} />
+      <ArticleViewTracker slug={article.uid} type={article.data.type} />
       <article className={styles.container}>
         <div className={styles.header}>
           <span className={styles.FeaturedImage}>
@@ -209,6 +212,7 @@ export default async function Page({ params }) {
             </div>
           )}
           <SharingOptions className={styles.Sharing} uid={article.uid} title={article.data.meta_title} idol={article.data.idol_name} />
+          <ArticleLike articleSlug={article.uid} articleType={article.data.type} />
         </div>
 
         <div className={styles.content}>
