@@ -29,12 +29,10 @@ export default function Navbar() {
   const handleSearch = (event) => {
     event.preventDefault();
     if (searchTerm.trim()) {
-      // Track search query with Google Analytics
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'search', {
-          'search_term': searchTerm.trim(),
-          'event_category': 'engagement',
-          'event_label': 'navbar_search'
+      // Track search query with Umami
+      if (typeof window !== 'undefined' && window.umami) {
+        window.umami.track('search_query', {
+          search_term: searchTerm.trim()
         });
       }
       
