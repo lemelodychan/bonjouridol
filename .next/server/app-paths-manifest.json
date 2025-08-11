@@ -1,9 +1,6 @@
 {
-  "/api/articles/like/route": "app/api/articles/like/route.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/api/articles/view/route": "app/api/articles/view/route.js",
-  "/[uid]/page": "app/[uid]/page.js",
+  "/api/articles/like/route": "app/api/articles/like/route.js",
   "/page": "app/page.js",
   "/articles/[uid]/page": "app/articles/[uid]/page.js"
 }
