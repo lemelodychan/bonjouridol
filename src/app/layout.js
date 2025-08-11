@@ -9,9 +9,12 @@ import { Analytics } from "@vercel/analytics/next"
 import Navbar from './components/Navbar'
 import Topbar from './components/Topbar'
 import Footer from './components/Footer'
-import GoogleTagManager from './components/GoogleTagManager'
-import ConsentBanner from './components/ConsentBanner'
-import ErrorHandler from './components/ErrorHandler'
+// Temporarily disabled for debugging
+// import GoogleTagManager from './components/GoogleTagManager'
+// Temporarily disabled for debugging
+// import ConsentBanner from './components/ConsentBanner'
+// Temporarily disabled for debugging
+// import ErrorHandler from './components/ErrorHandler'
 
 const DMSans = DM_Sans({ subsets: ['latin'] })
 
@@ -55,7 +58,7 @@ export default async function RootLayout({ children }) {
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400;1,9..40,500;1,9..40,700&family=Noto+Sans+JP:wght@400;500;700&family=Poppins:wght@900&display=swap" rel="stylesheet" />
           <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"></link>
-          <GoogleTagManager />
+          {/* <GoogleTagManager /> */}
           <Script
             src="https://cloud.umami.is/script.js"
             strategy="afterInteractive"
@@ -66,13 +69,13 @@ export default async function RootLayout({ children }) {
           />
         </head>
         <body>
-          <ErrorHandler />
+          {/* <ErrorHandler /> */}
           <Topbar />
           <Navbar />
           {children}
           <Analytics />
           <Footer />
-          <ConsentBanner />
+          {/* <ConsentBanner /> */}
           <script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=bonjouridol"></script>
         </body>
       </html>
@@ -81,17 +84,17 @@ export default async function RootLayout({ children }) {
       console.error("Error in layout:", error);
       return (
         <html lang="en">
-          <head>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <GoogleTagManager />
+                  <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          {/* <GoogleTagManager /> */}
           </head>
           <body>
-            <ErrorHandler />
+            {/* <ErrorHandler /> */}
             <Topbar />
             <Navbar />
             <div>Something went wrong. Please try again.</div>
             <Footer />
-            <ConsentBanner />
+            {/* <ConsentBanner /> */}
             <script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=bonjouridol"></script>
           </body>
         </html>
