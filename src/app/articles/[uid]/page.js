@@ -13,8 +13,15 @@ import Image from 'next/image';
 import { HiOutlineLocationMarker, HiOutlineCalendar } from 'react-icons/hi';
 import Custom404 from '@/app/404';
 import RightClickProtection from '@/app/components/RightClickProtection';
-import ArticleLike from '@/app/components/ArticleLike';
-import ArticleViewTracker from '@/app/components/ArticleViewTracker';
+import dynamic from 'next/dynamic';
+
+const ArticleLike = dynamic(() => import('@/app/components/ArticleLike'), {
+  loading: () => null
+});
+
+const ArticleViewTracker = dynamic(() => import('@/app/components/ArticleViewTracker'), {
+  loading: () => null
+});
 
 export const dynamicParams = false;
 

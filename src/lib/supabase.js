@@ -1,14 +1,22 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Try to get environment variables from different sources
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY
+// Only create client if we're in the browser or if environment variables are available
+const isServer = typeof window === 'undefined'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY
 
-if (!supabaseUrl || !supabaseAnonKey) {
+let supabase = null
+
+// Only create client if environment variables are available
+if (supabaseUrl && supabaseAnonKey) {
+  try {
+    supabase = createClient(supabaseUrl, supabaseAnonKey)
+  } catch (error) {
+    console.warn('Failed to create Supabase client:', error.message)
+  }
+} else if (isServer) {
+  // Only warn on server side to avoid console spam in browser
   console.warn('Missing Supabase environment variables. Please check your .env files.')
-  // Don't throw error, just log warning
 }
 
-export const supabase = supabaseUrl && supabaseAnonKey 
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null
+export { supabase }
