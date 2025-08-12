@@ -23,15 +23,13 @@ const redirectMap = {
   'discovery-festive': '/articles/festive-discovery-2019',
   
   // Bonjour Idol Style
-  'neoriyon-stupid-august-2020': '/articles/neoriyon-stupid-style-2020',
+  'neoriyon-stupid-august-2020': '/galleries/200801-neoriyon',
   
   // Categories
-  'live-reports': '/articles',
-  'interviews': '/articles',
-  'news': '/articles',
-  'discoveries': '/articles',
-  'behind-the-scenes': '/articles',
-  'bonjour-idol-style': '/articles',
+  '/interviews': '/features',
+  '/news': '/pressrelease',
+  '/behind-the-scenes': '/features',
+  '/bonjour-idol-style': '/galleries',
 }
 
 export async function GET(request) {

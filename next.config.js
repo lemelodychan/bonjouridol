@@ -79,23 +79,18 @@ const nextConfig = {
       
       // Category redirects (if you want to redirect entire sections)
       {
-        source: '/live-reports',
-        destination: '/articles',
-        permanent: true,
-      },
-      {
         source: '/interviews',
-        destination: '/articles',
+        destination: '/features',
         permanent: true,
       },
       {
         source: '/news',
-        destination: '/articles',
+        destination: '/pressrelease',
         permanent: true,
       },
       {
-        source: '/discoveries',
-        destination: '/articles',
+        source: '/behind-the-scenes',
+        destination: '/features',
         permanent: true,
       },
       

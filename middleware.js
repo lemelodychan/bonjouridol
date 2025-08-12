@@ -26,12 +26,10 @@ const redirectMap = {
   '/neoriyon-stupid-august-2020': '/galleries/200801-neoriyon',
   
   // Categories
-  '/live-reports': '/articles',
-  '/interviews': '/articles',
-  '/news': '/articles',
-  '/discoveries': '/articles',
-  '/behind-the-scenes': '/articles',
-  '/bonjour-idol-style': '/articles',
+  '/interviews': '/features',
+  '/news': '/pressrelease',
+  '/behind-the-scenes': '/features',
+  '/bonjour-idol-style': '/galleries',
   
   // Language redirects
   '/fr': '/',
