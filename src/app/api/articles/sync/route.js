@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/prismicio'
-import { extractArtistsFromPrismicArticle } from '@/utils/artistUtils'
+import { extractArtistsFromPrismicArticle, autoCreateArtistRecord } from '@/utils/artistUtils'
 
 export async function POST(request) {
   try {
@@ -73,6 +73,9 @@ export async function POST(request) {
         )
       }
 
+      // Auto-create artist record if this is a single artist article
+      await autoCreateArtistRecord(supabase, artists)
+
       return NextResponse.json({
         success: true,
         message: 'Article synced to database',
@@ -95,6 +98,9 @@ export async function POST(request) {
           { status: 500 }
         )
       }
+
+      // Auto-create artist record if this is a single artist article
+      await autoCreateArtistRecord(supabase, artists)
 
       return NextResponse.json({
         success: true,

@@ -4,7 +4,7 @@ import { PrismicNextLink } from "@prismicio/next";
 import styles from "./ArtistProfile.module.scss"
 
 import SingleImage from "./SingleImage";
-
+import ArtistLike from "./ArtistLike";
 
 import { FaInstagram, FaTwitter } from "react-icons/fa6";
 import { HiOutlineLink } from 'react-icons/hi';
@@ -87,7 +87,12 @@ export default function ArtistProfile({ artist, noConstraints = false, hideDescr
             )}
             </div>
 
-            <Button href={searchUrl} className={styles.ctaButton} variant={"White"} textValue={'See all articles'} icon={<IoArrowForwardOutline />} />
+            <div className={styles.ctaButton}>
+                <Button href={searchUrl} className={styles.ctaButton} variant={"White"} textValue={'See all articles'} icon={<IoArrowForwardOutline />} />
+                <div className={styles.likeSection}>
+                    <ArtistLike artistName={artistDisplayName} />
+                </div>
+            </div>
       </div>
     </div>
   )

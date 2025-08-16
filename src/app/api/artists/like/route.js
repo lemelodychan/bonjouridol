@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/prismicio'
-import { extractArtistsFromPrismicArticle, autoCreateArtistRecord } from '@/utils/artistUtils'
 
 // Check if Supabase is configured
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase environment variables not configured. Like system will not work.')
+  console.warn('Supabase environment variables not configured. Artist like system will not work.')
 }
 
 export async function POST(request) {
@@ -24,9 +22,9 @@ export async function POST(request) {
       )
     }
 
-    const { slug, type, batchCount = 1 } = await request.json()
+    const { artistName, batchCount = 1 } = await request.json()
 
-    if (!slug || !type) {
+    if (!artistName) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -40,11 +38,11 @@ export async function POST(request) {
     // Create a simple user identifier (in production, you might want to use cookies or user sessions)
     const userIdentifier = `ip_${ip}`
 
-    // Check if article exists, if not create it
-    const { data: existingArticle, error: fetchError } = await supabase
-      .from('articles')
+    // Check if artist exists, if not create it
+    const { data: existingArtist, error: fetchError } = await supabase
+      .from('artists')
       .select('*')
-      .eq('slug', slug)
+      .eq('name', artistName)
       .single()
 
     if (fetchError && fetchError.code !== 'PGRST116') {
@@ -54,50 +52,28 @@ export async function POST(request) {
       )
     }
 
-    if (!existingArticle) {
-      // Try to get article data from Prismic to populate artist field
-      let artists = null
-      let articleType = type
-      
-      try {
-        const prismicClient = createClient()
-        const prismicArticle = await prismicClient.getByUID('articles', slug)
-        
-        if (prismicArticle) {
-          artists = extractArtistsFromPrismicArticle(prismicArticle)
-          articleType = prismicArticle.data.type || type
-        }
-      } catch (error) {
-        console.log(`Article ${slug} not found in Prismic, creating with default values`)
-      }
-
-      // Create new article record
+    if (!existingArtist) {
+      // Create new artist record
       const { error: insertError } = await supabase
-        .from('articles')
+        .from('artists')
         .insert({
-          slug,
-          type: articleType,
-          likes: 0,
-          views: 0,
-          artist: artists
+          name: artistName,
+          likes: 0
         })
 
       if (insertError) {
         return NextResponse.json(
-          { error: 'Failed to create article record' },
+          { error: 'Failed to create artist record' },
           { status: 500 }
         )
       }
-
-      // Auto-create artist record if this is a single artist article
-      await autoCreateArtistRecord(supabase, artists)
     }
 
-    // Check if user has already liked this article
+    // Check if user has already liked this artist
     const { data: existingLike, error: likeCheckError } = await supabase
-      .from('article_likes')
+      .from('artist_likes')
       .select('*')
-      .eq('slug', slug)
+      .eq('artist_name', artistName)
       .eq('user_identifier', userIdentifier)
       .single()
 
@@ -114,7 +90,7 @@ export async function POST(request) {
     if (existingLike) {
       // User has already liked, increment their like count by batch amount
       const { data: updatedLike, error: updateError } = await supabase
-        .from('article_likes')
+        .from('artist_likes')
         .update({ 
           like_count: existingLike.like_count + batchCount,
           updated_at: new Date().toISOString()
@@ -132,11 +108,11 @@ export async function POST(request) {
 
       userLikes = updatedLike.like_count
     } else {
-      // First time liking this article
+      // First time liking this artist
       const { data: newLike, error: insertLikeError } = await supabase
-        .from('article_likes')
+        .from('artist_likes')
         .insert({
-          slug,
+          artist_name: artistName,
           user_identifier: userIdentifier,
           like_count: batchCount
         })
@@ -153,11 +129,11 @@ export async function POST(request) {
       userLikes = newLike.like_count
     }
 
-    // Calculate total likes from article_likes table
+    // Calculate total likes from artist_likes table
     const { data: allLikes, error: countError } = await supabase
-      .from('article_likes')
+      .from('artist_likes')
       .select('like_count')
-      .eq('slug', slug)
+      .eq('artist_name', artistName)
 
     if (countError) {
       console.error('Error counting likes:', countError)
@@ -166,24 +142,80 @@ export async function POST(request) {
       totalLikes = allLikes.reduce((sum, like) => sum + like.like_count, 0)
     }
 
-    // Update the article's total likes to keep it in sync
-    const { error: updateError } = await supabase
+    // Get article likes where artist column equals artist name (single artist articles only)
+    // Since artist column is JSONB, we need to handle it differently
+    const { data: matchingArticles, error: articlesError } = await supabase
       .from('articles')
-      .update({ likes: totalLikes })
-      .eq('slug', slug)
+      .select('slug, artist')
+      .not('artist', 'is', null)
+
+    if (articlesError) {
+      console.error('Error fetching matching articles:', articlesError)
+    }
+
+    // Filter articles to find those with single artist matching our artist name
+    const matchingSlugs = []
+    if (matchingArticles) {
+      for (const article of matchingArticles) {
+        if (article.artist) {
+          // Check if artist is a string (single artist) or array/object (multiple artists)
+          let artistString = null
+          
+          if (typeof article.artist === 'string') {
+            artistString = article.artist
+          } else if (Array.isArray(article.artist)) {
+            // If it's an array, check if it has only one artist
+            if (article.artist.length === 1) {
+              artistString = article.artist[0]
+            }
+          } else if (typeof article.artist === 'object') {
+            // If it's an object, check if it has a single name property
+            if (article.artist.name && !article.artist.name.includes(',') && !article.artist.name.includes('&') && !article.artist.name.includes(' and ')) {
+              artistString = article.artist.name
+            }
+          }
+          
+          // Check if this single artist matches our artist name
+          if (artistString && artistString === artistName) {
+            matchingSlugs.push(article.slug)
+          }
+        }
+      }
+    }
+
+    // Then get likes for those articles
+    const { data: articleLikes, error: articleLikesError } = await supabase
+      .from('article_likes')
+      .select('like_count')
+      .in('slug', matchingSlugs)
+
+    if (articleLikesError) {
+      console.error('Error fetching article likes:', articleLikesError)
+    }
+
+    const articleLikesTotal = articleLikes ? articleLikes.reduce((sum, like) => sum + like.like_count, 0) : 0
+
+    // Calculate total likes (direct artist likes + article likes)
+    const totalCombinedLikes = totalLikes + articleLikesTotal
+
+    // Update the artist's total likes to keep it in sync
+    const { error: updateError } = await supabase
+      .from('artists')
+      .update({ likes: totalCombinedLikes })
+      .eq('name', artistName)
 
     if (updateError) {
-      console.error('Error updating article likes:', updateError)
+      console.error('Error updating artist likes:', updateError)
     }
 
     return NextResponse.json({
       success: true,
-      totalLikes,
+      totalLikes: totalCombinedLikes, // Return the combined total
       userLikes
     })
 
   } catch (error) {
-    console.error('Like API error:', error)
+    console.error('Artist like API error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -206,11 +238,11 @@ export async function GET(request) {
     }
 
     const { searchParams } = new URL(request.url)
-    const slug = searchParams.get('slug')
+    const artistName = searchParams.get('artist')
 
-    if (!slug) {
+    if (!artistName) {
       return NextResponse.json(
-        { error: 'Missing slug parameter' },
+        { error: 'Missing artist parameter' },
         { status: 400 }
       )
     }
@@ -220,84 +252,63 @@ export async function GET(request) {
     const ip = forwarded ? forwarded.split(',')[0] : 'unknown'
     const userIdentifier = `ip_${ip}`
 
-    // Get article stats
-    console.log('Looking for article with slug:', slug)
-    const { data: article, error: articleError } = await supabase
-      .from('articles')
-      .select('views')
-      .eq('slug', slug)
+    // Get artist stats
+    console.log('Looking for artist:', artistName)
+    const { data: artist, error: artistError } = await supabase
+      .from('artists')
+      .select('likes')
+      .eq('name', artistName)
       .single()
 
-    console.log('Article query result:', { article, error: articleError })
+    console.log('Artist query result:', { artist, error: artistError })
 
-    if (articleError && articleError.code !== 'PGRST116') {
-      console.error('Error fetching article:', articleError)
+    if (artistError && artistError.code !== 'PGRST116') {
+      console.error('Error fetching artist:', artistError)
       return NextResponse.json(
         { error: 'Database error' },
         { status: 500 }
       )
     }
 
-    // If article doesn't exist, create it with default values
-    if (!article) {
-      console.log('Article not found, creating new record')
+    // If artist doesn't exist, create it with default values
+    if (!artist) {
+      console.log('Artist not found, creating new record')
       
-      // Try to get article data from Prismic to populate artist field
-      let artists = null
-      let articleType = 'Live report'
-      
-      try {
-        const prismicClient = createClient()
-        const prismicArticle = await prismicClient.getByUID('articles', slug)
-        
-        if (prismicArticle) {
-          artists = extractArtistsFromPrismicArticle(prismicArticle)
-          articleType = prismicArticle.data.type || 'Live report'
-        }
-      } catch (error) {
-        console.log(`Article ${slug} not found in Prismic, creating with default values`)
-      }
-
       const { error: insertError } = await supabase
-        .from('articles')
+        .from('artists')
         .insert({
-          slug,
-          type: articleType,
-          likes: 0,
-          views: 0,
-          artist: artists
+          name: artistName,
+          likes: 0
         })
 
       if (insertError) {
-        console.error('Error creating article record:', insertError)
+        console.error('Error creating artist record:', insertError)
       }
 
       return NextResponse.json({
         totalLikes: 0,
-        userLikes: 0,
-        views: 0
+        userLikes: 0
       })
     }
 
-    // Calculate total likes from article_likes table (more accurate)
+    // Calculate total likes from artist_likes table (more accurate)
     const { data: allLikes, error: countError } = await supabase
-      .from('article_likes')
+      .from('artist_likes')
       .select('like_count')
-      .eq('slug', slug)
+      .eq('artist_name', artistName)
 
     if (countError) {
       console.error('Error counting likes:', countError)
     }
 
     const totalLikes = allLikes ? allLikes.reduce((sum, like) => sum + like.like_count, 0) : 0
-    const views = article.views || 0
-    console.log('Returning stats:', { totalLikes, views })
+    console.log('Returning artist stats:', { totalLikes })
 
     // Get user's like count
     const { data: userLike, error: userError } = await supabase
-      .from('article_likes')
+      .from('artist_likes')
       .select('like_count')
-      .eq('slug', slug)
+      .eq('artist_name', artistName)
       .eq('user_identifier', userIdentifier)
       .single()
 
@@ -305,15 +316,15 @@ export async function GET(request) {
 
     return NextResponse.json({
       totalLikes,
-      userLikes,
-      views
+      userLikes
     })
 
   } catch (error) {
-    console.error('Get likes API error:', error)
+    console.error('Artist like GET API error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
     )
   }
 }
+

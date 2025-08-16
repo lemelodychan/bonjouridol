@@ -10,6 +10,7 @@
     min-width: 400px;
     max-width: 400px;
     height: fit-content;
+    position: relative;
 
     @include md {
         display: flex;
@@ -105,6 +106,12 @@
             }
         }
 
+        .likeSection {
+            margin-top: 16px;
+            display: flex;
+            justify-content: flex-start;
+        }
+
         .ctaButton {
             display: none;
         }
@@ -145,6 +152,18 @@
             margin-top: 16px;
             align-self: stretch;
             width: 100%;
+            gap: 16px;
+
+            .likeSection {
+                display: flex;
+                justify-content: flex-start;
+
+                button {
+                    box-shadow: none;
+                    background-color: white;
+                    border-radius: 16px;
+                }
+            }
         }
     }
 }
