@@ -157,11 +157,15 @@
             .likeSection {
                 display: flex;
                 justify-content: flex-start;
+                position: relative;
+                z-index: 2 !important;
 
                 button {
                     box-shadow: none;
                     background-color: white;
                     border-radius: 16px;
+                    position: relative;
+                    z-index: 2 !important;
                 }
             }
         }
