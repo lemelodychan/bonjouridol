@@ -6,7 +6,41 @@ import GalleryList from "../components/GalleryList";
 import ArtistProfile from "../components/ArtistProfile";
 import SearchTracker from "./SearchTracker";
 
+// Import Supabase client for server-side like fetching
+const { createSupabaseClient } = await import('@/lib/supabase');
+
 import styles from "./page.module.scss";
+
+// Function to fetch like counts for multiple articles
+async function fetchArticleLikeCounts(slugs) {
+  try {
+    const supabase = createSupabaseClient();
+    if (!supabase) return {};
+
+    const { data: likesData, error } = await supabase
+      .from('article_likes')
+      .select('slug, like_count')
+      .in('slug', slugs);
+
+    if (error) {
+      console.error('Error fetching article like counts:', error);
+      return {};
+    }
+
+    const likeCounts = {};
+    likesData.forEach(like => {
+      if (!likeCounts[like.slug]) {
+        likeCounts[like.slug] = 0;
+      }
+      likeCounts[like.slug] += like.like_count;
+    });
+
+    return likeCounts;
+  } catch (error) {
+    console.error('Error in fetchArticleLikeCounts:', error);
+    return {};
+  }
+}
 
 export default async function SearchPage({ searchParams }) {
     const params = await searchParams;
@@ -130,6 +164,10 @@ export default async function SearchPage({ searchParams }) {
         totalPages = Math.ceil(combinedResults.length / defaultPageSize);
         results = combinedResults;
 
+        // Fetch like counts for all articles
+        const articleSlugs = results.map(item => item.uid).filter(Boolean);
+        const likeCounts = await fetchArticleLikeCounts(articleSlugs);
+
 
         const exactMatchGallery = await client.getByType("gallery", {
             fetchOptions: {
@@ -187,6 +225,7 @@ export default async function SearchPage({ searchParams }) {
                       currentPage={currentPage}
                       totalPages={totalPages}
                       postType="Search results"
+                      likeCounts={likeCounts}
                     />
                   </div>
                 ) : (

@@ -3,6 +3,9 @@ import * as prismic from "@prismicio/client";
 import { SliceZone } from "@prismicio/react";
 import { components } from "@/slices";
 import DocListContainer from "../components/DocList";
+
+// Import Supabase client for server-side like fetching
+const { createSupabaseClient } = await import('@/lib/supabase');
 import FeaturedImage from "@/app/assets/FeaturedImage.png";
 import styles from "./page.module.scss";
 import Custom404 from "@/app/not-found";
@@ -74,6 +77,37 @@ export async function generateStaticParams() {
   return pages.map((page) => ({ uid: page.uid }));
 }
 
+// Function to fetch like counts for multiple articles
+async function fetchArticleLikeCounts(slugs) {
+  try {
+    const supabase = createSupabaseClient();
+    if (!supabase) return {};
+
+    const { data: likesData, error } = await supabase
+      .from('article_likes')
+      .select('slug, like_count')
+      .in('slug', slugs);
+
+    if (error) {
+      console.error('Error fetching article like counts:', error);
+      return {};
+    }
+
+    const likeCounts = {};
+    likesData.forEach(like => {
+      if (!likeCounts[like.slug]) {
+        likeCounts[like.slug] = 0;
+      }
+      likeCounts[like.slug] += like.like_count;
+    });
+
+    return likeCounts;
+  } catch (error) {
+    console.error('Error in fetchArticleLikeCounts:', error);
+    return {};
+  }
+}
+
 export default async function Page({ params, searchParams }) {
   const { uid } = await params;
   const currentPage = parseInt((await searchParams).page) || 1;
@@ -119,6 +153,7 @@ export default async function Page({ params, searchParams }) {
 
     let results = [];
     let totalPages = 0;
+    let likeCounts = {}; // Initialize likeCounts
     const defaultPageSize = 10;
 
     if (category === "articles") {
@@ -151,6 +186,10 @@ export default async function Page({ params, searchParams }) {
         });
         results = articles.results;
         totalPages = Math.ceil(articles.total_results_size / defaultPageSize);
+        
+        // Fetch like counts for all articles
+        const articleSlugs = results.map(item => item.uid).filter(Boolean);
+        likeCounts = await fetchArticleLikeCounts(articleSlugs);
       } catch (error) {
         console.error("Error fetching articles:", error);
       }
@@ -191,6 +230,7 @@ export default async function Page({ params, searchParams }) {
               currentPage={currentPage}
               totalPages={totalPages}
               postType={postType}
+              likeCounts={likeCounts}
             />
           )}
         </div>

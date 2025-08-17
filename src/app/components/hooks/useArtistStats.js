@@ -2,17 +2,27 @@
 
 import { useState, useEffect } from 'react'
 
-export function useArtistStats(artistName) {
+export function useArtistStats(artistName, initialLikeCount = null) {
   const [stats, setStats] = useState({
-    totalLikes: 0,
+    totalLikes: initialLikeCount || 0,
     userLikes: 0,
     directArtistLikes: 0,
     articleLikes: 0,
-    isLoading: true,
+    isLoading: initialLikeCount === null,
     error: null
   })
 
   useEffect(() => {
+    // If we have initial data, don't fetch from API
+    if (initialLikeCount !== null) {
+      setStats(prev => ({ 
+        ...prev, 
+        totalLikes: initialLikeCount,
+        isLoading: false 
+      }))
+      return
+    }
+
     if (!artistName) {
       setStats(prev => ({ ...prev, isLoading: false }))
       return
@@ -49,7 +59,7 @@ export function useArtistStats(artistName) {
     }
 
     fetchStats()
-  }, [artistName])
+  }, [artistName, initialLikeCount])
 
   const updateStats = (newStats) => {
     setStats(prev => ({

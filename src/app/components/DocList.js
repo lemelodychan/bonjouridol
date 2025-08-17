@@ -8,17 +8,40 @@ import SingleImage from "./SingleImage";
 import Breadcrumbs from "./Breadcrumbs";
 import DocListPagination from "./DocListPagination";
 import StaticLikeCount from "./StaticLikeCount";
-import { useState } from "react";
+import { useBatchArticleStats } from "./hooks/useBatchArticleStats";
+import { useState, useMemo } from "react";
 import React from "react";
 
 import styles from "./DocList.module.scss";
 
-export default function DocListContainer({ results, currentPage, totalPages, postType }) {
-  return <DocListContent results={results} currentPage={currentPage} totalPages={totalPages} postType={postType} />;
+export default function DocListContainer({ results, currentPage, totalPages, postType, likeCounts = {} }) {
+  return <DocListContent results={results} currentPage={currentPage} totalPages={totalPages} postType={postType} likeCounts={likeCounts} />;
 }
 
-export function DocListContent({ results, currentPage, totalPages, postType }) {
+export function DocListContent({ results, currentPage, totalPages, postType, likeCounts = {} }) {
   const folderName = postType;
+  
+  // Use server-side like counts if available, otherwise use client-side batch fetching
+  const hasServerLikeCounts = Object.keys(likeCounts).length > 0;
+  
+  // Memoize article slugs to prevent unnecessary re-renders
+  const articleSlugs = useMemo(() => {
+    if (postType === "Gallery") return [];
+    return results.map(item => item.uid).filter(Boolean);
+  }, [postType, results]);
+  
+  // Use batch hook for like counts only if server-side data is not available
+  const { getLikeCount: getClientLikeCount, isLoading: likesLoading } = useBatchArticleStats(
+    hasServerLikeCounts ? [] : articleSlugs
+  );
+  
+  // Function to get like count (server-side takes precedence)
+  const getLikeCount = (slug) => {
+    if (hasServerLikeCounts) {
+      return likeCounts[slug] || 0;
+    }
+    return getClientLikeCount(slug);
+  };
 
   return (
     <div className={styles.DocListContainer}>
@@ -57,7 +80,11 @@ export function DocListContent({ results, currentPage, totalPages, postType }) {
                       color="GreyBg"  
                     />
                     {postType !== "Gallery" && (
-                      <StaticLikeCount articleSlug={item.uid} />
+                      <StaticLikeCount 
+                        articleSlug={item.uid} 
+                        likeCount={getLikeCount(item.uid)}
+                        isLoading={likesLoading}
+                      />
                     )}
                   </div>
                 )}

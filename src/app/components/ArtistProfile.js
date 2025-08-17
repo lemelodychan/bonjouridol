@@ -15,7 +15,7 @@ import Link from "next/link";
 import Button from "./IconButton";
 import { IoArrowForwardOutline } from "react-icons/io5";
 
-export default function ArtistProfile({ artist, noConstraints = false, hideDescription = false }) {
+export default function ArtistProfile({ artist, noConstraints = false, hideDescription = false, likeCounts = {} }) {
     const {
         name_en = null, 
         name_jp = null,
@@ -90,7 +90,11 @@ export default function ArtistProfile({ artist, noConstraints = false, hideDescr
             <div className={styles.ctaButton}>
                 <Button href={searchUrl} className={styles.ctaButton} variant={"White"} textValue={'See all articles'} icon={<IoArrowForwardOutline />} />
                 <div className={styles.likeSection}>
-                    <ArtistLike artistName={artistDisplayName} />
+                    <ArtistLike 
+                        artistName={artistDisplayName} 
+                        initialLikeCount={likeCounts[artistDisplayName] || 0}
+                        hasServerData={Object.keys(likeCounts).length > 0}
+                    />
                 </div>
             </div>
       </div>

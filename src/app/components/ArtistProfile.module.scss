@@ -162,15 +162,23 @@
 
         .ctaButton {
             display: flex !important;
-            margin-top: 16px;
             align-self: stretch;
+            margin-top: 16px;
             width: 100%;
             gap: 16px;
 
+            > a:first-of-type {
+                display: flex !important;
+                margin-top: 0px !important;
+            }
+
             .likeSection {
-                display: flex;
+                display: flex !important;
                 justify-content: flex-start;
-                position: relative;
+                position: relative !important;
+                bottom: auto !important;
+                right: auto !important;
+                margin: 0;
                 z-index: 2 !important;
 
                 button {
