@@ -23,7 +23,7 @@ export default async function LatestPost() {
             next: { tags: ['prismic', 'articles'] },
         },
         filters: [
-            prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Behind the scenes']),
+            prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Discovery', 'Behind the scenes']),
         ],
         orderings: [
           {
@@ -55,7 +55,7 @@ export default async function LatestPost() {
           },
         ],
         filters: [
-          prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Behind the scenes']),
+          prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Discovery', 'Behind the scenes']),
         ],
     });
     

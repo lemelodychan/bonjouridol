@@ -118,7 +118,7 @@
                         font-size: var(--font-size-sm);
                         letter-spacing: 0.5px;
                     
-                        &.livereport, &.interview {
+                        &.livereport, &.interview, &.discovery {
                             background-color: var(--bi-indigo);
                             order: 2;
                         }
