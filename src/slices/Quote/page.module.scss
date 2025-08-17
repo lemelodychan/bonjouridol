@@ -73,6 +73,10 @@
                 width: calc(100% - var(--base-spacing));
                 min-width: calc(100% - var(--base-spacing));
                 color: var(--medium-grey);
+
+                em, i {
+                    font-style: normal !important;
+                }
             }
 
             .QuoteAuthorContainer {
