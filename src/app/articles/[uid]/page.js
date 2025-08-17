@@ -14,6 +14,9 @@ import { HiOutlineLocationMarker, HiOutlineCalendar } from 'react-icons/hi';
 import RightClickProtection from '@/app/components/RightClickProtection';
 import dynamic from 'next/dynamic';
 
+// Import Supabase client for server-side like fetching
+const { createSupabaseClient } = await import('@/lib/supabase');
+
 const ArticleLike = dynamic(() => import('@/app/components/ArticleLike'), {
   loading: () => null
 });
@@ -21,6 +24,30 @@ const ArticleLike = dynamic(() => import('@/app/components/ArticleLike'), {
 const ArticleViewTracker = dynamic(() => import('@/app/components/ArticleViewTracker'), {
   loading: () => null
 });
+
+// Function to fetch like count for a single article
+async function fetchArticleLikeCount(slug) {
+  try {
+    const supabase = createSupabaseClient();
+    if (!supabase) return 0;
+
+    const { data: likesData, error } = await supabase
+      .from('article_likes')
+      .select('like_count')
+      .eq('slug', slug);
+
+    if (error) {
+      console.error('Error fetching article like count:', error);
+      return 0;
+    }
+
+    const totalLikes = likesData.reduce((sum, like) => sum + like.like_count, 0);
+    return totalLikes;
+  } catch (error) {
+    console.error('Error in fetchArticleLikeCount:', error);
+    return 0;
+  }
+}
 
 export const dynamicParams = false;
 
@@ -161,6 +188,9 @@ export default async function Page({ params }) {
   const eventDate = article.data.event_date || article.first_publication_date;
   const formattedEventDate = eventDate ? format(new Date(eventDate), 'MMMM d, yyyy') : 'Unknown date';
 
+  // Fetch like count for this article
+  const likeCount = await fetchArticleLikeCount(article.uid);
+
   return (
     <>
       <RightClickProtection articleType={article.data.type} />
@@ -235,7 +265,12 @@ export default async function Page({ params }) {
             title={article.data.meta_title || `${article.data.title}${article.data.subtitle ? `: ${article.data.subtitle}` : ''}`} 
             idol={article.data.idol_name} 
           />
-          <ArticleLike articleSlug={article.uid} articleType={article.data.type} />
+          <ArticleLike 
+            articleSlug={article.uid} 
+            articleType={article.data.type} 
+            initialLikeCount={likeCount}
+            hasServerData={true}
+          />
         </div>
 
         <div className={styles.content}>

@@ -2,16 +2,26 @@
 
 import { useState, useEffect } from 'react'
 
-export function useArticleStats(slug) {
+export function useArticleStats(slug, initialLikeCount = null) {
   const [stats, setStats] = useState({
-    totalLikes: 0,
+    totalLikes: initialLikeCount || 0,
     userLikes: 0,
     views: 0,
-    isLoading: true,
+    isLoading: initialLikeCount === null,
     error: null
   })
 
   useEffect(() => {
+    // If we have initial data, don't fetch from API
+    if (initialLikeCount !== null) {
+      setStats(prev => ({ 
+        ...prev, 
+        totalLikes: initialLikeCount,
+        isLoading: false 
+      }))
+      return
+    }
+
     if (!slug) {
       setStats(prev => ({ ...prev, isLoading: false }))
       return
@@ -72,7 +82,7 @@ export function useArticleStats(slug) {
     }
 
     fetchStats()
-  }, [slug])
+  }, [slug, initialLikeCount])
 
   const updateStats = (newStats) => {
     setStats(prev => ({

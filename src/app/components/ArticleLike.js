@@ -5,8 +5,8 @@ import { HiHeart, HiOutlineHeart } from 'react-icons/hi'
 import styles from './ArticleLike.module.scss'
 import { useArticleStats } from './hooks/useArticleStats'
 
-export default function ArticleLike({ articleSlug, articleType }) {
-  const { totalLikes, userLikes, isLoading, error, updateStats } = useArticleStats(articleSlug)
+export default function ArticleLike({ articleSlug, articleType, initialLikeCount = 0, hasServerData = false }) {
+  const { totalLikes, userLikes, isLoading, error, updateStats } = useArticleStats(articleSlug, hasServerData ? initialLikeCount : null)
   const [isAnimating, setIsAnimating] = useState(false)
   const [bubbleHearts, setBubbleHearts] = useState([])
   const [localLikes, setLocalLikes] = useState(0)
