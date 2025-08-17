@@ -59,6 +59,11 @@ const Slider = ({ slides }) => {
                         </div>
                         <div className={styles.Content}>
                             <div className={styles.Tags}>
+                            {item.idol_name && (
+                                <span key="group" className={`${styles.Tag} ${styles.group}`}>
+                                    {item.idol_name}
+                                </span>
+                            )}
                             {item.tags.map((tag) => {
                                 const sanitizedTag = tag
                                 .normalize("NFD")

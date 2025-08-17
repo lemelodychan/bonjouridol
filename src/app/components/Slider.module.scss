@@ -94,6 +94,16 @@
                             background-color: var(--bi-dark-pink);
                             order: 1;
                         }
+                        &.group {
+                            position: absolute;
+                            top: 16px;
+                            right: 16px;
+                            background-color: white;
+                            color: var(--bi-dark-pink);
+                            order: 0;
+                            white-space: nowrap;
+                            z-index: 3;
+                        }
                         &:empty { display: none; }
                     }
                 }

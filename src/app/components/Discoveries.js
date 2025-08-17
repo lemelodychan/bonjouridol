@@ -40,6 +40,7 @@ export default async function Discoveries() {
     tags: item.tags,
     first_publication_date: item.first_publication_date,
     publication_date: item.data.publication_date,
+    idol_name: item.data.idol_name,
   }));
 
   return (

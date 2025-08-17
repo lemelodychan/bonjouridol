@@ -1,0 +1,29 @@
+.staticLikeCount {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 6px 10px;
+  color: var(--bi-dark-pink);
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+
+  .croissantIcon {
+    font-size: 14px;
+    line-height: 1;
+
+    @media (min-width: 768px) {
+      font-size: 16px;
+    }
+  }
+
+  .likeCount {
+    line-height: 1;
+  }
+}

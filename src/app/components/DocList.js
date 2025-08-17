@@ -7,12 +7,17 @@ import Button from "./IconButton";
 import SingleImage from "./SingleImage";
 import Breadcrumbs from "./Breadcrumbs";
 import DocListPagination from "./DocListPagination";
+import StaticLikeCount from "./StaticLikeCount";
 import { useState } from "react";
 import React from "react";
 
 import styles from "./DocList.module.scss";
 
 export default function DocListContainer({ results, currentPage, totalPages, postType }) {
+  return <DocListContent results={results} currentPage={currentPage} totalPages={totalPages} postType={postType} />;
+}
+
+export function DocListContent({ results, currentPage, totalPages, postType }) {
   const folderName = postType;
 
   return (
@@ -51,6 +56,9 @@ export default function DocListContainer({ results, currentPage, totalPages, pos
                       alt={item.data.featured_image.alt || ""}
                       color="GreyBg"  
                     />
+                    {postType !== "Gallery" && (
+                      <StaticLikeCount articleSlug={item.uid} />
+                    )}
                   </div>
                 )}
                 {postType === "Gallery" && artistArray?.length > 0 && (
