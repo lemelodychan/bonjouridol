@@ -70,8 +70,11 @@ export async function GET(request) {
     const artistArticleSlugs = {}
     
     if (allArticles) {
+      console.log('Processing', allArticles.length, 'articles for artists:', artistArray)
+      
       for (const article of allArticles) {
         if (article.artist) {
+          console.log(`Article ${article.slug} artist data:`, JSON.stringify(article.artist))
           let artistString = null
           
           if (typeof article.artist === 'string') {
@@ -92,9 +95,14 @@ export async function GET(request) {
               artistArticleSlugs[artistString] = []
             }
             artistArticleSlugs[artistString].push(article.slug)
+            console.log(`Found article ${article.slug} for artist ${artistString}`)
+          } else if (artistString) {
+            console.log(`Article ${article.slug} has artist "${artistString}" but not in requested list:`, artistArray)
           }
         }
       }
+      
+      console.log('Artist article slugs:', artistArticleSlugs)
     }
 
     // Get article likes for all relevant articles
@@ -135,8 +143,10 @@ export async function GET(request) {
       const directLikes = directLikeCounts[artist] || 0
       const articleLikes = articleLikeCounts[artist] || 0
       result[artist] = directLikes + articleLikes
+      console.log(`${artist}: ${directLikes} direct + ${articleLikes} article = ${result[artist]} total`)
     })
 
+    console.log('Final result:', result)
     return NextResponse.json(result)
 
   } catch (error) {

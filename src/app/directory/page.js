@@ -32,31 +32,19 @@ export const metadata = {
   },
 };
 
-// Function to fetch like counts for multiple artists
+// Function to fetch like counts for multiple artists using the batch API
 async function fetchArtistLikeCounts(artistNames) {
   try {
-    const supabase = createSupabaseClient();
-    if (!supabase) return {};
-
-    const { data: likesData, error } = await supabase
-      .from('artist_likes')
-      .select('artist_name, like_count')
-      .in('artist_name', artistNames);
-
-    if (error) {
-      console.error('Error fetching artist like counts:', error);
+    const artistsParam = artistNames.join(',');
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/artists/batch-likes?artists=${encodeURIComponent(artistsParam)}`);
+    
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      console.error('Error fetching batch artist likes:', response.status);
       return {};
     }
-
-    const likeCounts = {};
-    likesData.forEach(like => {
-      if (!likeCounts[like.artist_name]) {
-        likeCounts[like.artist_name] = 0;
-      }
-      likeCounts[like.artist_name] += like.like_count;
-    });
-
-    return likeCounts;
   } catch (error) {
     console.error('Error in fetchArtistLikeCounts:', error);
     return {};
