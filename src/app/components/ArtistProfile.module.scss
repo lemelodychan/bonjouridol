@@ -106,14 +106,27 @@
             }
         }
 
-        .likeSection {
-            margin-top: 16px;
-            display: flex;
-            justify-content: flex-start;
-        }
-
         .ctaButton {
-            display: none;
+
+            > a:first-of-type {
+                display: none !important;
+            }
+
+            .likeSection {
+                position: absolute;
+                bottom: 16px;
+                right: 16px;
+                margin: 0;
+                z-index: 2 !important;
+
+                button {
+                    box-shadow: none;
+                    background-color: white;
+                    border-radius: 16px;
+                    position: relative;
+                    z-index: 2 !important;
+                }
+            }
         }
 
     }
