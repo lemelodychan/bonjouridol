@@ -1,0 +1,68 @@
+name: Prismic Content Backup
+
+on:
+  schedule:
+    # Run weekly on Mondays at 10 AM JST (1 AM UTC)
+    - cron: '0 1 * * 1'
+  workflow_dispatch:
+    # Allow manual trigger
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/backup-prismic.js'
+      - 'package.json'
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Create backups directory
+        run: mkdir -p backups
+        
+      - name: Run Prismic backup
+        env:
+          PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
+          REPO_NAME: ${{ secrets.REPO_NAME }}
+        run: node scripts/backup-prismic.js
+        
+      - name: Check for backup files
+        run: |
+          echo "Backup files created:"
+          ls -la backups/
+          
+      - name: Commit and push backup files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Add backup files
+          git add backups/
+          
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🤖 Automated Prismic backup - $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+            git push
+          fi
+          
+      - name: Upload backup as artifact (for debugging)
+        uses: actions/upload-artifact@v4
+        with:
+          name: prismic-backup-${{ github.run_number }}
+          path: backups/
+          retention-days: 7

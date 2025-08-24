@@ -1,0 +1,2 @@
+# This file ensures the backups directory is tracked in git
+# Backup files will be automatically added and committed by the GitHub Action

@@ -8,7 +8,13 @@
     "start": "next start",
     "lint": "next lint",
     "slicemachine": "start-slicemachine",
-    "clean": "rm -rf dist/*"
+    "clean": "rm -rf dist/*",
+    "backup": "node scripts/backup-prismic.js",
+    "backup:manual": "PRISMIC_ACCESS_TOKEN=$PRISMIC_ACCESS_TOKEN REPO_NAME=$REPO_NAME node scripts/backup-prismic.js",
+    "backup:test": "node scripts/test-backup.js",
+    "backup:verify": "node scripts/verify-backup.js",
+    "backup:debug": "node scripts/debug-prismic.js",
+    "backup:setup": "echo 'Creating .env file...' && cp env.example .env && echo '✅ .env file created! Please edit it with your actual values.'"
   },
   "dependencies": {
     "@next/third-parties": "^15.1.4",
@@ -17,8 +23,10 @@
     "@prismicio/react": "^2.9.1",
     "@supabase/supabase-js": "^2.54.0",
     "@vercel/analytics": "^1.5.0",
+    "archiver": "^6.0.1",
     "classnames": "^2.3.2",
     "date-fns": "^4.1.0",
+    "dotenv": "^16.3.1",
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.13",
     "mini-css-extract-plugin": "^2.9.2",
