@@ -6,14 +6,12 @@ import GalleryList from "../components/GalleryList";
 import ArtistProfile from "../components/ArtistProfile";
 import SearchTracker from "./SearchTracker";
 
-// Import Supabase client for server-side like fetching
-const { createSupabaseClient } = await import('@/lib/supabase');
-
 import styles from "./page.module.scss";
 
 // Function to fetch like counts for multiple articles
 async function fetchArticleLikeCounts(slugs) {
   try {
+    const { createSupabaseClient } = await import('@/lib/supabase');
     const supabase = createSupabaseClient();
     if (!supabase) return {};
 
@@ -68,9 +66,120 @@ export default async function SearchPage({ searchParams }) {
     let subtitleResults = [];
     let documentResults = [];
     let combinedResults = [];
-    let exactArtistMatch = null
+    let exactArtistMatch = null;
+    let exactAuthorMatch = null;
   
     try {
+        // First, check if search term is an exact match for an author/photographer
+        const exactAuthorResponse = await client.getByType("author", {
+          fetchOptions: {
+            cache: "no-store",
+          },
+          filters: [prismic.filter.at("my.author.name", searchTerm)],
+        });
+
+        if (exactAuthorResponse.results.length > 0) {
+          exactAuthorMatch = exactAuthorResponse.results[0];
+          
+          // If it's an exact author match, fetch their articles and galleries
+          const authorUid = exactAuthorMatch.uid;
+
+          // Fetch all articles and filter for photographer work in JavaScript
+          const allArticlesResponse = await client.getAllByType("articles", {
+            fetchOptions: {
+              cache: "no-store",
+            },
+            orderings: [
+              { field: "my.articles.publication_date", direction: "desc" },
+              { field: "document.first_publication_date", direction: "desc" },
+            ],
+          });
+
+          // Filter articles where this person is the author or translator
+          const authorAndTranslatorArticles = allArticlesResponse.filter(article => {
+            // Check if they're the author
+            if (article.data.author?.uid === authorUid) {
+              return true;
+            }
+            
+            // Check if they're credited as a translator in the Authors slice
+            const authorsSlice = article.data.slices?.find(slice => slice.slice_type === 'authors');
+            if (!authorsSlice) return false;
+            
+            return authorsSlice.primary?.translator_pr?.uid === authorUid ||
+                   authorsSlice.primary?.translator_jp?.uid === authorUid ||
+                   authorsSlice.primary?.translator_en?.uid === authorUid ||
+                   authorsSlice.primary?.translator_fr?.uid === authorUid;
+          });
+
+          results = authorAndTranslatorArticles;
+          totalPages = Math.ceil(results.length / defaultPageSize);
+
+          // Fetch all galleries and filter for photographer work in JavaScript
+          const allGalleriesResponse = await client.getAllByType("gallery", {
+            fetchOptions: {
+              cache: "no-store",
+            },
+            orderings: [
+              { field: "my.gallery.event_date", direction: "desc" },
+              { field: "document.first_publication_date", direction: "desc" },
+            ],
+            fetchLinks: ["my.gallery.photographer.name", "my.gallery.photographer_2.name"],
+          });
+
+          // Filter galleries where this person is the photographer
+          const photographerGalleries = allGalleriesResponse.filter(gallery => {
+            // Skip official photos
+            if (gallery.data.is_official_photos) return false;
+            
+            // Check if the person is the primary or secondary photographer
+            return gallery.data.photographer?.uid === authorUid || 
+                   gallery.data.photographer_2?.uid === authorUid;
+          });
+
+          // Limit galleries to 10 latest for author searches
+          const limitedGalleries = photographerGalleries.slice(0, 10);
+          resultsGallery = limitedGalleries;
+
+          // Fetch like counts for all articles
+          const articleSlugs = results.map(item => item.uid).filter(Boolean);
+          const likeCounts = await fetchArticleLikeCounts(articleSlugs);
+
+          return (
+            <div className={styles.SearchPage}>
+              <SearchTracker searchTerm={searchTerm} />
+              <h1>Work by {exactAuthorMatch.data.name}</h1>
+
+              {resultsGallery.length > 0 && (
+                <div className={styles.GalleryList}>
+                  <h2>As photographer</h2>
+                  <GalleryList results={resultsGallery} />
+                </div>
+              )}
+          
+              <div className={`${styles.SearchResults} ${styles.AuthorSearch}`}>
+                {results.length > 0 ? (
+                  <>
+                    <h2>As writer</h2>
+                    <div className={styles.DocList}>
+                      <DocListContainer
+                        results={results}
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        postType="Search results"
+                        likeCounts={likeCounts}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <p>No articles found.</p>
+                )}
+              </div>
+            </div>
+          );
+        }
+
+        // If not an exact author match, proceed with regular search logic
         // Fetch exact artist match
         const exactArtistResponse = await client.getByType("artist", {
           fetchOptions: {

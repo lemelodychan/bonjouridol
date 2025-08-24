@@ -2,12 +2,14 @@ import { createClient } from "@/prismicio";
 import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
 import SingleImage from "./SingleImage";
+import Button from "./IconButton";
 
 import styles from "./MemberListContent.module.scss";
 
 import { HiOutlineLink } from 'react-icons/hi';
 import { FaInstagram } from "react-icons/fa6";
 import { FaXTwitter } from "react-icons/fa6";
+import { IoArrowForwardOutline } from "react-icons/io5";
 
 export default async function MemberListContent() {
     const client = createClient();
@@ -44,12 +46,12 @@ export default async function MemberListContent() {
                         <h3 className={styles.Name}>
                             {name}
                         </h3>
-                        <span>{specialization}</span>
-                        {description.length > 0 && (
-                            <div className={styles.Description}>
+                        <span className={styles.Specialization}>{specialization}</span>
+                        <div className={styles.Description}>
+                            {description.length > 0 && (
                                 <PrismicRichText field={description} />
-                            </div>
-                        )}
+                            )}
+                        </div>
 
                         <div className={styles.SocialLinks}>
                             {twitter && twitter.url && (
@@ -67,6 +69,15 @@ export default async function MemberListContent() {
                                     <HiOutlineLink />
                                 </PrismicNextLink>
                             )}
+                        </div>
+
+                        <div className={styles.ButtonContainer}>
+                            <Button 
+                                href={`/search?keyword=${encodeURIComponent(name)}`}
+                                variant="Grey"
+                                textValue="See all their work"
+                                icon={<IoArrowForwardOutline />}
+                            />
                         </div>
                     </div>
                 );

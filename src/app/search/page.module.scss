@@ -25,7 +25,7 @@
             padding: 0 32px;
         }
     }
-     
+
     > p {
         font-size: 16px;
         line-height: 28px;
@@ -51,10 +51,50 @@
             width: 100%;
         }
 
+        h2 {
+            padding: 0 24px;
+            margin-bottom: 16px;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--bi-dark-pink);
+
+            @include md {
+                padding: 0 32px;
+                font-size: 28px;
+            }
+        }
+
         .DocList {
             > div {
                 padding: 0 !important;
             }
         }
+
+        &.AuthorSearch {
+            flex-direction: column;
+            gap: 0;
+
+            h2 {
+                padding: 0;
+            }
+        }
+    }
+
+    .GalleryList {
+        h2 {
+            padding: 0 24px;
+            margin-bottom: 16px;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--bi-dark-pink);
+
+            @include md {
+                padding: 0 32px;
+                font-size: 28px;
+                margin-bottom: 24px;
+            }
+        }
+
+
     }
 }

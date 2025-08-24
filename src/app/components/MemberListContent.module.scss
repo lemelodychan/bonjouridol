@@ -57,7 +57,7 @@
             }
         }
 
-        span {
+        .Specialization {
             font-size: 14px;
             font-weight: 600;
 
@@ -70,6 +70,8 @@
             font-size: 14px;
             line-height: 24px;
             flex-grow: 1;
+            align-self: flex-start;
+            justify-self: flex-start;
         }
 
         .SocialLinks {
@@ -93,6 +95,14 @@
                     color: var(--bi-indigo);
                 }
             }
+        }
+
+        .ButtonContainer {
+            margin-top: 8px;
+        }
+
+        .Main {
+            margin-top: 16px;
         }
     }
 }
