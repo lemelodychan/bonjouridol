@@ -129,32 +129,32 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/2019/09/tif2019-wack-en',
+        source: '/2019/08/tif2019-wack-en',
         destination: '/articles/190802-tif2019-wack',
         permanent: true,
       },
       {
-        source: '/2019/09/tif2019-22-7-en',
+        source: '/2019/08/tif2019-22-7-en',
         destination: '/articles/190802-04-tif2019-22-7',
         permanent: true,
       },
       {
-        source: '/2019/09/tif2019-festive-en',
+        source: '/2019/08/tif2019-festive-en',
         destination: '/articles/190804-tif2019-festive',
         permanent: true,
       },
       {
-        source: '/2019/09/tif2019-nogizaka46-4th-generation',
+        source: '/2019/08/tif2019-nogizaka46-4th-generation',
         destination: '/articles/190802-04-tif2019-nogizaka46',
         permanent: true,
       },
       {
-        source: '/2019/09/tif2019-standup-records-groups',
+        source: '/2019/08/tif2019-standup-records-groups',
         destination: '/articles/190802-04-tif2019-standup-records',
         permanent: true,
       },
       {
-        source: '/2019/09/tif2019-bnk48-siamdream-en',
+        source: '/2019/08/tif2019-bnk48-siamdream-en',
         destination: '/articles/190804-tif2019-bnk48-siamdream',
         permanent: true,
       },
@@ -164,7 +164,7 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/2019/09/tif2019-ske-nmb-hkt-48-en',
+        source: '/2019/08/tif2019-ske-nmb-hkt-48-en',
         destination: '/articles/190802-04-tif2019-48groups',
         permanent: true,
       },
