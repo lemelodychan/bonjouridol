@@ -4,75 +4,75 @@ const nextConfig = {
     return [
       // Live Reports - Map specific articles
       {
-        source: '/taking-different-pathways-with-hope-and-love-iketeru-hearts-final-live',
+        source: '/iketeru-hearts-final-live',
         destination: '/articles/iketeru-hearts-final-live-2023',
         permanent: true,
       },
       {
         source: '/unidol-2021-2022-winter-edition-the-dark-horses-finale',
-        destination: '/articles/unidol-2021-2022-winter-finale',
+        destination: '/articles/220228-unidol-2021-2022-winter-edition',
         permanent: true,
       },
       {
-        source: '/dont-stop-youll-melt-more-delivery-lifesavers-tour-tokyo-kechon-chiffon-graduation',
+        source: '/youll-melt-more-kechon-chiffon-graduation',
         destination: '/articles/youll-melt-more-kechon-chiffon-graduation-2022',
         permanent: true,
       },
       {
-        source: '/4-years-already-love-anniversary-concert',
-        destination: '/articles/love-anniversary-concert-2021',
+        source: '/equal-love-4th-anniversary-concert',
+        destination: '/articles/211005-equal-love-4th-anniversary-concert',
         permanent: true,
       },
       {
-        source: '/seven-years-of-love-iketeru-hearts-7th-anniversary-live',
+        source: '/iketeru-hearts-7th-anniversary',
         destination: '/articles/iketeru-hearts-7th-anniversary-2021',
         permanent: true,
       },
       
       // Interviews
       {
-        source: '/a-japanese-girl-in-spain-interview-with-kamieda-emika-former-nmb48-part-2',
-        destination: '/articles/kamieda-emika-interview-part-2-2020',
+        source: '/kamieda-emika-interview-part-2',
+        destination: '/articles/interview-with-kamieda-emika-part-2',
         permanent: true,
       },
       {
-        source: '/a-japanese-girl-in-spain-interview-with-kamieda-emika-former-nmb48-part-1',
-        destination: '/articles/kamieda-emika-interview-part-1-2020',
+        source: '/kamieda-emika-interview-part-1',
+        destination: '/articles/interview-with-kamieda-emika-part-1',
         permanent: true,
       },
       
       // News & Press Releases
       {
         source: '/one-last-unidol-event-at-usen-studio-coast',
-        destination: '/articles/unidol-usen-studio-coast-final-2021',
+        destination: '/articles/211020-unidol-usen-studio-coast',
         permanent: true,
       },
       {
         source: '/unidol-2021-fresh-your-dose-of-vitamins',
-        destination: '/articles/unidol-2021-fresh-event',
+        destination: '/articles/211026-unidol-2021-fresh',
         permanent: true,
       },
       
       // Discoveries
       {
         source: '/discovery-first-contact-with-somosomo',
-        destination: '/articles/somosomo-discovery-2020',
+        destination: '/articles/discovery-somosomo',
         permanent: true,
       },
       {
         source: '/beach-watermelons-and-bikini-a-summer-idol-playlist',
-        destination: '/articles/summer-idol-playlist-2019',
+        destination: '/articles/summer-idol-songs-2019',
         permanent: true,
       },
       {
         source: '/discovery-festive',
-        destination: '/articles/festive-discovery-2019',
+        destination: '/articles/discovery-festive',
         permanent: true,
       },
       
       // Bonjour Idol Style
       {
-        source: '/neoriyon-stupid-august-2020',
+        source: '/neoriyon-2020',
         destination: '/galleries/200801-neoriyon',
         permanent: true,
       },
