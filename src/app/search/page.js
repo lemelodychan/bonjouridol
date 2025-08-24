@@ -44,6 +44,7 @@ export default async function SearchPage({ searchParams }) {
     const params = await searchParams;
     const searchTerm = params?.keyword || "";
     const currentPage = parseInt(params?.page) || 1;
+    const isAuthorSearch = params?.author === "true";
 
     if (!searchTerm.trim()) {
       return (
@@ -70,15 +71,17 @@ export default async function SearchPage({ searchParams }) {
     let exactAuthorMatch = null;
   
     try {
-        // First, check if search term is an exact match for an author/photographer
-        const exactAuthorResponse = await client.getByType("author", {
-          fetchOptions: {
-            cache: "no-store",
-          },
-          filters: [prismic.filter.at("my.author.name", searchTerm)],
-        });
+        // Only perform author search if explicitly requested via author parameter
+        if (isAuthorSearch) {
+          // Check if search term is an exact match for an author/photographer
+          const exactAuthorResponse = await client.getByType("author", {
+            fetchOptions: {
+              cache: "no-store",
+            },
+            filters: [prismic.filter.at("my.author.name", searchTerm)],
+          });
 
-        if (exactAuthorResponse.results.length > 0) {
+          if (exactAuthorResponse.results.length > 0) {
           exactAuthorMatch = exactAuthorResponse.results[0];
           
           // If it's an exact author match, fetch their articles and galleries
@@ -177,9 +180,10 @@ export default async function SearchPage({ searchParams }) {
               </div>
             </div>
           );
+          }
         }
 
-        // If not an exact author match, proceed with regular search logic
+        // Regular search logic (when not an author search or when author not found)
         // Fetch exact artist match
         const exactArtistResponse = await client.getByType("artist", {
           fetchOptions: {

@@ -73,7 +73,7 @@ export default async function MemberListContent() {
 
                         <div className={styles.ButtonContainer}>
                             <Button 
-                                href={`/search?keyword=${encodeURIComponent(name)}`}
+                                href={`/search?keyword=${encodeURIComponent(name)}&author=true`}
                                 variant="Grey"
                                 textValue="See all their work"
                                 icon={<IoArrowForwardOutline />}
