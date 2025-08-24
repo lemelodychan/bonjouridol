@@ -77,6 +77,168 @@ const nextConfig = {
         permanent: true,
       },
       
+      // New redirects from CSV migration
+      {
+        source: '/ylmlm-younapi-last-live',
+        destination: '/articles/201020-youll-melt-more-younapi-graduation',
+        permanent: true,
+      },
+      {
+        source: '/junjou-afilia-9nin-etranger-prologue-en',
+        destination: '/articles/200725-junjou-no-afilia-oneman-request',
+        permanent: true,
+      },
+      {
+        source: '/equal-love-winter-tour-finale-2019',
+        destination: '/articles/200117-equal-love-2019-20-winter-tour-finale',
+        permanent: true,
+      },
+      {
+        source: '/onepixcel-first-oneman-live-2020',
+        destination: '/articles/200209-onepixcel-one-man',
+        permanent: true,
+      },
+      {
+        source: '/onepixcel-tour-finale-2019',
+        destination: '/articles/190922-onepixcel-tour-finale',
+        permanent: true,
+      },
+      {
+        source: '/akishibu-project-first-concert-2020',
+        destination: '/articles/200216-akishibu-project-one-man-live',
+        permanent: true,
+      },
+      {
+        source: '/tif2019-stu48-en',
+        destination: '/articles/190802-04-tif2019-stu48',
+        permanent: true,
+      },
+      {
+        source: '/tif2019-task-have-fun-en',
+        destination: '/articles/190804-tif2019-task-have-fun',
+        permanent: true,
+      },
+      {
+        source: '/tif2019-equal-love-en',
+        destination: '/articles/190802-04-tif2019-equal-love',
+        permanent: true,
+      },
+      {
+        source: '/tif2019-angerme-beyooooonds-kobushi-factory-en',
+        destination: '/articles/190802-04-tif2019-hello-project',
+        permanent: true,
+      },
+      {
+        source: '/tif2019-wack-en',
+        destination: '/articles/190802-tif2019-wack',
+        permanent: true,
+      },
+      {
+        source: '/tif2019-22-7-en',
+        destination: '/articles/190802-04-tif2019-22-7',
+        permanent: true,
+      },
+      {
+        source: '/tif2019-festive-en',
+        destination: '/articles/190804-tif2019-festive',
+        permanent: true,
+      },
+      {
+        source: '/tif2019-nogizaka46-4th-generation',
+        destination: '/articles/190802-04-tif2019-nogizaka46',
+        permanent: true,
+      },
+      {
+        source: '/tif2019-standup-records-groups',
+        destination: '/articles/190802-04-tif2019-standup-records',
+        permanent: true,
+      },
+      {
+        source: '/tif2019-bnk48-siamdream-en',
+        destination: '/articles/190804-tif2019-bnk48-siamdream',
+        permanent: true,
+      },
+      {
+        source: '/tif2019-akb48-en',
+        destination: '/articles/190802-04-tif2019-akb48',
+        permanent: true,
+      },
+      {
+        source: '/tif2019-ske-nmb-hkt-48-en',
+        destination: '/articles/190802-04-tif2019-48groups',
+        permanent: true,
+      },
+      {
+        source: '/awakoi-tomiyoshi-asuka-first-solo-concert',
+        destination: '/articles/210427-awakoi',
+        permanent: true,
+      },
+      {
+        source: '/banzai-japan-paris-trip-europe',
+        destination: '/articles/180708-banzai-japan-in-paris',
+        permanent: true,
+      },
+      {
+        source: '/milcs-honmono-introduction',
+        destination: '/articles/191006-milcs-honmono-tokyo-one-man',
+        permanent: true,
+      },
+      {
+        source: '/kyueens-encounter-club-malcolm',
+        destination: '/articles/190510-kyueens',
+        permanent: true,
+      },
+      {
+        source: '/notall-tour-finale-chiko-graduation',
+        destination: '/articles/190321-notall-tour-finale',
+        permanent: true,
+      },
+      {
+        source: '/discovery-malcom-mask-mclaren',
+        destination: '/articles/discovery-malcolm-mask-mclaren',
+        permanent: true,
+      },
+      {
+        source: '/discovery-necronomidol',
+        destination: '/articles/discovery-necronomidol',
+        permanent: true,
+      },
+      {
+        source: '/love-japan-expo-2018-interview-fr',
+        destination: '/articles/180705-je-2018-equallove-interview',
+        permanent: true,
+      },
+      {
+        source: '/japan-expo-2018-maneki-kecak-2',
+        destination: '/articles/180705-je-2018-maneki-kecak-interview',
+        permanent: true,
+      },
+      {
+        source: '/kozuki-serena-3rd-live-report',
+        destination: '/articles/160424-kozuki-serenas-3rd-one-man-live',
+        permanent: true,
+      },
+      {
+        source: '/kozuki-serena-6th-oneman',
+        destination: '/articles/171230-kozuki-serena-6th-one-man-live',
+        permanent: true,
+      },
+      {
+        source: '/tokyo-idol-festival-2018-hkt48-en',
+        destination: '/articles/180804-tif2018-hkt48',
+        permanent: true,
+      },
+      {
+        source: '/tokyo-idol-festival-2018-japan-expo-guests',
+        destination: '/articles/180804-tif2018-japan-expo-guests',
+        permanent: true,
+      },
+      {
+        source: '/tokyo-idol-festival-2018-akb48-team8-stu48-bnk48',
+        destination: '/articles/180804-tif2018-akb48-team8-stu48-bnk48',
+        permanent: true,
+      },
+      
       // Category redirects (if you want to redirect entire sections)
       {
         source: '/interviews',
