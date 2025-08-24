@@ -1,4 +1,4 @@
-name: Prismic Content Backup
+name: Prismic Content Backup (PAT)
 
 on:
   schedule:
@@ -16,18 +16,15 @@ on:
 jobs:
   backup:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      actions: read
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
           fetch-depth: 0
           ref: main
-        
+          
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -55,9 +52,6 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          
-          # Configure git to use the token
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           
           # Add backup files
           git add backups/
