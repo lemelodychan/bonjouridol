@@ -1,4 +1,4 @@
-name: Prismic Content Backup
+name: Prismic Content Backup (Simple)
 
 on:
   schedule:
@@ -24,10 +24,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-          ref: main
-        
+          
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -64,9 +62,7 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "🤖 Automated Prismic backup - $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
-            
-            # Force push to avoid conflicts (since we're only adding backup files)
-            git push origin main --force-with-lease
+            git push
           fi
           
       - name: Upload backup as artifact (for debugging)

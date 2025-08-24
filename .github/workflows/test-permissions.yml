@@ -1,0 +1,55 @@
+name: Test Repository Permissions
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Test git configuration
+        run: |
+          echo "Testing git configuration..."
+          git config --list
+          echo ""
+          echo "Current branch:"
+          git branch -a
+          echo ""
+          echo "Remote configuration:"
+          git remote -v
+          echo ""
+          echo "Current user:"
+          git config user.name
+          git config user.email
+          
+      - name: Test write permissions
+        run: |
+          echo "Testing write permissions..."
+          echo "Test file created at $(date)" > test-permissions.txt
+          git add test-permissions.txt
+          git commit -m "Test commit - $(date)"
+          echo "Commit successful!"
+          
+      - name: Test push permissions
+        run: |
+          echo "Testing push permissions..."
+          if git push origin main; then
+            echo "✅ Push successful!"
+          else
+            echo "❌ Push failed!"
+            exit 1
+          fi
+          
+      - name: Cleanup
+        run: |
+          echo "Cleaning up test file..."
+          git rm test-permissions.txt
+          git commit -m "Remove test file"
+          git push origin main
