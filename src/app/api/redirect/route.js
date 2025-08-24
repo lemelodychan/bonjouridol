@@ -3,14 +3,14 @@ import { NextResponse } from 'next/server'
 // Manual redirect mapping - you can easily update this
 const redirectMap = {
   // Live Reports
-  '2023/12/iketeru-hearts-final-live': '/articles/iketeru-hearts-final-live-2023',
+  '2023/12/iketeru-hearts-final-live': '/articles/230121-iketeru-hearts-last-live',
   '2022/02/unidol-2021-2022-winter-edition-the-dark-horses-finale': '/articles/220228-unidol-2021-2022-winter-edition',
-  '2022/06/youll-melt-more-kechon-chiffon-graduation': '/articles/youll-melt-more-kechon-chiffon-graduation-2022',
+  '2022/06/youll-melt-more-kechon-chiffon-graduation': '/articles/211010-ylmlm-kechon-chiffon-graduation',
   '2021/10/equal-love-4th-anniversary-concert': '/articles/211005-equal-love-4th-anniversary-concert',
-  '2021/09/iketeru-hearts-7th-anniversary': '/articles/iketeru-hearts-7th-anniversary-2021',
+  '2021/09/iketeru-hearts-7th-anniversary': '/articles/210911-iketeru-hearts-7th-anniversary',
   
   // Interviews
-  '2020/01/kamieda-emika-interview-part-2': '/articles/interview-with-kamieda-emika-part-2',
+  '2020/01/kamieda-emika-interview-part-2': '/articles/200119-interview-with-kamieda-emika-part-2',
   '2020/01/kamieda-emika-interview-part-1': '/articles/interview-with-kamieda-emika-part-1',
   
   // News & Press Releases

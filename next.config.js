@@ -5,7 +5,7 @@ const nextConfig = {
       // Live Reports - Map specific articles
       {
         source: '/2023/12/iketeru-hearts-final-live',
-        destination: '/articles/iketeru-hearts-final-live-2023',
+        destination: '/articles/230121-iketeru-hearts-last-live',
         permanent: true,
       },
       {
@@ -15,7 +15,7 @@ const nextConfig = {
       },
       {
         source: '/2022/06/youll-melt-more-kechon-chiffon-graduation',
-        destination: '/articles/youll-melt-more-kechon-chiffon-graduation-2022',
+        destination: '/articles/211010-ylmlm-kechon-chiffon-graduation',
         permanent: true,
       },
       {
@@ -25,14 +25,14 @@ const nextConfig = {
       },
       {
         source: '/2021/09/iketeru-hearts-7th-anniversary',
-        destination: '/articles/iketeru-hearts-7th-anniversary-2021',
+        destination: '/articles/210911-iketeru-hearts-7th-anniversary',
         permanent: true,
       },
       
       // Interviews
       {
         source: '/2020/01/kamieda-emika-interview-part-2',
-        destination: '/articles/interview-with-kamieda-emika-part-2',
+        destination: '/articles/200119-interview-with-kamieda-emika-part-2',
         permanent: true,
       },
       {
