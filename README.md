@@ -41,7 +41,7 @@ This project includes an automated backup system for Prismic CMS content. The ba
 - **Compresses data** into ZIP files with timestamps
 - **Includes all documents**, custom types, and slices
 - **Maintains version history** in the repository
-- **Cleans up old backups** automatically (keeps 10 most recent)
+- **Cleans up old backups** automatically (keeps backups for 30 days)
 
 ### Quick Start
 

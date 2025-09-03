@@ -104,8 +104,8 @@ Each backup includes metadata with:
 ## Storage and Cleanup
 
 - Backups are stored in the `backups/` directory
-- Only the 10 most recent backups are kept
-- Old backups are automatically deleted
+- Backups older than 30 days are automatically deleted
+- This keeps storage clean while maintaining a month of backup history
 - Backup files are committed to the repository for version control
 
 ## Troubleshooting
@@ -178,7 +178,7 @@ schedule:
 
 ### Backup Retention
 
-To change how many backups to keep, modify the `MAX_BACKUPS_TO_KEEP` constant in `backup-prismic.js`.
+To change how long backups are kept, modify the `MAX_BACKUP_AGE_DAYS` constant in `backup-prismic.js`. The default is 30 days.
 
 ### Additional Data
 

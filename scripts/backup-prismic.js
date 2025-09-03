@@ -13,7 +13,7 @@ dotenv.config();
 const REPOSITORY_NAME = process.env.REPO_NAME || 'bonjouridol';
 const ACCESS_TOKEN = process.env.PRISMIC_ACCESS_TOKEN;
 const BACKUP_DIR = path.join(__dirname, '..', 'backups');
-const MAX_BACKUPS_TO_KEEP = 10;
+const MAX_BACKUP_AGE_DAYS = 30; // Keep backups for 1 month
 
 // Ensure backup directory exists
 if (!fs.existsSync(BACKUP_DIR)) {
@@ -268,23 +268,31 @@ async function createBackup() {
 
 async function cleanupOldBackups() {
   try {
+    const now = new Date();
+    const cutoffDate = new Date(now.getTime() - (MAX_BACKUP_AGE_DAYS * 24 * 60 * 60 * 1000));
+    
     const files = fs.readdirSync(BACKUP_DIR)
       .filter(file => file.endsWith('.zip'))
       .map(file => ({
         name: file,
         path: path.join(BACKUP_DIR, file),
         mtime: fs.statSync(path.join(BACKUP_DIR, file)).mtime
-      }))
-      .sort((a, b) => b.mtime - a.mtime);
+      }));
     
-    if (files.length > MAX_BACKUPS_TO_KEEP) {
-      const filesToDelete = files.slice(MAX_BACKUPS_TO_KEEP);
-      console.log(`🧹 Cleaning up ${filesToDelete.length} old backups...`);
+    const filesToDelete = files.filter(file => file.mtime < cutoffDate);
+    
+    if (filesToDelete.length > 0) {
+      console.log(`🧹 Cleaning up ${filesToDelete.length} backups older than ${MAX_BACKUP_AGE_DAYS} days...`);
       
       for (const file of filesToDelete) {
+        const ageInDays = Math.floor((now.getTime() - file.mtime.getTime()) / (24 * 60 * 60 * 1000));
         fs.unlinkSync(file.path);
-        console.log(`🗑️  Deleted: ${file.name}`);
+        console.log(`🗑️  Deleted: ${file.name} (${ageInDays} days old)`);
       }
+      
+      console.log(`✅ Cleanup completed. Kept ${files.length - filesToDelete.length} recent backups.`);
+    } else {
+      console.log(`✨ No old backups to clean up. All backups are within ${MAX_BACKUP_AGE_DAYS} days.`);
     }
   } catch (error) {
     console.error('⚠️  Error cleaning up old backups:', error);

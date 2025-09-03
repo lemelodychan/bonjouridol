@@ -32,6 +32,19 @@ export default function Footer() {
                     <FaYoutube />
                     <span><span>Youtube</span></span>
                 </Link>
+                <a 
+                    style={{ 'backgroundColor': '#202020', 'padding': 0, 'margin': 0, 'borderRadius': 8 }}
+                    href="https://ko-fi.com/bonjouridol" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                >
+                    <img 
+                        height="36" 
+                        style={{border: 0, height: 36}} 
+                        src="https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a02fcf48af59c591185_support_me_on_kofi_dark.png" 
+                        alt="Buy Me a Coffee at ko-fi.com" 
+                    />
+                </a>
             </div>
             <div className={styles.Credits}>
                 BONJOUR IDOL © Copyright 2018-2025.  All Rights Reserved.
