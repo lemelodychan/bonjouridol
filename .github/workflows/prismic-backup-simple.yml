@@ -2,8 +2,8 @@ name: Prismic Content Backup (Simple)
 
 on:
   schedule:
-    # Run weekly on Mondays at 10 AM JST (1 AM UTC)
-    - cron: '0 1 * * 1'
+    # Run monthly on the 1st day at 10 AM JST (1 AM UTC)
+    - cron: '0 1 1 * *'
   workflow_dispatch:
     # Allow manual trigger
   push:
@@ -70,4 +70,4 @@ jobs:
         with:
           name: prismic-backup-${{ github.run_number }}
           path: backups/
-          retention-days: 7
+          retention-days: 90
