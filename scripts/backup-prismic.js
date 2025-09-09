@@ -13,32 +13,57 @@ dotenv.config();
 const REPOSITORY_NAME = process.env.REPO_NAME || 'bonjouridol';
 const ACCESS_TOKEN = process.env.PRISMIC_ACCESS_TOKEN;
 const BACKUP_DIR = path.join(__dirname, '..', 'backups');
-const MAX_BACKUP_AGE_DAYS = 30; // Keep backups for 1 month
+const MAX_BACKUP_AGE_DAYS = 90; // Keep backups for 3 months
+
+// API Rate Limiting Configuration
+const MAX_API_CALLS = 1000; // Maximum API calls per backup
+const REQUEST_DELAY_MS = 1000; // 1 second delay between requests
+const PAGE_SIZE = 50; // Reduced page size to minimize API load
+
+// Global API call counter
+let apiCallCount = 0;
 
 // Ensure backup directory exists
 if (!fs.existsSync(BACKUP_DIR)) {
   fs.mkdirSync(BACKUP_DIR, { recursive: true });
 }
 
-    // Create Prismic client
-    const client = createClient(REPOSITORY_NAME, {
-      accessToken: ACCESS_TOKEN,
-    });
-    
-    console.log(`🔗 Connected to Prismic repository: ${REPOSITORY_NAME}`);
+// Helper function to add delay between requests
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Helper function to track API calls and enforce limits
+function trackApiCall() {
+  apiCallCount++;
+  if (apiCallCount > MAX_API_CALLS) {
+    throw new Error(`API call limit exceeded (${MAX_API_CALLS}). Stopping backup to prevent excessive usage.`);
+  }
+  return apiCallCount;
+}
+
+// Create Prismic client
+const client = createClient(REPOSITORY_NAME, {
+  accessToken: ACCESS_TOKEN,
+});
+
+console.log(`🔗 Connected to Prismic repository: ${REPOSITORY_NAME}`);
 
 async function getAllDocuments() {
   console.log('🔍 Fetching all documents from Prismic...');
+  console.log(`📊 API call limit: ${MAX_API_CALLS}, Page size: ${PAGE_SIZE}, Delay: ${REQUEST_DELAY_MS}ms`);
   
   try {
     // Test the connection first
     console.log('🔍 Testing API connection...');
+    trackApiCall();
     const testResponse = await client.getAllByType('*', {
       pageSize: 1,
     });
     console.log(`✅ API connection successful. Test query returned ${testResponse.length} documents.`);
     
     // First, get all document types
+    trackApiCall();
     const response = await client.getAllByType('*', {
       pageSize: 1,
     });
@@ -53,17 +78,21 @@ async function getAllDocuments() {
       for (const docType of knownTypes) {
         try {
           console.log(`📄 Fetching ${docType} documents...`);
+          trackApiCall();
           const docs = await client.getAllByType(docType, {
-            pageSize: 100,
+            pageSize: PAGE_SIZE,
           });
           allDocuments.push(...docs);
-          console.log(`✅ Found ${docs.length} ${docType} documents`);
+          console.log(`✅ Found ${docs.length} ${docType} documents (API calls: ${apiCallCount})`);
+          
+          // Add delay between requests
+          await delay(REQUEST_DELAY_MS);
         } catch (error) {
           console.log(`⚠️  Could not fetch ${docType} documents: ${error.message}`);
         }
       }
       
-      console.log(`✅ Successfully fetched ${allDocuments.length} documents total`);
+      console.log(`✅ Successfully fetched ${allDocuments.length} documents total (${apiCallCount} API calls)`);
       return allDocuments;
     }
     
@@ -73,10 +102,11 @@ async function getAllDocuments() {
     let hasMore = true;
     
     while (hasMore) {
-      console.log(`📄 Fetching page ${page}...`);
+      console.log(`📄 Fetching page ${page}... (API calls: ${apiCallCount})`);
       
+      trackApiCall();
       const response = await client.getAllByType('*', {
-        pageSize: 100,
+        pageSize: PAGE_SIZE,
         page: page,
       });
       
@@ -85,13 +115,17 @@ async function getAllDocuments() {
       } else {
         allDocuments.push(...response);
         page++;
+        
+        // Add delay between requests to prevent rate limiting
+        await delay(REQUEST_DELAY_MS);
       }
     }
     
-    console.log(`✅ Successfully fetched ${allDocuments.length} documents`);
+    console.log(`✅ Successfully fetched ${allDocuments.length} documents (${apiCallCount} API calls)`);
     return allDocuments;
   } catch (error) {
     console.error('❌ Error fetching documents:', error);
+    console.error(`📊 Total API calls made: ${apiCallCount}`);
     throw error;
   }
 }
@@ -320,6 +354,9 @@ async function main() {
     console.log('=====================');
     console.log(`Repository: ${REPOSITORY_NAME}`);
     console.log(`Backup Directory: ${BACKUP_DIR}`);
+    console.log(`API Call Limit: ${MAX_API_CALLS}`);
+    console.log(`Request Delay: ${REQUEST_DELAY_MS}ms`);
+    console.log(`Page Size: ${PAGE_SIZE}`);
     console.log('');
     
     const backupPath = await createBackup();
@@ -327,12 +364,14 @@ async function main() {
     console.log('');
     console.log('🎉 Backup process completed successfully!');
     console.log(`📁 Backup location: ${backupPath}`);
+    console.log(`📊 Total API calls made: ${apiCallCount}`);
     
     process.exit(0);
   } catch (error) {
     console.error('');
     console.error('💥 Backup process failed!');
     console.error(error.message);
+    console.error(`📊 Total API calls made: ${apiCallCount}`);
     process.exit(1);
   }
 }

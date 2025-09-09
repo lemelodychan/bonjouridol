@@ -65,7 +65,10 @@ export default async function Page({ params }) {
         "author.website",
       ],
       fetchOptions: {
-        cache: 'no-store',
+        next: { 
+          tags: ["prismic", "galleries"],
+          revalidate: 1800 // Cache for 30 minutes
+        },
       },
   });
 

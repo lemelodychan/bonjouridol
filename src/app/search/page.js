@@ -76,7 +76,10 @@ export default async function SearchPage({ searchParams }) {
           // Check if search term is an exact match for an author/photographer
           const exactAuthorResponse = await client.getByType("author", {
             fetchOptions: {
-              cache: "no-store",
+              next: { 
+                tags: ["prismic", "authors"],
+                revalidate: 1800 // Cache for 30 minutes
+              },
             },
             filters: [prismic.filter.at("my.author.name", searchTerm)],
           });
@@ -90,7 +93,10 @@ export default async function SearchPage({ searchParams }) {
           // Fetch all articles and filter for photographer work in JavaScript
           const allArticlesResponse = await client.getAllByType("articles", {
             fetchOptions: {
-              cache: "no-store",
+              next: { 
+                tags: ["prismic", "articles"],
+                revalidate: 1800 // Cache for 30 minutes
+              },
             },
             orderings: [
               { field: "my.articles.publication_date", direction: "desc" },
@@ -121,7 +127,10 @@ export default async function SearchPage({ searchParams }) {
           // Fetch all galleries and filter for photographer work in JavaScript
           const allGalleriesResponse = await client.getAllByType("gallery", {
             fetchOptions: {
-              cache: "no-store",
+              next: { 
+                tags: ["prismic", "galleries"],
+                revalidate: 1800 // Cache for 30 minutes
+              },
             },
             orderings: [
               { field: "my.gallery.event_date", direction: "desc" },
@@ -187,7 +196,10 @@ export default async function SearchPage({ searchParams }) {
         // Fetch exact artist match
         const exactArtistResponse = await client.getByType("artist", {
           fetchOptions: {
-            cache: "no-store",
+            next: { 
+              tags: ["prismic", "artists"],
+              revalidate: 1800 // Cache for 30 minutes
+            },
           },
           filters: [prismic.filter.fulltext("my.artist.name_en", searchTerm)],
         })
@@ -201,7 +213,10 @@ export default async function SearchPage({ searchParams }) {
         // Search logic
         const response1 = await client.getByType("articles", {
             fetchOptions: {
-            cache: "no-store",
+              next: { 
+                tags: ["prismic", "articles"],
+                revalidate: 1800 // Cache for 30 minutes
+              },
             },
             pageSize: defaultPageSize,
             page: currentPage,
@@ -217,7 +232,10 @@ export default async function SearchPage({ searchParams }) {
 
         const titleResponse = await client.getByType("articles", {
             fetchOptions: {
-              cache: "no-store",
+              next: { 
+                tags: ["prismic", "articles"],
+                revalidate: 1800 // Cache for 30 minutes
+              },
             },
             pageSize: defaultPageSize,
             page: currentPage,
@@ -231,7 +249,10 @@ export default async function SearchPage({ searchParams }) {
         
         const subtitleResponse = await client.getByType("articles", {
         fetchOptions: {
-            cache: "no-store",
+            next: { 
+              tags: ["prismic", "articles"],
+              revalidate: 1800 // Cache for 30 minutes
+            },
         },
         pageSize: defaultPageSize,
         page: currentPage,
@@ -245,7 +266,10 @@ export default async function SearchPage({ searchParams }) {
 
         const documentResponse = await client.getByType("articles", {
             fetchOptions: {
-              cache: "no-store",
+              next: { 
+                tags: ["prismic", "articles"],
+                revalidate: 1800 // Cache for 30 minutes
+              },
             },
             pageSize: defaultPageSize,
             page: currentPage,
@@ -284,7 +308,10 @@ export default async function SearchPage({ searchParams }) {
 
         const exactMatchGallery = await client.getByType("gallery", {
             fetchOptions: {
-            cache: "no-store",
+              next: { 
+                tags: ["prismic", "galleries"],
+                revalidate: 1800 // Cache for 30 minutes
+              },
             },
             orderings: [
             { field: "my.gallery.event_date", direction: "desc" },
@@ -299,7 +326,10 @@ export default async function SearchPage({ searchParams }) {
         
         const partialMatchGallery = await client.getByType("gallery", {
             fetchOptions: {
-            cache: "no-store",
+              next: { 
+                tags: ["prismic", "galleries"],
+                revalidate: 1800 // Cache for 30 minutes
+              },
             },
             orderings: [
             { field: "my.gallery.event_date", direction: "desc" },

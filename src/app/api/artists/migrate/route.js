@@ -22,7 +22,10 @@ export async function POST(request) {
     console.log('Fetching artists from Prismic...')
     const prismicArtists = await prismicClient.getAllByType('artist', {
       fetchOptions: {
-        cache: 'no-store',
+        next: { 
+          tags: ["prismic", "artists"],
+          revalidate: 3600 // Cache for 1 hour
+        },
       },
     })
 

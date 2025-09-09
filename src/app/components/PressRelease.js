@@ -18,8 +18,10 @@ export default async function PressRelease() {
 
     const results = await client.getAllByType('articles', {
         fetchOptions: {
-          cache: 'no-store',
-          next: { tags: ['prismic', 'articles'] },
+          next: { 
+            tags: ['prismic', 'articles'],
+            revalidate: 3600 // Cache for 1 hour
+          },
         },
         orderings: [
           {

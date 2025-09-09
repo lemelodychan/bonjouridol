@@ -19,8 +19,10 @@ export default async function LatestPost() {
 
     const results = await client.getAllByType('articles', {
         fetchOptions: {
-            cache: 'no-store',
-            next: { tags: ['prismic', 'articles'] },
+            next: { 
+                tags: ['prismic', 'articles'],
+                revalidate: 3600 // Cache for 1 hour
+            },
         },
         filters: [
             prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Discovery', 'Behind the scenes']),
@@ -40,8 +42,10 @@ export default async function LatestPost() {
     // Get the hero post to exclude it from latest articles
     const heroPost = await client.getAllByType('articles', {
         fetchOptions: {
-          cache: 'no-store',
-          next: { tags: ['prismic', 'articles'] },
+          next: { 
+            tags: ['prismic', 'articles'],
+            revalidate: 3600 // Cache for 1 hour
+          },
         },
         limit: 1,
         orderings: [

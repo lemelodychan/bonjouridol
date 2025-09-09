@@ -160,7 +160,10 @@ export default async function Page({ params, searchParams }) {
       try {
         const articles = await client.getByType("articles", {
           fetchOptions: {
-            cache: "no-store",
+            next: { 
+              tags: ["prismic", "articles"],
+              revalidate: 1800 // Cache for 30 minutes
+            },
           },
           pageSize: defaultPageSize,
           page: currentPage,
@@ -200,7 +203,10 @@ export default async function Page({ params, searchParams }) {
         const galleries = await client.getByType("gallery", {
           ref: client.masterRef,
           fetchOptions: {
-            cache: "no-store",
+            next: { 
+              tags: ["prismic", "galleries"],
+              revalidate: 1800 // Cache for 30 minutes
+            },
           },
           pageSize: defaultPageSize,
           page: currentPage,

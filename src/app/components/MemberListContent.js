@@ -16,8 +16,10 @@ export default async function MemberListContent() {
 
     const members = await client.getAllByType("author", {
         fetchOptions: {
-            cache: "no-store",
-            next: { tags: ["prismic", "authors"] },
+            next: { 
+              tags: ["prismic", "authors"],
+              revalidate: 3600 // Cache for 1 hour
+            },
         },
         orderings: [
             {

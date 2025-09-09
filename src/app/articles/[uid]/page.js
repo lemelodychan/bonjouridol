@@ -151,7 +151,10 @@ export default async function Page({ params }) {
         'gallery.gallery',
       ],
       fetchOptions: {
-        cache: 'no-store',
+        next: { 
+          tags: ["prismic", "articles"],
+          revalidate: 1800 // Cache for 30 minutes
+        },
       },
     });
 

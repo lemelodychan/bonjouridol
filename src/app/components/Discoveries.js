@@ -14,8 +14,10 @@ export default async function Discoveries() {
 
   const results = await client.getAllByType("articles", {
     fetchOptions: {
-      cache: "no-store",
-      next: { tags: ["prismic", "articles"] },
+      next: { 
+        tags: ["prismic", "articles"],
+        revalidate: 3600 // Cache for 1 hour
+      },
     },
     limit: 5,
     orderings: [

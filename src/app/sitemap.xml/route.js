@@ -3,9 +3,25 @@ import { createClient } from "@/prismicio";
 export async function GET() {
   const client = createClient();
 
-  // Fetch your site data
-  const articles = await client.getByType("articles", { pageSize: 100 });
-  const galleries = await client.getByType("gallery", { pageSize: 100 });
+  // Fetch your site data with caching
+  const articles = await client.getByType("articles", { 
+    pageSize: 100,
+    fetchOptions: {
+      next: { 
+        tags: ["prismic", "articles"],
+        revalidate: 86400 // Cache for 24 hours
+      },
+    },
+  });
+  const galleries = await client.getByType("gallery", { 
+    pageSize: 100,
+    fetchOptions: {
+      next: { 
+        tags: ["prismic", "galleries"],
+        revalidate: 86400 // Cache for 24 hours
+      },
+    },
+  });
 
   // Base URL of your site
   const baseUrl = "https://www.bonjouridol.com";
