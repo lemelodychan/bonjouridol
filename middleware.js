@@ -1,5 +1,142 @@
 import { NextResponse } from 'next/server'
 
+// Rate limiting storage (in production, use Redis or similar)
+const rateLimitMap = new Map()
+const BOT_DETECTION_MAP = new Map()
+
+// Rate limiting configuration
+const RATE_LIMIT_CONFIG = {
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  maxRequests: 100, // Max requests per window
+  maxRequestsStrict: 20, // Strict limit for suspicious patterns
+  blockDuration: 60 * 60 * 1000, // Block for 1 hour
+}
+
+// Bot detection patterns
+const BOT_PATTERNS = [
+  /bot/i,
+  /crawler/i,
+  /spider/i,
+  /scraper/i,
+  /curl/i,
+  /wget/i,
+  /python/i,
+  /java/i,
+  /php/i,
+  /go-http/i,
+  /okhttp/i,
+  /postman/i,
+  /insomnia/i,
+]
+
+// Suspicious paths that bots often target
+const SUSPICIOUS_PATHS = [
+  '/wp-admin',
+  '/wp-login',
+  '/admin',
+  '/login',
+  '/.env',
+  '/config',
+  '/api/v1',
+  '/xmlrpc.php',
+  '/robots.txt',
+  '/sitemap.xml',
+  '/favicon.ico',
+]
+
+// Function to get client IP
+function getClientIP(request) {
+  const forwarded = request.headers.get('x-forwarded-for')
+  const realIP = request.headers.get('x-real-ip')
+  const cfConnectingIP = request.headers.get('cf-connecting-ip')
+  
+  return cfConnectingIP || realIP || (forwarded ? forwarded.split(',')[0].trim() : 'unknown')
+}
+
+// Function to detect bots
+function isBot(userAgent) {
+  if (!userAgent) return true
+  
+  return BOT_PATTERNS.some(pattern => pattern.test(userAgent))
+}
+
+// Function to check rate limit
+function checkRateLimit(ip, pathname) {
+  const now = Date.now()
+  const windowStart = now - RATE_LIMIT_CONFIG.windowMs
+  
+  // Clean old entries
+  for (const [key, data] of rateLimitMap.entries()) {
+    if (data.lastRequest < windowStart) {
+      rateLimitMap.delete(key)
+    }
+  }
+  
+  const key = `${ip}:${pathname}`
+  const current = rateLimitMap.get(key) || { count: 0, lastRequest: now, blocked: false }
+  
+  // Check if currently blocked
+  if (current.blocked && (now - current.blockedAt) < RATE_LIMIT_CONFIG.blockDuration) {
+    return { allowed: false, reason: 'blocked' }
+  }
+  
+  // Reset if window has passed
+  if (current.lastRequest < windowStart) {
+    current.count = 0
+    current.blocked = false
+  }
+  
+  // Check rate limit
+  const isSuspiciousPath = SUSPICIOUS_PATHS.some(path => pathname.includes(path))
+  const maxRequests = isSuspiciousPath ? RATE_LIMIT_CONFIG.maxRequestsStrict : RATE_LIMIT_CONFIG.maxRequests
+  
+  if (current.count >= maxRequests) {
+    current.blocked = true
+    current.blockedAt = now
+    rateLimitMap.set(key, current)
+    return { allowed: false, reason: 'rate_limit' }
+  }
+  
+  // Update count
+  current.count++
+  current.lastRequest = now
+  rateLimitMap.set(key, current)
+  
+  return { allowed: true, count: current.count, maxRequests }
+}
+
+// Function to log suspicious activity
+function logSuspiciousActivity(ip, userAgent, pathname, reason, blocked = false) {
+  const timestamp = new Date().toISOString()
+  console.warn(`🚨 SUSPICIOUS ACTIVITY [${timestamp}] IP: ${ip} | Path: ${pathname} | Reason: ${reason} | UA: ${userAgent}`)
+  
+  // Store in bot detection map for analysis
+  const key = `${ip}:${reason}`
+  const current = BOT_DETECTION_MAP.get(key) || { count: 0, firstSeen: timestamp, lastSeen: timestamp }
+  current.count++
+  current.lastSeen = timestamp
+  BOT_DETECTION_MAP.set(key, current)
+  
+  // Send to monitoring API (async, don't block)
+  if (typeof fetch !== 'undefined') {
+    fetch('/api/security/monitor', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'security_event',
+        ip,
+        userAgent,
+        pathname,
+        reason,
+        blocked,
+        timestamp
+      })
+    }).catch(() => {
+      // Ignore errors - monitoring is not critical
+    })
+  }
+}
+
 // Redirect mapping for old site URLs
 const redirectMap = {
   // Live Reports
@@ -72,10 +209,51 @@ const redirectMap = {
 
 export function middleware(request) {
   const { pathname } = request.nextUrl
+  const userAgent = request.headers.get('user-agent') || ''
+  const ip = getClientIP(request)
   
-  // Check if we have a redirect for this path
+  // Skip protection for static assets and API routes (except suspicious ones)
+  if (pathname.startsWith('/_next/') || pathname.startsWith('/api/') && !SUSPICIOUS_PATHS.some(path => pathname.includes(path))) {
+    return NextResponse.next()
+  }
+  
+  // Bot detection
+  if (isBot(userAgent)) {
+    logSuspiciousActivity(ip, userAgent, pathname, 'bot_detected')
+    
+    // Allow legitimate bots (Google, Bing) but with stricter limits
+    const isLegitimateBot = /googlebot|bingbot|slurp|duckduckbot/i.test(userAgent)
+    if (!isLegitimateBot) {
+      return new NextResponse('Bot access denied', { status: 403 })
+    }
+  }
+  
+  // Rate limiting
+  const rateLimitResult = checkRateLimit(ip, pathname)
+  if (!rateLimitResult.allowed) {
+    logSuspiciousActivity(ip, userAgent, pathname, rateLimitResult.reason, true)
+    
+    if (rateLimitResult.reason === 'blocked') {
+      return new NextResponse('Access temporarily blocked', { status: 429 })
+    } else {
+      return new NextResponse('Too many requests', { status: 429 })
+    }
+  }
+  
+  // Block suspicious paths
+  if (SUSPICIOUS_PATHS.some(path => pathname.includes(path))) {
+    logSuspiciousActivity(ip, userAgent, pathname, 'suspicious_path', true)
+    return new NextResponse('Not found', { status: 404 })
+  }
+  
+  // Block requests with no user agent (very suspicious)
+  if (!userAgent || userAgent.length < 10) {
+    logSuspiciousActivity(ip, userAgent, pathname, 'no_user_agent', true)
+    return new NextResponse('Access denied', { status: 403 })
+  }
+  
+  // Check for redirects
   const destination = redirectMap[pathname]
-  
   if (destination) {
     console.log(`Middleware redirecting ${pathname} to ${destination}`)
     return NextResponse.redirect(new URL(destination, request.url), 301)
@@ -95,7 +273,13 @@ export function middleware(request) {
     return NextResponse.redirect(new URL(newPath, request.url), 301)
   }
   
-  return NextResponse.next()
+  // Add security headers
+  const response = NextResponse.next()
+  response.headers.set('X-RateLimit-Limit', rateLimitResult.maxRequests.toString())
+  response.headers.set('X-RateLimit-Remaining', (rateLimitResult.maxRequests - rateLimitResult.count).toString())
+  response.headers.set('X-RateLimit-Reset', new Date(Date.now() + RATE_LIMIT_CONFIG.windowMs).toISOString())
+  
+  return response
 }
 
 export const config = {

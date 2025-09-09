@@ -1,20 +1,55 @@
 {
-    "redirects": [
-      {
-        "source": "/category/live-report/",
-        "destination": "/livereports", 
-        "permanent": true
-      },
-      {
-        "source": "/category/discoveries/",
-        "destination": "/discoveries", 
-        "permanent": true
-      },
-      {
-        "source": "/contact-us/",
-        "destination": "/contact", 
-        "permanent": true
-      }
-    ]
-  }
+  "redirects": [
+    {
+      "source": "/category/live-report/",
+      "destination": "/livereports", 
+      "permanent": true
+    },
+    {
+      "source": "/category/discoveries/",
+      "destination": "/discoveries", 
+      "permanent": true
+    },
+    {
+      "source": "/contact-us/",
+      "destination": "/contact", 
+      "permanent": true
+    }
+  ],
+  "functions": {
+    "src/app/api/**/*.js": {
+      "maxDuration": 30
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=3600"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/security-dashboard",
+      "destination": "/api/security/monitor?action=stats"
+    }
+  ]
+}
   
