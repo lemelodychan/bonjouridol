@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server'
-
-// Simple in-memory cache for batch artist likes
-const cache = new Map()
-const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+import { getCachedData, setCachedData } from './cache-utils'
 
 export async function GET(request) {
   try {
@@ -37,19 +34,11 @@ export async function GET(request) {
       )
     }
 
-    // Create cache key from sorted artist names
-    const cacheKey = artistArray.sort().join(',')
-    const now = Date.now()
-    
     // Check cache first
-    if (cache.has(cacheKey)) {
-      const cached = cache.get(cacheKey)
-      if (now - cached.timestamp < CACHE_DURATION) {
-        return NextResponse.json(cached.data)
-      } else {
-        // Remove expired cache entry
-        cache.delete(cacheKey)
-      }
+    const cachedData = getCachedData(artistArray)
+    if (cachedData) {
+      console.log(`[Batch API] Using cached data for ${artistArray.length} artists`)
+      return NextResponse.json(cachedData)
     }
 
     // Get direct artist likes for all artists
@@ -158,10 +147,8 @@ export async function GET(request) {
     })
 
     // Cache the result
-    cache.set(cacheKey, {
-      data: result,
-      timestamp: now
-    })
+    setCachedData(artistArray, result)
+    console.log(`[Batch API] Cached data for ${artistArray.length} artists`)
 
     return NextResponse.json(result)
 

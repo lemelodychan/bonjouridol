@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { invalidateArtistCache } from './cache-utils'
 
 // Check if Supabase is configured
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -107,6 +108,9 @@ export async function POST(request) {
       }
 
       userLikes = updatedLike.like_count
+      
+      // Invalidate cache for this artist
+      invalidateArtistCache(artistName)
     } else {
       // First time liking this artist
       const { data: newLike, error: insertLikeError } = await supabase
@@ -127,6 +131,9 @@ export async function POST(request) {
       }
 
       userLikes = newLike.like_count
+      
+      // Invalidate cache for this artist
+      invalidateArtistCache(artistName)
     }
 
     // Calculate total likes from artist_likes table

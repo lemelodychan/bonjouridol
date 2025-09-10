@@ -176,8 +176,18 @@ export function useBatchedArtistStats(artistName, initialLikeCount = null) {
         ...newStats,
         isLoading: false
       }))
+      
+      // Update the global cache with the new stats
+      if (newStats.totalLikes !== undefined) {
+        const now = Date.now()
+        globalCache.set(artistName, {
+          data: newStats.totalLikes,
+          timestamp: now
+        })
+        console.log(`[useBatchedArtistStats] Updated cache for ${artistName}: ${newStats.totalLikes}`)
+      }
     }
-  }, [])
+  }, [artistName])
 
   return {
     ...stats,
