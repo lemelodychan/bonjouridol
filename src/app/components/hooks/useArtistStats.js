@@ -15,6 +15,7 @@ export function useArtistStats(artistName, initialLikeCount = null) {
   useEffect(() => {
     // If we have initial data (including 0), don't fetch from API
     if (initialLikeCount !== null) {
+      console.log(`[useArtistStats] Using server data for ${artistName}: ${initialLikeCount}`)
       setStats(prev => ({ 
         ...prev, 
         totalLikes: initialLikeCount,
@@ -28,6 +29,7 @@ export function useArtistStats(artistName, initialLikeCount = null) {
       return
     }
 
+    console.log(`[useArtistStats] Making API call for ${artistName} - no server data provided`)
     const fetchStats = async () => {
       try {
         const response = await fetch(`/api/artists/stats?artist=${encodeURIComponent(artistName)}`)

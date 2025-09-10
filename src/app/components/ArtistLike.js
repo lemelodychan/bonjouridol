@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { HiOutlineHeart } from 'react-icons/hi'
 import styles from './ArtistLike.module.scss'
-import { useArtistStats } from './hooks/useArtistStats'
+import { useBatchedArtistStats } from './hooks/useBatchedArtistStats'
 
 export default function ArtistLike({ artistName, initialLikeCount = 0, hasServerData = false }) {
-  const { totalLikes, userLikes, isLoading, error, updateStats } = useArtistStats(artistName, hasServerData ? initialLikeCount : null)
+  const { totalLikes, userLikes, isLoading, error, updateStats } = useBatchedArtistStats(artistName, hasServerData ? initialLikeCount : null)
   const [isAnimating, setIsAnimating] = useState(false)
   const [bubbleHearts, setBubbleHearts] = useState([])
   const [localLikes, setLocalLikes] = useState(0)

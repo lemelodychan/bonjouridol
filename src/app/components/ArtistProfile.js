@@ -93,7 +93,7 @@ export default function ArtistProfile({ artist, noConstraints = false, hideDescr
                     <ArtistLike 
                         artistName={artistDisplayName} 
                         initialLikeCount={likeCounts[artistDisplayName] || 0}
-                        hasServerData={Object.keys(likeCounts).length > 0}
+                        hasServerData={likeCounts.hasOwnProperty(artistDisplayName)}
                     />
                 </div>
             </div>
