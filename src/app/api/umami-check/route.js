@@ -16,11 +16,13 @@ export async function GET(request) {
     // Check if client IP is in excluded list
     const shouldDisable = excludedIPs.includes(clientIP)
     
-    console.log('Umami check:', {
-      clientIP,
-      excludedIPs,
-      shouldDisable
-    })
+    // Only log when IP is excluded
+    if (shouldDisable) {
+      console.log('Umami check: IP excluded from tracking:', {
+        clientIP,
+        excludedIPs
+      })
+    }
     
     return NextResponse.json({ 
       shouldDisable,

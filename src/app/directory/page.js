@@ -36,7 +36,11 @@ export const metadata = {
 async function fetchArtistLikeCounts(artistNames) {
   try {
     const artistsParam = artistNames.join(',');
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/artists/batch-likes?artists=${encodeURIComponent(artistsParam)}`);
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/artists/batch-likes?artists=${encodeURIComponent(artistsParam)}`, {
+      // Add timeout and better error handling for server-side fetch
+      signal: AbortSignal.timeout(5000), // 5 second timeout
+    });
     
     if (response.ok) {
       const data = await response.json();
@@ -46,7 +50,10 @@ async function fetchArtistLikeCounts(artistNames) {
       return {};
     }
   } catch (error) {
-    console.error('Error in fetchArtistLikeCounts:', error);
+    // Don't log fetch errors in production to avoid noise
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error in fetchArtistLikeCounts:', error);
+    }
     return {};
   }
 }

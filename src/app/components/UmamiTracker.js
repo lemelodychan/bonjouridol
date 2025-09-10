@@ -13,7 +13,6 @@ export default function UmamiTracker() {
     // Check if Umami is already disabled in localStorage
     const isDisabledInStorage = localStorage.getItem('umami.disabled') === '1'
     if (isDisabledInStorage) {
-      console.log('🚫 Umami tracking DISABLED (from localStorage)')
       setShouldTrack(false)
       window.umami = { disabled: true }
       return
@@ -25,17 +24,15 @@ export default function UmamiTracker() {
         const response = await fetch('/api/umami-check')
         const data = await response.json()
         
-        console.log('UmamiTracker debug:', data)
-        
         if (data.shouldDisable) {
-          console.log('🚫 Umami tracking DISABLED for IP:', data.clientIP)
+          // Only log when IP is excluded
+          console.log('🚫 Umami tracking DISABLED for excluded IP:', data.clientIP)
           setShouldTrack(false)
           // Set the global flag for other components
           window.umami = { disabled: true }
           // Set localStorage to prevent any tracking
           localStorage.setItem('umami.disabled', '1')
         } else {
-          console.log('✅ Umami tracking ENABLED for IP:', data.clientIP)
           setShouldTrack(true)
           // Remove localStorage flag if it exists
           localStorage.removeItem('umami.disabled')
@@ -51,16 +48,12 @@ export default function UmamiTracker() {
   }, [])
 
   if (!isClient) {
-    console.log('🚫 UmamiTracker: Not client side yet')
     return null
   }
 
   if (!shouldTrack) {
-    console.log('🚫 UmamiTracker: Not rendering script (disabled for IP)')
     return null
   }
-
-  console.log('✅ UmamiTracker: Rendering script')
   return (
     <Script
       src="https://cloud.umami.is/script.js"

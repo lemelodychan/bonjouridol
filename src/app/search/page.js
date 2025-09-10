@@ -305,25 +305,9 @@ export default async function SearchPage({ searchParams }) {
         const articleSlugs = results.map(item => item.uid).filter(Boolean);
         const likeCounts = await fetchArticleLikeCounts(articleSlugs);
 
-        // Fetch like counts for exact artist match if it exists
-        let artistLikeCounts = {};
-        if (exactArtistMatch) {
-          const artistName = exactArtistMatch.data.name_en;
-          if (artistName) {
-            try {
-              const artistsParam = artistName;
-              const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/artists/batch-likes?artists=${encodeURIComponent(artistsParam)}`);
-              
-              if (response.ok) {
-                artistLikeCounts = await response.json();
-              } else {
-                console.error('Error fetching artist like counts for search:', response.status);
-              }
-            } catch (error) {
-              console.error('Error in fetchArtistLikeCounts for search:', error);
-            }
-          }
-        }
+        // Note: Artist like counts will be fetched client-side by the batched hook
+        // This eliminates server-side fetch issues and provides better performance
+        const artistLikeCounts = {};
 
 
         const exactMatchGallery = await client.getByType("gallery", {
