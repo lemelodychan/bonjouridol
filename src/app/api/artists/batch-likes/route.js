@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getCachedData, setCachedData } from './cache-utils'
+import { getCachedData, setCachedData } from '../cache-utils'
 
 export async function GET(request) {
   try {

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { invalidateArtistCache } from './cache-utils'
+import { invalidateArtistCache } from '../cache-utils'
 
 // Check if Supabase is configured
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
