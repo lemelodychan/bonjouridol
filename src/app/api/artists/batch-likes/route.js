@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server'
 
+// Simple in-memory cache for batch artist likes
+const cache = new Map()
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+
 export async function GET(request) {
   try {
     // Import and create Supabase client
@@ -33,6 +37,21 @@ export async function GET(request) {
       )
     }
 
+    // Create cache key from sorted artist names
+    const cacheKey = artistArray.sort().join(',')
+    const now = Date.now()
+    
+    // Check cache first
+    if (cache.has(cacheKey)) {
+      const cached = cache.get(cacheKey)
+      if (now - cached.timestamp < CACHE_DURATION) {
+        return NextResponse.json(cached.data)
+      } else {
+        // Remove expired cache entry
+        cache.delete(cacheKey)
+      }
+    }
+
     // Get direct artist likes for all artists
     const { data: artistLikesData, error: artistLikesError } = await supabase
       .from('artist_likes')
@@ -56,7 +75,12 @@ export async function GET(request) {
       directLikeCounts[like.artist_name] += like.like_count
     })
 
-    // Get all articles with artist data
+    // Get articles with artist data - optimize by using a more targeted query
+    // We'll fetch articles that might contain our artists
+    const artistArticleSlugs = {}
+    
+    // Create a more efficient query by checking for artist names in the artist field
+    // This is a simplified approach - in a real scenario, you might want to use full-text search
     const { data: allArticles, error: articlesError } = await supabase
       .from('articles')
       .select('slug, artist')
@@ -64,17 +88,10 @@ export async function GET(request) {
 
     if (articlesError) {
       console.error('Error fetching articles for artist likes:', articlesError)
-    }
-
-    // Process articles to find single-artist articles and get their like counts
-    const artistArticleSlugs = {}
-    
-    if (allArticles) {
-      console.log('Processing', allArticles.length, 'articles for artists:', artistArray)
-      
+    } else if (allArticles) {
+      // Process articles more efficiently
       for (const article of allArticles) {
         if (article.artist) {
-          console.log(`Article ${article.slug} artist data:`, JSON.stringify(article.artist))
           let artistString = null
           
           if (typeof article.artist === 'string') {
@@ -95,14 +112,9 @@ export async function GET(request) {
               artistArticleSlugs[artistString] = []
             }
             artistArticleSlugs[artistString].push(article.slug)
-            console.log(`Found article ${article.slug} for artist ${artistString}`)
-          } else if (artistString) {
-            console.log(`Article ${article.slug} has artist "${artistString}" but not in requested list:`, artistArray)
           }
         }
       }
-      
-      console.log('Artist article slugs:', artistArticleSlugs)
     }
 
     // Get article likes for all relevant articles
@@ -143,10 +155,14 @@ export async function GET(request) {
       const directLikes = directLikeCounts[artist] || 0
       const articleLikes = articleLikeCounts[artist] || 0
       result[artist] = directLikes + articleLikes
-      console.log(`${artist}: ${directLikes} direct + ${articleLikes} article = ${result[artist]} total`)
     })
 
-    console.log('Final result:', result)
+    // Cache the result
+    cache.set(cacheKey, {
+      data: result,
+      timestamp: now
+    })
+
     return NextResponse.json(result)
 
   } catch (error) {

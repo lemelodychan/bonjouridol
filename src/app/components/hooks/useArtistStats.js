@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 
 export function useArtistStats(artistName, initialLikeCount = null) {
   const [stats, setStats] = useState({
-    totalLikes: initialLikeCount || 0,
+    totalLikes: initialLikeCount !== null ? initialLikeCount : 0,
     userLikes: 0,
     directArtistLikes: 0,
     articleLikes: 0,
@@ -13,7 +13,7 @@ export function useArtistStats(artistName, initialLikeCount = null) {
   })
 
   useEffect(() => {
-    // If we have initial data, don't fetch from API
+    // If we have initial data (including 0), don't fetch from API
     if (initialLikeCount !== null) {
       setStats(prev => ({ 
         ...prev, 
