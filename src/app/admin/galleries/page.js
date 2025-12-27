@@ -9,6 +9,7 @@ import { FiEdit, FiTrash2, FiSearch, FiExternalLink, FiChevronLeft, FiChevronRig
 import { IoStarOutline, IoStar, IoCheckmark } from 'react-icons/io5'
 import { FaCheck } from "react-icons/fa6";
 import { FaRegStar, FaStar } from "react-icons/fa6";
+import { FaImage } from "react-icons/fa6";
 
 import { format } from 'date-fns'
 
@@ -121,6 +122,7 @@ export default function GalleriesPage() {
   function clearGalleriesCache() {
     try {
       localStorage.removeItem(GALLERIES_CACHE_KEY)
+      localStorage.removeItem(PENDING_MIGRATIONS_KEY)
     } catch (error) {
       console.error('Error clearing galleries cache:', error)
     }
@@ -257,6 +259,9 @@ export default function GalleriesPage() {
 
   async function removePendingMigration(id) {
     try {
+      // Clear localStorage to avoid duplicates
+      clearGalleriesCache()
+      
       // Update local state immediately
       const updatedMigrations = pendingMigrations.filter(m => m.id !== id)
       setPendingMigrations(updatedMigrations)
@@ -267,9 +272,6 @@ export default function GalleriesPage() {
         method: 'DELETE',
       })
       // Don't wait for server response - already updated locally
-      
-      // Invalidate cache since we modified data
-      clearGalleriesCache()
     } catch (error) {
       console.error('Error removing pending migration:', error)
     }
@@ -298,13 +300,13 @@ export default function GalleriesPage() {
         throw new Error(errorData.message || 'Failed to discard gallery')
       }
       
+      // Clear localStorage to avoid duplicates
+      clearGalleriesCache()
+      
       // Remove from local state
       const updatedMigrations = pendingMigrations.filter(m => m.id !== migration.id)
       setPendingMigrations(updatedMigrations)
       savePendingMigrationsToLocalStorage(updatedMigrations)
-      
-      // Invalidate cache
-      clearGalleriesCache()
       
       alert('Gallery discarded successfully. It has been archived and removed from the pending list.')
     } catch (error) {
@@ -568,6 +570,9 @@ export default function GalleriesPage() {
                 updatedMigrations = [...pendingMigrations, finalMigrationData]
               }
               
+              // Clear localStorage to avoid duplicates before saving
+              clearGalleriesCache()
+              
               setPendingMigrations(updatedMigrations)
               savePendingMigrationsToLocalStorage(updatedMigrations)
             } catch (error) {
@@ -695,14 +700,6 @@ export default function GalleriesPage() {
       // If we don't have the full data, show an error
       setError('Cannot edit: Gallery data not available. Please recreate the gallery.')
     }
-  }
-
-  if (loading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loading}>Loading galleries...</div>
-      </div>
-    )
   }
 
   return (
@@ -1128,7 +1125,9 @@ export default function GalleriesPage() {
 
       {!showForm && (
         <div className={styles.content}>
-          {activeTab === 'published' ? (
+          {activeTab === 'published' && loading ? (
+            <div className={styles.loading}>Loading galleries...</div>
+          ) : activeTab === 'published' ? (
             <>
               <div className={styles.galleriesList}>
                 {paginatedGalleries.length === 0 ? (
@@ -1199,10 +1198,31 @@ export default function GalleriesPage() {
                   <p className={styles.emptySubtitle}>Galleries you create will appear here until they're published in Prismic.</p>
                 </div>
               ) : (
-                pendingMigrations.map((migration) => (
+                pendingMigrations.map((migration) => {
+                  const featuredImage = migration.galleryData?.featured_image
+                  const featuredImageUrl = featuredImage?.url || null
+                  
+                  return (
                   <div key={migration.id} className={styles.galleryItem}>
+                    {featuredImageUrl ? (
+                        <div className={styles.featuredImageContainer}>
+                        <img 
+                            src={featuredImageUrl} 
+                            alt={migration.title}
+                            className={styles.featuredImage}
+                        />
+                        </div>
+                    ) : (
+                        <div className={styles.featuredImagePlaceholder}>
+                        <FaImage className={styles.placeholderIcon} />
+                        </div>
+                    )}
                     <div className={styles.galleryContent}>
-                      <h3 className={styles.galleryTitle}>{migration.title}</h3>
+                      <div className={styles.galleryHeader}>
+                        <div className={styles.galleryHeaderContent}>
+                          <h3 className={styles.galleryTitle}>{migration.title}</h3>
+                        </div>
+                      </div>
                       <div className={styles.galleryMeta}>
                         <span className={styles.metaItem}>
                           Created: {format(new Date(migration.createdAt), 'MMM d, yyyy HH:mm')}
@@ -1214,7 +1234,8 @@ export default function GalleriesPage() {
                       <div className={styles.galleryUID}>
                         UID: <code>{migration.uid}</code>
                       </div>
-                      <div className={styles.pendingActions}>
+                    </div>
+                    <div className={styles.pendingActions}>
                         <span className={styles.pendingActionsLeft}>
                             <button
                             onClick={() => handleEditMigration(migration)}
@@ -1251,9 +1272,9 @@ export default function GalleriesPage() {
                           </button>
                         </span>
                       </div>
-                    </div>
                   </div>
-                ))
+                  )
+                })
               )}
             </div>
           )}

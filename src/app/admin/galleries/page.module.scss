@@ -134,14 +134,64 @@
 
   .galleryItem {
     background: var(--white);
-    padding: 0.5rem 1rem 1rem 1rem;
+    padding: 1rem;
     border-radius: 16px;
+    display: grid;
+    grid-template-columns: 124px 1fr;
+    grid-gap: 1rem;
+    flex-direction: row;
     border: 1px solid var(--light-grey);
 
     .galleryContent {
+      flex: 1;
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
+    }
+    
+    .galleryHeader {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    
+    .featuredImageContainer {
+      flex-shrink: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: var(--light-grey);
+      border: 1px solid var(--light-grey);
+      
+      .featuredImage {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+    
+    .featuredImagePlaceholder {
+      flex-shrink: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      background-color: var(--light-grey);
+      border: 1px solid var(--light-grey);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--medium-grey);
+      
+      .placeholderIcon {
+        font-size: 2rem;
+        opacity: 0.5;
+      }
+    }
+    
+    .galleryHeaderContent {
+      flex: 1;
+      min-width: 0;
     }
     
     .galleryTitle {
@@ -180,12 +230,14 @@
     }
 
     .pendingActions {
+      grid-column: 1 / -1;
       display: flex;
       gap: 1rem;
-      padding-top: 1rem;
-      margin-top: 0.5rem;
-      border-top: 1px solid var(--light-grey);
       justify-content: space-between;
+      height: fit-content;
+      padding-top: 1rem;
+      border-top: 1px solid var(--light-grey);
+      margin-top: 0.25rem;
     
       .pendingActionsLeft {
         display: flex;
