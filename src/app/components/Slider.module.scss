@@ -86,7 +86,7 @@
                         font-size: var(--font-size-sm);
                         letter-spacing: 0.5px;
                     
-                        &.discovery  {
+                        &.discovery, &.livereport {
                             background-color: var(--bi-indigo);
                             order: 2;
                         }
@@ -118,8 +118,14 @@
                     text-align: left;
 
                     > h3 {
-                        display: inline-block;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                        line-clamp: 2;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                         width: fit-content;
+                        max-width: 100%;
                         font-size: 20px;
                         font-weight: 500;
                         line-height: 32px;

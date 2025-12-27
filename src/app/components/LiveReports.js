@@ -7,9 +7,9 @@ import Link from "next/link";
 import Button from "./IconButton";
 import { IoArrowForwardOutline } from "react-icons/io5";
 
-import styles from "./Discoveries.module.scss";
+import styles from "./LiveReports.module.scss";
 
-export default async function Discoveries() {
+export default async function LiveReports() {
   const client = createClient();
 
   const results = await client.getByType("articles", {
@@ -31,7 +31,7 @@ export default async function Discoveries() {
       },
     ],
     filters: [
-      prismic.filter.any("document.tags", ["Discovery"]),
+      prismic.filter.any("my.articles.type", ["Live report"]),
     ],
   });
 
@@ -50,10 +50,10 @@ export default async function Discoveries() {
   }));
 
   return (
-    <div className={styles.Discoveries}>
+    <div className={styles.LiveReports}>
       <h2>
-        <span>Discoveries</span>
-        <Link href="/discoveries" className={styles.btn}>
+        <span>Live Reports</span>
+        <Link href="/livereports" className={styles.btn}>
           <Button variant={"White"} textValue={"See more articles"} icon={<IoArrowForwardOutline />} />
         </Link>
       </h2>
@@ -62,8 +62,8 @@ export default async function Discoveries() {
         slides={slides}
         className={styles.Slider} />
 
-      <div className={styles.DiscoveriesFooter}>
-        <Link href="/discoveries" className={styles.btn}>
+      <div className={styles.LiveReportsFooter}>
+        <Link href="/livereports" className={styles.btn}>
           <Button variant={"Pink"} textValue={"See more articles"} icon={<IoArrowForwardOutline />} />
         </Link>
       </div>

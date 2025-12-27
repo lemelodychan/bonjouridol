@@ -1,0 +1,87 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.LiveReports {
+    position: relative;
+    z-index: 4;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 16px;
+
+    background-color: var(--light-grey);
+    padding: 24px 0;
+    width: 100%;
+    overflow: hidden;
+
+    @include md {
+        border-radius: 24px;
+    }
+
+    h2 {
+        padding: 0 24px 4px 24px;
+
+        @include md {
+            font-size: 32px;
+            line-height: 48px;
+            display: grid;
+            grid-template-columns: max-content auto max-content !important;
+        }
+
+        &:after {
+            order: 2;
+        }
+        span {
+            order: 1;
+
+        }
+        a {
+            order: 3;
+            display: none;
+
+            @include md {
+                display: block;
+            }
+
+            button {
+
+                svg {
+                    order: 2;
+                }
+            }
+        }
+    }
+
+    .Slider, .swiper {
+        width: 100%;
+    }
+
+    .LiveReportsFooter {
+        padding: 0 24px;
+        width: 100%;
+        display: block;
+        margin-top: -16px;
+
+        @include md {
+            display: none;
+        }
+
+        a {
+            width: 100%;
+            display: block;
+
+            @include md {
+                width: fit-content;
+            }
+
+            button {
+                width: 100%;
+
+                @include md {
+                    width: fit-content;
+                }
+            }
+        }
+    }
+}
