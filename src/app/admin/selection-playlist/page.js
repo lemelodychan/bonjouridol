@@ -311,14 +311,6 @@ export default function SelectionPlaylistPage() {
     setCoverMode('upload')
   }
 
-  if (loading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loading}>Loading playlist...</div>
-      </div>
-    )
-  }
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -561,7 +553,31 @@ export default function SelectionPlaylistPage() {
 
       <div className={styles.content}>
         <div className={styles.playlist}>
-          {playlist.length === 0 ? (
+          {loading ? (
+            <>
+              {[...Array(5)].map((_, index) => (
+                <div key={`skeleton-${index}`} className={styles.playlistItemSkeleton}>
+                  <div className={styles.skeletonCover}></div>
+                  <div className={styles.skeletonContent}>
+                    <div className={styles.skeletonTitle}></div>
+                    <div className={styles.skeletonArtist}></div>
+                    <div className={styles.skeletonLinks}>
+                      <div className={styles.skeletonLink}></div>
+                      <div className={styles.skeletonLink}></div>
+                    </div>
+                    <div className={styles.skeletonMeta}>
+                      <div className={styles.skeletonMetaItem}></div>
+                      <div className={styles.skeletonMetaItem}></div>
+                    </div>
+                  </div>
+                  <div className={styles.skeletonActions}>
+                    <div className={styles.skeletonButton}></div>
+                    <div className={styles.skeletonButton}></div>
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : playlist.length === 0 ? (
             <div className={styles.empty}>
               <p>No songs in the playlist yet.</p>
               <p className={styles.emptySubtitle}>Click "Add Song" to get started.</p>

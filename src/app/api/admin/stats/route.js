@@ -288,10 +288,39 @@ export async function GET(request) {
       })
     }
 
+    // Get total assets count from Prismic Asset API
+    let totalAssets = 0
+    try {
+      const MASTER_TOKEN = process.env.PRISMIC_MASTER_TOKEN
+      const REPOSITORY_NAME = process.env.REPO_NAME || 'bonjouridol'
+      
+      if (MASTER_TOKEN) {
+        // Fetch first page to get total count (Asset API returns total in response)
+        const assetResponse = await fetch('https://asset-api.prismic.io/assets?limit=1', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${MASTER_TOKEN}`,
+            'Content-Type': 'application/json',
+            'repository': REPOSITORY_NAME,
+          },
+        })
+        
+        if (assetResponse.ok) {
+          const assetData = await assetResponse.json()
+          // Asset API returns { total, items, cursor, is_opensearch_result }
+          totalAssets = assetData.total || 0
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching total assets from Prismic:', error)
+      // Don't fail the whole request if asset count fails
+    }
+
     return NextResponse.json({
       totalArtists: totalArtists || 0,
       totalArticles: totalArticles || 0,
       totalLikes: totalLikes || 0,
+      totalAssets: totalAssets || 0,
       artistRankings,
       articleLikeRankings,
       articleViewRankings

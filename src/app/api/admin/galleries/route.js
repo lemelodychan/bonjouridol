@@ -24,6 +24,7 @@ export async function GET(request) {
       event_date: gallery.data.event_date || gallery.first_publication_date,
       venue: gallery.data.venue || '',
       image_count: gallery.data.gallery?.length || 0,
+      featured_image: gallery.data.featured_image || null,
       first_publication_date: gallery.first_publication_date,
       last_publication_date: gallery.last_publication_date,
     }))

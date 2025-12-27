@@ -1126,7 +1126,22 @@ export default function GalleriesPage() {
       {!showForm && (
         <div className={styles.content}>
           {activeTab === 'published' && loading ? (
-            <div className={styles.loading}>Loading galleries...</div>
+            <div className={styles.galleriesList}>
+              {[...Array(5)].map((_, index) => (
+                <div key={`skeleton-${index}`} className={styles.galleryItemSkeleton}>
+                  <div className={styles.skeletonImage}></div>
+                  <div className={styles.skeletonContent}>
+                    <div className={styles.skeletonTitle}></div>
+                    <div className={styles.skeletonMeta}>
+                      <div className={styles.skeletonMetaItem}></div>
+                      <div className={styles.skeletonMetaItem}></div>
+                      <div className={styles.skeletonMetaItem}></div>
+                    </div>
+                    <div className={styles.skeletonUID}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : activeTab === 'published' ? (
             <>
               <div className={styles.galleriesList}>
@@ -1136,10 +1151,30 @@ export default function GalleriesPage() {
                     <p className={styles.emptySubtitle}>Click "Create Gallery" to get started.</p>
                   </div>
                 ) : (
-                  paginatedGalleries.map((gallery) => (
+                  paginatedGalleries.map((gallery) => {
+                    const featuredImageUrl = gallery.featured_image?.url || null
+                    
+                    return (
                     <div key={gallery.id} className={styles.galleryItem}>
+                      {featuredImageUrl ? (
+                        <div className={styles.featuredImageContainer}>
+                          <img 
+                            src={featuredImageUrl} 
+                            alt={gallery.title}
+                            className={styles.featuredImage}
+                          />
+                        </div>
+                      ) : (
+                        <div className={styles.featuredImagePlaceholder}>
+                          <FaImage className={styles.placeholderIcon} />
+                        </div>
+                      )}
                       <div className={styles.galleryContent}>
-                        <h3 className={styles.galleryTitle}>{gallery.title}</h3>
+                        <div className={styles.galleryHeader}>
+                          <div className={styles.galleryHeaderContent}>
+                            <h3 className={styles.galleryTitle}>{gallery.title}</h3>
+                          </div>
+                        </div>
                         <div className={styles.galleryMeta}>
                           {gallery.artist_name && (
                             <span className={styles.metaItem}>Artist: {gallery.artist_name}</span>
@@ -1159,7 +1194,8 @@ export default function GalleriesPage() {
                         </div>
                       </div>
                     </div>
-                  ))
+                    )
+                  })
                 )}
               </div>
               {totalPages > 1 && (
@@ -1189,9 +1225,21 @@ export default function GalleriesPage() {
           ) : (
             <div className={styles.galleriesList}>
               {loadingPending ? (
-                <div className={styles.empty}>
-                  <p>Loading pending migrations...</p>
-                </div>
+                <>
+                  {[...Array(3)].map((_, index) => (
+                    <div key={`skeleton-pending-${index}`} className={styles.galleryItemSkeleton}>
+                      <div className={styles.skeletonImage}></div>
+                      <div className={styles.skeletonContent}>
+                        <div className={styles.skeletonTitle}></div>
+                        <div className={styles.skeletonMeta}>
+                          <div className={styles.skeletonMetaItem}></div>
+                          <div className={styles.skeletonMetaItem}></div>
+                        </div>
+                        <div className={styles.skeletonUID}></div>
+                      </div>
+                    </div>
+                  ))}
+                </>
               ) : pendingMigrations.length === 0 ? (
                 <div className={styles.empty}>
                   <p>No pending migrations.</p>

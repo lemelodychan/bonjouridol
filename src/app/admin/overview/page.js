@@ -14,6 +14,7 @@ export default function OverviewPage() {
     totalArtists: 0,
     totalArticles: 0,
     totalLikes: 0,
+    totalAssets: 0,
     artistRankings: [],
     articleLikeRankings: [],
     articleViewRankings: []
@@ -168,6 +169,10 @@ export default function OverviewPage() {
           <div className={styles.statCard}>
             <div className={styles.statValue}>{(stats.totalLikes || 0).toLocaleString()}</div>
             <div className={styles.statLabel}>Total 🥐</div>
+          </div>
+          <div className={styles.statCard}>
+            <div className={styles.statValue}>{(stats.totalAssets || 0).toLocaleString()}</div>
+            <div className={styles.statLabel}>Total Photos</div>
           </div>
         </div>
 

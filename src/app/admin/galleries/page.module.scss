@@ -1025,4 +1025,103 @@
   font-style: italic;
 }
 
+// Skeleton Loaders
+.galleryItemSkeleton {
+  background: var(--white);
+  padding: 1rem;
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: 124px 1fr;
+  grid-gap: 1rem;
+  border: 1px solid var(--light-grey);
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+
+  .skeletonImage {
+    width: 100%;
+    height: 124px;
+    border-radius: 8px;
+    background: linear-gradient(
+      90deg,
+      var(--light-grey) 0%,
+      rgba(255, 255, 255, 0.5) 50%,
+      var(--light-grey) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.5s ease-in-out infinite;
+  }
+
+  .skeletonContent {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-top: 0.25rem;
+  }
+
+  .skeletonTitle {
+    height: 24px;
+    width: 70%;
+    border-radius: 4px;
+    background: linear-gradient(
+      90deg,
+      var(--light-grey) 0%,
+      rgba(255, 255, 255, 0.5) 50%,
+      var(--light-grey) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.5s ease-in-out infinite;
+  }
+
+  .skeletonMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .skeletonMetaItem {
+    height: 16px;
+    width: 120px;
+    border-radius: 4px;
+    background: linear-gradient(
+      90deg,
+      var(--light-grey) 0%,
+      rgba(255, 255, 255, 0.5) 50%,
+      var(--light-grey) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.5s ease-in-out infinite;
+  }
+
+  .skeletonUID {
+    height: 32px;
+    width: 60%;
+    border-radius: 4px;
+    background: linear-gradient(
+      90deg,
+      var(--light-grey) 0%,
+      rgba(255, 255, 255, 0.5) 50%,
+      var(--light-grey) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes skeletonShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes skeletonPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
 
