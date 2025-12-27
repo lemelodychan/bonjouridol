@@ -1,0 +1,244 @@
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0rem;
+  font-family: var(--font-text);
+  border-radius: 16px;
+  height: 100%;
+  min-height: 0;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--light-grey);
+  background-color: var(--white);
+  overflow: hidden;
+
+  .title {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    margin: 0;
+    color: var(--dark-grey);
+  }
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  .statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-column-gap: 1.5rem;
+    padding: 1.5rem;
+
+    .statCard {
+      background: var(--white);
+      padding: 2rem;
+      border-radius: 8px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0rem;
+    
+      .statValue {
+        font-size: var(--font-size-2xl);
+        font-family: var(--font-title);
+        font-weight: 700;
+        color: var(--bi-dark-pink);
+      }
+    
+      .statLabel {
+        font-size: var(--font-size-md);
+        color: var(--medium-grey);
+      }
+    }
+  }
+}
+
+.rankingsSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+  padding: 0 1.5rem;
+
+  .rankingCard {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .rankingTitle {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--dark-grey);
+    }
+  }
+}
+
+
+.tableWrapper {
+  border: 1px solid var(--light-grey);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.rankingTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border: none;
+}
+
+.tableHeader {
+  background-color: var(--light-grey);
+}
+
+.tableHeaderCell {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--medium-grey);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--light-grey);
+}
+
+.tableHeaderCellRank {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--medium-grey);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--light-grey);
+  width: 32px;
+}
+
+.tableHeaderCellName {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--medium-grey);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--light-grey);
+  width: auto;
+}
+
+.tableHeaderCellLikes {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--medium-grey);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--light-grey);
+  width: 64px;
+  white-space: nowrap;
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--light-grey);
+  transition: background-color 0.2s;
+  background-color: var(--white);
+  overflow: hidden;
+
+  &:hover {
+    background-color: var(--light-grey);
+  }
+}
+
+.tableCell {
+  padding: 1rem 0.75rem;
+  color: var(--dark-grey);
+}
+
+.tableCellRank {
+  padding: 1rem 0.75rem;
+  color: var(--medium-grey);
+  font-weight: 600;
+  color: var(--bi-dark-pink);
+  width: 60px;
+}
+
+.tableCellName {
+  padding: 1rem 0.75rem;
+  color: var(--dark-grey);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  
+  .articleLink {
+    color: var(--bi-indigo);
+    text-decoration: none;
+    transition: color 0.2s;
+    
+    &:hover {
+      color: var(--bi-dark-indigo);
+    }
+  }
+}
+
+.tableCellLikes {
+  padding: 1rem 0.75rem;
+  color: var(--dark-grey);
+  white-space: nowrap;
+  width: 140px;
+}
+
+.noData {
+  text-align: center;
+  color: var(--medium-grey);
+  padding: 2rem;
+  font-style: italic;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.error {
+  background-color: #fee;
+  color: #c33;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border: 1px solid #fcc;
+}
+
+.retryButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #5568d3;
+  }
+}
+

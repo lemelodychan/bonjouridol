@@ -33,7 +33,6 @@ const BOT_PATTERNS = [
 const SUSPICIOUS_PATHS = [
   '/wp-admin',
   '/wp-login',
-  '/admin',
   '/login',
   '/.env',
   '/config',
@@ -240,8 +239,8 @@ export function middleware(request) {
     }
   }
   
-  // Block suspicious paths
-  if (SUSPICIOUS_PATHS.some(path => pathname.includes(path))) {
+  // Block suspicious paths (but allow /admin which is handled by auth)
+  if (SUSPICIOUS_PATHS.some(path => pathname.includes(path)) && !pathname.startsWith('/admin')) {
     logSuspiciousActivity(ip, userAgent, pathname, 'suspicious_path', true)
     return new NextResponse('Not found', { status: 404 })
   }

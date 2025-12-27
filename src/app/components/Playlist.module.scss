@@ -1,0 +1,552 @@
+.playlistContainer {
+  position: fixed;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+// Collapsed state: Use mobile trigger design for both mobile and desktop
+.playlistContainer.collapsed {
+  bottom: 1rem;
+
+  &:not(.mobile) {
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    
+    // Only animate when switching modes (not on initial load)
+    &.mounted {
+      animation: slideUpFromBottom 0.3s ease-out;
+    }
+  }
+
+  &.mobile {
+    left: 1rem;
+  }
+}
+
+// Expanded state: Different positioning for mobile vs desktop
+.playlistContainer.expanded {
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.15);
+  
+  &.mobile {
+    left: 1rem;
+    bottom: 1rem;
+    max-width: calc(100vw - 64px - 80px);
+  }
+  
+  &:not(.mobile) {
+    left: 50%;
+    bottom: 1rem;
+    transform: translateX(-50%) translateY(0);
+    width: fit-content;
+    max-width: 440px;
+    border-radius: 32px;
+    
+    // Only animate when switching modes (not on initial load)
+    &.mounted {
+      animation: slideUpFromBottom 0.3s ease-out;
+    }
+  }
+}
+
+@keyframes slideUpFromBottom {
+  from {
+    transform: translateX(-50%) translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+.toggleButton {
+  position: absolute;
+  z-index: 3;
+  right: 12px;
+  top: calc(50% - 16px);
+  width: 32px;
+  height: 32px;
+  color: var(--bi-dark-pink);
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.Tag {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0.25rem;
+  height: 48px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--bi-gold);
+  background-color: var(--white);
+  padding: 4px 8px;
+  border-radius: 4px 4px 0 0;
+  position: absolute;
+  top: -24px;
+  left: 0;
+  z-index: 1;
+
+  svg {
+    margin-top: 2px;
+  }
+
+  span {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: var(--font-size-sm);
+    letter-spacing: 0.5px;
+    color: var(--bi-dark-pink);
+  }
+}
+
+.playlistContent {
+  position: relative;
+  z-index: 2;
+  background: var(--light-grey);
+  border-radius: 32px;
+  padding: 0.75rem 1.5rem 0.75rem 0.75rem;
+  width: 100%;
+  box-sizing: border-box; // Include padding in width calculation
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  align-items: center;
+  justify-content: flex-start;
+  grid-column-gap: 1rem;
+  min-width: 0; // Allow grid to shrink below content size
+  overflow: hidden;
+
+  .cdPlayerLink {
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+  
+    &:hover .cdPlayer .cdDisk {
+      left: -24px;
+      margin-right: -24px;
+    }
+  
+    .cdPlayer {
+      position: relative;
+      width: fit-content;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1000px;
+    
+      .cdJacket {
+        position: relative;
+        width: 72px;
+        height: 72px;
+        background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+        border-radius: 22px 2px 2px 22px;
+        box-shadow: 
+          4px 0px 12px rgba(0, 0, 0, 0.15),
+          inset 0 0 20px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        transform-style: preserve-3d;
+        z-index: 2;
+      
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      .cdDisk {
+        position: relative;
+        left: -28px;
+        margin-right: -28px;
+        transition: left 0.3s ease-in-out, margin-right 0.3s ease-in-out, transform 0.3s ease-in-out;
+        transform: translate(-50%, -50%) rotate(0deg);
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: 
+          // Vinyl groove pattern - thin circular lines (on top)
+          repeating-radial-gradient(
+            circle at center,
+            transparent 0px,
+            transparent 1.5px,
+            rgba(197, 61, 107, 0.6) 1.5px,
+            rgba(197, 61, 107, 0.6) 2px,
+            transparent 2px,
+            transparent 3.5px
+          ),
+          // Base pink gradient (behind the lines)
+          radial-gradient(circle at center, #ff8fab 0%, #ff6b9d 50%, #ff5a8a 100%);
+        animation: rotate 20s linear infinite;
+        overflow: hidden;
+        z-index: 1;
+      
+        .diskCover {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 36px;
+          height: 36px;
+          background: var(--white);
+          border-radius: 50%;
+          border: 1px solid rgba(197, 61, 107, 0.6);
+          z-index: 3;
+        
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+          }
+        }
+        .diskCenter {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 16px;
+          height: 16px;
+          background: var(--white);
+          border-radius: 50%;
+          border: 1px solid rgba(197, 61, 107, 0.3);
+          z-index: 4;
+        }
+      }
+    }
+  }
+
+  .songInfoContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+    justify-content: center;
+    min-width: 0; // Allow flex item to shrink below content size
+    width: 100%;
+    overflow: hidden; // Prevent overflow
+    margin-right: 32px;
+
+    .songInfo {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      min-width: 0; // Allow flex item to shrink below content size
+      flex-direction: column;
+      gap: 0.25rem;
+      align-items: flex-start;
+      text-align: left;
+      overflow: hidden; // Prevent overflow
+    
+      .songTitle {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        align-items: baseline;
+        text-align: left;
+        font-size: var(--font-size-md);
+        font-weight: 600;
+        font-family: var(--font-text);
+        color: var(--bi-dark-pink);
+        line-height: 1.4;
+        width: 100%;
+        min-width: 0;
+        overflow: hidden;
+      
+        &_english {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          width: 100%;
+          min-width: 0;
+          max-width: calc(100% - 32px);
+          text-decoration: none;
+          color: inherit;
+          display: inline-flex;
+          align-items: center;
+          transition: var(--transi);
+          gap: 0.25rem;
+          
+          &:hover {
+            color: var(--bi-light-pink);
+          }
+        }
+      
+        &_japanese {
+          font-family: var(--font-text);
+          color: var(--bi-light-pink);
+          font-weight: 400;
+          font-size: var(--font-size-sm);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          width: 100%;
+          min-width: 0;
+          max-width: calc(100% - 32px);
+        }
+      }
+      
+      .artistName {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 14px;
+        color: var(--dark-grey);
+        width: 100%;
+        min-width: 0;
+        overflow: hidden;
+ 
+        &_english {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          flex: 1;
+          min-width: 0;
+          max-width: calc(100% - 32px);
+        }
+      
+        &_japanese {
+          color: var(--light-grey);
+        }
+    
+      }
+      
+      .releaseDate {
+        font-size: 12px;
+        color: var(--medium-grey);
+        margin-top: 0.25rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.25rem;
+      
+        strong {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.mobileTrigger {
+  font-family: var(--font-text);
+  background: linear-gradient(135deg, var(--bi-dark-pink) 0%, var(--bi-light-pink) 100%);
+  border: none;
+  border-radius: 50px;
+  padding: 8px 16px 8px 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-size: var(--font-size-sm);
+  max-width: 240px;
+  width: fit-content;
+  box-sizing: border-box;
+  min-width: 0;
+  text-decoration: none;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.mobileTriggerContent {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0; // Allow flex item to shrink below content size
+  overflow: hidden;
+}
+
+.mobileDiskPreview {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: 
+    // Vinyl groove pattern - thin circular lines (on top)
+    repeating-radial-gradient(
+      circle at center,
+      transparent 0px,
+      transparent 1px,
+      rgba(0, 0, 0, 0.15) 1px,
+      rgba(0, 0, 0, 0.15) 1.5px,
+      transparent 1.5px,
+      transparent 3px
+    ),
+    // White base (behind the lines)
+    white;
+  animation: rotate 20s linear infinite;
+
+  img {
+    width: 70%;
+    height: 70%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+    opacity: 0.9;
+  }
+  
+  // Disk center (like cdDisk)
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background: #ff6b9d;
+    border-radius: 50%;
+    border: 1px solid rgba(197, 61, 107, 0.3);
+    z-index: 2;
+  }
+}
+
+.mobileTriggerText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0rem;
+  text-align: left;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.mobileSongTitle {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  min-width: 0;
+}
+
+.mobileArtistName {
+  font-size: var(--font-size-sm);
+  opacity: 0.9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.mobileExpanded {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  top: auto;
+  transform: none;
+  max-width: calc(100vw - 64px - 80px);
+  width: 100%;
+  box-sizing: border-box;
+  
+  .playlistContent {
+    width: 100%;
+    max-width: calc(100vw - 64px - 80px);
+    box-sizing: border-box;
+  }
+}
+
+.closeButton {
+  position: absolute; 
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  font-size: var(--font-size-md);
+  line-height: 1;
+  color: var(--bi-dark-pink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+  z-index: 3;
+}
+
+.mobileTriggerIconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: -webkit-fill-available;
+}
+
+.expandButton {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: var(--white);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bi-dark-pink);
+  font-size: var(--font-size-md);
+  line-height: 1;
+}
+
+// Hide on very small screens if needed
+@media (max-width: 320px) {
+  .playlistContainer.mobile {
+    bottom: 10px;
+    left: 10px;
+  }
+
+  .mobileExpanded {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+  }
+}
+

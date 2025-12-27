@@ -45,3 +45,5 @@ next-env.d.ts
 # Prismic backups - keep directory but ignore temp files
 backups/*.tmp
 backups/*.temp
+
+supabase/

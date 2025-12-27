@@ -6,6 +6,7 @@ import { HiOutlineLink } from 'react-icons/hi';
 import { FaInstagram } from "react-icons/fa6";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaYoutube } from "react-icons/fa6";
+import { FaTiktok } from "react-icons/fa6";
 
 export default function Footer() {
     return (
@@ -14,6 +15,8 @@ export default function Footer() {
                 <Link 
                     href="https://x.com/bonjour_idol"
                     style={{ '--width': '75px' }}
+                    target="_blank"
+                    rel="noopener noreferrer"
                 >
                     <FaXTwitter />
                     <span><span>Twitter</span></span>
@@ -21,13 +24,26 @@ export default function Footer() {
                 <Link 
                     href="https://www.instagram.com/bonjour_idol/"
                     style={{ '--width': '97px' }}
+                    target="_blank"
+                    rel="noopener noreferrer"
                 >
                     <FaInstagram />
                     <span><span>Instagram</span></span>
                 </Link>
                 <Link 
+                    href="https://www.tiktok.com/@bonjour_idol"
+                    style={{ '--width': '64px' }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <FaTiktok />
+                    <span><span>TikTok</span></span>
+                </Link>
+                <Link 
                     href="https://www.youtube.com/@bonjouridol"
                     style={{ '--width': '79px' }}
+                    target="_blank"
+                    rel="noopener noreferrer"
                 >
                     <FaYoutube />
                     <span><span>Youtube</span></span>

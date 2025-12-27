@@ -4,14 +4,10 @@ import { DM_Sans, Poppins, Noto_Sans_JP } from 'next/font/google'
 import { PrismicPreview, PrismicNextImage } from '@prismicio/next'
 import { repositoryName, createClient } from '@/prismicio'
 import Script from 'next/script';
-import { Analytics } from "@vercel/analytics/next"
 
-import Navbar from './components/Navbar'
-import Topbar from './components/Topbar'
-import Footer from './components/Footer'
-import GoogleTagManager from './components/GoogleTagManager'
-import ConsentBanner from './components/ConsentBanner'
 import ErrorHandler from './components/ErrorHandler'
+import ConditionalSiteLayout from './components/ConditionalSiteLayout'
+import GoogleTagManager from './components/GoogleTagManager'
 import UmamiTracker from './components/UmamiTracker'
 
 const DMSans = DM_Sans({ subsets: ['latin'] })
@@ -88,12 +84,9 @@ export default async function RootLayout({ children }) {
         </head>
         <body>
           <ErrorHandler />
-          <Topbar />
-          <Navbar />
-          {children}
-          <Analytics />
-          <Footer />
-          <ConsentBanner />
+          <ConditionalSiteLayout>
+            {children}
+          </ConditionalSiteLayout>
           <script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=bonjouridol"></script>
         </body>
       </html>
@@ -102,18 +95,12 @@ export default async function RootLayout({ children }) {
       console.error("Error in layout:", error);
       return (
         <html lang="en">
-                  <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <GoogleTagManager />
+          <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           </head>
           <body>
             <ErrorHandler />
-            <Topbar />
-            <Navbar />
             <div>Something went wrong. Please try again.</div>
-            <Footer />
-            <ConsentBanner />
-            <script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=bonjouridol"></script>
           </body>
         </html>
       )

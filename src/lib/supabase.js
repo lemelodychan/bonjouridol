@@ -1,5 +1,6 @@
 // Completely conditional Supabase client creation
 let supabase = null
+let supabaseClient = null
 
 function createSupabaseClient() {
   // Only create client if we're not in a build context

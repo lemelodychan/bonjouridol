@@ -34,6 +34,43 @@
   }
 }
 
+// Size variants
+.small {
+  font-size: var(--font-size-sm);
+  padding: 6px 10px;
+  gap: 6px;
+  border-radius: 12px;
+  
+  > span {
+    font-size: var(--font-size-sm);
+  }
+  
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.medium {
+  // Default size - no changes needed
+}
+
+.large {
+  font-size: var(--font-size-lg);
+  padding: 10px 16px;
+  gap: 10px;
+  border-radius: 20px;
+  
+  > span {
+    font-size: var(--font-size-lg);
+  }
+  
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
 .Pink {
   color: var(--white);
   background-image: var(--bi-gradient-1);
