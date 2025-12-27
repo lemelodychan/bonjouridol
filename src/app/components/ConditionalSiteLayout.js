@@ -5,7 +5,7 @@ import Navbar from './Navbar'
 import Topbar from './Topbar'
 import Footer from './Footer'
 import ConsentBanner from './ConsentBanner'
-// import Playlist from './Playlist' // Temporarily disabled until prod is ready
+import Playlist from './Playlist'
 import { Analytics } from "@vercel/analytics/next"
 
 export default function ConditionalSiteLayout({ children }) {
@@ -24,7 +24,7 @@ export default function ConditionalSiteLayout({ children }) {
       <Analytics />
       <Footer />
       <ConsentBanner />
-      {/* <Playlist /> */}
+      <Playlist />
     </>
   )
 }
