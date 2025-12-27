@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { createBrowserSupabaseClient } from '@/lib/supabase-browser'
@@ -9,7 +9,7 @@ import { IoArrowForwardOutline } from 'react-icons/io5'
 import styles from './page.module.scss'
 import LogoDesktop from '@/app/assets/logo_croissant_pink.svg'
 
-export default function SetupPassword() {
+function SetupPasswordContent() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -292,6 +292,20 @@ export default function SetupPassword() {
         </form>
       </div>
     </div>
+  )
+}
+
+export default function SetupPassword() {
+  return (
+    <Suspense fallback={
+      <div className={styles.setupContainer}>
+        <div className={styles.setupBox}>
+          <p>Loading...</p>
+        </div>
+      </div>
+    }>
+      <SetupPasswordContent />
+    </Suspense>
   )
 }
 
