@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  devIndicators: {
+    buildActivity: false,
+    buildActivityPosition: 'bottom-right',
+  },
+  
   async redirects() {
     return [
       // Live Reports - Map specific articles
@@ -313,6 +318,25 @@ const nextConfig = {
         ]
       }
     ]
+  },
+  
+  webpack: (config, { isServer }) => {
+    // Suppress critical dependency warnings from Supabase realtime-js
+    // This is a known issue with Supabase's dynamic imports for websocket connections
+    config.module = config.module || {}
+    config.module.exprContextCritical = false
+    config.module.unknownContextCritical = false
+    
+    // Also suppress warnings for specific Supabase packages
+    config.ignoreWarnings = [
+      ...(config.ignoreWarnings || []),
+      {
+        module: /node_modules\/@supabase\/realtime-js/,
+        message: /Critical dependency: the request of a dependency is an expression/,
+      },
+    ]
+    
+    return config
   }
 }
 

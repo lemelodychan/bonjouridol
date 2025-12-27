@@ -18,6 +18,7 @@ export async function generateMetadata() {
     const homepage = await client.getSingle("homepage");
 
     return {
+      metadataBase: new URL('https://www.bonjouridol.com'),
       title: homepage.data.meta_title || 'BONJOUR IDOL',
       description: homepage.data.meta_description || 'Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content.',
       openGraph: {
@@ -43,6 +44,7 @@ export async function generateMetadata() {
   } catch (error) {
     console.error('Error fetching layout metadata:', error);
     return {
+      metadataBase: new URL('https://www.bonjouridol.com'),
       title: 'BONJOUR IDOL',
       description: 'Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content.',
       openGraph: {

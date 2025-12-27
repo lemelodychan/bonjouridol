@@ -1,5 +1,8 @@
 import { createClient } from "@/prismicio";
 
+export const dynamic = 'force-dynamic'; // Disable caching for sitemap
+export const revalidate = 0; // Ensure no caching
+
 export async function GET() {
   const client = createClient();
 
@@ -19,26 +22,24 @@ export async function GET() {
   ];
 
   // Fetch your site data with error handling
+  // Use pagination to avoid 2MB cache limit
   try {
-    // Resolve the master ref to ensure we're using a valid ref
-    const api = await client.getApi();
-    const masterRef = api.refs.find((ref) => ref.isMasterRef)?.ref || api.refs[0]?.ref;
-    
-    if (masterRef) {
-      // Fetch articles with proper ref resolution
-      try {
-        const articles = await client.getByType("articles", { 
-          ref: masterRef,
-          pageSize: 100,
+    // Fetch articles with pagination (only fetch UIDs and dates to keep response small)
+    try {
+      let articlePage = 1
+      let hasMoreArticles = true
+      const articlePageSize = 100
+      
+      while (hasMoreArticles) {
+        const articleResponse = await client.getByType("articles", { 
+          page: articlePage,
+          pageSize: articlePageSize,
           fetchOptions: {
-            next: { 
-              tags: ["prismic", "articles"],
-              revalidate: 86400 // Cache for 24 hours
-            },
+            cache: 'no-store', // Disable caching for sitemap generation
           },
         });
         
-        articles.results.forEach((article) => {
+        articleResponse.results.forEach((article) => {
           pages.push({
             loc: `${baseUrl}/articles/${article.uid}`,
             lastmod: new Date(article.last_publication_date || article.first_publication_date || new Date()).toISOString().split('T')[0],
@@ -46,25 +47,31 @@ export async function GET() {
             priority: 0.8,
           });
         });
-      } catch (error) {
-        console.error("Error fetching articles for sitemap:", error.message);
-        // Continue without articles if fetch fails
+        
+        hasMoreArticles = articlePage < articleResponse.total_pages
+        articlePage++
       }
+    } catch (error) {
+      console.error("Error fetching articles for sitemap:", error.message);
+      // Continue without articles if fetch fails
+    }
 
-      // Fetch galleries with proper ref resolution
-      try {
-        const galleries = await client.getByType("gallery", { 
-          ref: masterRef,
-          pageSize: 100,
+    // Fetch galleries with pagination
+    try {
+      let galleryPage = 1
+      let hasMoreGalleries = true
+      const galleryPageSize = 100
+      
+      while (hasMoreGalleries) {
+        const galleryResponse = await client.getByType("gallery", { 
+          page: galleryPage,
+          pageSize: galleryPageSize,
           fetchOptions: {
-            next: { 
-              tags: ["prismic", "galleries"],
-              revalidate: 86400 // Cache for 24 hours
-            },
+            cache: 'no-store', // Disable caching for sitemap generation
           },
         });
         
-        galleries.results.forEach((gallery) => {
+        galleryResponse.results.forEach((gallery) => {
           pages.push({
             loc: `${baseUrl}/galleries/${gallery.uid}`,
             lastmod: new Date(gallery.last_publication_date || gallery.first_publication_date || new Date()).toISOString().split('T')[0],
@@ -72,10 +79,13 @@ export async function GET() {
             priority: 0.7,
           });
         });
-      } catch (error) {
-        console.error("Error fetching galleries for sitemap:", error.message);
-        // Continue without galleries if fetch fails
+        
+        hasMoreGalleries = galleryPage < galleryResponse.total_pages
+        galleryPage++
       }
+    } catch (error) {
+      console.error("Error fetching galleries for sitemap:", error.message);
+      // Continue without galleries if fetch fails
     }
   } catch (error) {
     console.error("Error initializing Prismic client for sitemap:", error.message);
