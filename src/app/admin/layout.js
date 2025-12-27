@@ -19,8 +19,8 @@ export default function AdminLayout({ children }) {
   const pathname = usePathname()
 
   useEffect(() => {
-    // Don't check auth on login page
-    if (pathname === '/admin') {
+    // Don't check auth on login page or setup-password page
+    if (pathname === '/admin' || pathname === '/admin/setup-password') {
       setLoading(false)
       return
     }
@@ -32,7 +32,7 @@ export default function AdminLayout({ children }) {
     if (supabase) {
       const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_OUT' || !session) {
-          if (pathname !== '/admin') {
+          if (pathname !== '/admin' && pathname !== '/admin/setup-password') {
             router.push('/admin')
           }
         } else if (session) {
@@ -87,8 +87,8 @@ export default function AdminLayout({ children }) {
     }
   }
 
-  // If on login page, render children directly
-  if (pathname === '/admin') {
+  // If on login page or setup-password page, render children directly
+  if (pathname === '/admin' || pathname === '/admin/setup-password') {
     return <>{children}</>
   }
 
