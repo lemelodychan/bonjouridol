@@ -1,13 +1,107 @@
 import { NextResponse } from 'next/server'
+import { createClient } from '@/prismicio'
+import * as prismic from '@prismicio/client'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
-// In-memory store for pending migrations (in production, use a database)
-// This is a simple implementation - you may want to persist this in a database
-let pendingMigrations = []
+// Get Supabase client for persistent storage
+function getSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY
+
+  if (!supabaseUrl || (!serviceKey && !anonKey)) {
+    return null
+  }
+
+  return createSupabaseClient(
+    supabaseUrl,
+    serviceKey || anonKey,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      }
+    }
+  )
+}
+
+/**
+ * Try to fetch pending migrations from Prismic by querying for documents
+ * with the 'pending-migration' tag that haven't been published yet
+ * Note: Migration API documents might not be queryable until published
+ */
+async function fetchPendingMigrationsFromPrismic() {
+  try {
+    const client = createClient()
+    
+    try {
+      const drafts = await client.getAllByType('gallery', {
+        filters: [
+          prismic.filter.at('document.tags', ['pending-migration'])
+        ],
+        pageSize: 100,
+      })
+      
+      return drafts.map(doc => ({
+        id: doc.id,
+        title: doc.data.title || 'Untitled',
+        uid: doc.uid || '',
+        releaseTitle: `New Galleries - ${new Date(doc.first_publication_date || Date.now()).toISOString().split('T')[0]} - ${doc.data.title || 'Untitled'}`,
+        createdAt: doc.first_publication_date || new Date().toISOString(),
+        documentId: doc.id,
+        repositoryName: process.env.REPO_NAME || 'bonjouridol',
+      }))
+    } catch (error) {
+      return []
+    }
+  } catch (error) {
+    return []
+  }
+}
 
 export async function GET(request) {
   try {
-    // Return all pending migrations, sorted by creation date (newest first)
-    const sorted = [...pendingMigrations].sort((a, b) => 
+    const supabase = getSupabaseClient()
+    
+    // Fetch from Supabase (primary source)
+    let supabaseMigrations = []
+    if (supabase) {
+      const { data, error } = await supabase
+        .from('pending_gallery_migrations')
+        .select('*')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false })
+      
+      if (!error && data) {
+        supabaseMigrations = data.map(row => ({
+          id: row.id,
+          title: row.title,
+          uid: row.uid,
+          releaseTitle: row.release_title,
+          createdAt: row.created_at,
+          documentId: row.document_id,
+          repositoryName: row.repository_name,
+          galleryData: row.gallery_data, // Full gallery data for editing
+          status: row.status,
+          updatedAt: row.updated_at,
+        }))
+      }
+    }
+    
+    // Try to fetch from Prismic (secondary source - may not work for unreleased docs)
+    const prismicMigrations = await fetchPendingMigrationsFromPrismic()
+    
+    // Merge: Supabase is the source of truth, but add Prismic docs that aren't in Supabase
+    const allMigrations = [...supabaseMigrations]
+    
+    prismicMigrations.forEach(prismicMigration => {
+      if (!allMigrations.find(m => m.documentId === prismicMigration.documentId)) {
+        allMigrations.push(prismicMigration)
+      }
+    })
+    
+    // Sort by creation date (newest first)
+    const sorted = allMigrations.sort((a, b) => 
       new Date(b.createdAt) - new Date(a.createdAt)
     )
     
@@ -15,6 +109,7 @@ export async function GET(request) {
       success: true,
       pending: sorted,
       total: sorted.length,
+      source: supabase ? 'Supabase + Prismic' : 'Prismic only',
     })
   } catch (error) {
     console.error('Error fetching pending migrations:', error)
@@ -29,18 +124,58 @@ export async function POST(request) {
   try {
     const migrationData = await request.json()
     
-    // Add a new pending migration
-    const pendingMigration = {
-      id: migrationData.id || `pending-${Date.now()}`,
-      title: migrationData.title,
-      uid: migrationData.uid,
-      releaseTitle: migrationData.releaseTitle,
-      createdAt: migrationData.createdAt || new Date().toISOString(),
-      documentId: migrationData.documentId,
-      repositoryName: migrationData.repositoryName,
+    const supabase = getSupabaseClient()
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Supabase not configured' },
+        { status: 500 }
+      )
     }
     
-    pendingMigrations.push(pendingMigration)
+    // Insert or update in Supabase
+    // Build the data object, excluding 'id' if it's not a valid UUID
+    const upsertData = {
+      uid: migrationData.uid,
+      title: migrationData.title,
+      release_title: migrationData.releaseTitle,
+      document_id: migrationData.documentId,
+      repository_name: migrationData.repositoryName || 'bonjouridol',
+      gallery_data: migrationData.galleryData || null,
+      status: 'pending',
+    }
+    
+    // Only include created_at if it's a new record (not updating)
+    if (migrationData.createdAt) {
+      upsertData.created_at = migrationData.createdAt
+    }
+    
+    const { data, error } = await supabase
+      .from('pending_gallery_migrations')
+      .upsert(upsertData, {
+        onConflict: 'uid', // Update if uid already exists
+      })
+      .select()
+      .single()
+    
+    if (error) {
+      console.error('Error saving pending migration:', error)
+      return NextResponse.json(
+        { error: 'Failed to save pending migration', message: error.message },
+        { status: 500 }
+      )
+    }
+    
+    const pendingMigration = {
+      id: data.id,
+      title: data.title,
+      uid: data.uid,
+      releaseTitle: data.release_title,
+      createdAt: data.created_at,
+      documentId: data.document_id,
+      repositoryName: data.repository_name,
+      galleryData: data.gallery_data,
+      status: data.status,
+    }
     
     return NextResponse.json({
       success: true,
@@ -55,20 +190,128 @@ export async function POST(request) {
   }
 }
 
-export async function DELETE(request) {
+export async function PUT(request) {
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
+    const uid = searchParams.get('uid') // Alternative: update by uid
     
-    if (!id) {
+    if (!id && !uid) {
       return NextResponse.json(
-        { error: 'Migration ID is required' },
+        { error: 'Migration ID or UID is required' },
         { status: 400 }
       )
     }
     
-    // Remove the pending migration
-    pendingMigrations = pendingMigrations.filter(m => m.id !== id)
+    const migrationData = await request.json()
+    
+    const supabase = getSupabaseClient()
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Supabase not configured' },
+        { status: 500 }
+      )
+    }
+    
+    // Build update object
+    const updateData = {}
+    if (migrationData.title) updateData.title = migrationData.title
+    if (migrationData.releaseTitle) updateData.release_title = migrationData.releaseTitle
+    if (migrationData.documentId) updateData.document_id = migrationData.documentId
+    if (migrationData.galleryData) updateData.gallery_data = migrationData.galleryData
+    if (migrationData.status) updateData.status = migrationData.status
+    
+    // Update by id or uid
+    const query = supabase
+      .from('pending_gallery_migrations')
+      .update(updateData)
+    
+    if (id) {
+      query.eq('id', id)
+    } else {
+      query.eq('uid', uid)
+    }
+    
+    const { data, error } = await query.select().single()
+    
+    if (error) {
+      console.error('Error updating pending migration:', error)
+      return NextResponse.json(
+        { error: 'Failed to update pending migration', message: error.message },
+        { status: 500 }
+      )
+    }
+    
+    if (!data) {
+      return NextResponse.json(
+        { error: 'Migration not found' },
+        { status: 404 }
+      )
+    }
+    
+    return NextResponse.json({
+      success: true,
+      migration: {
+        id: data.id,
+        title: data.title,
+        uid: data.uid,
+        releaseTitle: data.release_title,
+        createdAt: data.created_at,
+        documentId: data.document_id,
+        repositoryName: data.repository_name,
+        galleryData: data.gallery_data,
+        status: data.status,
+      },
+    })
+  } catch (error) {
+    console.error('Error updating pending migration:', error)
+    return NextResponse.json(
+      { error: 'Failed to update pending migration', message: error.message },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(request) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+    const uid = searchParams.get('uid')
+    
+    if (!id && !uid) {
+      return NextResponse.json(
+        { error: 'Migration ID or UID is required' },
+        { status: 400 }
+      )
+    }
+    
+    const supabase = getSupabaseClient()
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Supabase not configured' },
+        { status: 500 }
+      )
+    }
+    
+    const query = supabase
+      .from('pending_gallery_migrations')
+      .delete()
+    
+    if (id) {
+      query.eq('id', id)
+    } else {
+      query.eq('uid', uid)
+    }
+    
+    const { error } = await query
+    
+    if (error) {
+      console.error('Error deleting pending migration:', error)
+      return NextResponse.json(
+        { error: 'Failed to delete pending migration', message: error.message },
+        { status: 500 }
+      )
+    }
     
     return NextResponse.json({
       success: true,
@@ -82,4 +325,3 @@ export async function DELETE(request) {
     )
   }
 }
-

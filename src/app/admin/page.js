@@ -35,6 +35,7 @@ export default function AdminLogin() {
         try {
           localStorage.removeItem('admin_stats_cache')
           localStorage.removeItem('admin_playlist_cache')
+          localStorage.removeItem('admin_galleries_cache')
         } catch (error) {
           console.error('Error clearing cache:', error)
         }
@@ -87,6 +88,7 @@ export default function AdminLogin() {
         try {
           localStorage.removeItem('admin_stats_cache')
           localStorage.removeItem('admin_playlist_cache')
+          localStorage.removeItem('admin_galleries_cache')
         } catch (error) {
           console.error('Error clearing cache:', error)
         }

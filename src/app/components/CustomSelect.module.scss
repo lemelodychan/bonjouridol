@@ -1,0 +1,70 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.customSelect {
+  position: relative;
+  width: 100%;
+
+  .select {
+    width: 100%;
+    padding: 0.75rem;
+    padding-right: 2.5rem; // Make room for chevron
+    border: 2px solid var(--light-grey);
+    border-radius: 6px;
+    font-size: var(--font-size);
+    transition: border-color 0.2s;
+    font-family: var(--font-text);
+    background-color: var(--white);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: var(--bi-indigo);
+    }
+
+    &:hover {
+      border-color: var(--bi-indigo);
+    }
+  }
+
+  .chevron {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    color: var(--bi-dark-pink);
+    pointer-events: none;
+    transition: transform 0.2s;
+  }
+
+  .select:focus + .chevron,
+  .select:hover + .chevron {
+    color: var(--bi-indigo);
+  }
+
+  &.disabled {
+    pointer-events: none;
+
+    .select {
+      cursor: not-allowed;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-color: var(--light-grey);
+      color: var(--medium-grey);
+      opacity: 0.6;
+    }
+
+    .chevron {
+      opacity: 0.4;
+      color: var(--medium-grey);
+    }
+
+    &:hover .select {
+      border-color: var(--light-grey);
+    }
+  }
+}
+

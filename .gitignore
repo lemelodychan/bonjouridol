@@ -48,3 +48,4 @@ backups/*.tmp
 backups/*.temp
 
 supabase/
+src/.env

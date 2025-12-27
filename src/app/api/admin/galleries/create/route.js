@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server'
 
 /**
- * Create a gallery document using Prismic Migration API
+ * Create or update a gallery document using Prismic Migration API
  * Endpoint: https://migration.prismic.io/documents
  * 
  * IMPORTANT: Documents created via Migration API are ALWAYS created as DRAFTS.
  * They must be manually reviewed and published in Prismic Dashboard > Migration Releases.
  * This ensures no content goes live without manual approval.
+ * 
+ * If galleryData.documentId is provided, this will attempt to UPDATE the existing document.
+ * Otherwise, it will CREATE a new document.
  */
 export async function POST(request) {
   try {
@@ -29,6 +32,10 @@ export async function POST(request) {
         { status: 500 }
       )
     }
+
+    // Check if we're updating an existing document
+    const isUpdate = !!galleryData.documentId
+    const documentId = galleryData.documentId
 
     // Format gallery document for Migration API
     // Note: title, type, and lang must be at root level (not just in data) and must be non-empty strings
@@ -77,8 +84,20 @@ export async function POST(request) {
       }
     }
     
-    // Only include featured_image if it has a value and is an object (cannot be null)
-    if (galleryData.featured_image && typeof galleryData.featured_image === 'object') {
+    // Handle featured_image - can be from galleryData.featured_image or from selected gallery image
+    if (galleryData.featured_image_id) {
+      // Find the image in the gallery images array
+      const featuredImage = galleryData.images?.find(img => img.id === galleryData.featured_image_id)
+      if (featuredImage) {
+        data.featured_image = {
+          id: featuredImage.id,
+          url: featuredImage.url,
+          width: featuredImage.dimensions?.width || null,
+          height: featuredImage.dimensions?.height || null,
+          alt: featuredImage.alt || null,
+        }
+      }
+    } else if (galleryData.featured_image && typeof galleryData.featured_image === 'object') {
       data.featured_image = galleryData.featured_image
     }
     
@@ -99,48 +118,115 @@ export async function POST(request) {
     const releaseDate = new Date().toISOString().split('T')[0] // YYYY-MM-DD
     const releaseTitle = `New Galleries - ${releaseDate} - ${(galleryData.title || '').trim()}`
 
-    // Try Migration API endpoint with release title
-    // Format: Include release title in the request body
-    let requestBody = {
-      release_title: releaseTitle,
-      documents: [document],
+    // Ensure all root-level fields are explicitly strings
+    const documentToSend = {
+      type: String('gallery'),
+      uid: String((galleryData.uid || '').trim()),
+      lang: String('en-us'),
+      title: String((galleryData.title || '').trim()),
+      data: data,
+      release_title: String(releaseTitle), // Add release title to document
     }
     
-    let response = await fetch('https://migration.prismic.io/documents', {
-      method: 'POST',
-      headers: {
-        'repository': REPOSITORY_NAME,
-        'Authorization': `Bearer ${MIGRATION_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    })
+    // Add tags if provided (Prismic documents support tags at root level)
+    // Also add a special tag to identify pending migrations
+    const tags = galleryData.tags && Array.isArray(galleryData.tags) 
+      ? galleryData.tags.filter(tag => tag && typeof tag === 'string')
+      : []
+    
+    // Add special tag to identify this as a pending migration (for querying later)
+    if (!tags.includes('pending-migration')) {
+      tags.push('pending-migration')
+    }
+    
+    if (tags.length > 0) {
+      documentToSend.tags = tags
+    }
 
-    let responseText = await response.text()
+    // Try Migration API endpoint
+    let requestBody = documentToSend
+    let response
+    let responseText
+    let wasUpdated = false
+    
+    if (isUpdate && documentId) {
+      // Try to UPDATE existing document
+      // Note: Migration API may not support updates, but we'll try
+      const updateUrl = `https://migration.prismic.io/documents/${documentId}`
+      
+      response = await fetch(updateUrl, {
+        method: 'PUT',
+        headers: {
+          'repository': REPOSITORY_NAME,
+          'Authorization': `Bearer ${MIGRATION_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      })
+      
+      responseText = await response.text()
+      
+      // If update succeeds, mark as updated
+      if (response.ok) {
+        wasUpdated = true
+      } else if (response.status === 404 || response.status === 405 || response.status === 400) {
+        // If update fails (404 = document not found, or 405 = method not allowed), fall back to create
+        console.log(`Update failed (${response.status}), falling back to create new document`)
+      }
+    }
+    
+    // If not updating (or update failed), create new document
+    if (!wasUpdated) {
+      // First try: Direct document (not wrapped) with release_title as query param
+      const createUrl = new URL('https://migration.prismic.io/documents')
+      createUrl.searchParams.set('release_title', releaseTitle)
+      
+      response = await fetch(createUrl.toString(), {
+        method: 'POST',
+        headers: {
+          'repository': REPOSITORY_NAME,
+          'Authorization': `Bearer ${MIGRATION_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      })
 
-    // If the release_title parameter doesn't work, try without it (fallback)
-    if (!response.ok) {
-      try {
-        const error = JSON.parse(responseText)
-        // If it's a validation error about release_title, try without it
-        if (error.details && error.details.some(d => d.property === 'release_title' || d.property?.includes('release'))) {
-          // Fallback: try without release_title parameter
-          requestBody = {
-            documents: [document],
+      responseText = await response.text()
+
+      // If direct document fails, try wrapped format
+      if (!response.ok) {
+        try {
+          const error = JSON.parse(responseText)
+          // If it's a validation error, try wrapped format
+          if (error.details && error.details.some(d => 
+            d.property === 'title' || 
+            d.property === 'type' || 
+            d.property === 'lang' ||
+            d.property === 'release_title' ||
+            d.property?.includes('release')
+          )) {
+            // Try Format 2: Wrapped in documents array with release_title
+            requestBody = {
+              documents: [documentToSend],
+              release_title: releaseTitle, // Add release title at root level of wrapped format
+            }
+            const wrappedUrl = new URL('https://migration.prismic.io/documents')
+            wrappedUrl.searchParams.set('release_title', releaseTitle)
+            
+            response = await fetch(wrappedUrl.toString(), {
+              method: 'POST',
+              headers: {
+                'repository': REPOSITORY_NAME,
+                'Authorization': `Bearer ${MIGRATION_TOKEN}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(requestBody),
+            })
+            responseText = await response.text()
           }
-          response = await fetch('https://migration.prismic.io/documents', {
-            method: 'POST',
-            headers: {
-              'repository': REPOSITORY_NAME,
-              'Authorization': `Bearer ${MIGRATION_TOKEN}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-          })
-          responseText = await response.text()
+        } catch {
+          // Not JSON, continue with original response
         }
-      } catch {
-        // Not JSON, continue with original response
       }
     }
 
@@ -178,16 +264,19 @@ export async function POST(request) {
     }
 
     // Extract document ID or UID from response if available
-    const documentId = result.id || result.uid || result.document?.id || result.document?.uid || 'unknown'
+    const returnedDocumentId = result.id || result.uid || result.document?.id || result.document?.uid || documentId || 'unknown'
     const repositoryName = REPOSITORY_NAME
 
     return NextResponse.json({
       success: true,
-      message: 'Gallery document created successfully as a draft',
+      message: wasUpdated 
+        ? 'Gallery document updated successfully' 
+        : 'Gallery document created successfully as a draft',
+      updated: wasUpdated,
       draft: true, // Explicitly indicate this is a draft
       note: 'The gallery is saved as a draft and must be manually published in Prismic Dashboard > Migration Releases',
       releaseTitle: releaseTitle,
-      documentId: documentId,
+      documentId: returnedDocumentId,
       repositoryName: repositoryName,
       prismicUrl: `https://${repositoryName}.prismic.io/migrations`,
       data: result,
