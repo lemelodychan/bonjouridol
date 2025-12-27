@@ -249,7 +249,7 @@ export default function OverviewPage() {
                       <tr key={article.slug} className={styles.tableRow}>
                         <td className={styles.tableCellRank}>{index + 1}</td>
                         <td className={styles.tableCellName}>
-                          <Link href={`https://www.bonjouridol.com/${article.slug}`} target="_blank" rel="noopener noreferrer" className={styles.articleLink}>
+                          <Link href={`https://www.bonjouridol.com/articles/${article.slug}`} target="_blank" rel="noopener noreferrer" className={styles.articleLink}>
                             {article.slug}
                           </Link>
                         </td>
