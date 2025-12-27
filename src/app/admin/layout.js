@@ -134,6 +134,14 @@ export default function AdminLayout({ children }) {
               Selection Playlist
             </Link>
           </li>
+          <li>
+            <Link 
+              href="/admin/galleries" 
+              className={pathname === '/admin/galleries' ? styles.active : ''}
+            >
+              Gallery Manager
+            </Link>
+          </li>
         </ul>
 
         <div className={styles.userInfo}>

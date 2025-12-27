@@ -1,5 +1,5 @@
 .container {
-  max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -207,6 +207,134 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+  }
+}
+
+.coverModeSelector {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.modeButton {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--light-grey);
+  border-radius: 6px;
+  background-color: var(--white);
+  color: var(--dark-grey);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-text);
+
+  &:hover {
+    border-color: var(--bi-indigo);
+    color: var(--bi-indigo);
+  }
+
+  &.active {
+    border-color: var(--bi-dark-pink);
+    background-color: var(--bi-dark-pink);
+    color: white;
+  }
+}
+
+.existingCoversContainer {
+  margin-top: 1rem;
+}
+
+.loadingCovers,
+.noCovers {
+  padding: 2rem;
+  text-align: center;
+  color: var(--medium-grey);
+  font-size: var(--font-size-sm);
+}
+
+.existingCoversGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 1rem;
+  background-color: var(--white);
+  border-radius: 8px;
+  border: 2px solid var(--light-grey);
+}
+
+.existingCoverItem {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s;
+  background-color: var(--light-grey);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &:hover {
+    border-color: var(--bi-indigo);
+    transform: scale(1.05);
+  }
+
+  &.selected {
+    border-color: var(--bi-dark-pink);
+    box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.2);
+  }
+
+  .coverOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+
+    .checkmark {
+      font-size: 2rem;
+      color: white;
+      font-weight: bold;
+    }
+  }
+
+  &.selected .coverOverlay {
+    opacity: 1;
+    background-color: rgba(219, 39, 119, 0.5);
+  }
+
+  .coverName {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    padding: 0.5rem;
+    color: white;
+    font-size: var(--font-size-xs);
+    opacity: 0;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &:hover .coverName {
+    opacity: 1;
   }
 }
 

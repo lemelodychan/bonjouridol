@@ -27,10 +27,19 @@ export default function SelectionPlaylistPage() {
     display_order: 0
   })
   const [uploading, setUploading] = useState(false)
+  const [coverMode, setCoverMode] = useState('upload') // 'upload' or 'select'
+  const [existingCovers, setExistingCovers] = useState([])
+  const [loadingCovers, setLoadingCovers] = useState(false)
 
   useEffect(() => {
     loadPlaylist()
   }, [])
+
+  useEffect(() => {
+    if (coverMode === 'select' && existingCovers.length === 0) {
+      loadExistingCovers()
+    }
+  }, [coverMode])
 
   useEffect(() => {
     if (showForm) {
@@ -130,6 +139,25 @@ export default function SelectionPlaylistPage() {
     }
   }
 
+  async function loadExistingCovers() {
+    try {
+      setLoadingCovers(true)
+      const response = await fetch('/api/admin/selection-playlist/covers')
+      
+      if (!response.ok) {
+        throw new Error('Failed to load existing covers')
+      }
+
+      const data = await response.json()
+      setExistingCovers(data.covers || [])
+    } catch (error) {
+      console.error('Error loading existing covers:', error)
+      setError('Failed to load existing covers')
+    } finally {
+      setLoadingCovers(false)
+    }
+  }
+
   async function handleUploadCover(file) {
     if (!file) return
 
@@ -150,6 +178,10 @@ export default function SelectionPlaylistPage() {
 
       const data = await response.json()
       setFormData(prev => ({ ...prev, cover_url: data.url }))
+      // Refresh existing covers list to include the new upload
+      if (coverMode === 'select') {
+        await loadExistingCovers()
+      }
     } catch (error) {
       console.error('Error uploading cover:', error)
       alert(`Failed to upload cover image: ${error.message || 'Unknown error'}`)
@@ -158,11 +190,27 @@ export default function SelectionPlaylistPage() {
     }
   }
 
+  function handleSelectCover(coverUrl) {
+    setFormData(prev => ({ ...prev, cover_url: coverUrl }))
+  }
+
   async function handleSubmit(e) {
     e.preventDefault()
     
     try {
       setError('')
+      
+      // Validate required fields
+      if (!formData.title_en || !formData.artist_en || !formData.link) {
+        setError('Please fill in all required fields: Title (EN), Artist (EN), and Link')
+        return
+      }
+      
+      if (!formData.cover_url) {
+        setError('Please select or upload a cover image')
+        return
+      }
+      
       const url = editingId 
         ? '/api/admin/selection-playlist'
         : '/api/admin/selection-playlist'
@@ -260,6 +308,7 @@ export default function SelectionPlaylistPage() {
     })
     setEditingId(null)
     setShowForm(false)
+    setCoverMode('upload')
   }
 
   if (loading) {
@@ -393,20 +442,88 @@ export default function SelectionPlaylistPage() {
 
                 <div className={styles.formGroupFull}>
                   <label htmlFor="cover">Cover Image <strong>※</strong></label>
-                  <input
-                    required
-                    placeholder="Select a cover image"
-                    className={styles.coverInput}
-                    id="cover"
-                    type="file"
-                    accept="image/jpeg,image/jpg,image/png,image/webp"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0]
-                      if (file) handleUploadCover(file)
-                    }}
-                    disabled={uploading}
-                  />
-                  {uploading && <p className={styles.uploadStatus}>Uploading...</p>}
+                  
+                  {/* Mode selector */}
+                  <div className={styles.coverModeSelector}>
+                    <button
+                      type="button"
+                      className={`${styles.modeButton} ${coverMode === 'upload' ? styles.active : ''}`}
+                      onClick={() => {
+                        setCoverMode('upload')
+                        if (coverMode === 'select') {
+                          setFormData(prev => ({ ...prev, cover_url: '' }))
+                        }
+                      }}
+                    >
+                      Upload New
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.modeButton} ${coverMode === 'select' ? styles.active : ''}`}
+                      onClick={() => {
+                        setCoverMode('select')
+                        if (coverMode === 'upload') {
+                          setFormData(prev => ({ ...prev, cover_url: '' }))
+                        }
+                        if (existingCovers.length === 0) {
+                          loadExistingCovers()
+                        }
+                      }}
+                    >
+                      Select from Existing
+                    </button>
+                  </div>
+
+                  {/* Upload mode */}
+                  {coverMode === 'upload' && (
+                    <>
+                      <input
+                        required={!formData.cover_url}
+                        placeholder="Select a cover image"
+                        className={styles.coverInput}
+                        id="cover"
+                        type="file"
+                        accept="image/jpeg,image/jpg,image/png,image/webp"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) handleUploadCover(file)
+                        }}
+                        disabled={uploading}
+                      />
+                      {uploading && <p className={styles.uploadStatus}>Uploading...</p>}
+                    </>
+                  )}
+
+                  {/* Select from existing mode */}
+                  {coverMode === 'select' && (
+                    <div className={styles.existingCoversContainer}>
+                      {loadingCovers ? (
+                        <p className={styles.loadingCovers}>Loading existing covers...</p>
+                      ) : existingCovers.length === 0 ? (
+                        <p className={styles.noCovers}>No existing covers found. Switch to "Upload New" to add one.</p>
+                      ) : (
+                        <div className={styles.existingCoversGrid}>
+                          {existingCovers.map((cover) => (
+                            <div
+                              key={cover.path}
+                              className={`${styles.existingCoverItem} ${formData.cover_url === cover.url ? styles.selected : ''}`}
+                              onClick={() => handleSelectCover(cover.url)}
+                            >
+                              <img src={cover.url} alt={cover.name} />
+                              <div className={styles.coverOverlay}>
+                                {formData.cover_url === cover.url && (
+                                  <span className={styles.checkmark}>✓</span>
+                                )}
+                              </div>
+                              <div className={styles.coverName}>{cover.name}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Preview */}
                   {formData.cover_url && (
                     <div className={styles.coverPreview}>
                       <img src={formData.cover_url} alt="Cover preview" />
@@ -429,7 +546,11 @@ export default function SelectionPlaylistPage() {
                   textValue="Cancel"
               />
               <Button
-                type="submit"
+                onClick={(e) => {
+                  e.preventDefault()
+                  // Call handleSubmit which includes custom validation
+                  handleSubmit(e)
+                }}
                 variant="Pink"
                 textValue={editingId ? 'Update Song' : 'Add Song'}
               />
