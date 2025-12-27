@@ -15,14 +15,16 @@ import styles from './HeroPost.module.scss';
 export default async function HeroPost() {
     const client = createClient();
 
-    const results = await client.getAllByType('articles', {
+    // Use getByType with pageSize instead of getAllByType to avoid fetching all articles
+    // This keeps the response small and cacheable (under 2MB limit)
+    const results = await client.getByType('articles', {
         fetchOptions: {
           next: { 
             tags: ['prismic', 'articles'],
             revalidate: 3600 // Cache for 1 hour
           },
         },
-        limit: 1,
+        pageSize: 1,
         orderings: [
           {
             field: 'my.articles.publication_date',
@@ -37,7 +39,11 @@ export default async function HeroPost() {
           prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Discovery', 'Behind the scenes']),
         ],
     });
-    const latestPost = results[0]
+    const latestPost = results.results[0]
+
+    if (!latestPost) {
+        return null; // No post found
+    }
 
     const publicationDate = latestPost.data.publication_date || latestPost.first_publication_date;
     const formattedDate = publicationDate 

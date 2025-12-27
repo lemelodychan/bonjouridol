@@ -17,37 +17,15 @@ import Link from "next/link.js";
 export default async function LatestPost() {
     const client = createClient();
 
-    const results = await client.getAllByType('articles', {
-        fetchOptions: {
-            next: { 
-                tags: ['prismic', 'articles'],
-                revalidate: 3600 // Cache for 1 hour
-            },
-        },
-        filters: [
-            prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Discovery', 'Behind the scenes']),
-        ],
-        orderings: [
-          {
-            field: 'my.articles.publication_date',
-            direction: 'desc',
-          },
-          {
-            field: 'document.first_publication_date',
-            direction: 'desc',
-          },
-        ],
-    });
-    
-    // Get the hero post to exclude it from latest articles
-    const heroPost = await client.getAllByType('articles', {
+    // Get the hero post first (limit 1)
+    const heroPostResponse = await client.getByType('articles', {
         fetchOptions: {
           next: { 
             tags: ['prismic', 'articles'],
             revalidate: 3600 // Cache for 1 hour
           },
         },
-        limit: 1,
+        pageSize: 1,
         orderings: [
           {
             field: 'my.articles.publication_date',
@@ -63,8 +41,35 @@ export default async function LatestPost() {
         ],
     });
     
-    // Filter out the hero post from the results
-    const resultsWithoutHero = results.filter(article => article.id !== heroPost[0]?.id);
+    const heroPostId = heroPostResponse.results[0]?.id;
+    
+    // Fetch only the next 4 articles (we need 3, but fetch 4 in case hero is in the first page)
+    // This keeps the response under 2MB for caching
+    const resultsResponse = await client.getByType('articles', {
+        fetchOptions: {
+            next: { 
+                tags: ['prismic', 'articles'],
+                revalidate: 3600 // Cache for 1 hour
+            },
+        },
+        pageSize: 10, // Fetch 10 to ensure we have enough after filtering
+        orderings: [
+          {
+            field: 'my.articles.publication_date',
+            direction: 'desc',
+          },
+          {
+            field: 'document.first_publication_date',
+            direction: 'desc',
+          },
+        ],
+        filters: [
+            prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Discovery', 'Behind the scenes']),
+        ],
+    });
+    
+    // Filter out the hero post from the results and take first 3
+    const resultsWithoutHero = resultsResponse.results.filter(article => article.id !== heroPostId);
     const resultsWithoutLatest = resultsWithoutHero.slice(0, 3);
 
     return (
