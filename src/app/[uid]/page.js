@@ -181,7 +181,7 @@ export default async function Page({ params, searchParams }) {
                 : [postType]
             ),
             ...(postType === "Features"
-              ? [prismic.filter.any("document.tags", ["Interview", "Behind the scenes", "Other"])]
+              ? [prismic.filter.any("document.tags", ["Interview", "Editorial", "Behind the scenes", "Other"])]
               : postType === "Press release"
               ? [prismic.filter.at("document.tags", ["PR"])]
               : []),
