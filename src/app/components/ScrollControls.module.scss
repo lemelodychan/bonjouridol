@@ -1,0 +1,76 @@
+.scrollControls {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  transform: scale(0);
+  z-index: 60;
+  pointer-events: none;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+
+  &.visible {
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  @media screen and (max-width: 768px) {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  // On article pages, same positioning
+  &.articlePage {
+    bottom: 16px;
+    right: 16px;
+
+    @media screen and (min-width: 769px) {
+      right: 16px;
+    }
+  }
+}
+
+.button {
+  width: 40px;
+  height: 40px;
+  border-radius: 16px;
+  border: none;
+  background-color: var(--white);
+  color: var(--bi-dark-pink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: var(--transi);
+  font-size: 20px;
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  &:hover {
+    background-color: var(--bi-pink);
+    color: var(--white);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(255, 49, 148, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.95);
+    transition: none;
+  }
+
+  @media screen and (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+

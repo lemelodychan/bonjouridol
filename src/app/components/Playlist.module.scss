@@ -6,7 +6,7 @@
 
 // Collapsed state: Use mobile trigger design for both mobile and desktop
 .playlistContainer.collapsed {
-  bottom: 1rem;
+  bottom: 16px;
 
   &:not(.mobile) {
     left: 50%;
@@ -19,8 +19,8 @@
   }
 
   &.mobile {
-    left: 0.5rem !important;
-    bottom: 0.5rem !important;
+    left: 16px !important;
+    bottom: 16px !important;
   }
 }
 
@@ -31,14 +31,14 @@
   box-shadow: -4px 0 16px rgba(0, 0, 0, 0.15);
   
   &.mobile {
-    left: 0.5rem;
-    bottom: 1rem;
+    left: 16px;
+    bottom: 16px;
     max-width: calc(100vw - 64px - 80px);
   }
   
   &:not(.mobile) {
     left: 50%;
-    bottom: 1rem;
+    bottom: 16px;
     transform: translateX(-50%) translateY(0);
     width: fit-content;
     max-width: 440px;

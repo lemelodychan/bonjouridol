@@ -6,6 +6,7 @@ import Topbar from './Topbar'
 import Footer from './Footer'
 import ConsentBanner from './ConsentBanner'
 import Playlist from './Playlist'
+import ScrollControls from './ScrollControls'
 import { Analytics } from "@vercel/analytics/next"
 
 export default function ConditionalSiteLayout({ children }) {
@@ -25,6 +26,7 @@ export default function ConditionalSiteLayout({ children }) {
       <Footer />
       <ConsentBanner />
       <Playlist />
+      <ScrollControls />
     </>
   )
 }

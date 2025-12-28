@@ -9,14 +9,14 @@
   position: fixed;
   z-index: 9999;
   bottom: 16px;
-  right: 16px;
+  left: 16px;
   pointer-events: auto;
   transform: translateZ(0);
 
   @include md {
     position: relative;
     bottom: 0;
-    right: 0;
+    left: 0;
     margin: 0;
     z-index: 9999;
   }
@@ -29,7 +29,7 @@
   padding: 8px 16px;
   background: var(--light-grey);
   border: none;
-  border-radius: 50px;
+  border-radius: 16px;
   color: var(--bi-dark-pink);
   font-family: var(--font-text);
   letter-spacing: 0.02em;
