@@ -6,6 +6,19 @@
     height: 100%;
     max-width: 100%;
     position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 16px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        pointer-events: none;
+        z-index: 2;
+    }
     
     .SingleImage {
         width: 100%;
@@ -40,7 +53,7 @@
         width: 100%;
         height: 100%;
         padding: 16px;
-        min-height: 240px;
+        min-height: 100%;
     }
 
     .ViewItem {
@@ -52,6 +65,7 @@
         justify-items: center;
         top: 16px;
         right: 16px;
+        z-index: 3;
         
         span {
             transition: var(--transi);

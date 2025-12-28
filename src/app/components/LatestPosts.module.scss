@@ -113,6 +113,7 @@
                 aspect-ratio: 1;
                 overflow: hidden;
                 border-radius: 16px;
+                position: relative;
 
                 @include md {
                     max-width: unset;

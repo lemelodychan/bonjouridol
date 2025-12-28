@@ -128,6 +128,7 @@
                     aspect-ratio: 1;
                     overflow: hidden;
                     border-radius: 16px;
+                    position: relative;
 
                     @include md {
                         max-width: unset;
@@ -149,6 +150,8 @@
                     align-items: flex-start;
                     gap: 8px;
                     text-align: left;
+                    position: relative;
+                    z-index: 3;
 
                     .Tags {
                         display: flex;
