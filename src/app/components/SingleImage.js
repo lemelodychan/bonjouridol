@@ -16,6 +16,9 @@ const SingleImage = ({ image, alt, color = "default", lightbox="false" }) => {
     return null;
   }
 
+  // Check if it's a valid Prismic image field (has dimensions or width property)
+  const isPrismicImage = image.dimensions || image.width;
+  
   const hasLightbox = lightbox;
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -47,13 +50,23 @@ const SingleImage = ({ image, alt, color = "default", lightbox="false" }) => {
         className={`${styles.SingleImageContainer} ${loading ? styles.Loading : styles.Loaded}`}
       >
           {inView ? (
-              <PrismicNextImage
-                  field={image}
-                  alt={alt || ""}
-                  fallbackAlt=""
-                  className={styles.SingleImage}
-                  onLoad={() => setLoading(false)} // Called when the image is fully loaded
-              />
+              isPrismicImage ? (
+                <PrismicNextImage
+                    field={image}
+                    alt={alt || ""}
+                    fallbackAlt=""
+                    className={styles.SingleImage}
+                    onLoad={() => setLoading(false)} // Called when the image is fully loaded
+                />
+              ) : (
+                <img
+                    src={image.url}
+                    alt={alt || image.alt || ""}
+                    className={styles.SingleImage}
+                    onLoad={() => setLoading(false)}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              )
           ) : (
               <div className={`${styles.Placeholder} ${placeholderClass}`}>
                   <span>

@@ -1,6 +1,7 @@
 import styles from './page.module.scss'
 import LatestPosts from './components/LatestPosts.js';
 import LiveReports from './components/LiveReports';
+import ArtistHighlight from './components/ArtistHighlight';
 import Discoveries from './components/Discoveries';
 import Videos from './components/Videos';
 import PressRelease from './components/PressRelease';
@@ -79,6 +80,7 @@ export default async function Page() {
         <div className={styles.container}>
           <LatestPosts />
           <LiveReports />
+          {/* <ArtistHighlight /> */}
           <Discoveries />
           <Videos />
           <PressRelease />
@@ -95,6 +97,7 @@ export default async function Page() {
         <div className={styles.container}>
           <LatestPosts />
           <LiveReports />
+          {/* <ArtistHighlight /> */}
           <Discoveries />
           <Videos />
           <PressRelease />

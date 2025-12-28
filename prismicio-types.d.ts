@@ -329,6 +329,17 @@ interface ArtistDocumentData {
   description: prismic.RichTextField;
 
   /**
+   * Youtube Video field in *Artist*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.youtube_video
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  youtube_video: prismic.KeyTextField;
+
+  /**
    * Song list field in *Artist*
    *
    * - **Field Type**: Group
