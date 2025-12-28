@@ -339,7 +339,7 @@ export default function Navbar() {
               priority
               src={LogoMobileMenu}
               alt="BONJOUR IDOL"
-              height={80}
+              height={64}
             />
           </Link>
           <Menu onLinkClick={closeMobileMenu} />
