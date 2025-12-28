@@ -72,17 +72,14 @@ export default function Navbar() {
       closeSearch();
       setTimeout(() => {
         setMobileMenuOpen(true);
-        document.body.classList.add("overflowHidden");
       }, 300);
     } else {
       setMobileMenuOpen(!isMobileMenuOpen);
-      document.body.classList.toggle("overflowHidden", !isMobileMenuOpen);
     }
   };
   const closeMobileMenu = () => {
     setTimeout(() => {
       setMobileMenuOpen(false);
-      document.body.classList.remove("overflowHidden");
     }, 300); // Delay of 300ms for synchronization
   };
   const toggleSearch = () => {
@@ -90,17 +87,14 @@ export default function Navbar() {
       closeMobileMenu();
       setTimeout(() => {
         setSearchOpen(true);
-        document.body.classList.add("overflowHidden");
       }, 300);
     } else {
       setSearchOpen(!isSearchOpen);
-      document.body.classList.toggle("overflowHidden", !isSearchOpen);
     }
   };
   const closeSearch = () => {
     setTimeout(() => {
       setSearchOpen(false);
-      document.body.classList.remove("overflowHidden");
     }, 50); // Small delay for smooth animation
   };
 
@@ -133,6 +127,80 @@ export default function Navbar() {
       window.removeEventListener('orientationchange', setViewportHeight);
     };
   }, []);
+
+  // Lock scroll when mobile menu or search overlay is open
+  useEffect(() => {
+    const shouldLockScroll = isMobileMenuOpen || isSearchOpen;
+    
+    if (shouldLockScroll) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      const scrollX = window.scrollX;
+      
+      // Lock scroll on both html and body
+      document.documentElement.classList.add("overflowHidden");
+      document.body.classList.add("overflowHidden");
+      
+      // Restore scroll position (prevent jump)
+      document.documentElement.style.top = `-${scrollY}px`;
+      document.body.style.top = `-${scrollY}px`;
+      
+      // Prevent all scroll events
+      const preventScroll = (e) => {
+        // Allow scrolling within the menu/overlay itself
+        const target = e.target;
+        const isMenuContent = target.closest(`.${styles.mobileMenu}`) || 
+                            target.closest(`.${styles.mobileSearchOverlay}`);
+        
+        // If we're not inside the menu/overlay, prevent all scrolling
+        if (!isMenuContent) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      };
+      
+      // Prevent wheel scrolling
+      const preventWheel = (e) => {
+        const target = e.target;
+        const isMenuContent = target.closest(`.${styles.mobileMenu}`) || 
+                            target.closest(`.${styles.mobileSearchOverlay}`);
+        
+        if (!isMenuContent) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      };
+      
+      // Add event listeners with passive: false to allow preventDefault
+      document.addEventListener('touchmove', preventScroll, { passive: false });
+      document.addEventListener('wheel', preventWheel, { passive: false });
+      document.addEventListener('scroll', preventScroll, { passive: false });
+      
+      return () => {
+        // Remove classes
+        document.documentElement.classList.remove("overflowHidden");
+        document.body.classList.remove("overflowHidden");
+        
+        // Restore scroll position
+        document.documentElement.style.top = '';
+        document.body.style.top = '';
+        window.scrollTo(scrollX, scrollY);
+        
+        // Remove event listeners
+        document.removeEventListener('touchmove', preventScroll);
+        document.removeEventListener('wheel', preventWheel);
+        document.removeEventListener('scroll', preventScroll);
+      };
+    } else {
+      // Clean up if state changes while menu was open
+      document.documentElement.classList.remove("overflowHidden");
+      document.body.classList.remove("overflowHidden");
+      document.documentElement.style.top = '';
+      document.body.style.top = '';
+    }
+  }, [isMobileMenuOpen, isSearchOpen]);
 
   // Debug Umami availability
   useEffect(() => {
