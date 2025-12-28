@@ -2,18 +2,21 @@
 @use "../../app/styles/variables.scss";
 
 .Purchase {
-    width: 100%;
+    box-sizing: border-box;
     height: auto;
     max-width: 936px;
-    margin: 16px auto;
+    margin: 16px 24px;
     display: flex;
     flex-direction: column;
     gap: 24px;
     background-color: var(--light-grey);
-    padding: 24px;
+    padding: 20px 16px;
     border-radius: 24px;
 
     @include md {
+        width: 100%;
+        max-width: 936px;
+        box-sizing: initial;
         padding: 24px;
         margin: 24px auto;
     }
@@ -22,16 +25,33 @@
         display: flex;
         flex-direction: row;
         gap: 16px;
-        align-items: center;
+        align-items: flex-start;
         font-family: var(--font-title);
         color: var(--dark-grey);
-        text-wrap: nowrap;
 
-        @include md {
-            font-size: 20px;
+        .title {
+            width: fit-content;
+            display: flex;
+            flex-direction: column;
+            gap: 0rem;
+            text-wrap-mode: nowrap;
+
+            .english {
+                font-size: var(--font-size-lg) !important;
+                line-height: 1;
+
+                @include md {
+                    font-size: var(--font-size-xl) !important;
+                }
+            }
+
+            .japanese {
+                font-size: var(--font-size-sm) !important;
+            }
         }
 
         &:after {
+            margin: 10px 0;
             width: -webkit-fill-available;
             height: 2px;
             display: block;
@@ -96,10 +116,12 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            align-items: flex-start;
+            justify-content: center;
             
 
             h4 {
-                font-size: 16px;
+                font-size: var(--font-size-lg);
                 color: var(--bi-dark-pink);
                 font-weight: 600;
 
@@ -110,12 +132,13 @@
 
             .Artist {
                 color: var(--bi-pink);
-                font-size: 16px;
+                font-size: var(--font-size);
                 font-weight: 600;
-                line-height: 32px;
+                line-height: 1.5;
             }
 
             .Release {
+                font-size: var(--font-size);
                 strong {
                     font-weight: 600;
                 }

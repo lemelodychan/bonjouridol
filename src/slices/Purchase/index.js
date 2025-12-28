@@ -21,7 +21,12 @@ const Purchase = ({ slice }) => {
       data-slice-variation={slice.variation}
       className={styles.Purchase}
     >
-      <h3>Support the artist</h3>
+      <h3>
+        <span className={styles.title}>
+          <span className={styles.english}>Support the artist</span>
+          <span className={styles.japanese}>アーティストを応援する</span>
+        </span>
+      </h3>
       <div className={styles.PurchaseContainer}>
         <div className={styles.ImageContainer}>
           <PrismicNextImage 

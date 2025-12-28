@@ -214,6 +214,51 @@ export type ArticlesDocument<Lang extends string = string> =
   >;
 
 /**
+ * Item in *Artist → Song list*
+ */
+export interface ArtistDocumentDataSongListItem {
+  /**
+   * Song title (EN) field in *Artist → Song list*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.song_list[].song_title_en
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  song_title_en: prismic.KeyTextField;
+
+  /**
+   * Song title (JA) field in *Artist → Song list*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.song_list[].song_title_ja
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  song_title_ja: prismic.KeyTextField;
+
+  /**
+   * Song link field in *Artist → Song list*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.song_list[].song_link
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  song_link: prismic.LinkField;
+
+  /**
+   * Song cover field in *Artist → Song list*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.song_list[].song_cover
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  song_cover: prismic.ImageField<never>;
+}
+
+/**
  * Content for Artist documents
  */
 interface ArtistDocumentData {
@@ -282,6 +327,17 @@ interface ArtistDocumentData {
    * - **Documentation**: https://prismic.io/docs/field#rich-text-title
    */
   description: prismic.RichTextField;
+
+  /**
+   * Song list field in *Artist*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: artist.song_list[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  song_list: prismic.GroupField<Simplify<ArtistDocumentDataSongListItem>>;
 
   /**
    * Website field in *Artist*
@@ -1603,6 +1659,16 @@ export interface RichTextSliceDefaultPrimary {
   title: prismic.KeyTextField;
 
   /**
+   * Title (JA) field in *RichText → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: rich_text.default.primary.title_ja
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title_ja: prismic.KeyTextField;
+
+  /**
    * Text field in *RichText → Default → Primary*
    *
    * - **Field Type**: Rich Text
@@ -1611,6 +1677,16 @@ export interface RichTextSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/field#rich-text-title
    */
   text: prismic.RichTextField;
+
+  /**
+   * Text (JA) field in *RichText → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: rich_text.default.primary.text_ja
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  text_ja: prismic.RichTextField;
 }
 
 /**
@@ -1732,6 +1808,17 @@ export interface SetlistSliceDefaultPrimarySongItem {
    * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
    */
   link: prismic.LinkField;
+
+  /**
+   * Is favorite? field in *Setlist → Default → Primary → Song*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: setlist.default.primary.song[].is_favorite
+   * - **Documentation**: https://prismic.io/docs/field#boolean
+   */
+  is_favorite: prismic.BooleanField;
 }
 
 /**
@@ -1767,6 +1854,17 @@ export interface SetlistSliceDefaultPrimaryEncoreSongItem {
    * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
    */
   link: prismic.LinkField;
+
+  /**
+   * Is favorite? field in *Setlist → Default → Primary → Encore Song*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: setlist.default.primary.encore_song[].is_favorite
+   * - **Documentation**: https://prismic.io/docs/field#boolean
+   */
+  is_favorite: prismic.BooleanField;
 }
 
 /**
@@ -1782,6 +1880,16 @@ export interface SetlistSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/field#group
    */
   song: prismic.GroupField<Simplify<SetlistSliceDefaultPrimarySongItem>>;
+
+  /**
+   * Title field in *Setlist → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Encore
+   * - **API ID Path**: setlist.default.primary.title
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title: prismic.KeyTextField;
 
   /**
    * Encore Song field in *Setlist → Default → Primary*
@@ -2107,6 +2215,7 @@ declare module "@prismicio/client" {
       ArticlesDocumentDataSlices1Slice,
       ArtistDocument,
       ArtistDocumentData,
+      ArtistDocumentDataSongListItem,
       AuthorDocument,
       AuthorDocumentData,
       GalleryDocument,

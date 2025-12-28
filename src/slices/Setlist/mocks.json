@@ -3,86 +3,10 @@
 		"__TYPE__": "SharedSliceContent",
 		"variation": "default",
 		"primary": {
-			"song": {
-				"__TYPE__": "GroupContentType",
-				"value": [
-					{
-						"__TYPE__": "GroupItemContent",
-						"value": [
-							[
-								"title_en",
-								{
-									"__TYPE__": "FieldContent",
-									"value": "especially",
-									"type": "Text"
-								}
-							],
-							[
-								"title_jp",
-								{
-									"__TYPE__": "FieldContent",
-									"value": "thought",
-									"type": "Text"
-								}
-							],
-							[
-								"number",
-								{
-									"__TYPE__": "FieldContent",
-									"value": "move",
-									"type": "Text"
-								}
-							],
-							[
-								"link",
-								{
-									"__TYPE__": "LinkContent",
-									"value": {
-										"__TYPE__": "ExternalLink",
-										"url": "https://prismic.io"
-									}
-								}
-							]
-						]
-					}
-				]
-			},
-			"encore_song": {
-				"__TYPE__": "GroupContentType",
-				"value": [
-					{
-						"__TYPE__": "GroupItemContent",
-						"value": [
-							[
-								"title_en",
-								{
-									"__TYPE__": "FieldContent",
-									"value": "aboard",
-									"type": "Text"
-								}
-							],
-							[
-								"title_jp",
-								{
-									"__TYPE__": "FieldContent",
-									"value": "case",
-									"type": "Text"
-								}
-							],
-							[
-								"link",
-								{
-									"__TYPE__": "LinkContent",
-									"key": "d3f420f1-3d1f-4475-b048-f20afa5a68d8",
-									"value": {
-										"__TYPE__": "ExternalLink",
-										"url": "https://prismic.io"
-									}
-								}
-							]
-						]
-					}
-				]
+			"title": {
+				"__TYPE__": "FieldContent",
+				"value": "primitive",
+				"type": "Text"
 			}
 		},
 		"items": []

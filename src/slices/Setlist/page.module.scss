@@ -21,22 +21,43 @@
         gap: 16px;
         background-color: var(--light-grey);
         border-radius: 24px;
-        padding: 24px;
+        padding: 20px 16px;
         width: 100%;
 
         @include md {
-            padding: 32px;
+            padding: 24px;
         }
 
         h3 {
             display: flex;
             flex-direction: row;
             gap: 16px;
-            align-items: center;
+            align-items: flex-start;
             font-family: var(--font-title);
             color: var(--dark-grey);
 
+            .title {
+                display: flex;
+                flex-direction: column;
+                gap: 0rem;
+                text-wrap-mode: nowrap;
+
+                .english {
+                    font-size: var(--font-size-lg) !important;
+                    line-height: 1;
+
+                    @include md {
+                        font-size: var(--font-size-xl) !important;
+                    }
+                }
+
+                .japanese {
+                    font-size: var(--font-size-sm) !important;
+                }
+            }
+
             &:after {
+                margin: 10px 0;
                 width: -webkit-fill-available;
                 height: 2px;
                 display: block;
@@ -59,104 +80,277 @@
                 &.Encore {
                     padding-top: 16px;
                     border-top: 1px solid rgba(0,0,0,0.1);
+
+                    h4 {
+                        font-size: 16px;
+                        font-weight: 600;
+                        margin-bottom: 8px;
+                    }
                 }
         
                 li {
-                    display: grid;
-                    grid-template-columns: 44px 1fr 44px;
-                    grid-template-rows: minmax(24px, auto);
-                    border-radius: 4px;
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
 
-                    grid-gap: 0px 8px;
-                    align-items: baseline;
-                    font-size: 14px;
-                    line-height: 24px;
-
-                    @include md {
-                        grid-template-columns: 44px 1fr 1fr 44px;
-                        grid-gap: 4px;
-                    }
-
-                    &:hover {
-                        background-color: rgba(0,0,0,0.03);
-                    }
-        
-                    .Number {
-                        font-weight: 600;
-                        color: var(--bi-pink);
-                        text-align: right;
-                        grid-column: 1/2;
-                    }
-
-                    .Name {
-                        width: 100%;
+                    .FavoriteTag {
+                        background-color: var(--white);
+                        color: var(--bi-dark-pink);
+                        padding: 2px 4px;
+                        border-radius: 4px;
                         display: flex;
-                        flex-direction: row;
-                        justify-content: space-between;
-
-                        @include md {
-                            padding-left: 12px;
-                        }
-
-                        span {
-                            display: inline-block;
-                            width: 100%;
-                        }
-
-                    }
-
-                    .Jp {
-                        color: var(--medium-grey);
-                        font-size: 12px; 
-                        grid-column: 2/3;
-                        grid-row: 2/3;
-
-                        @include md {
-                            grid-column: 3/4;
-                            grid-row: 1/2;
-                            padding-left: 12px;
-                        }
-                    }
-
-                    a {
-                        grid-column: 3/4;
-                        grid-row: 1/3;
-                        align-self: flex-start;
-                        justify-self: flex-end;
-
-                        text-decoration: none !important;
-                        border: none;
-                        border-radius: 12px;
-
-                        font-family: var(--font-text);
-                        font-weight: 600;
-                        font-size: 12px;
-                        line-height: 24px;
-                        letter-spacing: 0.7px;
-                        text-transform: uppercase;
-
-                        gap: 8px;
-                        display: flex;
-                        justify-content: flex-start;
                         align-items: center;
-                        width: 24px;
-                        height: 24px;
-                        padding: 0 4px;
+                        gap: 4px;
+                        width: fit-content;
 
-                        transition: var(--transi);
-
-                        color: var(--bi-pink);
-
-                        @include md {
-                            grid-column: 4/5;
-                            grid-row: 1/2;
-                        }
-
-                        &:hover{
-                            color: var(--bi-indigo);
+                        .StarIcon {
+                            color: var(--bi-dark-gold);
+                            font-size: 12px;
                         }
                     }
 
+                    .SongContent {
+                        display: grid;
+                        grid-template-columns: 44px 1fr 44px;
+                        grid-template-rows: minmax(24px, auto);
+                        border-radius: 4px;
+                        position: relative;
+
+                        grid-gap: 0px 8px;
+                        align-items: baseline;
+                        font-size: 14px;
+                        line-height: 24px;
+
+                        @include md {
+                            grid-template-columns: 44px 1fr 1fr 44px;
+                            grid-gap: 4px;
+                        }
+
+                        &.isFavorite {
+                            border: 1px solid rgba(255, 215, 0, 0.3);
+                            background-color: rgba(255, 215, 0, 0.15);
+
+                            &:hover {
+                                background-color: rgba(255, 215, 0, 0.15);
+                            }
+                        }
+
+                        .FavoriteTag {
+                            position: absolute;
+                            top: 3px;
+                            left: 3px;
+                            z-index: 1;
+                            width: 18px;
+                            height: 18px;
+                            border-radius: 2px;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+
+                            .Tooltip {
+                                position: absolute;
+                                bottom: 100%;
+                                left: 50%;
+                                transform: translateX(-50%);
+                                margin-bottom: 8px;
+                                z-index: 10;
+                                pointer-events: none;
+                                animation: tooltipPop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+
+                                // Mobile: position to the right of the tag, starting from tag's left edge
+                                @media (max-width: 767px) {
+                                    bottom: 12px;
+                                    left: -4px;
+                                    transform: translateY(-50%);
+                                    margin-bottom: 0;
+                                    margin-left: 0;
+                                    white-space: nowrap;
+                                    // Use transform-origin to ensure positioning is relative to tag
+                                    transform-origin: 9px calc(100% + 4px);
+                                    animation: tooltipPopMobile 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+                                }
+
+                                .TooltipContent {
+                                    background-color: var(--white);
+                                    color: var(--bi-dark-pink);
+                                    padding: 0px 8px;
+                                    border-radius: 8px;
+                                    font-size: var(--font-size-sm);
+                                    font-weight: 600;
+                                    letter-spacing: 0.25px;
+                                    white-space: nowrap;
+                                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+                                    // Mobile: ensure tooltip doesn't go off-screen
+                                    @media (max-width: 767px) {
+                                        max-width: calc(100vw - 60px);
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                        border-radius: 4px;
+                                    }
+
+                                    &::after {
+                                        content: '';
+                                        position: absolute;
+                                        top: 100%;
+                                        left: 50%;
+                                        transform: translateX(-50%);
+                                        border: 4px solid transparent;
+                                        border-top-color: var(--white);
+
+                                        // Mobile: arrow points down, aligned with tag
+                                        @media (max-width: 767px) {
+                                            top: 100%;
+                                            left: 9px;
+                                            transform: translateX(0);
+                                            border-top-color: var(--white);
+                                            border-right-color: transparent;
+                                            border-left-color: transparent;
+                                            border-bottom: none;
+                                        }
+                                    }
+                                }
+                            }
+
+                            @keyframes tooltipPop {
+                                0% {
+                                    opacity: 0;
+                                    transform: translateX(-50%) translateY(4px) scale(0.8);
+                                }
+                                50% {
+                                    transform: translateX(-50%) translateY(-2px) scale(1.05);
+                                }
+                                100% {
+                                    opacity: 1;
+                                    transform: translateX(-50%) translateY(0) scale(1);
+                                }
+                            }
+
+                            @keyframes tooltipPopMobile {
+                                0% {
+                                    opacity: 0;
+                                    transform: translateY(-50%) translateX(-4px) scale(0.8);
+                                }
+                                50% {
+                                    transform: translateY(-50%) translateX(2px) scale(1.05);
+                                }
+                                100% {
+                                    opacity: 1;
+                                    transform: translateY(-50%) translateX(0) scale(1);
+                                }
+                            }
+                        }
+
+                        &:hover {
+                            background-color: rgba(0,0,0,0.03);
+                        }
+            
+                        .Number {
+                            font-weight: 600;
+                            color: var(--bi-pink);
+                            text-align: right;
+                            grid-column: 1/2;
+                        }
+
+                        .Name {
+                            width: 100%;
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-between;
+                            align-items: center;
+                            gap: 8px;
+                            flex-wrap: wrap;
+
+                            @include md {
+                                padding-left: 12px;
+                                flex-wrap: nowrap;
+                            }
+
+                            span {
+                                display: inline-block;
+                                width: 100%;
+
+                                @include md {
+                                    width: auto;
+                                    flex: 1;
+                                }
+                            }
+
+                            .FavoriteTag {
+                                display: inline-flex;
+                                align-items: center;
+                                gap: 4px;
+                                padding: 2px 8px;
+                                background-color: rgba(255, 215, 0, 0.15);
+                                border: 1px solid rgba(255, 215, 0, 0.4);
+                                border-radius: 12px;
+                                font-size: 11px;
+                                font-weight: 600;
+                                color: #d4af37;
+                                white-space: nowrap;
+                                flex-shrink: 0;
+
+                                .StarIcon {
+                                    color: #ffd700;
+                                    font-size: 12px;
+                                }
+                            }
+                        }
+
+                        .Jp {
+                            color: var(--medium-grey);
+                            font-size: 12px; 
+                            grid-column: 2/3;
+                            grid-row: 2/3;
+
+                            @include md {
+                                grid-column: 3/4;
+                                grid-row: 1/2;
+                                padding-left: 12px;
+                            }
+                        }
+
+                        a {
+                            grid-column: 3/4;
+                            grid-row: 1/3;
+                            align-self: flex-start;
+                            justify-self: flex-end;
+
+                            text-decoration: none !important;
+                            border: none;
+                            border-radius: 12px;
+
+                            font-family: var(--font-text);
+                            font-weight: 600;
+                            font-size: 12px;
+                            line-height: 24px;
+                            letter-spacing: 0.7px;
+                            text-transform: uppercase;
+
+                            gap: 8px;
+                            display: flex;
+                            justify-content: flex-start;
+                            align-items: center;
+                            width: 24px;
+                            height: 24px;
+                            padding: 0 4px;
+
+                            transition: var(--transi);
+
+                            color: var(--bi-pink);
+
+                            @include md {
+                                grid-column: 4/5;
+                                grid-row: 1/2;
+                            }
+
+                            &:hover{
+                                color: var(--bi-indigo);
+                            }
+                        }
+                    }
                 }
             }
 

@@ -48,8 +48,24 @@
                   "select": null,
                   "allowText": false
                 }
+              },
+              "is_favorite": {
+                "type": "Boolean",
+                "config": {
+                  "label": "Is favorite?",
+                  "placeholder_false": "false",
+                  "placeholder_true": "true",
+                  "default_value": false
+                }
               }
             }
+          }
+        },
+        "title": {
+          "type": "Text",
+          "config": {
+            "label": "Title",
+            "placeholder": "Encore"
           }
         },
         "encore_song": {
@@ -80,6 +96,15 @@
                   "allowTargetBlank": true,
                   "select": null,
                   "allowText": false
+                }
+              },
+              "is_favorite": {
+                "type": "Boolean",
+                "config": {
+                  "label": "Is favorite?",
+                  "placeholder_false": "false",
+                  "placeholder_true": "true",
+                  "default_value": false
                 }
               }
             }

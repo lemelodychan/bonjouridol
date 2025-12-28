@@ -57,6 +57,47 @@
           "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
         }
       },
+      "song_list": {
+        "type": "Group",
+        "config": {
+          "label": "Song list",
+          "repeat": true,
+          "fields": {
+            "song_title_en": {
+              "type": "Text",
+              "config": {
+                "label": "Song title (EN)",
+                "placeholder": ""
+              }
+            },
+            "song_title_ja": {
+              "type": "Text",
+              "config": {
+                "label": "Song title (JA)",
+                "placeholder": ""
+              }
+            },
+            "song_link": {
+              "type": "Link",
+              "config": {
+                "label": "Song link",
+                "placeholder": "",
+                "allowTargetBlank": true,
+                "select": null,
+                "allowText": false
+              }
+            },
+            "song_cover": {
+              "type": "Image",
+              "config": {
+                "label": "Song cover",
+                "constraint": {},
+                "thumbnails": []
+              }
+            }
+          }
+        }
+      },
       "website": {
         "type": "Link",
         "config": {

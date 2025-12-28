@@ -5,7 +5,7 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
-    margin: 24px auto;
+    margin: 16px auto;
     width: 100%;
     max-width: 1000px;
 
@@ -15,12 +15,40 @@
         padding: 0 32px;
     }
 
+    h3 {
+        > .title {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            .japanese {
+                font-size: var(--font-size-md);
+                color: var(--bi-light-pink) !important;
+                line-height: 2;
+            }
+        }
+    }
+
+
     .Content {
         display: flex;
         flex-direction: column;
-        gap: 16px;
-        font-size: 16px;
-        line-height: 28px;
+        gap: 8px;
+
+        > span {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            line-height: 1.8;
+
+            &.english {
+                font-size: var(--font-size-md);
+            }
+
+            &.japanese {
+                font-size: var(--font-size);
+            }
+        }
 
         a {
             color: var(--bi-dark-pink) !important;

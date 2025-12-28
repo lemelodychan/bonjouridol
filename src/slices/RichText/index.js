@@ -15,10 +15,24 @@ const RichText = ({ slice }) => {
       className={styles.RichText}
     >
       {slice.primary.title && (
-        <h3>{slice.primary.title}</h3>
+        <h3>
+          <span className={styles.title}>
+            <span className={styles.english}>{slice.primary.title}</span>
+            {slice.primary.title_ja && (
+              <span className={styles.japanese}>{slice.primary.title_ja}</span>
+            )}
+          </span>
+        </h3>
       )}
       <div className={styles.Content}>
-        <PrismicRichText field={slice.primary.text} />
+        <span className={styles.english}>
+          <PrismicRichText field={slice.primary.text} />
+        </span>
+        {slice.primary.text_ja && (
+          <span className={styles.japanese}>
+            <PrismicRichText field={slice.primary.text_ja} />
+          </span>
+        )}
       </div>
     </section>
   );
