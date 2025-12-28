@@ -60,7 +60,7 @@ const Gallery = ({ images, color = "default" }) => {
             <SingleImage 
                 image={item.image}
                 fallbackAlt=""
-                color={color}
+                color="white"
             />
             <div className={styles.ViewItem}>
               <span>
