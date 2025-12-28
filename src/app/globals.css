@@ -1,5 +1,5 @@
 :root {
-  --font-jp: "Noto Sans JP";
+  --font-jp: "Kiwi Maru", sans-serif;
   --font-text: "DM Sans", var(--font-jp), Helvetica, Arial, sans-serif;
   --font-title: "Poppins", var(--font-jp), Helvetica, Arial, sans-serif;
   --font-text-serif: "DM Serif Display", var(--font-jp), Times New Roman, serif;

@@ -49,10 +49,42 @@
         h2 {
             margin: 0;
 
-            span {
-                @include md {
-                    font-size: 32px;
-                    line-height: 48px;
+            .title {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                line-height: 1;
+    
+                .en {
+                    font-size: var(--font-size-xl);
+                    letter-spacing: 0.25px;
+                    line-height: 1;
+                }
+    
+                .ja {
+                    font-size: var(--font-size-sm);
+                }
+            }
+    
+            @include md {
+                display: grid;
+                grid-template-columns: max-content auto max-content !important;
+    
+                .title {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
+                    line-height: 1;
+        
+                    .en {
+                        font-size: var(--font-size-xl);
+                        letter-spacing: 0.25px;
+                        line-height: 1;
+                    }
+        
+                    .ja {
+                        font-size: var(--font-size-sm);
+                    }
                 }
             }
         }

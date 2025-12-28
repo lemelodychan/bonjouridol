@@ -20,7 +20,10 @@ export default function Menu({ onLinkClick }) {
                         href="/livereports"
                         onClick={onLinkClick}
                         className={pathname == "/livereports" ? "active" : ""} >
-                            <span>Live Reports</span>
+                            <span className={styles.title}>
+                                <span className={styles.en}>Live Reports</span>
+                                <span className={styles.ja}>ライブレポート</span>
+                            </span>
                             <span className={styles.Icon}>
                                 <IoArrowForwardOutline />
                             </span>
@@ -31,7 +34,10 @@ export default function Menu({ onLinkClick }) {
                         href="/features"
                         onClick={onLinkClick}
                         className={pathname == "/features" ? "active" : ""} >
-                            <span>Features</span>
+                            <span className={styles.title}>
+                                <span className={styles.en}>Features</span>
+                                <span className={styles.ja}>特集記事</span>
+                            </span>
                             <span className={styles.Icon}>
                                 <IoArrowForwardOutline />
                             </span>
@@ -42,7 +48,10 @@ export default function Menu({ onLinkClick }) {
                         href="/discoveries"
                         onClick={onLinkClick}
                         className={pathname == "/discoveries" ? "active" : ""} >
-                            <span>Discoveries</span>
+                            <span className={styles.title}>
+                                <span className={styles.en}>Discoveries</span>
+                                <span className={styles.ja}>ピックアップ</span>
+                            </span>
                             <span className={styles.Icon}>
                                 <IoArrowForwardOutline />
                             </span>
@@ -53,7 +62,10 @@ export default function Menu({ onLinkClick }) {
                         href="/pressrelease"
                         onClick={onLinkClick}
                         className={pathname == "/pressrelease" ? "active" : ""} >
-                            <span>Press Release</span>
+                            <span className={styles.title}>
+                                <span className={styles.en}>Press Release</span>
+                                <span className={styles.ja}>プレスリリース</span>
+                            </span>
                             <span className={styles.Icon}>
                                 <IoArrowForwardOutline />
                             </span>
@@ -64,7 +76,10 @@ export default function Menu({ onLinkClick }) {
                         href="/galleries"
                         onClick={onLinkClick}
                         className={pathname == "/galleries" ? "active" : ""} >
-                            <span>Galleries</span>
+                            <span className={styles.title}>
+                                <span className={styles.en}>Galleries</span>
+                                <span className={styles.ja}>ギャラリー</span>
+                            </span>
                             <span className={styles.Icon}>
                                 <IoArrowForwardOutline />
                             </span>
@@ -75,7 +90,10 @@ export default function Menu({ onLinkClick }) {
                         href="/directory"
                         onClick={onLinkClick}
                         className={pathname == "/directory" ? "active" : ""} >
-                            <span>Artist Directory</span>
+                            <span className={styles.title}>
+                                <span className={styles.en}>Artist Directory</span>
+                                <span className={styles.ja}>アーティスト一覧</span>
+                            </span>
                             <span className={styles.Icon}>
                                 <IoArrowForwardOutline />
                             </span>

@@ -52,7 +52,10 @@ export default async function Discoveries() {
   return (
     <div className={styles.Discoveries}>
       <h2>
-        <span>Discoveries</span>
+        <span className={styles.title}>
+          <span className={styles.en}>Discoveries</span>
+          <span className={styles.ja}>ピックアップ</span>
+        </span>
         <Link href="/discoveries" className={styles.btn}>
           <Button variant={"White"} textValue={"See more articles"} icon={<IoArrowForwardOutline />} />
         </Link>

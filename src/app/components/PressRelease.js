@@ -47,7 +47,10 @@ export default async function PressRelease() {
     return (
         <div className={styles.PressRelease}>
             <h2>
-                <span>Press Release</span>
+                <span className={styles.title}>
+                    <span className={styles.en}>Press Release</span>
+                    <span className={styles.ja}>プレスリリース</span>
+                </span>
                 <Link href="/pressrelease" className={styles.btn}>
                     <Button variant={"WhiteGrey"} textValue={"See more articles"} icon={<IoArrowForwardOutline />} />
                 </Link>

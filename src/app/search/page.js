@@ -160,7 +160,12 @@ export default async function SearchPage({ searchParams }) {
           return (
             <div className={styles.SearchPage}>
               <SearchTracker searchTerm={searchTerm} />
-              <h1>Work by {exactAuthorMatch.data.name}</h1>
+              <h1>
+                <span className={styles.title}>
+                  <span className={styles.en}>Work by {exactAuthorMatch.data.name}</span>
+                  <span className={styles.ja}>{exactAuthorMatch.data.name}の作品</span>
+                </span>
+              </h1>
 
               {resultsGallery.length > 0 && (
                 <div className={styles.GalleryList}>
@@ -356,7 +361,12 @@ export default async function SearchPage({ searchParams }) {
         return (
             <div className={styles.SearchPage}>
               <SearchTracker searchTerm={searchTerm} />
-              <h1>Search Results for "{searchTerm}"</h1>
+              <h1>
+                <span className={styles.title}>
+                  <span className={styles.en}>Search Results for "{searchTerm}"</span>
+                  <span className={styles.ja}>"{searchTerm}"の検索結果</span>
+                </span>
+              </h1>
 
                 {resultsGallery.length > 0 && (
                   <div className={styles.GalleryList}>

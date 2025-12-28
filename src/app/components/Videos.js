@@ -14,7 +14,10 @@ const Videos = () => {
   return (
     <section className={styles.videos}>
        <h2>
-          <span>Bonjour Idol Originals</span>
+          <span className={styles.title}>
+            <span className={styles.en}>Bonjour Idol Originals</span>
+            <span className={styles.ja}>オリジナル動画</span>
+          </span>
           <Link href="https://www.youtube.com/@bonjouridol" className={styles.btn}>
               <Button variant={"WhiteGrey"} textValue={"Go to the channel"} icon={<IoArrowForwardOutline />} />
           </Link>

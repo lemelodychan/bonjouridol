@@ -15,7 +15,7 @@
         list-style-type: none;
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 16px;
         width: 100%;
         height: fit-content;
         justify-content: center;
@@ -34,22 +34,36 @@
             a {
                 display: flex;
                 flex-direction: row;
-                gap: 4px;
-                align-items: center;
+                gap: 8px;
+                align-items: flex-start;
                 width: fit-content;
                 color: var(--white);
                 font-family: var(--font-title);
-                font-size: 20px;
-                line-height: 32px;
-                letter-spacing: 0.5px;
                 padding: 0;
                 transition: var(--transi);
                 text-decoration: none;
+
+                .title {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0rem;
+
+                    .en {
+                        font-size: var(--font-size-lg);
+                        letter-spacing: 0.5px;
+                        line-height: 1.5;
+                    }
+
+                    .ja {
+                        font-size: var(--font-size-sm);
+                    }
+                }
 
                 .Icon {
                     display: flex;
                     width: 24px;
                     height: 24px;
+                    margin: 4px 0;
                     overflow: hidden;
                     position: relative;
                     align-items: center;
@@ -69,7 +83,10 @@
                 }
 
                 @include md {
-                    display: inline-block;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
                     width: fit-content;
                     font-family: var(--font-text);
                     color: var(--bi-dark-pink);
@@ -77,33 +94,54 @@
                     line-height: 24px;
                     letter-spacing: 0.32px;
                     font-weight: 600;
+                    padding: 0 0.5rem;
+
+                    .title {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.25rem;
+
+                        .en {
+                            line-height: 1.5;
+                            font-size: var(--font-size);
+                            color: var(--bi-dark-pink);
+                            letter-spacing: 0.32px;
+                        }
+
+                        .ja {
+                            font-size: var(--font-size-xs);
+                            color: var(--bi-light-pink);
+                            line-height: 1;
+                        }
+                    }
 
                     .Icon {
                         display: none;
                     }
 
                     &:hover  {
-                        transform: scaleX(100%) !important;
+                        transform: translateY(-4px) !important;
                     }
 
                     &::after {
                         display: block;
-                        height: 2px;
+                        height: 4px;
                         background-color: var(--bi-dark-pink);
                         content: " ";
                         position: relative;
-                        top: 4px;
-                        width: 100%;
-                        transition: var(--transi);
-                        transform-origin: left;
-                        transform: scaleX(0%);
+                        width: 4px;
+                        border-radius: 2px;
+                        transition: all ease 0.125s;
+                        transform-origin: center;
+                        transform: scale(0%);
+                        margin-bottom: -4px;
                     }
                     &:hover::after {
-                        transform: scaleX(100%) !important;
+                        transform: scale(100%) !important;
                     }
                     &.active {
                         &::after {
-                            transform: scaleX(100%) !important;
+                            transform: scale(100%) !important;
                         }
                     }
                 }

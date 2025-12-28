@@ -52,7 +52,10 @@ export default async function LiveReports() {
   return (
     <div className={styles.LiveReports}>
       <h2>
-        <span>Live Reports</span>
+        <span className={styles.title}>
+          <span className={styles.en}>Live Reports</span>
+          <span className={styles.ja}>ライブレポート</span>
+        </span>
         <Link href="/livereports" className={styles.btn}>
           <Button variant={"White"} textValue={"See more articles"} icon={<IoArrowForwardOutline />} />
         </Link>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,7 +12,7 @@ import LogoMobileWhite from "../assets/logo_croissant_white.svg";
 import LogoMobilePink from "../assets/logo_croissant_pink.svg";
 import LogoMobileMenu from "../assets/logo_normal_white.svg";
 
-import { FaXTwitter, FaInstagram, FaYoutube } from "react-icons/fa6";
+import { FaXTwitter, FaInstagram, FaYoutube, FaTiktok } from "react-icons/fa6";
 import { IoArrowForwardOutline } from "react-icons/io5";
 import { HiOutlineSearch } from "react-icons/hi";
 
@@ -45,24 +45,63 @@ export default function Navbar() {
         console.log('Umami not available for search tracking');
       }
       
-      // Small delay to ensure tracking completes before navigation
-      setTimeout(() => {
-        router.push(`/search?keyword=${encodeURIComponent(searchQuery)}`);
-      }, 100);
+      // Close mobile overlay if open
+      if (isSearchOpen) {
+        closeSearch();
+      }
+      
+      // Clear search input
+      setSearchTerm("");
+      
+      // Navigate to search results page
+      // Use startTransition to ensure loading state is properly triggered
+      const searchUrl = `/search?keyword=${encodeURIComponent(searchQuery)}`;
+      
+      startTransition(() => {
+        // Navigate to search page - Next.js loading.tsx will show skeleton automatically
+        router.push(searchUrl);
+      });
     }
   };
 
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setSearchOpen] = useState(false);
   const [isScrolled, setScrolled] = useState(false);
   const toggleMobileMenu = () => {
-    setMobileMenuOpen(!isMobileMenuOpen);
-    document.body.classList.toggle("overflowHidden", !isMobileMenuOpen);
+    if (isSearchOpen) {
+      closeSearch();
+      setTimeout(() => {
+        setMobileMenuOpen(true);
+        document.body.classList.add("overflowHidden");
+      }, 300);
+    } else {
+      setMobileMenuOpen(!isMobileMenuOpen);
+      document.body.classList.toggle("overflowHidden", !isMobileMenuOpen);
+    }
   };
   const closeMobileMenu = () => {
     setTimeout(() => {
       setMobileMenuOpen(false);
       document.body.classList.remove("overflowHidden");
     }, 300); // Delay of 300ms for synchronization
+  };
+  const toggleSearch = () => {
+    if (isMobileMenuOpen) {
+      closeMobileMenu();
+      setTimeout(() => {
+        setSearchOpen(true);
+        document.body.classList.add("overflowHidden");
+      }, 300);
+    } else {
+      setSearchOpen(!isSearchOpen);
+      document.body.classList.toggle("overflowHidden", !isSearchOpen);
+    }
+  };
+  const closeSearch = () => {
+    setTimeout(() => {
+      setSearchOpen(false);
+      document.body.classList.remove("overflowHidden");
+    }, 50); // Small delay for smooth animation
   };
 
 
@@ -84,8 +123,52 @@ export default function Navbar() {
     }
   }, []);
 
+  // Handle click outside to close search overlay (backup for clicks outside backdrop)
+  useEffect(() => {
+    if (!isSearchOpen) return;
+
+    const handleClickOutside = (event) => {
+      const overlay = event.target.closest(`.${styles.mobileSearchOverlay}`);
+      const backdrop = event.target.closest(`.${styles.searchOverlayBackdrop}`);
+      const searchButton = event.target.closest(`.${styles.mobileSearchButton}`);
+      
+      // If click is outside overlay/backdrop and not on search button, close overlay
+      if (!overlay && !backdrop && !searchButton) {
+        closeSearch();
+      }
+    };
+
+    // Add event listener after a small delay to prevent immediate close
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isSearchOpen]);
+
   return (
     <div className={styles.navigation}>
+      {/* Fixed Mobile Search Icon */}
+      <button
+        onClick={toggleSearch}
+        className={`${styles.mobileSearchButton} ${
+            isScrolled || !isArticleOrHomePage
+              ? styles.whiteBackground
+              : ""
+          } ${isMobileMenuOpen || isSearchOpen ? styles.hidden : ""}`}
+        >
+            <HiOutlineSearch
+              className={`${styles.mobileIcon} ${
+                  isScrolled || !isArticleOrHomePage ? styles.pinkIcon : styles.whiteIcon
+              }`}
+            />
+        </button>
+
       {/* Fixed Mobile Menu Icon */}
       <button
         onClick={toggleMobileMenu}
@@ -95,7 +178,7 @@ export default function Navbar() {
               : isScrolled || !isArticleOrHomePage
               ? styles.whiteBackground
               : ""
-          }`}
+          } ${isSearchOpen ? styles.hidden : ""}`}
         >
             {isMobileMenuOpen ? (
                 <HiX className={styles.mobileIcon} />
@@ -178,11 +261,51 @@ export default function Navbar() {
               <Link href="https://www.instagram.com/bonjour_idol/">
                   <FaInstagram />
               </Link>
+              <Link href="https://www.tiktok.com/@bonjour_idol">
+                  <FaTiktok />
+              </Link>
               <Link href="https://www.youtube.com/@bonjouridol">
                   <FaYoutube />
               </Link>
           </div>
         </nav>
+      </div>
+
+      {/* Mobile Search Overlay Backdrop */}
+      {isSearchOpen && (
+        <div 
+          className={styles.searchOverlayBackdrop}
+          onClick={closeSearch}
+        />
+      )}
+
+      {/* Mobile Search Overlay */}
+      <div
+        className={`${styles.mobileSearchOverlay} ${isSearchOpen ? styles.open : ""}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className={styles.searchOverlayContent}>
+          <form onSubmit={handleSearch} className={styles.searchOverlayForm}>
+            <div className={styles.searchOverlayInputWrapper}>
+              <HiOutlineSearch className={styles.searchOverlayIcon} />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search articles..."
+                className={styles.searchOverlayInput}
+                autoFocus
+              />
+              <button 
+                type="submit" 
+                className={styles.searchOverlayButton}
+                disabled={!searchTerm.trim()}
+              >
+                <IoArrowForwardOutline />
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

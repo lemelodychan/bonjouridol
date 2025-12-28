@@ -21,6 +21,48 @@
         position: relative;
     }
 
+    .mobileSearchButton {
+        z-index: 2001 !important;
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 16px;
+        cursor: pointer;
+
+        @include md {
+            display: none !important;
+        }
+
+        &.hidden {
+            display: none;
+        }
+
+        &.whiteBackground {
+            background-color: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+    
+        .mobileIcon {
+            transition: color 0.3s;
+            color: #fff;
+        }
+    
+        .whiteIcon {
+            color: #fff;
+        }
+        .pinkIcon {
+            color: #ff4081;
+        }
+    }
+
     .mobileMenuButton {
         z-index: 2001 !important;
         position: fixed;
@@ -39,6 +81,10 @@
         cursor: pointer;
 
         @include md {
+            display: none !important;
+        }
+
+        &.hidden {
             display: none;
         }
 
@@ -266,6 +312,180 @@
                     background-color: white;
                     color: var(--bi-dark-pink);
                 }
+            }
+        }
+    }
+
+    .searchOverlayBackdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1999;
+        background-color: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(2px);
+        opacity: 0;
+        animation: fadeIn 0.3s ease-out forwards;
+
+        @include md {
+            display: none;
+        }
+    }
+
+    @keyframes fadeIn {
+        to {
+            opacity: 1;
+        }
+    }
+
+    .mobileSearchOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 2000 !important;
+        width: 100%;
+        height: fit-content;
+        padding: 24px;
+        border-radius: 0 0 16px 16px;
+/*         color: var(--white);
+        background: 
+            radial-gradient(50% 100% at 0% 0%, rgba(255, 49, 148, 0.8) 0%, rgba(51, 51, 51, 0) 100%), 
+            radial-gradient(50% 100% at 100% 100%, rgba(114, 114, 252, 0.8) 0%, rgba(51, 51, 51, 0) 100%), 
+            rgba(51, 51, 51, 0.8); */
+        color: var(--dark-grey);
+        background-color: var(--white);
+        backdrop-filter: blur(8px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transform: translateY(-100%);
+        opacity: 0;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        pointer-events: none;
+
+        @include md {
+            display: none;
+        }
+
+        &.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .searchOverlayContent {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .searchLoadingState {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            width: 100%;
+        }
+
+        .searchSpinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            border-top-color: var(--dark-grey);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .searchLoadingText {
+            color: var(--dark-grey);
+            font-size: var(--font-size);
+            font-family: var(--font-text);
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .searchOverlayForm {
+            width: 100%;
+        }
+
+        .searchOverlayInputWrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .searchOverlayIcon {
+            position: absolute;
+            left: 16px;
+            font-size: 20px;
+            color: var(--bi-dark-pink);
+            z-index: 1;
+        }
+
+        .searchOverlayInput {
+            width: 100%;
+            height: 48px;
+            padding: 0.5rem 3rem;
+            border: 2px solid var(--light-grey);
+            border-radius: 8px;
+            background-color: var(--light-grey);
+            backdrop-filter: blur(10px);
+            color: var(--dark-grey);
+            font-size: var(--font-size);
+            font-family: var(--font-text);
+            transition: all 0.3s ease;
+
+            &::placeholder {
+                color: var(--medium-grey);
+            }
+
+            &:focus {
+                outline: none;
+                border-color: var(--bi-indigo);
+                background-color: var(--light-grey);
+            }
+        }
+
+        .searchOverlayButton {
+            position: absolute;
+            right: 8px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: transparent;
+            color: var(--bi-dark-pink);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+
+            &:hover:not(:disabled) {
+                background-color: var(--light-grey);
+            }
+
+            &:disabled {
+                opacity: 0.4;
+                cursor: not-allowed;
+            }
+
+            svg {
+                transition: transform 0.3s ease;
+            }
+
+            &:not(:disabled):hover svg {
+                transform: translateX(2px);
             }
         }
     }

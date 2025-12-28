@@ -77,7 +77,12 @@ export default async function LatestPost() {
             <HeroPost />
 
             <div className={styles.OtherPosts}>
-                <h2><span>Latest Articles</span></h2>
+                <h2>
+                    <span className={styles.title}>
+                        <span className={styles.en}>Latest Articles</span>
+                        <span className={styles.ja}>最新の記事</span>
+                    </span>
+                </h2>
 
                 {resultsWithoutLatest.map((item) => {
                     const publicationDate = item.data.publication_date || item.first_publication_date;

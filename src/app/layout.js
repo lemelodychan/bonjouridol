@@ -1,5 +1,5 @@
 import './globals.css'
-import { DM_Sans, Poppins, Noto_Sans_JP } from 'next/font/google'
+import { DM_Sans, Poppins, Kiwi_Maru } from 'next/font/google'
 
 import { PrismicPreview, PrismicNextImage } from '@prismicio/next'
 import { repositoryName, createClient } from '@/prismicio'
@@ -79,7 +79,7 @@ export default async function RootLayout({ children }) {
           <meta name="google-site-verification" content="WOV1O-V5Z53289sOWAWW_caWIAFnluDcQ6PEdiJ0pCU" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
-          <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400;1,9..40,500;1,9..40,700&family=Noto+Sans+JP:wght@400;500;700&family=Poppins:wght@900&display=swap" rel="stylesheet" />
+          <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400;1,9..40,500;1,9..40,700&family=Kiwi+Maru:wght@400;500&family=Poppins:wght@900&display=swap" rel="stylesheet" />
           <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"></link>
           <GoogleTagManager />
           <UmamiTracker />
