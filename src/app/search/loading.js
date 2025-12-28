@@ -1,10 +1,11 @@
 import styles from "./page.module.scss";
 import skeletonStyles from "./loading.module.scss";
+import docListStyles from "../components/DocList.module.scss";
 
 export default function SearchLoading() {
   return (
     <div className={styles.SearchPage}>
-      {/* Title Skeleton */}
+      {/* Page header skeleton */}
       <h1>
         <span className={styles.title}>
           <div className={skeletonStyles.titleSkeleton}>
@@ -26,36 +27,44 @@ export default function SearchLoading() {
         </div>
       </div>
 
-      {/* Search Results Skeleton */}
+      {/* Search Results Skeleton - using same skeleton as DocList */}
       <div className={styles.SearchResults}>
         <div className={styles.DocList}>
-          <div className={skeletonStyles.docListContainer}>
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className={skeletonStyles.post}>
-                <div className={skeletonStyles.featuredImage}></div>
-                <div className={skeletonStyles.content}>
-                  <div className={skeletonStyles.tags}>
-                    <div className={skeletonStyles.tag}></div>
+          <div className={docListStyles.DocListContainer}>
+            {/* Breadcrumbs skeleton */}
+            <div className={skeletonStyles.breadcrumbsSkeleton}>
+              <div className={skeletonStyles.breadcrumbItem}></div>
+              <div className={skeletonStyles.breadcrumbSeparator}></div>
+              <div className={skeletonStyles.breadcrumbItem} style={{ width: "80px" }}></div>
+            </div>
+            <div className={docListStyles.DocList}>
+              {[...Array(10)].map((_, i) => (
+                <div key={`skeleton-${i}`} className={docListStyles.PostSkeleton}>
+                  <div className={docListStyles.SkeletonFeaturedImage}></div>
+                  <div className={docListStyles.SkeletonContent}>
+                    <div className={docListStyles.SkeletonTags}>
+                      <div className={docListStyles.SkeletonTag}></div>
+                    </div>
+                    <div className={docListStyles.SkeletonTitle}>
+                      <div className={docListStyles.SkeletonLine} style={{ width: "90%" }}></div>
+                      <div className={docListStyles.SkeletonLine} style={{ width: "75%" }}></div>
+                    </div>
+                    <div className={docListStyles.SkeletonSubtitle}>
+                      <div className={docListStyles.SkeletonLine} style={{ width: "80%" }}></div>
+                    </div>
+                    <div className={docListStyles.SkeletonDate}>
+                      <div className={docListStyles.SkeletonLine} style={{ width: "50%" }}></div>
+                    </div>
+                    <div className={docListStyles.SkeletonExcerpt}>
+                      <div className={docListStyles.SkeletonLine} style={{ width: "100%" }}></div>
+                      <div className={docListStyles.SkeletonLine} style={{ width: "98%" }}></div>
+                      <div className={docListStyles.SkeletonLine} style={{ width: "85%" }}></div>
+                    </div>
+                    <div className={docListStyles.SkeletonButton}></div>
                   </div>
-                  <div className={skeletonStyles.title}>
-                    <div className={skeletonStyles.line} style={{ width: "90%" }}></div>
-                    <div className={skeletonStyles.line} style={{ width: "75%" }}></div>
-                  </div>
-                  <div className={skeletonStyles.subtitle}>
-                    <div className={skeletonStyles.line} style={{ width: "80%" }}></div>
-                  </div>
-                  <div className={skeletonStyles.date}>
-                    <div className={skeletonStyles.line} style={{ width: "50%" }}></div>
-                  </div>
-                  <div className={skeletonStyles.excerpt}>
-                    <div className={skeletonStyles.line} style={{ width: "100%" }}></div>
-                    <div className={skeletonStyles.line} style={{ width: "98%" }}></div>
-                    <div className={skeletonStyles.line} style={{ width: "85%" }}></div>
-                  </div>
-                  <div className={skeletonStyles.button}></div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>

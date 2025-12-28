@@ -12,6 +12,7 @@ export default function DocListPagination({ currentPage, totalPages }) {
 
   const handlePageChange = (newPage) => {
     // Safely construct the new URL with updated query parameters
+    // window.location.href already includes all existing query params (including year)
     const url = new URL(window.location.href);
     url.searchParams.set("page", newPage); // Update the query param for page
 

@@ -110,7 +110,9 @@ async function fetchArticleLikeCounts(slugs) {
 
 export default async function Page({ params, searchParams }) {
   const { uid } = await params;
-  const currentPage = parseInt((await searchParams).page) || 1;
+  const resolvedSearchParams = await searchParams;
+  const currentPage = parseInt(resolvedSearchParams.page) || 1;
+  const selectedYear = resolvedSearchParams.year ? parseInt(resolvedSearchParams.year) : null;
   const client = createClient();
 
   try {
@@ -123,7 +125,7 @@ export default async function Page({ params, searchParams }) {
 
     const isOtherType = page.data.type === "Other";
     let postType, category;
-    const pageType = page.data.type || (await searchParams).type || "Live reports";
+    const pageType = page.data.type || resolvedSearchParams.type || "Live reports";
 
     switch (pageType) {
       case "Live reports":
@@ -154,10 +156,40 @@ export default async function Page({ params, searchParams }) {
     let results = [];
     let totalPages = 0;
     let likeCounts = {}; // Initialize likeCounts
+    let availableYears = [];
     const defaultPageSize = 10;
 
     if (category === "articles") {
       try {
+        // Build base filters
+        const baseFilters = [
+          prismic.filter.any(
+            "my.articles.type",
+            postType === "Live report"
+              ? ["Live report"]
+              : postType === "Features"
+              ? []
+              : [postType]
+          ),
+          ...(postType === "Features"
+            ? [prismic.filter.any("document.tags", ["Interview", "Editorial", "Behind the scenes", "Other"])]
+            : postType === "Press release"
+            ? [prismic.filter.at("document.tags", ["PR"])]
+            : []),
+        ];
+
+        // Add year filter if selected
+        if (selectedYear) {
+          // Use start of year and start of next year (exclusive) for more reliable filtering
+          const yearStart = new Date(selectedYear, 0, 1).toISOString().split('T')[0];
+          const nextYearStart = new Date(selectedYear + 1, 0, 1).toISOString().split('T')[0];
+          
+          baseFilters.push(
+            prismic.filter.dateAfter("my.articles.publication_date", yearStart),
+            prismic.filter.dateBefore("my.articles.publication_date", nextYearStart)
+          );
+        }
+
         const articles = await client.getByType("articles", {
           fetchOptions: {
             next: { 
@@ -171,21 +203,7 @@ export default async function Page({ params, searchParams }) {
             { field: "my.articles.publication_date", direction: "desc" },
             { field: "document.first_publication_date", direction: "desc" },
           ],
-          filters: [
-            prismic.filter.any(
-              "my.articles.type",
-              postType === "Live report"
-                ? ["Live report"]
-                : postType === "Features"
-                ? []
-                : [postType]
-            ),
-            ...(postType === "Features"
-              ? [prismic.filter.any("document.tags", ["Interview", "Editorial", "Behind the scenes", "Other"])]
-              : postType === "Press release"
-              ? [prismic.filter.at("document.tags", ["PR"])]
-              : []),
-          ],
+          filters: baseFilters,
         });
         results = articles.results;
         totalPages = Math.ceil(articles.total_results_size / defaultPageSize);
@@ -193,6 +211,88 @@ export default async function Page({ params, searchParams }) {
         // Fetch like counts for all articles
         const articleSlugs = results.map(item => item.uid).filter(Boolean);
         likeCounts = await fetchArticleLikeCounts(articleSlugs);
+
+        // Fetch available years for the dropdown
+        // Use smaller pageSize and limit pages to stay under 2MB cache limit
+        // We'll sample from multiple pages to get a good representation of years
+        try {
+          const yearsSet = new Set();
+          
+          // First, extract years from current results
+          results.forEach((item) => {
+            const publicationDate = item.data.publication_date;
+            if (publicationDate) {
+              const year = new Date(publicationDate).getFullYear();
+              if (!isNaN(year)) {
+                yearsSet.add(year);
+              }
+            }
+          });
+
+          // Fetch a sample of additional pages to get more years
+          // Limit to first 5 pages with smaller pageSize to stay under 2MB
+          const maxPagesToFetch = 5;
+          const pageSizeForYears = 20; // Smaller page size to reduce response size
+          
+          for (let pageNum = 1; pageNum <= maxPagesToFetch; pageNum++) {
+            const articlesForYears = await client.getByType("articles", {
+              fetchOptions: {
+                next: { 
+                  tags: ["prismic", "articles"],
+                  revalidate: 3600 // Cache for 1 hour (years don't change often)
+                },
+              },
+              pageSize: pageSizeForYears,
+              page: pageNum,
+              filters: [
+                prismic.filter.any(
+                  "my.articles.type",
+                  postType === "Live report"
+                    ? ["Live report"]
+                    : postType === "Features"
+                    ? []
+                    : [postType]
+                ),
+                ...(postType === "Features"
+                  ? [prismic.filter.any("document.tags", ["Interview", "Editorial", "Behind the scenes", "Other"])]
+                  : postType === "Press release"
+                  ? [prismic.filter.at("document.tags", ["PR"])]
+                  : []),
+              ],
+            });
+
+            articlesForYears.results.forEach((item) => {
+              const publicationDate = item.data.publication_date;
+              if (publicationDate) {
+                const year = new Date(publicationDate).getFullYear();
+                if (!isNaN(year)) {
+                  yearsSet.add(year);
+                }
+              }
+            });
+
+            // Stop if we've reached the last page
+            if (pageNum >= articlesForYears.total_pages) {
+              break;
+            }
+          }
+
+          availableYears = Array.from(yearsSet).sort((a, b) => b - a);
+        } catch (error) {
+          console.error("Error fetching available years:", error);
+          // Fallback: extract years from current results only
+          const yearsSet = new Set();
+          results.forEach((item) => {
+            const publicationDate = item.data.publication_date;
+            if (publicationDate) {
+              const year = new Date(publicationDate).getFullYear();
+              if (!isNaN(year)) {
+                yearsSet.add(year);
+              }
+            }
+          });
+          availableYears = Array.from(yearsSet).sort((a, b) => b - a);
+        }
       } catch (error) {
         console.error("Error fetching articles:", error);
       }
@@ -200,6 +300,23 @@ export default async function Page({ params, searchParams }) {
 
     if (category === "galleries") {
       try {
+        // Build base filters
+        const baseFilters = [
+          prismic.filter.not("my.gallery.is_official_photos", true)
+        ];
+
+        // Add year filter if selected
+        if (selectedYear) {
+          // Use start of year and start of next year (exclusive) for more reliable filtering
+          const yearStart = new Date(selectedYear, 0, 1).toISOString().split('T')[0];
+          const nextYearStart = new Date(selectedYear + 1, 0, 1).toISOString().split('T')[0];
+          
+          baseFilters.push(
+            prismic.filter.dateAfter("my.gallery.event_date", yearStart),
+            prismic.filter.dateBefore("my.gallery.event_date", nextYearStart)
+          );
+        }
+
         const galleries = await client.getByType("gallery", {
           ref: client.masterRef,
           fetchOptions: {
@@ -215,10 +332,76 @@ export default async function Page({ params, searchParams }) {
             { field: "document.first_publication_date", direction: "desc" },
           ],
           fetchLinks: ["my.gallery.photographer.name"],
-          filters: [prismic.filter.not("my.gallery.is_official_photos", true)],
+          filters: baseFilters,
         });
         results = galleries.results;
         totalPages = Math.ceil(galleries.total_results_size / defaultPageSize);
+
+        // Fetch available years for the dropdown
+        try {
+          const yearsSet = new Set();
+          
+          // First, extract years from current results
+          results.forEach((item) => {
+            const eventDate = item.data.event_date;
+            if (eventDate) {
+              const year = new Date(eventDate).getFullYear();
+              if (!isNaN(year)) {
+                yearsSet.add(year);
+              }
+            }
+          });
+
+          // Fetch a sample of additional pages to get more years
+          // Limit to first 5 pages with smaller pageSize to stay under 2MB
+          const maxPagesToFetch = 5;
+          const pageSizeForYears = 20; // Smaller page size to reduce response size
+          
+          for (let pageNum = 1; pageNum <= maxPagesToFetch; pageNum++) {
+            const galleriesForYears = await client.getByType("gallery", {
+              fetchOptions: {
+                next: { 
+                  tags: ["prismic", "galleries"],
+                  revalidate: 3600 // Cache for 1 hour (years don't change often)
+                },
+              },
+              pageSize: pageSizeForYears,
+              page: pageNum,
+              filters: [prismic.filter.not("my.gallery.is_official_photos", true)],
+            });
+
+            galleriesForYears.results.forEach((item) => {
+              const eventDate = item.data.event_date;
+              if (eventDate) {
+                const year = new Date(eventDate).getFullYear();
+                if (!isNaN(year)) {
+                  yearsSet.add(year);
+                }
+              }
+            });
+
+            // Stop if we've reached the last page
+            if (pageNum >= galleriesForYears.total_pages) {
+              break;
+            }
+          }
+
+          availableYears = Array.from(yearsSet).sort((a, b) => b - a);
+        } catch (error) {
+          console.error("Error fetching available years for galleries:", error);
+          // Fallback: extract years from current results only
+          const yearsSet = new Set();
+          results.forEach((item) => {
+            const eventDate = item.data.event_date;
+            if (eventDate) {
+              const year = new Date(eventDate).getFullYear();
+              if (!isNaN(year)) {
+                yearsSet.add(year);
+              }
+            }
+          });
+          availableYears = Array.from(yearsSet).sort((a, b) => b - a);
+        }
       } catch (error) {
         console.error("Error fetching galleries:", error);
       }
@@ -237,6 +420,8 @@ export default async function Page({ params, searchParams }) {
               totalPages={totalPages}
               postType={postType}
               likeCounts={likeCounts}
+              availableYears={availableYears}
+              selectedYear={selectedYear}
             />
           )}
         </div>

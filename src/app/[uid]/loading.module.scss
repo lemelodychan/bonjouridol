@@ -76,67 +76,6 @@
   animation: shimmer 1.5s infinite;
 }
 
-.sectionTitle {
-  height: 28px;
-  width: 200px;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.06) 0%,
-    rgba(0, 0, 0, 0.1) 50%,
-    rgba(0, 0, 0, 0.06) 100%
-  );
-  background-size: 200% 100%;
-  border-radius: 4px;
-  animation: shimmer 1.5s infinite;
-  margin: 0 24px 16px 24px;
-
-  @include md {
-    height: 32px;
-    width: 250px;
-    margin: 0 32px 24px 32px;
-  }
-}
-
-.galleryGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  padding: 0 24px;
-  margin-bottom: 32px;
-
-  @include md {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    padding: 0 32px;
-  }
-}
-
-.galleryItem {
-  aspect-ratio: 3/2;
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.image {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.06) 0%,
-    rgba(0, 0, 0, 0.1) 50%,
-    rgba(0, 0, 0, 0.06) 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-.SearchResults {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
 .docListContainer {
   display: flex;
   flex-direction: column;
@@ -146,6 +85,41 @@
   @include lg {
     padding: 0 32px;
   }
+}
+
+.yearFilter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.yearFilterLabel {
+  height: 20px;
+  width: 100px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite;
+}
+
+.yearFilterSelect {
+  height: 40px;
+  width: 120px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 8px;
+  animation: shimmer 1.5s infinite;
 }
 
 .docList {
@@ -260,5 +234,41 @@
   border-radius: 8px;
   animation: shimmer 1.5s infinite;
   margin-top: 8px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.paginationButton {
+  height: 40px;
+  width: 100px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 8px;
+  animation: shimmer 1.5s infinite;
+}
+
+.paginationInfo {
+  height: 20px;
+  width: 120px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite;
 }
 
