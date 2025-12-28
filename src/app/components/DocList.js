@@ -67,8 +67,11 @@ export function DocListContent({ results, currentPage, totalPages, postType, lik
             const photographerName = item.data.photographer?.uid || "Bonjour Idol";
             const photographerName2 = item.data.photographer_2?.uid;
 
-            const artistNames = item.data.artist_name || "";
-            const artistArray = artistNames.split(',').map(name => name.trim());
+            // Use artist_name for galleries, idol_name for articles
+            const artistNames = postType === "Gallery" 
+              ? (item.data.artist_name || "")
+              : (item.data.idol_name || "");
+            const artistArray = artistNames.split(',').map(name => name.trim()).filter(name => name);
 
             return (
               <Link key={item.id} className={styles.Post} href={linkPath}>
@@ -85,6 +88,9 @@ export function DocListContent({ results, currentPage, totalPages, postType, lik
                         likeCount={getLikeCount(item.uid)}
                         isLoading={likesLoading}
                       />
+                    )}
+                    {postType !== "Gallery" && artistArray?.length > 0 && (
+                      <ArtistTags artists={artistArray} />
                     )}
                   </div>
                 )}

@@ -68,6 +68,89 @@
                 }
             }
 
+            .Artists {
+                z-index: 3;
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                display: flex;
+                flex-direction: row;
+                align-items: flex-end;
+                flex-wrap: wrap;
+                gap: 4px;
+
+                @include md {
+                    flex-direction: column;
+                    width: fit-content;
+                    height: 50%;
+                }
+
+                .Artist {
+                    display: inline-block;
+                    padding: 4px 8px;
+                    border-radius: 16px;
+                    width: fit-content;
+
+                    color: var(--bi-dark-pink);
+                    text-transform: uppercase;
+                    font-weight: bold;
+                    font-size: var(--font-size-sm);
+                    letter-spacing: 0.5px;
+                    background-color: var(--white);
+
+                    &.ArtistCounter {
+                        cursor: pointer;
+                        transition: var(--transi);
+                        position: relative;
+
+                        &:hover {
+                            background-color: var(--bi-dark-pink);
+                            color: var(--white);
+                        }
+                    }
+                }
+
+                .ArtistTooltip {
+                    position: absolute;
+                    top: 100%;
+                    right: 0;
+                    margin-top: 8px;
+                    z-index: 10;
+                    width: fit-content;
+                    min-width: 240px;
+                    max-width: 400px;
+
+                    .TooltipContent {
+                        background-color: var(--white);
+                        border-radius: 8px;
+                        padding: 12px;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                        border: 1px solid rgba(0, 0, 0, 0.1);
+
+                        strong {
+                            display: block;
+                            color: var(--dark-grey);
+                            font-size: 12px;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            margin-bottom: 8px;
+                        }
+
+                        .TooltipArtists {
+                            color: var(--dark-grey);
+                            text-transform: none;
+                            font-weight: normal;
+                            font-size: 12px;
+                            letter-spacing: 0.3px;
+                            line-height: 1.5;
+                            text-align: left;
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+
             .Content {
                 display: flex;
                 flex-direction: column;
