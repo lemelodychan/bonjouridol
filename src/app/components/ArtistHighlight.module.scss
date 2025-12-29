@@ -5,14 +5,10 @@
     width: 100%;
     max-width: 100vw;
     overflow: hidden;
-    padding: 16px;
+    padding: 0px;
     background-color: var(--white);
     position: relative;
     z-index: 4;
-
-    @include md {
-        padding: 24px 0;
-    }
 }
 
 .ArtistHighlight {
@@ -21,122 +17,13 @@
     width: 100%;
     background: var(--white);
     max-width: 100vw;
-    border-radius: 24px;
+    border-radius: 0px;
     overflow: hidden;
 
-    .stamp {
-        position: absolute;
-        top: 0px;
-        left: -8px;
-        z-index: 5;
-        width: 112px;
-        height: 112px;
-
-        .sunShape {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 130%;
-            height: 130%;
-            background: var(--light-grey);
-            mask-image: url("data:image/svg+xml,%3Csvg width='280' height='280' viewBox='0 0 280 280' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M140 0L153.243 14.6902L169.268 3.05934L179.151 20.1669L197.257 12.1036L203.347 30.8808L222.743 26.7376L224.775 46.3638L244.613 46.3217L242.498 65.9391L261.911 70L255.741 88.7512L273.881 96.7376L263.925 113.803L280 125.366L266.694 140L280 154.634L263.925 166.197L273.881 183.262L255.741 191.249L261.911 210L242.498 214.061L244.613 233.678L224.775 233.636L222.743 253.262L203.347 249.119L197.257 267.896L179.151 259.833L169.268 276.941L153.243 265.31L140 280L126.757 265.31L110.732 276.941L100.849 259.833L82.7432 267.896L76.653 249.119L57.2568 253.262L55.2251 233.636L35.3866 233.678L37.5024 214.061L18.0886 210L24.2592 191.249L6.11867 183.262L16.0745 166.197L0 154.634L13.306 140L0 125.366L16.0745 113.803L6.11867 96.7376L24.2592 88.7512L18.0886 70L37.5024 65.9391L35.3866 46.3217L55.2251 46.3638L57.2568 26.7376L76.653 30.8808L82.7432 12.1036L100.849 20.1669L110.732 3.05934L126.757 14.6902L140 0Z' fill='white'/%3E%3C/svg%3E");
-            -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='280' height='280' viewBox='0 0 280 280' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M140 0L153.243 14.6902L169.268 3.05934L179.151 20.1669L197.257 12.1036L203.347 30.8808L222.743 26.7376L224.775 46.3638L244.613 46.3217L242.498 65.9391L261.911 70L255.741 88.7512L273.881 96.7376L263.925 113.803L280 125.366L266.694 140L280 154.634L263.925 166.197L273.881 183.262L255.741 191.249L261.911 210L242.498 214.061L244.613 233.678L224.775 233.636L222.743 253.262L203.347 249.119L197.257 267.896L179.151 259.833L169.268 276.941L153.243 265.31L140 280L126.757 265.31L110.732 276.941L100.849 259.833L82.7432 267.896L76.653 249.119L57.2568 253.262L55.2251 233.636L35.3866 233.678L37.5024 214.061L18.0886 210L24.2592 191.249L6.11867 183.262L16.0745 166.197L0 154.634L13.306 140L0 125.366L16.0745 113.803L6.11867 96.7376L24.2592 88.7512L18.0886 70L37.5024 65.9391L35.3866 46.3217L55.2251 46.3638L57.2568 26.7376L76.653 30.8808L82.7432 12.1036L100.849 20.1669L110.732 3.05934L126.757 14.6902L140 0Z' fill='white'/%3E%3C/svg%3E");
-            mask-size: contain;
-            mask-repeat: no-repeat;
-            mask-position: center;
-            -webkit-mask-size: contain;
-            -webkit-mask-repeat: no-repeat;
-            -webkit-mask-position: center;
-            animation: rotateSun 15s linear infinite;
-            z-index: 0;
-            box-shadow: 
-                0 4px 12px rgba(255, 49, 148, 0.3),
-                inset 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .stampInner {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--light-grey);
-/*             box-shadow: 
-                0 4px 12px rgba(255, 49, 148, 0.3),
-                inset 0 2px 4px rgba(0, 0, 0, 0.1); */
-            position: relative;
-            z-index: 2;
-
-/*             .gradientRing {
-                position: absolute;
-                top: -6px;
-                left: -6px;
-                right: -6px;
-                bottom: -6px;
-                border-radius: 50%;
-                background: conic-gradient(
-                    from 0deg,
-                    var(--bi-dark-pink) 0deg,
-                    var(--bi-indigo) 90deg,
-                    var(--bi-dark-pink) 180deg,
-                    var(--bi-indigo) 270deg,
-                    var(--bi-dark-pink) 360deg
-                );
-                z-index: -1;
-                animation: rotateRing 8s linear infinite;
-
-                &::after {
-                    content: '';
-                    position: absolute;
-                    top: 8px;
-                    left: 8px;
-                    right: 8px;
-                    bottom: 8px;
-                    border-radius: 50%;
-                    background: white;
-                }
-            } */
-
-            .stampText {
-                position: relative;
-                z-index: 1;
-                transform: rotate(-8deg);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-                text-align: center;
-                padding: 4px;
-                overflow: visible;
-
-                .stampTextEn {
-                    font-family: var(--font-title);
-                    font-size: 20px;
-                    font-weight: 700;
-                    color: var(--bi-dark-pink);
-                    letter-spacing: 1px;
-                    text-shadow:
-                        -1px -1px 0 #fff,
-                        1px -1px 0 #fff,
-                        -1px  1px 0 #fff,
-                        1px  1px 0 #fff;
-                    line-height: 1.1;
-                }
-
-                .stampTextJa {
-                    font-family: var(--font-jp);
-                    font-size: var(--font-size-sm);
-                    font-weight: 500;
-                    color: var(--bi-light-pink);
-                    line-height: 1.1;
-                }
-            }
-        }
+    @include md {
+        border-radius: 24px;
     }
+
     @keyframes rotateSun {
         0% {
             transform: translate(-50%, -50%) rotate(0deg);
@@ -159,6 +46,7 @@
         display: flex;
         flex-direction: column;
         width: 100%;
+        position: relative;
         background: 
             linear-gradient(135deg, 
             rgba(255, 49, 148, 0.1) 0%, 
@@ -234,6 +122,27 @@
                     transform: scale(1.05);
                 }
             }
+            
+            &::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0.5;
+                background: 
+                    radial-gradient(112px 112px at 100% 0%, var(--bi-dark-pink) 0%, rgba(255, 49, 148, 0) 100%), 
+                    radial-gradient(112px 112px at 0% 100%, var(--bi-indigo) 0%, rgba(114, 114, 252, 0) 100%)
+                ;
+
+                @include md {
+                    background: 
+                        radial-gradient(320px 320px at 100% 0%, var(--bi-dark-pink) 0%, rgba(255, 49, 148, 0) 100%), 
+                        radial-gradient(320px 320px at 0% 100%, var(--bi-indigo) 0%, rgba(114, 114, 252, 0) 100%)
+                    ;
+                }
+            }
         }
 
         .socialLinks {
@@ -244,10 +153,12 @@
             flex-wrap: wrap;
             min-height: 24px;
             max-height: 56px;
+            max-width: 72px;
             align-items: flex-start;
 
             @include md {
                 justify-content: flex-start;
+                max-width: 100%;
             }
 
             .socialLink {
@@ -286,9 +197,9 @@
         z-index: 6;
         width: calc(100% - 24px);
         left: 24px;
-        top: -96px;
+        top: -32px;
         margin-right: -48px;
-        margin-bottom: -96px;
+        margin-bottom: -32px;
 
         @include md {
             width: auto;
@@ -296,6 +207,14 @@
             margin-right: -8px;
             top: 16px;
             margin-bottom: 16px;
+        }
+
+        > .likeSection {
+            display: none;
+
+            @include md {
+                display: block;
+            }
         }
 
         .artistInfo {
@@ -388,6 +307,43 @@
                 }
             }
         }
+
+        > .ctaSection {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            align-items: center;
+            justify-content: space-between;
+
+            @include md {
+                .likeSection {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    .sunShape {
+        position: absolute;
+        top: 48px;
+        right: calc(30% + 16px);
+        transform: translate(-50%, -50%);
+        width: 112px;
+        height: 112px;
+        background: var(--light-grey);
+        mask-image: url("data:image/svg+xml,%3Csvg width='280' height='280' viewBox='0 0 280 280' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M140 0L153.243 14.6902L169.268 3.05934L179.151 20.1669L197.257 12.1036L203.347 30.8808L222.743 26.7376L224.775 46.3638L244.613 46.3217L242.498 65.9391L261.911 70L255.741 88.7512L273.881 96.7376L263.925 113.803L280 125.366L266.694 140L280 154.634L263.925 166.197L273.881 183.262L255.741 191.249L261.911 210L242.498 214.061L244.613 233.678L224.775 233.636L222.743 253.262L203.347 249.119L197.257 267.896L179.151 259.833L169.268 276.941L153.243 265.31L140 280L126.757 265.31L110.732 276.941L100.849 259.833L82.7432 267.896L76.653 249.119L57.2568 253.262L55.2251 233.636L35.3866 233.678L37.5024 214.061L18.0886 210L24.2592 191.249L6.11867 183.262L16.0745 166.197L0 154.634L13.306 140L0 125.366L16.0745 113.803L6.11867 96.7376L24.2592 88.7512L18.0886 70L37.5024 65.9391L35.3866 46.3217L55.2251 46.3638L57.2568 26.7376L76.653 30.8808L82.7432 12.1036L100.849 20.1669L110.732 3.05934L126.757 14.6902L140 0Z' fill='white'/%3E%3C/svg%3E");
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='280' height='280' viewBox='0 0 280 280' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M140 0L153.243 14.6902L169.268 3.05934L179.151 20.1669L197.257 12.1036L203.347 30.8808L222.743 26.7376L224.775 46.3638L244.613 46.3217L242.498 65.9391L261.911 70L255.741 88.7512L273.881 96.7376L263.925 113.803L280 125.366L266.694 140L280 154.634L263.925 166.197L273.881 183.262L255.741 191.249L261.911 210L242.498 214.061L244.613 233.678L224.775 233.636L222.743 253.262L203.347 249.119L197.257 267.896L179.151 259.833L169.268 276.941L153.243 265.31L140 280L126.757 265.31L110.732 276.941L100.849 259.833L82.7432 267.896L76.653 249.119L57.2568 253.262L55.2251 233.636L35.3866 233.678L37.5024 214.061L18.0886 210L24.2592 191.249L6.11867 183.262L16.0745 166.197L0 154.634L13.306 140L0 125.366L16.0745 113.803L6.11867 96.7376L24.2592 88.7512L18.0886 70L37.5024 65.9391L35.3866 46.3217L55.2251 46.3638L57.2568 26.7376L76.653 30.8808L82.7432 12.1036L100.849 20.1669L110.732 3.05934L126.757 14.6902L140 0Z' fill='white'/%3E%3C/svg%3E");
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        mask-position: center;
+        -webkit-mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        animation: rotateSun 15s linear infinite;
+        z-index: 0;
+        box-shadow: 
+            0 4px 12px rgba(255, 49, 148, 0.3),
+            inset 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .rightSection {
@@ -578,6 +534,29 @@
         }
     }
 
+    .likeSection {
+        width: fit-content;
+
+        > div > button {
+            height: 36px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            box-shadow: none;
+            background: var(--white);
+
+            &[title="You liked this artist!"] {
+                background: var(--bi-gradient-1);
+                background-size: 200% 100%;
+                background-position: center right;
+                transition: background-position 0.3s ease;
+
+                &:hover {
+                    background-position: center left;
+                }
+            }
+        }
+    }
+
     .ticker {
         width: 100%;
         overflow: hidden;
@@ -601,6 +580,10 @@
                 flex-shrink: 0;
             }
         }
+
+        &.reverse .tickerContent {
+            animation: scrollTickerReverse 30s linear infinite;
+        }
     }
 
     @keyframes scrollTicker {
@@ -609,6 +592,14 @@
         }
         100% {
             transform: translateX(-50%);
+        }
+    }
+    @keyframes scrollTickerReverse {
+        0% {
+            transform: translateX(-50%);
+        }
+        100% {
+            transform: translateX(0);
         }
     }
 

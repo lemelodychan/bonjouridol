@@ -175,7 +175,7 @@ export default async function ArtistHighlight() {
             </div>
           </div> */}
 
-          <div className={styles.ticker}>
+          <div className={`${styles.ticker} ${styles.reverse}`}>
             <div className={styles.tickerContent}>
               <span className={styles.tickerText}>Artist Highlight・アーティストハイライト・</span>
               <span className={styles.tickerText}>Artist Highlight・アーティストハイライト・</span>
@@ -261,6 +261,13 @@ export default async function ArtistHighlight() {
                     icon={<IoArrowForwardOutline />}
                   />
                 </Link>
+                <div className={styles.likeSection}>
+                  <ArtistLike 
+                    artistName={artistDisplayName} 
+                    initialLikeCount={0}
+                    hasServerData={false}
+                  />
+                </div>
               </div>
             </div>
 

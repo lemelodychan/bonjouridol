@@ -5,10 +5,13 @@
     --margin: 36px;
 
     width: 100%;
+    height: fit-content;
     margin: 0 auto;
     position: relative;
     top: calc(-1 * var(--margin));
-    height: calc(1200px + var(--margin)*2);
+    min-height: calc(1080px + var(--margin)*2);
+    max-height: calc(1148px + var(--margin)*2);
+    margin-bottom: calc(-1 * var(--margin));
 
     @include md {
         height: auto;
@@ -16,6 +19,9 @@
         grid-template-columns: auto minmax(320px, 33%);
         grid-gap: 24px;
         top: 0px;
+        min-height: initial;
+        max-height: initial;
+        margin-bottom: 0px;
     }
 
     > a:first-of-type {

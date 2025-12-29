@@ -80,7 +80,7 @@ export default async function Page() {
         <div className={styles.container}>
           <LatestPosts />
           <LiveReports />
-          {/* <ArtistHighlight /> */}
+          <ArtistHighlight />
           <Discoveries />
           <Videos />
           <PressRelease />
@@ -97,7 +97,7 @@ export default async function Page() {
         <div className={styles.container}>
           <LatestPosts />
           <LiveReports />
-          {/* <ArtistHighlight /> */}
+          <ArtistHighlight />
           <Discoveries />
           <Videos />
           <PressRelease />
