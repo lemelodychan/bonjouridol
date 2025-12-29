@@ -7,11 +7,18 @@
     grid-template-rows: max-content max-content;
     gap: 16px;
     margin: 16px auto;
-    margin-top: -16px;
     width: 100%;
     max-width: 1000px;
     background-color: var(--light-grey);
     padding: 24px;
+
+    &:first-child {
+        margin-top: -16px;
+        
+        @include md {
+            margin-top: 16px;
+        }
+    }
 
     @include md {
         grid-template-rows: max-content;
