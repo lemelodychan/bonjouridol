@@ -99,6 +99,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "table_contents": {
+              "type": "SharedSlice"
+            },
             "separator": {
               "type": "SharedSlice"
             },

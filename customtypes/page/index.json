@@ -40,6 +40,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "table_contents": {
+              "type": "SharedSlice"
+            },
             "interview": {
               "type": "SharedSlice"
             },

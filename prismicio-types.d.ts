@@ -5,6 +5,7 @@ import type * as prismic from "@prismicio/client";
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
 type ArticlesDocumentDataSlicesSlice =
+  | TableContentsSlice
   | SeparatorSlice
   | InterviewSlice
   | PurchaseSlice
@@ -792,6 +793,7 @@ export type HomepageDocument<Lang extends string = string> =
   >;
 
 type PageDocumentDataSlicesSlice =
+  | TableContentsSlice
   | InterviewSlice
   | SeparatorSlice
   | ContactFormSlice
