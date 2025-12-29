@@ -1680,6 +1680,16 @@ export interface RichTextSliceDefaultPrimary {
   title_ja: prismic.KeyTextField;
 
   /**
+   * Anchor field in *RichText → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: rich_text.default.primary.anchor
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  anchor: prismic.KeyTextField;
+
+  /**
    * Text field in *RichText → Default → Primary*
    *
    * - **Field Type**: Rich Text
@@ -2088,6 +2098,88 @@ export type SocialLinksSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Item in *TableContents → Default → Primary → Link*
+ */
+export interface TableContentsSliceDefaultPrimaryContentLinkItem {
+  /**
+   * Link field in *TableContents → Default → Primary → Link*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: table_contents.default.primary.content_link[].link
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  link: prismic.LinkField;
+}
+
+/**
+ * Primary content in *TableContents → Default → Primary*
+ */
+export interface TableContentsSliceDefaultPrimary {
+  /**
+   * Title (EN) field in *TableContents → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: table_contents.default.primary.title_en
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title_en: prismic.KeyTextField;
+
+  /**
+   * Title (JA) field in *TableContents → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: table_contents.default.primary.title_ja
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title_ja: prismic.KeyTextField;
+
+  /**
+   * Link field in *TableContents → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: table_contents.default.primary.content_link[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  content_link: prismic.GroupField<
+    Simplify<TableContentsSliceDefaultPrimaryContentLinkItem>
+  >;
+}
+
+/**
+ * Default variation for TableContents Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type TableContentsSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<TableContentsSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *TableContents*
+ */
+type TableContentsSliceVariation = TableContentsSliceDefault;
+
+/**
+ * TableContents Shared Slice
+ *
+ * - **API ID**: `table_contents`
+ * - **Description**: TableContents
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type TableContentsSlice = prismic.SharedSlice<
+  "table_contents",
+  TableContentsSliceVariation
+>;
+
+/**
  * Item in *Taglist → Default → Primary → Tags*
  */
 export interface TaglistSliceDefaultPrimaryTagsItem {
@@ -2308,6 +2400,11 @@ declare module "@prismicio/client" {
       SocialLinksSliceDefaultPrimary,
       SocialLinksSliceVariation,
       SocialLinksSliceDefault,
+      TableContentsSlice,
+      TableContentsSliceDefaultPrimaryContentLinkItem,
+      TableContentsSliceDefaultPrimary,
+      TableContentsSliceVariation,
+      TableContentsSliceDefault,
       TaglistSlice,
       TaglistSliceDefaultPrimaryTagsItem,
       TaglistSliceDefaultPrimary,

@@ -1,0 +1,28 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"title_en": {
+				"__TYPE__": "FieldContent",
+				"value": "route",
+				"type": "Text"
+			},
+			"title_ja": {
+				"__TYPE__": "FieldContent",
+				"value": "might",
+				"type": "Text"
+			},
+			"content_link": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": []
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

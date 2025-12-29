@@ -1,0 +1,72 @@
+@use "../../app/styles/mixins.scss" as *;
+@use "../../app/styles/variables.scss";
+
+.TableContents {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 16px auto;
+    width: 100%;
+    max-width: 1000px;
+
+    padding: 0 24px;
+
+    @include md {
+        padding: 0 32px;
+    }
+
+    h3 {
+        > .title {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            .english {
+                font-size: var(--font-size-lg) !important;
+                line-height: 1;
+
+                @include md {
+                    font-size: var(--font-size-xl) !important;
+                }
+            }
+
+            .japanese {
+                font-size: var(--font-size-md);
+                color: var(--bi-light-pink) !important;
+                line-height: 2;
+            }
+        }
+    }
+
+    .Content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .ContentItem {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.8;
+
+            .ContentItemNumber {
+                font-weight: 600;
+                color: var(--dark-grey);
+                flex-shrink: 0;
+            }
+
+            a {
+                color: var(--bi-dark-pink) !important;
+                text-decoration: none !important;
+                border-bottom: 1px solid;
+                font-weight: 600;
+                font-size: var(--font-size-md);
+
+                &:hover {
+                    color: var(--bi-indigo) !important;
+                }
+            }
+        }
+    }
+}
+

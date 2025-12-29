@@ -13,6 +13,7 @@ const RichText = ({ slice }) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       className={styles.RichText}
+      {...(slice.primary.anchor && { id: slice.primary.anchor })}
     >
       {slice.primary.title && (
         <h3>

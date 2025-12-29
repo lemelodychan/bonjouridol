@@ -79,6 +79,7 @@ const Setlist = ({ slice }) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       className={styles.SetlistContainer}
+      id="setlist"
     >
       <div className={styles.Setlist}>
         <h3>

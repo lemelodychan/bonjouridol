@@ -18,6 +18,7 @@ export const components = {
   setlist: dynamic(() => import("./Setlist")),
   single_button: dynamic(() => import("./Buttons")),
   social_links: dynamic(() => import("./SocialLinks")),
+  table_contents: dynamic(() => import("./TableContents")),
   taglist: dynamic(() => import("./Taglist")),
   video: dynamic(() => import("./Video")),
 };

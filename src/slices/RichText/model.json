@@ -26,6 +26,13 @@
             "placeholder": ""
           }
         },
+        "anchor": {
+          "type": "Text",
+          "config": {
+            "label": "Anchor",
+            "placeholder": ""
+          }
+        },
         "text": {
           "type": "StructuredText",
           "config": {
