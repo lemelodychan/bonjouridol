@@ -18,17 +18,19 @@ export default function DirectoryLayout({ children }) {
                 style.id = 'directory-view-mode-styles';
                 var css = '';
                 if (viewMode === 'row') {
-                  css = '[data-view="card"] { display: none !important; } [data-view-button="row"] { background-color: var(--bi-dark-pink) !important; color: white !important; }';
+                  css = '[data-view="card"] { display: none !important; } [data-view-button="row"] { background-color: var(--bi-dark-pink) !important; color: white !important; } [data-view-button="card"] { background-color: transparent !important; color: var(--bi-dark-pink) !important; }';
                 } else {
-                  css = '[data-view="row"] { display: none !important; } [data-view-button="card"] { background-color: var(--bi-dark-pink) !important; color: white !important; }';
+                  // Default to card view (including when no preference is saved)
+                  css = '[data-view="row"] { display: none !important; } [data-view-button="card"] { background-color: var(--bi-dark-pink) !important; color: white !important; } [data-view-button="row"] { background-color: transparent !important; color: var(--bi-dark-pink) !important; }';
                 }
                 style.textContent = css;
                 document.head.appendChild(style);
               } catch(e) {
+                // Default to card view on error
                 window.__DIRECTORY_VIEW_MODE__ = 'card';
                 var style = document.createElement('style');
                 style.id = 'directory-view-mode-styles';
-                style.textContent = '[data-view="row"] { display: none !important; } [data-view-button="card"] { background-color: var(--bi-dark-pink) !important; color: white !important; }';
+                style.textContent = '[data-view="row"] { display: none !important; } [data-view-button="card"] { background-color: var(--bi-dark-pink) !important; color: white !important; } [data-view-button="row"] { background-color: transparent !important; color: var(--bi-dark-pink) !important; }';
                 document.head.appendChild(style);
               }
             })();
