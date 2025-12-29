@@ -566,9 +566,11 @@
 
         .tickerContent {
             display: flex;
-            gap: 6px;
-            animation: scrollTicker 30s linear infinite;
+            gap: 4px;
             white-space: nowrap;
+            --ticker-width: 0px;
+            will-change: transform;
+            animation: scrollTicker 30s linear infinite;
 
             .tickerText {
                 font-family: var(--font-title);
@@ -581,25 +583,18 @@
             }
         }
 
+        // Reverse animation (right to left scroll)
         &.reverse .tickerContent {
-            animation: scrollTickerReverse 30s linear infinite;
+            animation: scrollTicker 30s linear infinite reverse;
         }
     }
 
     @keyframes scrollTicker {
         0% {
-            transform: translateX(0);
+            transform: translate3d(0, 0, 0);
         }
         100% {
-            transform: translateX(-50%);
-        }
-    }
-    @keyframes scrollTickerReverse {
-        0% {
-            transform: translateX(-50%);
-        }
-        100% {
-            transform: translateX(0);
+            transform: translate3d(calc(-1 * var(--ticker-width)), 0, 0);
         }
     }
 

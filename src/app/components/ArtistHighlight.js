@@ -6,6 +6,7 @@ import * as prismic from "@prismicio/client";
 import SingleImage from "./SingleImage";
 import YoutubeEmbed from "./YoutubeEmbed";
 import ArtistLike from "./ArtistLike";
+import SeamlessTicker from "./SeamlessTicker";
 
 import { FaInstagram, FaYoutube, FaTiktok, FaPlay } from "react-icons/fa6";
 import { FaXTwitter } from "react-icons/fa6";
@@ -175,16 +176,7 @@ export default async function ArtistHighlight() {
             </div>
           </div> */}
 
-          <div className={`${styles.ticker} ${styles.reverse}`}>
-            <div className={styles.tickerContent}>
-              <span className={styles.tickerText}>Artist Highlight・アーティストハイライト・</span>
-              <span className={styles.tickerText}>Artist Highlight・アーティストハイライト・</span>
-              <span className={styles.tickerText}>Artist Highlight・アーティストハイライト・</span>
-              <span className={styles.tickerText}>Artist Highlight・アーティストハイライト・</span>
-              <span className={styles.tickerText}>Artist Highlight・アーティストハイライト・</span>
-              <span className={styles.tickerText}>Artist Highlight・アーティストハイライト・</span>
-            </div>
-          </div>
+          <SeamlessTicker reverse={true} />
 
           <div className={styles.content}>
             <div className={styles.leftSection}>
@@ -349,16 +341,7 @@ export default async function ArtistHighlight() {
             )}
           </div>
 
-          <div className={styles.ticker}>
-            <div className={styles.tickerContent}>
-              <span className={styles.tickerText}>Artist Highlight・アーティストハイライト・</span>
-              <span className={styles.tickerText}>Artist Highlight・アーティストハイライト・</span>
-              <span className={styles.tickerText}>Artist Highlight・アーティストハイライト・</span>
-              <span className={styles.tickerText}>Artist Highlight・アーティストハイライト・</span>
-              <span className={styles.tickerText}>Artist Highlight・アーティストハイライト・</span>
-              <span className={styles.tickerText}>Artist Highlight・アーティストハイライト・</span>
-            </div>
-          </div>
+          <SeamlessTicker reverse={false} />
         </div>
       </div>
     );

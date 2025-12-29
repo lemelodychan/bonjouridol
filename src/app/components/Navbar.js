@@ -326,6 +326,14 @@ export default function Navbar() {
             </button>
           </form>
         </div>
+
+        {/* Desktop Search Icon Button (for screens < 1160px) */}
+        <button
+          onClick={toggleSearch}
+          className={styles.desktopSearchIconButton}
+        >
+          <HiOutlineSearch />
+        </button>
       </div>
 
       {/* Mobile Full-Screen Menu */}

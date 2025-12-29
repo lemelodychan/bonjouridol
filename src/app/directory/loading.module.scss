@@ -1,0 +1,430 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.titleSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  @include md {
+    gap: 1rem;
+  }
+}
+
+.line {
+  height: 24px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite;
+  flex-shrink: 0;
+  min-width: 0;
+
+  &:first-child {
+    height: 32px;
+
+    @include md {
+      height: 40px;
+    }
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.toolbarSkeleton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+
+  @include md {
+    padding: 16px 32px;
+  }
+}
+
+.artistCountSkeleton {
+  height: 20px;
+  width: 120px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite;
+}
+
+.viewToggleSkeleton {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.toggleButtonSkeleton {
+  width: 40px;
+  height: 36px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 8px;
+  animation: shimmer 1.5s infinite;
+}
+
+.letterHeaderSkeleton {
+  &:after, &:before {
+    background-image: none !important;
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.06) 0%,
+      rgba(0, 0, 0, 0.1) 50%,
+      rgba(0, 0, 0, 0.06) 100%
+    ) !important;
+    background-size: 200% 100% !important;
+    animation: shimmer 1.5s infinite !important;
+  }
+}
+
+.letterHeaderText {
+  height: 28px;
+  width: 40px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite;
+  flex-shrink: 0;
+
+  @include md {
+    height: 32px;
+    width: 50px;
+  }
+}
+
+.headerLine {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.ArtistProfileSkeleton {
+  padding: 16px;
+  border: 1px solid var(--light-grey);
+  background-color: var(--light-grey);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ProfileImage {
+  width: 100%;
+  aspect-ratio: 3/2;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  margin-bottom: 8px;
+}
+
+.ProfileContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+}
+
+.ProfileName {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.NameLine {
+  height: 20px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite;
+
+  &:first-child {
+    height: 24px;
+  }
+
+  &:last-child {
+    height: 16px;
+  }
+}
+
+.InfoLine {
+  height: 14px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite;
+  margin: 4px 0;
+}
+
+.SocialLinks {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.SocialIcon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.CTAButton {
+  height: 40px;
+  width: 140px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 8px;
+  animation: shimmer 1.5s infinite;
+  margin-top: 16px;
+}
+
+// Row view skeleton styles
+.ArtistRowSkeleton {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px 8px 8px;
+  border-radius: 16px;
+  min-width: 0;
+  max-width: none;
+  height: auto;
+
+  @include md {
+    gap: 16px;
+  }
+}
+
+.RowProfileImage {
+  width: 64px;
+  min-width: 64px;
+  height: 48px;
+  aspect-ratio: 1/1;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  flex-shrink: 0;
+}
+
+.RowProfileContent {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  min-width: 0;
+  overflow: hidden;
+
+  @include md {
+    gap: 32px;
+  }
+}
+
+.RowProfileName {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.RowNameLine {
+  height: 18px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite;
+
+  &:first-child {
+    height: 20px;
+  }
+
+  &:last-child {
+    height: 14px;
+  }
+}
+
+.RowInfo {
+  display: none;
+  width: 188px;
+  height: 40px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite;
+  flex-shrink: 0;
+
+  @include md {
+    display: block;
+  }
+}
+
+.RowSocialLinks {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+  width: fit-content;
+
+  @include md {
+    width: 128px;
+  }
+}
+
+.RowSocialIcon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.RowLikeButton {
+  width: 80px;
+  height: 36px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 16px;
+  animation: shimmer 1.5s infinite;
+  flex-shrink: 0;
+}
+
+.alphabetNavSkeleton {
+  position: relative;
+  width: calc(100% - 48px);
+  margin: 0px 24px;
+  padding: 8px 0 4px 0;
+  background-color: var(--light-grey);
+  border-radius: 8px;
+
+  @include md {
+    width: 100%;
+    margin: 0px;
+    padding: 8px 32px;
+    border-radius: 0px;
+  }
+}
+
+.alphabetNavContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  row-gap: 8px;
+  height: 24px;
+}
+
+.letterSkeleton {
+  height: 20px;
+  width: 24px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  border-left: 1px solid #ccc;
+  animation: shimmer 1.5s infinite;
+
+  &:first-child {
+    border-left: none;
+  }
+}
+

@@ -1,5 +1,6 @@
 import { createClient } from "@/prismicio";
-import ArtistProfile from "../components/ArtistProfile";
+import AlphabetNav from "../components/AlphabetNav";
+import DirectoryClient from "./DirectoryClient";
 
 // Import Supabase client for server-side like fetching
 const { createSupabaseClient } = await import('@/lib/supabase');
@@ -76,24 +77,51 @@ export default async function DirectoryPage() {
     return nameA.localeCompare(nameB, "en", { sensitivity: "base" });
   });
 
+  // Group artists by first letter
+  const artistsByLetter = {};
+  sortedArtists.forEach((artist) => {
+    const name = (artist?.data?.name_en || "").trim();
+    if (name) {
+      const firstLetter = name.charAt(0).toUpperCase();
+      // Handle non-alphabetic characters (numbers, symbols) in a special group
+      const letter = /[A-Z]/.test(firstLetter) ? firstLetter : '#';
+      if (!artistsByLetter[letter]) {
+        artistsByLetter[letter] = [];
+      }
+      artistsByLetter[letter].push(artist);
+    }
+  });
+
+  // Get available letters sorted alphabetically
+  const availableLetters = Object.keys(artistsByLetter)
+    .filter(letter => letter !== '#')
+    .sort();
+  
+  // Check if we have a special characters section
+  const hasSpecialChars = artistsByLetter['#'] && artistsByLetter['#'].length > 0;
+
   // Fetch like counts for all artists
   const artistNames = sortedArtists.map(artist => artist.data.name_en).filter(Boolean);
   const likeCounts = await fetchArtistLikeCounts(artistNames);
 
+  const totalArtists = sortedArtists.length;
+
   return (
     <div className={styles.DirectoryPage}>
-      <h1>Directory</h1>
-      <div className={styles.ArtistsGrid}>
-        {sortedArtists.map((artist) => (
-          <ArtistProfile
-            key={artist.id}
-            artist={artist}
-            noConstraints
-            hideDescription
-            likeCounts={likeCounts}
-          />
-        ))}
-      </div>
+      <h1>
+        <span className={styles.title}>
+          <span className={styles.en}>Artist Directory</span>
+          <span className={styles.ja}>アーティスト一覧</span>
+        </span>
+      </h1>
+      <AlphabetNav availableLetters={availableLetters} hasSpecialChars={hasSpecialChars} />
+      <DirectoryClient
+        artistsByLetter={artistsByLetter}
+        availableLetters={availableLetters}
+        hasSpecialChars={hasSpecialChars}
+        likeCounts={likeCounts}
+        totalArtists={totalArtists}
+      />
     </div>
   );
 }

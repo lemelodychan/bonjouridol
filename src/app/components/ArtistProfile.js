@@ -1,3 +1,6 @@
+'use client';
+
+import { useRouter } from "next/navigation";
 import { PrismicNextImage } from "@prismicio/next"
 import { PrismicLink, PrismicRichText } from "@prismicio/react"
 import { PrismicNextLink } from "@prismicio/next";
@@ -15,7 +18,8 @@ import Link from "next/link";
 import Button from "./IconButton";
 import { IoArrowForwardOutline } from "react-icons/io5";
 
-export default function ArtistProfile({ artist, noConstraints = false, hideDescription = false, likeCounts = {} }) {
+export default function ArtistProfile({ artist, noConstraints = false, hideDescription = false, likeCounts = {}, viewMode = 'card' }) {
+    const router = useRouter();
     const {
         name_en = null, 
         name_jp = null,
@@ -33,33 +37,44 @@ export default function ArtistProfile({ artist, noConstraints = false, hideDescr
     const artistDisplayName = name_en || name_jp || "";
     const searchUrl = `/search?keyword=${encodeURIComponent(artistDisplayName)}`;
 
-  return (
-    <div className={`${styles.artistProfile} ${noConstraints ? styles.noConstraints : ""}`}>
-        <SingleImage 
-            image={artist.data.profile_picture}
-            fallbackAlt=""
-            className={styles.profilePic}
-            color="white"
-        />
-        <div className={styles.profileContent}>
+    // Handle row click navigation
+    const handleRowClick = (e) => {
+        // Don't navigate if clicking on social links or like button
+        if (e.target.closest(`.${styles.social}`) || e.target.closest(`.${styles.likeSection}`)) {
+            return;
+        }
+        router.push(searchUrl);
+    };
+
+    const rowContent = (
+        <>
+            <SingleImage 
+                image={artist.data.profile_picture}
+                fallbackAlt=""
+                className={styles.profilePic}
+                color="white"
+            />
+            <div className={styles.profileContent}>
             <div className={styles.profileName}>
                 <h2>{artist.data.name_en}</h2>
                 {artist.data.name_jp &&
                     <h3>{artist.data.name_jp}</h3>
                 }
             </div>
-            {artist.data.debut &&
-                <span><strong>Debuted:</strong> {artist.data.debut}</span>
-            }
-            {artist.data.disband && 
-                <span><strong>Disbanded:</strong> {artist.data.disband}</span>
-            }
+            <div className={styles.info}>
+                {artist.data.debut &&
+                    <span><strong>Debuted:</strong> {artist.data.debut}</span>
+                }
+                {artist.data.disband && 
+                    <span><strong>Disbanded:</strong> {artist.data.disband}</span>
+                }
+            </div>
             {!hideDescription && (
                 <div className={styles.description}>
                     <PrismicRichText field={artist.data.description} />
                 </div>
             )}
-            <div className={styles.social}>
+            <div className={styles.social} onClick={(e) => e.stopPropagation()}>
             {artist.data.website && artist.data.website.url && artist.data.website.url !== "null" && (
                 <PrismicNextLink field={artist.data.website}>
                     <HiOutlineLink />
@@ -88,8 +103,10 @@ export default function ArtistProfile({ artist, noConstraints = false, hideDescr
             </div>
 
             <div className={styles.ctaButton}>
-                <Button href={searchUrl} className={styles.ctaButton} variant={"White"} textValue={'See all articles'} icon={<IoArrowForwardOutline />} />
-                <div className={styles.likeSection}>
+                {viewMode !== 'row' && (
+                    <Button href={searchUrl} className={styles.ctaButton} variant={"White"} textValue={'See all articles'} icon={<IoArrowForwardOutline />} />
+                )}
+                <div className={styles.likeSection} onClick={(e) => e.stopPropagation()}>
                     <ArtistLike 
                         artistName={artistDisplayName} 
                         initialLikeCount={likeCounts[artistDisplayName] || 0}
@@ -98,7 +115,24 @@ export default function ArtistProfile({ artist, noConstraints = false, hideDescr
                 </div>
             </div>
       </div>
-    </div>
-  )
+        </>
+    );
+
+    if (viewMode === 'row') {
+        return (
+            <div 
+                className={`${styles.artistProfile} ${noConstraints ? styles.noConstraints : ""} ${styles.rowView}`}
+                onClick={handleRowClick}
+            >
+                {rowContent}
+            </div>
+        );
+    }
+
+    return (
+        <div className={`${styles.artistProfile} ${noConstraints ? styles.noConstraints : ""}`}>
+            {rowContent}
+        </div>
+    );
 }
 

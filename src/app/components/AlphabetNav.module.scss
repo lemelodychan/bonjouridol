@@ -1,0 +1,94 @@
+@use "../styles/mixins.scss" as *;
+@use "../styles/variables.scss";
+
+.alphabetNav {
+  font-family: var(--font-text);
+  position: relative;
+  width: 100%;
+  padding: 8px 4px;
+  margin: 0px;
+  overflow-x: visible;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  background-color: var(--light-grey);
+  
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+    border: 2px solid var(--light-grey);
+  }
+
+  @include md {
+    padding: 8px 32px;
+  }
+}
+
+.lettersContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  column-gap: 0px;
+  justify-content: flex-start;
+  align-items: center;
+  width: max-content;
+  min-width: 100%;
+
+  @include md {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    justify-content: center;
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+.letterLink {
+  font-family: var(--font-text);
+  background: none;
+  border: none;
+  font-size: var(--font-size);
+  padding: 2px 12px;
+  font-weight: 600;
+  color: var(--text-color, #333);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  min-width: 20px;
+  height: 24px;
+  line-height: 1.2;
+  border-left: 1px solid #ccc;
+
+  @include md {
+    padding: 4px 12px;
+  }
+
+  &:first-child {
+    border-left: none;
+  }
+
+  &:hover:not(:disabled) {
+    color: var(--bi-indigo);
+  }
+
+  &.available {
+    color: var(--bi-dark-pink);
+  }
+
+  &.unavailable {
+    color: #ccc;
+    cursor: not-allowed;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
