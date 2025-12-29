@@ -2,17 +2,25 @@
 @use "../../app/styles/variables.scss";
 
 .TableContents {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: max-content max-content;
+    gap: 16px;
     margin: 16px auto;
+    margin-top: -16px;
     width: 100%;
     max-width: 1000px;
-
-    padding: 0 24px;
+    background-color: var(--light-grey);
+    padding: 24px;
 
     @include md {
-        padding: 0 32px;
+        grid-template-rows: max-content;
+        grid-template-columns: 1fr 2fr;
+        width: calc(100% - 64px);
+        padding: 24px;
+        gap: 32px;
+        border-radius: 24px;
+        margin: 16px auto;
     }
 
     h3 {
@@ -22,18 +30,23 @@
             gap: 0.5rem;
 
             .english {
-                font-size: var(--font-size-lg) !important;
+                font-size: var(--font-size) !important;
                 line-height: 1;
+                color: var(--dark-grey) !important;
 
                 @include md {
-                    font-size: var(--font-size-xl) !important;
+                    font-size: var(--font-size-md) !important;
                 }
             }
 
             .japanese {
-                font-size: var(--font-size-md);
-                color: var(--bi-light-pink) !important;
+                font-size: var(--font-size-sm) !important;
+                color: var(--medium-grey) !important;
                 line-height: 2;
+
+                @include md {
+                    font-size: var(--font-size);
+                }
             }
         }
     }
@@ -41,26 +54,41 @@
     .Content {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 8px;
+        height: 100%;
+
+        @include md {
+            border-left: 1px solid #ccc;
+            padding-left: 16px;
+            height: -webkit-fill-available;
+        }
 
         .ContentItem {
             display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            line-height: 1.8;
+            align-items: center;
+            gap: 12px;
+            line-height: 24px;
+            font-size: var(--font-size);
 
             .ContentItemNumber {
-                font-weight: 600;
-                color: var(--dark-grey);
+                font-weight: 500;
+                font-size: var(--font-size-sm);
+                color: var(--bi-dark-pink);
                 flex-shrink: 0;
+                width: 24px;
+                height: 24px;
+                background-color: var(--white);
+                border-radius: 16px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
 
             a {
                 color: var(--bi-dark-pink) !important;
                 text-decoration: none !important;
-                border-bottom: 1px solid;
                 font-weight: 600;
-                font-size: var(--font-size-md);
+                transition: var(--transi);
 
                 &:hover {
                     color: var(--bi-indigo) !important;
