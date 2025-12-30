@@ -70,14 +70,14 @@ const Author = ({ author, author2, type, translator }) => {
                 {translator ? (
                     <>
                         <h4>
-                            {type} by&nbsp;
+                            {type ? `${type} by ` : ""}
                             <span className={styles.AuthorName}>{name}</span>
                         </h4>
                         <span className={styles.Translation} dangerouslySetInnerHTML={{ __html: translator }} />
                     </>
                     ) : (
                     <h4>
-                        {type} by&nbsp;
+                        {type ? `${type} by ` : ""}
                         <span className={styles.AuthorName}>{name}</span>
                         {name2 && (
                             <>
@@ -89,7 +89,7 @@ const Author = ({ author, author2, type, translator }) => {
 
                 <div className={`${styles.InfoContent} ${author2?.data ? styles.withAuthor2 : ""}`}>
                     {description &&
-                        <div>
+                        <div className={styles.DescriptionContainer}>
                             {description &&
                                 <div className={styles.Description}>
                                     <PrismicRichText field={description} />
@@ -116,7 +116,7 @@ const Author = ({ author, author2, type, translator }) => {
                     }
 
                     {description2 && 
-                        <div>
+                        <div className={styles.DescriptionContainer}>
                             {description2 &&
                                 <div className={styles.Description}>
                                     <PrismicRichText field={description2} />

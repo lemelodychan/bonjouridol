@@ -63,11 +63,24 @@ export async function GET(request) {
       )
     }
 
-    // Select a random item based on the current date
-    // This ensures all users see the same song on the same day
-    const today = new Date()
-    const dateString = today.toISOString().split('T')[0] // YYYY-MM-DD
-    const dateSeed = dateString.split('-').join('') // YYYYMMDD as number
+    // Select a random item based on the current date in Tokyo timezone
+    // This ensures all users see the same song on the same day (Tokyo time)
+    // Uses Tokyo timezone (Asia/Tokyo, JST, UTC+9) as the base for determining the day
+    const now = new Date()
+    const tokyoDate = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Tokyo',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).formatToParts(now)
+    
+    // Extract date components from Tokyo timezone
+    const year = tokyoDate.find(part => part.type === 'year').value
+    const month = tokyoDate.find(part => part.type === 'month').value
+    const day = tokyoDate.find(part => part.type === 'day').value
+    
+    // Create date seed string (YYYYMMDD) for consistent random selection
+    const dateSeed = `${year}${month}${day}`
     
     // Use date as seed for consistent random selection
     const seededRandom = (seed) => {

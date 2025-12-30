@@ -281,7 +281,7 @@ export default async function Page({ params }) {
         </div>
 
         {galleryLink?.data?.gallery?.length > 0 && (
-          <div className={styles.Gallery}>
+          <div className={styles.Gallery} id="gallery">
             <h2>
               <span>Full Gallery</span>
               <span className={styles.Counter}>{galleryCount} photos</span>

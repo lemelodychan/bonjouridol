@@ -7,8 +7,28 @@ import { FiUsers, FiMinimize2, FiMaximize2 } from 'react-icons/fi'
 import Button from './IconButton'
 import styles from './Playlist.module.scss'
 
-const PLAYLIST_CACHE_KEY = 'main_site_playlist_cache'
-const CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 hours
+const PLAYLIST_CACHE_KEY_PREFIX = 'main_site_playlist_cache'
+
+// Get Tokyo date string (YYYY-MM-DD) for cache key
+function getTokyoDateString() {
+  const now = new Date()
+  const tokyoDate = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).formatToParts(now)
+  
+  const year = tokyoDate.find(part => part.type === 'year').value
+  const month = tokyoDate.find(part => part.type === 'month').value
+  const day = tokyoDate.find(part => part.type === 'day').value
+  
+  return `${year}-${month}-${day}`
+}
+
+function getCacheKey() {
+  return `${PLAYLIST_CACHE_KEY_PREFIX}_${getTokyoDateString()}`
+}
 
 export default function Playlist() {
   const pathname = usePathname()
@@ -52,32 +72,40 @@ export default function Playlist() {
 
   function getCachedPlaylistItem() {
     try {
-      const cached = localStorage.getItem(PLAYLIST_CACHE_KEY)
-      if (!cached) return null
-
-      const { data, timestamp } = JSON.parse(cached)
-      const now = Date.now()
-
-      // Check if cache is still valid (within 24 hours)
-      if (now - timestamp < CACHE_DURATION) {
-        // Also check if we have a cache version - if not, it's old cache format, clear it
-        // This helps clear stale cache from before purchase_link was added
-        return data
+      const cacheKey = getCacheKey()
+      const cached = localStorage.getItem(cacheKey)
+      if (!cached) {
+        // Clear old cache entries (from previous days)
+        clearOldCache()
+        return null
       }
 
-      // Cache expired, remove it
-      localStorage.removeItem(PLAYLIST_CACHE_KEY)
-      return null
+      const { data } = JSON.parse(cached)
+      // Cache is valid for the current Tokyo date (automatically invalidates at Tokyo midnight)
+      return data
     } catch (error) {
       console.error('Error reading cache:', error)
-      localStorage.removeItem(PLAYLIST_CACHE_KEY)
+      clearOldCache()
       return null
+    }
+  }
+  
+  function clearOldCache() {
+    try {
+      const currentCacheKey = getCacheKey()
+      // Clear any cache entries that don't match today's date
+      const oldKeys = Object.keys(localStorage).filter(key => 
+        key.startsWith(PLAYLIST_CACHE_KEY_PREFIX) && key !== currentCacheKey
+      )
+      oldKeys.forEach(key => localStorage.removeItem(key))
+    } catch (error) {
+      console.error('Error clearing old cache:', error)
     }
   }
   
   function clearCache() {
     try {
-      localStorage.removeItem(PLAYLIST_CACHE_KEY)
+      clearOldCache()
     } catch (error) {
       console.error('Error clearing cache:', error)
     }
@@ -85,11 +113,14 @@ export default function Playlist() {
 
   function setCachedPlaylistItem(data) {
     try {
+      const cacheKey = getCacheKey()
       const cacheData = {
         data,
-        timestamp: Date.now()
+        date: getTokyoDateString() // Store the date for reference
       }
-      localStorage.setItem(PLAYLIST_CACHE_KEY, JSON.stringify(cacheData))
+      localStorage.setItem(cacheKey, JSON.stringify(cacheData))
+      // Clear old cache entries
+      clearOldCache()
     } catch (error) {
       console.error('Error setting cache:', error)
     }

@@ -75,12 +75,26 @@ const mockArtist = {
 };
 
 // Function to get a random artist based on the day (for daily rotation)
+// Uses Tokyo timezone (JST, UTC+9) as the base for determining the day
 function getDailyArtist(artists) {
   if (!artists || artists.length === 0) return null;
   
-  // Use the current date as a seed for consistent daily selection
-  const today = new Date();
-  const dateString = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+  // Get current date in Tokyo timezone (Asia/Tokyo, JST, UTC+9)
+  const now = new Date();
+  const tokyoDate = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).formatToParts(now);
+  
+  // Extract date components from Tokyo timezone
+  const year = parseInt(tokyoDate.find(part => part.type === 'year').value);
+  const month = parseInt(tokyoDate.find(part => part.type === 'month').value) - 1; // Month is 0-indexed
+  const day = parseInt(tokyoDate.find(part => part.type === 'day').value);
+  
+  // Create date string for consistent daily selection
+  const dateString = `${year}-${month}-${day}`;
   
   // Simple hash function to convert date to number
   let hash = 0;

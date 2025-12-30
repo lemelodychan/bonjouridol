@@ -18,9 +18,11 @@
 
     > div {
         width: 100%;
+        padding: 0 8px;
 
         @include md {
             width: -webkit-fill-available;
+            padding: 0 16px;
         }
 
         &:first-of-type {
@@ -83,14 +85,118 @@
             flex-direction: column;
             gap: 0px;
             align-content: center;
+            min-height: 32px;
     
             h4 {
-                font-size: 16px;
-                line-height: 32px;
+                font-size: var(--font-size-md);
+                line-height: 24px;
                 font-weight: 400;
     
                 span {
                     font-weight: 600;
+                }
+            }
+        }
+    }
+
+    h3 {
+        padding: 0px 6px;
+        width: fit-content;
+        border-radius: 4px;
+        font-size: var(--font-size-sm);
+        line-height: 22px;
+        text-transform: uppercase;
+        color: white;
+        background-color: var(--bi-indigo);
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin: 24px 0 0 16px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+
+        @include md {
+            margin: 32px 0 0 16px;
+        }
+    }
+
+    .AuthorsSection {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0px;
+
+        .AuthorsContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 0px;
+
+            @include md {
+                flex-direction: row;
+            }
+
+            > div {
+                width: 100%;
+
+                @include md {
+                    width: -webkit-fill-available;
+                }
+
+                &:first-of-type {
+                    border-bottom: 1px solid var(--light-grey);
+
+                    @include md {
+                        border-bottom: 0px !important;
+                    }
+                }
+
+                &:last-of-type {
+                    border-bottom: 0px !important;
+                }
+            }
+        }
+    }
+
+    .PhotographersSection {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0px;
+
+        .PhotographersContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 0px;
+            margin-bottom: 16px;
+
+            @include md {
+                flex-direction: row;
+            }
+
+            > div {
+                width: 100%;
+
+                @include md {
+                    width: -webkit-fill-available;
+                }
+
+                &:first-of-type {
+                    border-bottom: 1px solid var(--light-grey);
+
+                    @include md {
+                        border-bottom: 0px !important;
+                        border-right: 1px solid var(--light-grey);
+                    }
+                }
+
+                &:last-of-type {
+                    border-bottom: 0px !important;
+
+                    @include md {
+                        border-bottom: 0px !important;
+                        border-right: 0px !important;
+                    }
                 }
             }
         }

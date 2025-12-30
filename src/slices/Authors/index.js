@@ -5,6 +5,9 @@
  */
 import Author from "@/app/components/Author";
 import Logo from "@/app/assets/Square_Logo_Pink.png";
+import { RiQuillPenFill } from "react-icons/ri";
+import { RiCameraFill } from "react-icons/ri";
+import { HiMiniCamera } from "react-icons/hi2";
 
 import Image from "next/image";
 import styles from "./page.module.scss";
@@ -40,47 +43,53 @@ const Authors = ({ slice }) => {
   
   const translation = getTranslationString(translatorFR, translatorEN, translatorJP);
 
+  // Determine if we can merge "Written and photographed"
+  // Only merge if: author === photo1 AND no photo2 AND no official photos
+  const canMergeWritingAndPhotography = 
+    author?.uid === photo?.uid && 
+    !photo2?.data && 
+    !isOfficial;
+
+  // Determine the author type text
+  // Remove "Written by" but keep "Press release translated by"
+  const authorType = author === slice.primary.author ? "" : "Press release translated";
+
+  // Determine if we should use plural for titles
+  // Authors section: plural if there's author + translators (count translators)
+  const translatorCount = [
+    translatorFR?.data?.name,
+    translatorEN?.data?.name,
+    translatorJP?.data?.name
+  ].filter(Boolean).length;
+  const hasMultipleAuthors = translatorCount > 0;
+  const authorsTitle = hasMultipleAuthors ? "Authors" : "Author";
+
+  // Photographers section: plural if there are 2 photographers
+  const hasMultiplePhotographers = photo2?.data;
+  const photographersTitle = hasMultiplePhotographers ? "Photographers" : "Photographer";
+
   return (
     <div 
       className={styles.credits}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
     >
-      {(author?.uid === photo?.uid && !isOfficial) ? (
-        <Author author={author} type="Written and photographed" translator={translation} />
-      ) : (
-        <>
-          {(!photo?.uid && isOfficial) ? (
-            <>
-              <Author 
-                author={author || {}} 
-                type={author === slice.primary.author ? "Written" : "Press release translated"} 
-                translator={translation} 
-              />
-              <div className={styles.OfficialPhotos}>
-                <span className={styles.authorImg}>
-                  <Image 
-                    src={Logo}
-                    alt="Bonjour Idol Logo" 
-                    height={48}
-                  />
-                </span>
-                <div className={styles.AuthorInfo}>
-                  <h4>
-                    Official photos courtesy of&nbsp;
-                    <span className={styles.AuthorName}>event and artist management</span>.
-                  </h4>
-                </div>
-              </div>
-            </>
+      <div className={styles.AuthorsSection}>
+        <h3 className={styles.AuthorsHeader}><RiQuillPenFill /> {authorsTitle}</h3>
+        <div className={styles.AuthorsContainer}>
+          {canMergeWritingAndPhotography ? (
+            // Simple case: Author wrote and photographed, no other photographers or official photos
+            <Author author={author} type="Written and photographed" translator={translation} />
           ) : (
             <>
+              {/* Always show the author/writer */}
               <Author 
-                author={author} 
-                type={author === slice.primary.author ? "Written" : "Press release translated"} 
+                author={author || {}} 
+                type={authorType} 
                 translator={translation} 
               />
               
+              {/* Show official photos block if applicable */}
               {isOfficial && (
                 <div className={styles.OfficialPhotos}>
                   <span className={styles.authorImg}>
@@ -98,16 +107,29 @@ const Authors = ({ slice }) => {
                   </div>
                 </div>
               )}
-
-              {/* Only show the photographer block if photo data exists */}
-              {photo && photo.data && (
-                <Author author={photo} author2={photo2} type="Photographed" />
-              )}
             </>
           )}
-        </>
-      )}
+        </div>
+      </div>
 
+      {/* Show photographer(s) block if any photographer data exists */}
+      {!canMergeWritingAndPhotography && photo?.data && (
+        <div className={styles.PhotographersSection}>
+          <h3 className={styles.PhotographersHeader}><HiMiniCamera /> {photographersTitle}</h3>
+          <div className={styles.PhotographersContainer}>
+            {photo2?.data ? (
+              // Two photographers: show as separate cards
+              <>
+                <Author author={photo} type="" />
+                <Author author={photo2} type="" />
+              </>
+            ) : (
+              // Single photographer: show in same structure
+              <Author author={photo} type="" />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
