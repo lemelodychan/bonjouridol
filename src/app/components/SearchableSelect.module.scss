@@ -1,0 +1,200 @@
+.searchableSelect {
+  position: relative;
+  width: 100%;
+
+  .selectTrigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--light-grey);
+    border-radius: 8px;
+    background-color: var(--white);
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 44px;
+
+    &:hover:not(.disabled) {
+      border-color: var(--bi-indigo);
+    }
+
+    .selectedValue {
+      color: var(--dark-grey);
+      font-size: var(--font-size);
+      font-family: var(--font-text);
+    }
+
+    .placeholder {
+      color: var(--medium-grey);
+      font-size: var(--font-size);
+      font-family: var(--font-text);
+    }
+
+    .triggerIcons {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .clearButton {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      color: var(--medium-grey);
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: 4px;
+      transition: all 0.2s;
+
+      &:hover {
+        color: var(--dark-grey);
+        background-color: var(--light-grey);
+      }
+
+      svg {
+        font-size: 1rem;
+      }
+    }
+
+    .chevron {
+      font-size: 1rem;
+      color: var(--bi-dark-pink);
+      transition: transform 0.2s;
+    }
+  }
+
+  &.open .selectTrigger .chevron {
+    transform: rotate(180deg);
+  }
+
+  &.open .selectTrigger {
+    border-color: var(--bi-indigo);
+  }
+
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+
+    .selectTrigger {
+      cursor: not-allowed;
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  .dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    right: 0;
+    background-color: var(--white);
+    border: 2px solid var(--light-grey);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 300px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .searchInputWrapper {
+      position: relative;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--light-grey);
+
+      .searchIcon {
+        position: absolute;
+        left: 1.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--medium-grey);
+        font-size: 1rem;
+        pointer-events: none;
+      }
+
+      .searchInput {
+        width: 100%;
+        padding: 0.5rem 1rem 0.5rem 2.5rem;
+        border: 1px solid var(--light-grey);
+        border-radius: 6px;
+        font-size: var(--font-size);
+        font-family: var(--font-text);
+        background-color: var(--white);
+        color: var(--dark-grey);
+        transition: all 0.2s;
+
+        &:focus {
+          outline: none;
+          border-color: var(--bi-indigo);
+        }
+
+        &::placeholder {
+          color: var(--medium-grey);
+        }
+      }
+    }
+
+    .optionsList {
+      overflow-y: auto;
+      max-height: 250px;
+
+      // Custom scrollbar
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: var(--light-grey);
+        border-radius: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: var(--bi-dark-pink);
+        border: 2px solid var(--light-grey);
+        border-radius: 8px;
+        transition: background 0.2s ease;
+      }
+
+      // Firefox scrollbar
+      scrollbar-width: thin;
+      scrollbar-color: var(--bi-dark-pink) var(--light-grey);
+
+      .loading,
+      .noResults {
+        padding: 1rem;
+        text-align: center;
+        color: var(--medium-grey);
+        font-size: var(--font-size-sm);
+      }
+
+      .option {
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--dark-grey);
+        font-size: var(--font-size);
+        font-family: var(--font-text);
+
+        &:hover {
+          background-color: var(--light-grey);
+        }
+
+        &.selected {
+          background-color: rgba(99, 102, 241, 0.1);
+          color: var(--bi-indigo);
+          font-weight: 600;
+        }
+
+        .checkIcon {
+          color: var(--bi-indigo);
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+

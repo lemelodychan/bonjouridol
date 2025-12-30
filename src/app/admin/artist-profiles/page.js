@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import styles from './page.module.scss'
 import Button from '@/app/components/IconButton'
 import CustomSelect from '@/app/components/CustomSelect'
@@ -12,7 +12,6 @@ import { FaCheck } from "react-icons/fa6"
 import { format } from 'date-fns'
 
 const ARTISTS_CACHE_KEY = 'admin_artists_cache'
-const PENDING_MIGRATIONS_KEY = 'admin_pending_artist_migrations'
 const CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 hours
 
 export default function ArtistProfilesPage() {
@@ -28,6 +27,8 @@ export default function ArtistProfilesPage() {
   const itemsPerPage = 20
   const [editingMigrationId, setEditingMigrationId] = useState(null)
   const [isEditingPublished, setIsEditingPublished] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sortBy, setSortBy] = useState('latest') // 'latest' or 'alphabetical'
   const [formData, setFormData] = useState({
     name_en: '',
     name_jp: '',
@@ -120,7 +121,6 @@ export default function ArtistProfilesPage() {
   function clearArtistsCache() {
     try {
       localStorage.removeItem(ARTISTS_CACHE_KEY)
-      localStorage.removeItem(PENDING_MIGRATIONS_KEY)
     } catch (error) {
       console.error('Error clearing artists cache:', error)
     }
@@ -173,67 +173,19 @@ export default function ArtistProfilesPage() {
     try {
       setLoadingPending(true)
       
-        try {
-          const cached = localStorage.getItem(PENDING_MIGRATIONS_KEY)
-          if (cached) {
-            const cachedMigrations = JSON.parse(cached)
-            const activeMigrations = cachedMigrations.filter(m => 
-              m.status !== 'Archived' && m.status !== 'published' && m.status !== 'cancelled'
-            )
-            setPendingMigrations(activeMigrations)
-          }
-        } catch (error) {
-          console.error('Error loading from localStorage:', error)
-        }
-        
-        const response = await fetch('/api/admin/artists/pending')
-        if (response.ok) {
-          const data = await response.json()
-          const serverMigrations = data.pending || []
-          
-          const cachedMigrations = JSON.parse(localStorage.getItem(PENDING_MIGRATIONS_KEY) || '[]')
-          const activeCachedMigrations = cachedMigrations.filter(m => 
-            m.status !== 'Archived' && m.status !== 'published' && m.status !== 'cancelled'
-          )
-          const merged = [...serverMigrations]
-          
-          activeCachedMigrations.forEach(cached => {
-            if (!serverMigrations.find(m => m.id === cached.id || m.uid === cached.uid)) {
-              merged.push(cached)
-            }
-          })
-          
-          const finalMigrations = merged.filter(m => 
-            m.status !== 'Archived' && m.status !== 'published' && m.status !== 'cancelled'
-          )
-          setPendingMigrations(finalMigrations)
-        
-        try {
-          localStorage.setItem(PENDING_MIGRATIONS_KEY, JSON.stringify(finalMigrations))
-        } catch (error) {
-          console.error('Error saving to localStorage:', error)
-        }
+      const response = await fetch('/api/admin/artists/pending')
+      if (response.ok) {
+        const data = await response.json()
+        const serverMigrations = data.pending || []
+        setPendingMigrations(serverMigrations)
+      } else {
+        setError('Failed to load pending migrations')
       }
     } catch (error) {
       console.error('Error fetching pending migrations:', error)
-      try {
-        const cached = localStorage.getItem(PENDING_MIGRATIONS_KEY)
-        if (cached) {
-          setPendingMigrations(JSON.parse(cached))
-        }
-      } catch (e) {
-        console.error('Error loading from localStorage fallback:', e)
-      }
+      setError('Failed to load pending migrations')
     } finally {
       setLoadingPending(false)
-    }
-  }
-
-  function savePendingMigrationsToLocalStorage(migrations) {
-    try {
-      localStorage.setItem(PENDING_MIGRATIONS_KEY, JSON.stringify(migrations))
-    } catch (error) {
-      console.error('Error saving pending migrations to localStorage:', error)
     }
   }
 
@@ -255,7 +207,6 @@ export default function ArtistProfilesPage() {
       // Update local state - filter out the published migration
       const updatedMigrations = pendingMigrations.filter(m => m.id !== id)
       setPendingMigrations(updatedMigrations)
-      savePendingMigrationsToLocalStorage(updatedMigrations)
       
       // Reload to get fresh data
       await loadPendingMigrations()
@@ -295,7 +246,6 @@ export default function ArtistProfilesPage() {
       // Update local state - filter out the cancelled migration
       const updatedMigrations = pendingMigrations.filter(m => m.id !== migration.id)
       setPendingMigrations(updatedMigrations)
-      savePendingMigrationsToLocalStorage(updatedMigrations)
       
       // Reload to get fresh data
       await loadPendingMigrations()
@@ -307,11 +257,49 @@ export default function ArtistProfilesPage() {
     }
   }
 
+  // Filter and sort artists
+  const filteredAndSortedArtists = useMemo(() => {
+    let result = [...artists]
+    
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim()
+      result = result.filter(artist => 
+        artist.name_en?.toLowerCase().includes(query) ||
+        artist.name_jp?.toLowerCase().includes(query) ||
+        artist.uid?.toLowerCase().includes(query)
+      )
+    }
+    
+    // Sort
+    if (sortBy === 'alphabetical') {
+      result.sort((a, b) => {
+        const nameA = (a.name_en || '').toLowerCase()
+        const nameB = (b.name_en || '').toLowerCase()
+        return nameA.localeCompare(nameB)
+      })
+    } else if (sortBy === 'latest') {
+      // Sort by last_publication_date (most recent first)
+      result.sort((a, b) => {
+        const dateA = new Date(a.last_publication_date || 0)
+        const dateB = new Date(b.last_publication_date || 0)
+        return dateB - dateA
+      })
+    }
+    
+    return result
+  }, [artists, searchQuery, sortBy])
+  
+  // Reset to page 1 when search or sort changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, sortBy])
+  
   // Pagination calculations
-  const totalPages = Math.ceil(artists.length / itemsPerPage)
+  const totalPages = Math.ceil(filteredAndSortedArtists.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const paginatedArtists = artists.slice(startIndex, endIndex)
+  const paginatedArtists = filteredAndSortedArtists.slice(startIndex, endIndex)
 
   async function handleCreate() {
     if (!formData.name_en || !formData.name_en.trim()) {
@@ -413,7 +401,6 @@ export default function ArtistProfilesPage() {
           clearArtistsCache()
           
           setPendingMigrations(updatedMigrations)
-          savePendingMigrationsToLocalStorage(updatedMigrations)
         } catch (error) {
           console.error('Error storing pending migration:', error)
         }
@@ -1387,6 +1374,34 @@ export default function ArtistProfilesPage() {
           ) : activeTab === 'published' ? (
             <>
               {error && <div className={styles.error}>{error}</div>}
+              
+              {/* Search and Sort Controls */}
+              <div className={styles.searchAndSortControls}>
+                <div className={styles.searchBar}>
+                  <FiSearch className={styles.searchIcon} />
+                  <input
+                    type="text"
+                    placeholder="Search by artist name or UID..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className={styles.searchInput}
+                  />
+                </div>
+                <div className={styles.sortControl}>
+                  <label htmlFor="sort-select" className={styles.sortLabel}>Sort by:</label>
+                  <CustomSelect
+                    id="sort-select"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    options={[
+                      { value: 'latest', label: 'Latest Updated' },
+                      { value: 'alphabetical', label: 'Alphabetical' }
+                    ]}
+                    className={styles.sortSelect}
+                  />
+                </div>
+              </div>
+              
               <div className={styles.artistsList}>
                 {paginatedArtists.length === 0 ? (
                   <div className={styles.empty}>
@@ -1460,7 +1475,7 @@ export default function ArtistProfilesPage() {
                     Previous
                   </button>
                   <span className={styles.paginationInfo}>
-                    Page {currentPage} of {totalPages} ({artists.length} total)
+                    Page {currentPage} of {totalPages} ({filteredAndSortedArtists.length} total{searchQuery ? ` matching "${searchQuery}"` : ''})
                   </span>
                   <button
                     className={styles.paginationButton}

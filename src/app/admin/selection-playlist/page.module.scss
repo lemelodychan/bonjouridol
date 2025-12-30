@@ -328,6 +328,13 @@
       border-color: var(--bi-indigo);
     }
   }
+
+  .fieldNote {
+    font-size: var(--font-size-sm);
+    color: var(--medium-grey);
+    margin: 0.25rem 0 0 0;
+    font-style: italic;
+  }
 }
 
 .formGroupFull {

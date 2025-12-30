@@ -103,52 +103,33 @@ export async function POST(request) {
     }
 
     const body = await request.json()
-    const { title_en, title_ja, artist_en, artist_ja, link, purchase_link, cover_url, release_date, display_order, source } = body
+    const { title_en, title_ja, artist_id, artist_en, artist_ja, link, purchase_link, cover_url, release_date, display_order, source } = body
 
-    if (!title_en || !artist_en || !link) {
+    if (!title_en || !artist_id || !link) {
       return NextResponse.json(
-        { error: 'Missing required fields: title_en, artist_en, link' },
+        { error: 'Missing required fields: title_en, artist_id, link' },
         { status: 400 }
       )
     }
 
-    // Get or create artist in artists table
-    let artistId = null
-    const { data: existingArtist, error: artistFetchError } = await supabase
+    // Verify artist exists in database
+    const { data: artist, error: artistFetchError } = await supabase
       .from('artists')
-      .select('id, name_ja')
-      .eq('name', artist_en)
-      .maybeSingle()
+      .select('id, name, name_ja')
+      .eq('id', artist_id)
+      .single()
 
-    if (artistFetchError) {
-      console.error('Error fetching artist:', artistFetchError)
-    } else if (existingArtist) {
-      artistId = existingArtist.id
-      // Update Japanese name if provided and not already set
-      if (artist_ja && (!existingArtist.name_ja || existingArtist.name_ja === '')) {
-        await supabase
-          .from('artists')
-          .update({ name_ja: artist_ja })
-          .eq('id', artistId)
-      }
-    } else {
-      // Create new artist
-      const { data: newArtist, error: artistCreateError } = await supabase
-        .from('artists')
-        .insert({
-          name: artist_en,
-          name_ja: artist_ja || null,
-          likes: 0
-        })
-        .select('id')
-        .single()
-
-      if (artistCreateError) {
-        console.error('Error creating artist:', artistCreateError)
-      } else {
-        artistId = newArtist.id
-      }
+    if (artistFetchError || !artist) {
+      return NextResponse.json(
+        { error: 'Artist not found in database. Please select a valid artist.' },
+        { status: 400 }
+      )
     }
+
+    // Use artist data from database
+    const artistId = artist.id
+    const finalArtistEn = artist.name
+    const finalArtistJa = artist.name_ja || artist_ja || null
 
     const { data: newItem, error } = await supabase
       .from('selection_playlist')
@@ -199,7 +180,7 @@ export async function PUT(request) {
     }
 
     const body = await request.json()
-    const { id, title_en, title_ja, artist_en, artist_ja, link, purchase_link, cover_url, release_date, display_order, source } = body
+    const { id, title_en, title_ja, artist_id, artist_en, artist_ja, link, purchase_link, cover_url, release_date, display_order, source } = body
 
     if (!id) {
       return NextResponse.json(
@@ -208,11 +189,36 @@ export async function PUT(request) {
       )
     }
 
+    // If artist_id is provided, verify it exists and get artist data
+    let finalArtistEn = artist_en
+    let finalArtistJa = artist_ja
+    let finalArtistId = null
+
+    if (artist_id) {
+      const { data: artist, error: artistFetchError } = await supabase
+        .from('artists')
+        .select('id, name, name_ja')
+        .eq('id', artist_id)
+        .single()
+
+      if (artistFetchError || !artist) {
+        return NextResponse.json(
+          { error: 'Artist not found in database. Please select a valid artist.' },
+          { status: 400 }
+        )
+      }
+
+      finalArtistId = artist.id
+      finalArtistEn = artist.name
+      finalArtistJa = artist.name_ja || artist_ja || null
+    }
+
     const updateData = {}
     if (title_en !== undefined) updateData.title_en = title_en
     if (title_ja !== undefined) updateData.title_ja = title_ja
-    if (artist_en !== undefined) updateData.artist_en = artist_en
-    if (artist_ja !== undefined) updateData.artist_ja = artist_ja
+    if (finalArtistEn !== undefined) updateData.artist_en = finalArtistEn
+    if (finalArtistJa !== undefined) updateData.artist_ja = finalArtistJa
+    if (finalArtistId !== null) updateData.artist_id = finalArtistId
     if (link !== undefined) updateData.link = link
     if (purchase_link !== undefined) updateData.purchase_link = purchase_link
     if (cover_url !== undefined) updateData.cover_url = cover_url

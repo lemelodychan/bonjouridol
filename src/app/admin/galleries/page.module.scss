@@ -98,7 +98,6 @@
     border-bottom: 3px solid transparent;
     color: var(--medium-grey);
     font-size: var(--font-size);
-    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
     font-family: var(--font-text);
@@ -106,14 +105,14 @@
     bottom: -2px;
   
     &:hover {
-      color: var(--dark-grey);
-      background-color: var(--light-grey);
+      color: var(--bi-dark-pink);
     }
   
     &.active {
       color: var(--bi-dark-pink);
       border-bottom-color: var(--bi-dark-pink);
       background-color: transparent;
+      font-weight: 600;
     }
   }
 }

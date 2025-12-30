@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import styles from './page.module.scss'
 import Button from '@/app/components/IconButton'
 import SingleImage from '@/app/components/SingleImage'
+import SearchableSelect from '@/app/components/SearchableSelect'
 import { IoAddOutline, IoCloseOutline, IoDownloadOutline } from 'react-icons/io5'
 import { FiEdit, FiTrash, FiCheck } from 'react-icons/fi'
 
@@ -19,8 +20,9 @@ export default function SelectionPlaylistPage() {
   const [formData, setFormData] = useState({
     title_en: '',
     title_ja: '',
-    artist_en: '',
-    artist_ja: '',
+    artist_id: '', // Store artist ID instead of name
+    artist_en: '', // Will be populated from selected artist
+    artist_ja: '', // Will be populated from selected artist
     link: '',
     purchase_link: '',
     cover_url: '',
@@ -32,6 +34,11 @@ export default function SelectionPlaylistPage() {
   const [existingCovers, setExistingCovers] = useState([])
   const [loadingCovers, setLoadingCovers] = useState(false)
   
+  // Artists state for searchable select
+  const [artists, setArtists] = useState([])
+  const [loadingArtists, setLoadingArtists] = useState(false)
+  const [artistSearchTerm, setArtistSearchTerm] = useState('')
+  
   // Import modal state
   const [showImportModal, setShowImportModal] = useState(false)
   const [importLoading, setImportLoading] = useState(false)
@@ -41,7 +48,96 @@ export default function SelectionPlaylistPage() {
 
   useEffect(() => {
     loadPlaylist()
+    loadArtists()
+    
+    // Cleanup timeout on unmount
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
   }, [])
+
+  // Load artists from Supabase
+  const loadArtists = useCallback(async (search = '') => {
+    setLoadingArtists(true)
+    try {
+      const url = search 
+        ? `/api/admin/selection-playlist/artists?search=${encodeURIComponent(search)}`
+        : '/api/admin/selection-playlist/artists'
+      
+      const response = await fetch(url)
+      const data = await response.json()
+
+      if (response.ok && data.artists) {
+        setArtists(data.artists)
+      }
+    } catch (error) {
+      console.error('Error loading artists:', error)
+    } finally {
+      setLoadingArtists(false)
+    }
+  }, [])
+
+  // Debounce timer ref
+  const searchTimeoutRef = useRef(null)
+
+  // Handle artist search with debouncing
+  const handleArtistSearch = useCallback((searchTerm) => {
+    // Clear existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+    
+    // Only update search term and make API call if search term is not empty
+    // This prevents unnecessary calls when clearing the search
+    if (searchTerm.trim()) {
+      setArtistSearchTerm(searchTerm)
+      
+      // Debounce the API call
+      searchTimeoutRef.current = setTimeout(() => {
+        loadArtists(searchTerm)
+      }, 300) // Wait 300ms after user stops typing
+    } else {
+      // If search is cleared, reset to initial artists list
+      setArtistSearchTerm('')
+      searchTimeoutRef.current = setTimeout(() => {
+        loadArtists('')
+      }, 100)
+    }
+  }, [loadArtists])
+
+  // Memoize artist options to prevent unnecessary re-renders
+  const artistOptions = useMemo(() => {
+    return artists.map(artist => ({
+      value: artist.id,
+      label: artist.name_ja 
+        ? `${artist.name} (${artist.name_ja})`
+        : artist.name
+    }))
+  }, [artists])
+
+  // Handle artist selection
+  function handleArtistSelect(e) {
+    const artistId = e.target.value
+    const selectedArtist = artists.find(a => a.id === artistId)
+    
+    if (selectedArtist) {
+      setFormData(prev => ({
+        ...prev,
+        artist_id: artistId,
+        artist_en: selectedArtist.name || '',
+        artist_ja: selectedArtist.name_ja || '',
+      }))
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        artist_id: '',
+        artist_en: '',
+        artist_ja: '',
+      }))
+    }
+  }
 
   useEffect(() => {
     if (coverMode === 'select' && existingCovers.length === 0) {
@@ -209,8 +305,8 @@ export default function SelectionPlaylistPage() {
       setError('')
       
       // Validate required fields
-      if (!formData.title_en || !formData.artist_en || !formData.link) {
-        setError('Please fill in all required fields: Title (EN), Artist (EN), and Link')
+      if (!formData.title_en || !formData.artist_id || !formData.link) {
+        setError('Please fill in all required fields: Title (EN), Artist, and Link')
         return
       }
       
@@ -243,6 +339,7 @@ export default function SelectionPlaylistPage() {
       setFormData({
         title_en: '',
         title_ja: '',
+        artist_id: '',
         artist_en: '',
         artist_ja: '',
         link: '',
@@ -287,13 +384,15 @@ export default function SelectionPlaylistPage() {
   }
 
   function handleEdit(item) {
-    // Use artist name from artists table if available, otherwise fallback to playlist artist_en
+    // Use artist from artists table if available
+    const artistId = item.artist_id || item.artists?.id || ''
     const artistName = item.artists?.name || item.artist_en || ''
     const artistNameJa = item.artists?.name_ja || item.artist_ja || ''
     
     setFormData({
       title_en: item.title_en || '',
       title_ja: item.title_ja || '',
+      artist_id: artistId,
       artist_en: artistName,
       artist_ja: artistNameJa,
       link: item.link || '',
@@ -310,6 +409,7 @@ export default function SelectionPlaylistPage() {
     setFormData({
       title_en: '',
       title_ja: '',
+      artist_id: '',
       artist_en: '',
       artist_ja: '',
       link: '',
@@ -498,24 +598,22 @@ export default function SelectionPlaylistPage() {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label htmlFor="artist_en">Artist (EN) <strong>※</strong></label>
-                  <input
-                    id="artist_en"
-                    type="text"
-                    value={formData.artist_en}
-                    onChange={(e) => setFormData(prev => ({ ...prev, artist_en: e.target.value }))}
+                  <label htmlFor="artist_id">Artist <strong>※</strong></label>
+                  <SearchableSelect
+                    id="artist_id"
+                    value={formData.artist_id}
+                    onChange={handleArtistSelect}
+                    options={artistOptions}
+                    placeholder="Search and select an artist..."
                     required
+                    loading={loadingArtists}
+                    onSearch={handleArtistSearch}
                   />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="artist_ja">Artist (JA)</label>
-                  <input
-                    id="artist_ja"
-                    type="text"
-                    value={formData.artist_ja}
-                    onChange={(e) => setFormData(prev => ({ ...prev, artist_ja: e.target.value }))}
-                  />
+                  {formData.artist_ja && (
+                    <p className={styles.fieldNote}>
+                      Japanese name: {formData.artist_ja}
+                    </p>
+                  )}
                 </div>
 
                 <div className={styles.formGroup}>
