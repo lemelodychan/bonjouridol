@@ -1,6 +1,7 @@
 # Allow all search engines to crawl the site
 User-agent: *
 Disallow: /api/
+Disallow: /admin/
 Disallow: /_next/
 Disallow: /_middleware
 Disallow: /*?*         # Blocks URLs with query strings (optional, adjust as needed)

@@ -5,7 +5,7 @@ import styles from './CoverFinder.module.scss'
 import { FiSearch, FiX, FiDownload, FiImage, FiCheck, FiRefreshCw } from 'react-icons/fi'
 import { IoCloseOutline } from 'react-icons/io5'
 
-export default function CoverFinder({ artistName, songTitle, onCoverSelected, onClose }) {
+export default function CoverFinder({ artistName, songTitle, songTitleJa, onCoverSelected, onClose }) {
   const [activeTab, setActiveTab] = useState('prismic') // 'prismic' or 'itunes'
   const [results, setResults] = useState([])
   const [searching, setSearching] = useState(false)
@@ -21,8 +21,9 @@ export default function CoverFinder({ artistName, songTitle, onCoverSelected, on
   const [prismicAssetsLoaded, setPrismicAssetsLoaded] = useState(false)
 
   async function searchCovers() {
-    if (!artistName && !songTitle) {
-      setItunesError('Please provide artist name or song title')
+    // Check if we have required fields: artist name AND at least one song title
+    if (!artistName || (!songTitle && !songTitleJa)) {
+      setItunesError('Please provide artist name and at least one song title (EN or JA)')
       return
     }
 
@@ -31,7 +32,9 @@ export default function CoverFinder({ artistName, songTitle, onCoverSelected, on
     setResults([])
 
     try {
-      const query = `${artistName} ${songTitle}`.trim()
+      // Prioritize Japanese song title, fall back to English if Japanese is empty
+      const songTitleToUse = (songTitleJa && songTitleJa.trim()) ? songTitleJa.trim() : (songTitle && songTitle.trim() ? songTitle.trim() : '')
+      const query = `${artistName} ${songTitleToUse}`.trim()
       const url = `/api/admin/artists/search-covers?query=${encodeURIComponent(query)}`
       
       const response = await fetch(url)
@@ -113,6 +116,9 @@ export default function CoverFinder({ artistName, songTitle, onCoverSelected, on
       .replace(/\s+/g, '_')
   }
 
+  // Check if iTunes search is enabled (has artist name AND at least one song title)
+  const canSearchItunes = artistName && artistName.trim() && (songTitle?.trim() || songTitleJa?.trim())
+
   // Load Prismic assets or search iTunes when switching tabs
   useEffect(() => {
     if (activeTab === 'prismic') {
@@ -122,17 +128,17 @@ export default function CoverFinder({ artistName, songTitle, onCoverSelected, on
       }
     } else if (activeTab === 'itunes') {
       // Automatically search iTunes when switching to iTunes tab
-      if (artistName || songTitle) {
+      if (canSearchItunes) {
         // Only search if we don't have results yet (first time opening tab)
         if (results.length === 0) {
           searchCovers()
         }
       } else {
-        setItunesError('Please provide artist name or song title')
+        setItunesError('Please provide artist name and at least one song title (EN or JA)')
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab])
+  }, [activeTab, canSearchItunes])
 
   async function loadPrismicAssets(cursor = null) {
     setLoadingAssets(true)
@@ -194,7 +200,9 @@ export default function CoverFinder({ artistName, songTitle, onCoverSelected, on
         <h3 className={styles.title}>
           <span className={styles.titleText}>Find Cover Image</span>
           <div className={styles.searchSubtitle}>
-            Searching for: <span className={styles.searchSubtitleQuery}>{songTitle} by {artistName}</span>
+            Searching for: <span className={styles.searchSubtitleQuery}>
+              {(songTitleJa && songTitleJa.trim()) ? songTitleJa : (songTitle || '')} by {artistName || ''}
+            </span>
           </div>
         </h3>
         <button
@@ -219,8 +227,10 @@ export default function CoverFinder({ artistName, songTitle, onCoverSelected, on
         </button>
         <button
           type="button"
-          className={`${styles.tab} ${activeTab === 'itunes' ? styles.active : ''}`}
-          onClick={() => setActiveTab('itunes')}
+          className={`${styles.tab} ${activeTab === 'itunes' ? styles.active : ''} ${!canSearchItunes ? styles.disabled : ''}`}
+          onClick={() => canSearchItunes && setActiveTab('itunes')}
+          disabled={!canSearchItunes}
+          title={!canSearchItunes ? 'Please provide artist name and at least one song title (EN or JA)' : 'Search iTunes'}
         >
           <FiSearch />
           Search iTunes
@@ -316,9 +326,9 @@ export default function CoverFinder({ artistName, songTitle, onCoverSelected, on
               </div>
               <button
                 onClick={searchCovers}
-                disabled={searching}
+                disabled={searching || !canSearchItunes}
                 className={styles.refreshButton}
-                title="Refresh search"
+                title={!canSearchItunes ? 'Please provide artist name and at least one song title (EN or JA)' : 'Refresh search'}
               >
                 <FiRefreshCw />
                 {searching ? 'Searching...' : 'Refresh'}
@@ -386,15 +396,15 @@ export default function CoverFinder({ artistName, songTitle, onCoverSelected, on
             </div>
           )}
 
-          {results.length === 0 && !searching && !itunesError && artistName && songTitle && (
+          {results.length === 0 && !searching && !itunesError && canSearchItunes && (
             <div className={styles.empty}>
               <p>No results found. Try adjusting the artist or song name.</p>
             </div>
           )}
 
-          {results.length === 0 && !searching && !itunesError && (!artistName || !songTitle) && (
+          {results.length === 0 && !searching && !itunesError && !canSearchItunes && (
             <div className={styles.empty}>
-              <p>Please provide artist name and song title to search</p>
+              <p>Please provide artist name and at least one song title (EN or JA) to search</p>
             </div>
           )}
         </div>

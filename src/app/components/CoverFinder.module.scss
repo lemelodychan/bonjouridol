@@ -96,6 +96,12 @@
       }
     }
 
+    &.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
     svg {
       font-size: 1rem;
     }
@@ -283,6 +289,7 @@
   border: 1px solid var(--light-grey);
   height: auto;
   min-height: 320px;
+  max-height: 320px;
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.2s;

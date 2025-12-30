@@ -18,6 +18,17 @@ export default function AdminLogin() {
   const router = useRouter()
 
   useEffect(() => {
+    // Add robots meta tag to prevent indexing
+    const metaRobots = document.querySelector('meta[name="robots"]')
+    if (metaRobots) {
+      metaRobots.setAttribute('content', 'noindex, nofollow, noarchive, nosnippet, noimageindex')
+    } else {
+      const meta = document.createElement('meta')
+      meta.name = 'robots'
+      meta.content = 'noindex, nofollow, noarchive, nosnippet, noimageindex'
+      document.head.appendChild(meta)
+    }
+
     checkSession()
   }, [])
 

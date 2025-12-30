@@ -7,7 +7,7 @@ import CustomSelect from '@/app/components/CustomSelect'
 import SimpleRichTextEditor from '@/app/components/SimpleRichTextEditor'
 import CoverFinder from '@/app/components/CoverFinder'
 import { IoAddOutline, IoCloseOutline, IoPersonOutline } from 'react-icons/io5'
-import { FiEdit, FiTrash2, FiExternalLink, FiChevronLeft, FiChevronRight, FiImage, FiX, FiUpload, FiSearch, FiCheck } from 'react-icons/fi'
+import { FiEdit, FiTrash2, FiExternalLink, FiChevronLeft, FiChevronRight, FiImage, FiX, FiUpload, FiSearch, FiCheck, FiFilter } from 'react-icons/fi'
 import { FaCheck } from "react-icons/fa6"
 import { format } from 'date-fns'
 
@@ -29,6 +29,9 @@ export default function ArtistProfilesPage() {
   const [isEditingPublished, setIsEditingPublished] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('latest') // 'latest' or 'alphabetical'
+  const [showFilters, setShowFilters] = useState(false)
+  const [activityFilter, setActivityFilter] = useState('any') // 'any', 'active', 'disbanded'
+  const [songsFilter, setSongsFilter] = useState('all') // 'all', 'songs_added', 'missing_songs'
   const [formData, setFormData] = useState({
     name_en: '',
     name_jp: '',
@@ -257,6 +260,14 @@ export default function ArtistProfilesPage() {
     }
   }
 
+  // Calculate active filter count
+  const activeFilterCount = useMemo(() => {
+    let count = 0
+    if (activityFilter !== 'any') count++
+    if (songsFilter !== 'all') count++
+    return count
+  }, [activityFilter, songsFilter])
+
   // Filter and sort artists
   const filteredAndSortedArtists = useMemo(() => {
     let result = [...artists]
@@ -269,6 +280,20 @@ export default function ArtistProfilesPage() {
         artist.name_jp?.toLowerCase().includes(query) ||
         artist.uid?.toLowerCase().includes(query)
       )
+    }
+    
+    // Filter by activity status
+    if (activityFilter === 'active') {
+      result = result.filter(artist => !artist.disband)
+    } else if (activityFilter === 'disbanded') {
+      result = result.filter(artist => artist.disband)
+    }
+    
+    // Filter by songs status
+    if (songsFilter === 'songs_added') {
+      result = result.filter(artist => (artist.song_list?.length || 0) >= 3)
+    } else if (songsFilter === 'missing_songs') {
+      result = result.filter(artist => (artist.song_list?.length || 0) < 3)
     }
     
     // Sort
@@ -288,12 +313,28 @@ export default function ArtistProfilesPage() {
     }
     
     return result
-  }, [artists, searchQuery, sortBy])
+  }, [artists, searchQuery, sortBy, activityFilter, songsFilter])
   
-  // Reset to page 1 when search or sort changes
+  // Reset to page 1 when search, sort, or filters change
   useEffect(() => {
     setCurrentPage(1)
-  }, [searchQuery, sortBy])
+  }, [searchQuery, sortBy, activityFilter, songsFilter])
+  
+  // Close filter dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (showFilters && !event.target.closest(`.${styles.filterDropdown}`) && !event.target.closest(`.${styles.filterButton}`)) {
+        setShowFilters(false)
+      }
+    }
+    
+    if (showFilters) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+      }
+    }
+  }, [showFilters])
   
   // Pagination calculations
   const totalPages = Math.ceil(filteredAndSortedArtists.length / itemsPerPage)
@@ -1079,14 +1120,13 @@ export default function ArtistProfilesPage() {
 
                   {formData.song_list.length === 0 ? (
                     <div className={styles.emptyState}>
-                      <p>No songs added yet. Click "Add Song" to get started.
-                          <Button
-                            onClick={handleAddSong}
-                            variant="Pink"
-                            textValue="Add Song"
-                            icon={<IoAddOutline />}
-                          />
-                      </p>
+                      <p>No songs added yet. Click "Add Song" to get started.</p>
+                      <Button
+                        onClick={handleAddSong}
+                        variant="Pink"
+                        textValue="Add Song"
+                        icon={<IoAddOutline />}
+                      />
                     </div>
                   ) : (
                     <div className={styles.songsList}>
@@ -1350,6 +1390,7 @@ export default function ArtistProfilesPage() {
             <CoverFinder
               artistName={formData.name_en}
               songTitle={formData.song_list[showCoverFinder]?.song_title_en || ''}
+              songTitleJa={formData.song_list[showCoverFinder]?.song_title_ja || ''}
               onCoverSelected={(coverData) => handleCoverSelected(showCoverFinder, coverData)}
               onClose={handleCoverFinderClose}
             />
@@ -1387,18 +1428,105 @@ export default function ArtistProfilesPage() {
                     className={styles.searchInput}
                   />
                 </div>
-                <div className={styles.sortControl}>
-                  <label htmlFor="sort-select" className={styles.sortLabel}>Sort by:</label>
-                  <CustomSelect
-                    id="sort-select"
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    options={[
-                      { value: 'latest', label: 'Latest Updated' },
-                      { value: 'alphabetical', label: 'Alphabetical' }
-                    ]}
-                    className={styles.sortSelect}
-                  />
+                <div className={styles.controlsRight}>
+                  <div className={styles.filterContainer}>
+                    <button
+                      type="button"
+                      onClick={() => setShowFilters(!showFilters)}
+                      className={`${styles.filterButton} ${showFilters ? styles.active : ''} ${activeFilterCount > 0 ? styles.hasFilters : ''}`}
+                      title="Filter artists"
+                    >
+                      <FiFilter />
+                      Filters{activeFilterCount > 0 && ` (${activeFilterCount})`}
+                    </button>
+                    {showFilters && (
+                      <div className={styles.filterDropdown}>
+                        <div className={styles.filterGroup}>
+                          <label className={styles.filterGroupLabel}>Artist Activity</label>
+                          <div className={styles.radioGroup}>
+                            <label className={styles.radioLabel}>
+                              <input
+                                type="radio"
+                                name="activity"
+                                value="any"
+                                checked={activityFilter === 'any'}
+                                onChange={(e) => setActivityFilter(e.target.value)}
+                              />
+                              <span>Any</span>
+                            </label>
+                            <label className={styles.radioLabel}>
+                              <input
+                                type="radio"
+                                name="activity"
+                                value="active"
+                                checked={activityFilter === 'active'}
+                                onChange={(e) => setActivityFilter(e.target.value)}
+                              />
+                              <span>In activity</span>
+                            </label>
+                            <label className={styles.radioLabel}>
+                              <input
+                                type="radio"
+                                name="activity"
+                                value="disbanded"
+                                checked={activityFilter === 'disbanded'}
+                                onChange={(e) => setActivityFilter(e.target.value)}
+                              />
+                              <span>Disbanded</span>
+                            </label>
+                          </div>
+                        </div>
+                        <div className={styles.filterGroup}>
+                          <label className={styles.filterGroupLabel}>Recommended songs</label>
+                          <div className={styles.radioGroup}>
+                            <label className={styles.radioLabel}>
+                              <input
+                                type="radio"
+                                name="songs"
+                                value="all"
+                                checked={songsFilter === 'all'}
+                                onChange={(e) => setSongsFilter(e.target.value)}
+                              />
+                              <span>All</span>
+                            </label>
+                            <label className={styles.radioLabel}>
+                              <input
+                                type="radio"
+                                name="songs"
+                                value="songs_added"
+                                checked={songsFilter === 'songs_added'}
+                                onChange={(e) => setSongsFilter(e.target.value)}
+                              />
+                              <span>Songs added only</span>
+                            </label>
+                            <label className={styles.radioLabel}>
+                              <input
+                                type="radio"
+                                name="songs"
+                                value="missing_songs"
+                                checked={songsFilter === 'missing_songs'}
+                                onChange={(e) => setSongsFilter(e.target.value)}
+                              />
+                              <span>Missing songs only</span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.sortControl}>
+                    <label htmlFor="sort-select" className={styles.sortLabel}>Sort by:</label>
+                    <CustomSelect
+                      id="sort-select"
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      options={[
+                        { value: 'latest', label: 'Latest Updated' },
+                        { value: 'alphabetical', label: 'Alphabetical' }
+                      ]}
+                      className={styles.sortSelect}
+                    />
+                  </div>
                 </div>
               </div>
               
@@ -1445,18 +1573,32 @@ export default function ArtistProfilesPage() {
                             </button>
                           </div>
                           <div className={styles.artistMeta}>
-                            {artist.debut && (
-                              <span className={styles.metaItem}>Debut: {artist.debut}</span>
+                            {artist.disband ? (
+                              <span className={styles.statusTag} data-status="disbanded">Disbanded</span>
+                            ) : (
+                              <span className={styles.statusTag} data-status="active">In activity</span>
                             )}
-                            {artist.disband && (
-                              <span className={styles.metaItem}>Disband: {artist.disband}</span>
-                            )}
-                            {artist.song_list?.length > 0 && (
-                              <span className={styles.metaItem}>{artist.song_list.length} songs</span>
+                            {artist.song_list?.length >= 3 ? (
+                              <span className={`${styles.songCount} ${styles.songCountComplete}`}>
+                                <FiCheck /> Songs added
+                              </span>
+                            ) : (
+                              <span className={`${styles.songCount} ${artist.disband ? styles.songCountMissingGrey : styles.songCountMissing}`}>
+                                Missing songs
+                              </span>
                             )}
                           </div>
-                          <div className={styles.artistUID}>
-                            UID: <code>{artist.uid}</code>
+                          <div className={styles.docMeta}>
+                            <div className={styles.artistUID}>
+                              UID: <code>{artist.uid}</code>
+                            </div>
+                            <div className={styles.lastUpdated}>
+                              {artist.last_publication_date && (
+                                <span className={styles.lastUpdatedText}>
+                                  Last updated: {format(new Date(artist.last_publication_date), 'MMM d, yyyy')}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>

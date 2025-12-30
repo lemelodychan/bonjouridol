@@ -19,6 +19,17 @@ export default function AdminLayout({ children }) {
   const pathname = usePathname()
 
   useEffect(() => {
+    // Add robots meta tag to prevent indexing
+    const metaRobots = document.querySelector('meta[name="robots"]')
+    if (metaRobots) {
+      metaRobots.setAttribute('content', 'noindex, nofollow, noarchive, nosnippet, noimageindex')
+    } else {
+      const meta = document.createElement('meta')
+      meta.name = 'robots'
+      meta.content = 'noindex, nofollow, noarchive, nosnippet, noimageindex'
+      document.head.appendChild(meta)
+    }
+
     // Don't check auth on login page or setup-password page
     if (pathname === '/admin' || pathname === '/admin/setup-password') {
       setLoading(false)
