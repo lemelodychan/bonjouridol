@@ -128,6 +128,14 @@ export default function AdminLayout({ children }) {
           </li>
           <li>
             <Link 
+              href="/admin/artist-profiles" 
+              className={pathname === '/admin/artist-profiles' ? styles.active : ''}
+            >
+              Artist Profiles
+            </Link>
+          </li>
+          <li>
+            <Link 
               href="/admin/selection-playlist" 
               className={pathname === '/admin/selection-playlist' ? styles.active : ''}
             >

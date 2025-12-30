@@ -38,7 +38,15 @@ export async function GET(request) {
 
     const { data: playlist, error } = await supabase
       .from('selection_playlist')
-      .select('*')
+      .select(`
+        *,
+        artists (
+          id,
+          name,
+          name_ja,
+          prismic_uid
+        )
+      `)
       .order('display_order', { ascending: true })
       .order('created_at', { ascending: false })
 
@@ -104,6 +112,44 @@ export async function POST(request) {
       )
     }
 
+    // Get or create artist in artists table
+    let artistId = null
+    const { data: existingArtist, error: artistFetchError } = await supabase
+      .from('artists')
+      .select('id, name_ja')
+      .eq('name', artist_en)
+      .maybeSingle()
+
+    if (artistFetchError) {
+      console.error('Error fetching artist:', artistFetchError)
+    } else if (existingArtist) {
+      artistId = existingArtist.id
+      // Update Japanese name if provided and not already set
+      if (artist_ja && (!existingArtist.name_ja || existingArtist.name_ja === '')) {
+        await supabase
+          .from('artists')
+          .update({ name_ja: artist_ja })
+          .eq('id', artistId)
+      }
+    } else {
+      // Create new artist
+      const { data: newArtist, error: artistCreateError } = await supabase
+        .from('artists')
+        .insert({
+          name: artist_en,
+          name_ja: artist_ja || null,
+          likes: 0
+        })
+        .select('id')
+        .single()
+
+      if (artistCreateError) {
+        console.error('Error creating artist:', artistCreateError)
+      } else {
+        artistId = newArtist.id
+      }
+    }
+
     const { data: newItem, error } = await supabase
       .from('selection_playlist')
       .insert({
@@ -111,6 +157,7 @@ export async function POST(request) {
         title_ja: title_ja || null,
         artist_en,
         artist_ja: artist_ja || null,
+        artist_id: artistId, // Link to artists table
         link,
         purchase_link: purchase_link || null,
         cover_url: cover_url || null,

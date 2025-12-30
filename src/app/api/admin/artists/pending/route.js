@@ -28,14 +28,13 @@ function getSupabaseClient() {
 /**
  * Try to fetch pending migrations from Prismic by querying for documents
  * with the 'pending-migration' tag that haven't been published yet
- * Note: Migration API documents might not be queryable until published
  */
 async function fetchPendingMigrationsFromPrismic() {
   try {
     const client = createClient()
     
     try {
-      const drafts = await client.getAllByType('gallery', {
+      const drafts = await client.getAllByType('artist', {
         filters: [
           prismic.filter.at('document.tags', ['pending-migration'])
         ],
@@ -44,9 +43,9 @@ async function fetchPendingMigrationsFromPrismic() {
       
       return drafts.map(doc => ({
         id: doc.id,
-        title: doc.data.title || 'Untitled',
+        name_en: doc.data.name_en || 'Untitled',
         uid: doc.uid || '',
-        releaseTitle: `New Galleries - ${new Date(doc.first_publication_date || Date.now()).toISOString().split('T')[0]} - ${doc.data.title || 'Untitled'}`,
+        releaseTitle: `New Artists - ${new Date(doc.first_publication_date || Date.now()).toISOString().split('T')[0]} - ${doc.data.name_en || 'Untitled'}`,
         createdAt: doc.first_publication_date || new Date().toISOString(),
         documentId: doc.id,
         repositoryName: process.env.REPO_NAME || 'bonjouridol',
@@ -67,7 +66,7 @@ export async function GET(request) {
     let supabaseMigrations = []
     if (supabase) {
       const { data, error } = await supabase
-        .from('pending_gallery_migrations')
+        .from('pending_artist_migrations')
         .select('*')
         .in('status', ['pending']) // Only get pending, exclude published and cancelled
         .order('created_at', { ascending: false })
@@ -75,20 +74,20 @@ export async function GET(request) {
       if (!error && data) {
         supabaseMigrations = data.map(row => ({
           id: row.id,
-          title: row.title,
+          name_en: row.name_en,
           uid: row.uid,
           releaseTitle: row.release_title,
           createdAt: row.created_at,
           documentId: row.document_id,
           repositoryName: row.repository_name,
-          galleryData: row.gallery_data, // Full gallery data for editing
+          artistData: row.artist_data, // Full artist data for editing
           status: row.status,
           updatedAt: row.updated_at,
         }))
       }
     }
     
-    // Try to fetch from Prismic (secondary source - may not work for unreleased docs)
+    // Try to fetch from Prismic (secondary source)
     const prismicMigrations = await fetchPendingMigrationsFromPrismic()
     
     // Merge: Supabase is the source of truth, but add Prismic docs that aren't in Supabase
@@ -132,25 +131,23 @@ export async function POST(request) {
       )
     }
     
-    // Insert or update in Supabase
-    // Build the data object, excluding 'id' if it's not a valid UUID
+    // Build the data object
     const upsertData = {
       uid: migrationData.uid,
-      title: migrationData.title,
+      name_en: migrationData.name_en,
       release_title: migrationData.releaseTitle,
       document_id: migrationData.documentId,
       repository_name: migrationData.repositoryName || 'bonjouridol',
-      gallery_data: migrationData.galleryData || null,
+      artist_data: migrationData.artistData || null,
       status: 'pending',
     }
     
-    // Only include created_at if it's a new record (not updating)
     if (migrationData.createdAt) {
       upsertData.created_at = migrationData.createdAt
     }
     
     const { data, error } = await supabase
-      .from('pending_gallery_migrations')
+      .from('pending_artist_migrations')
       .upsert(upsertData, {
         onConflict: 'uid', // Update if uid already exists
       })
@@ -167,13 +164,13 @@ export async function POST(request) {
     
     const pendingMigration = {
       id: data.id,
-      title: data.title,
+      name_en: data.name_en,
       uid: data.uid,
       releaseTitle: data.release_title,
       createdAt: data.created_at,
       documentId: data.document_id,
       repositoryName: data.repository_name,
-      galleryData: data.gallery_data,
+      artistData: data.artist_data,
       status: data.status,
     }
     
@@ -194,7 +191,7 @@ export async function PUT(request) {
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
-    const uid = searchParams.get('uid') // Alternative: update by uid
+    const uid = searchParams.get('uid')
     
     if (!id && !uid) {
       return NextResponse.json(
@@ -215,15 +212,15 @@ export async function PUT(request) {
     
     // Build update object
     const updateData = {}
-    if (migrationData.title) updateData.title = migrationData.title
+    if (migrationData.name_en) updateData.name_en = migrationData.name_en
     if (migrationData.releaseTitle) updateData.release_title = migrationData.releaseTitle
     if (migrationData.documentId) updateData.document_id = migrationData.documentId
-    if (migrationData.galleryData) updateData.gallery_data = migrationData.galleryData
+    if (migrationData.artistData) updateData.artist_data = migrationData.artistData
     if (migrationData.status) updateData.status = migrationData.status
     
     // Update by id or uid
     const query = supabase
-      .from('pending_gallery_migrations')
+      .from('pending_artist_migrations')
       .update(updateData)
     
     if (id) {
@@ -253,13 +250,13 @@ export async function PUT(request) {
       success: true,
       migration: {
         id: data.id,
-        title: data.title,
+        name_en: data.name_en,
         uid: data.uid,
         releaseTitle: data.release_title,
         createdAt: data.created_at,
         documentId: data.document_id,
         repositoryName: data.repository_name,
-        galleryData: data.gallery_data,
+        artistData: data.artist_data,
         status: data.status,
       },
     })
@@ -295,7 +292,7 @@ export async function DELETE(request) {
     
     // Update status to 'published' instead of deleting
     const query = supabase
-      .from('pending_gallery_migrations')
+      .from('pending_artist_migrations')
       .update({ status: 'published' })
     
     if (id) {
@@ -327,3 +324,4 @@ export async function DELETE(request) {
     )
   }
 }
+

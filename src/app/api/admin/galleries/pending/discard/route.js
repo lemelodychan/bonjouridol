@@ -113,10 +113,10 @@ export async function POST(request) {
       }
     }
     
-    // Update Supabase status to "Archived"
+    // Update Supabase status to "cancelled"
     const query = supabase
       .from('pending_gallery_migrations')
-      .update({ status: 'Archived' })
+      .update({ status: 'cancelled' })
     
     if (id) {
       query.eq('id', id)

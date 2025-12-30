@@ -287,11 +287,15 @@ export default function SelectionPlaylistPage() {
   }
 
   function handleEdit(item) {
+    // Use artist name from artists table if available, otherwise fallback to playlist artist_en
+    const artistName = item.artists?.name || item.artist_en || ''
+    const artistNameJa = item.artists?.name_ja || item.artist_ja || ''
+    
     setFormData({
       title_en: item.title_en || '',
       title_ja: item.title_ja || '',
-      artist_en: item.artist_en || '',
-      artist_ja: item.artist_ja || '',
+      artist_en: artistName,
+      artist_ja: artistNameJa,
       link: item.link || '',
       purchase_link: item.purchase_link || '',
       cover_url: item.cover_url || '',
@@ -879,13 +883,19 @@ export default function SelectionPlaylistPage() {
                     )}
                   </h3>
                   <p className={styles.itemArtist}>
-                    {item.artist_ja ? (
-                      <>
-                        {item.artist_en} <span className={styles.japanese}>({item.artist_ja})</span>
-                      </>
-                    ) : (
-                      item.artist_en
-                    )}
+                    {(() => {
+                      // Use artist name from artists table if available, otherwise fallback to playlist artist_en
+                      const artistName = item.artists?.name || item.artist_en
+                      const artistNameJa = item.artists?.name_ja || item.artist_ja
+                      
+                      return artistNameJa ? (
+                        <>
+                          {artistName} <span className={styles.japanese}>({artistNameJa})</span>
+                        </>
+                      ) : (
+                        artistName
+                      )
+                    })()}
                   </p>
                   <div className={styles.itemLinks}>
                     <div className={styles.itemLinkContainer}>

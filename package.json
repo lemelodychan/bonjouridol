@@ -14,7 +14,12 @@
     "backup:test": "node scripts/test-backup.js",
     "backup:verify": "node scripts/verify-backup.js",
     "backup:debug": "node scripts/debug-prismic.js",
-    "backup:setup": "echo 'Creating .env file...' && cp env.example .env && echo '✅ .env file created! Please edit it with your actual values.'"
+    "backup:setup": "echo 'Creating .env file...' && cp env.example .env && echo '✅ .env file created! Please edit it with your actual values.'",
+    "backfill:artists": "node scripts/backfill-artist-prismic.js",
+    "backfill:article-artists": "node scripts/backfill-article-artists.js",
+    "backfill:playlist-artists": "node scripts/backfill-playlist-artists.js",
+    "backfill:all": "npm run backfill:artists && npm run backfill:article-artists && npm run backfill:playlist-artists",
+    "fix:artists": "node scripts/fix-artist-prismic-uids.js"
   },
   "dependencies": {
     "@next/third-parties": "^15.1.4",

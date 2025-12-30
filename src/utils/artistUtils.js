@@ -51,9 +51,10 @@ export function extractArtistsFromPrismicArticle(prismicArticle) {
  * Auto-create artist record if the article has a single artist
  * @param {Object} supabase - Supabase client instance
  * @param {any} artists - Artist data from article (string, array, or object)
+ * @param {Object} prismicArticle - Optional Prismic article to extract additional artist info
  * @returns {Promise<void>}
  */
-export async function autoCreateArtistRecord(supabase, artists) {
+export async function autoCreateArtistRecord(supabase, artists, prismicArticle = null) {
   if (!artists) return
 
   let artistName = null
@@ -73,10 +74,40 @@ export async function autoCreateArtistRecord(supabase, artists) {
   
   // Create artist record if we have a single artist name
   if (artistName) {
+    // Try to find the artist in Prismic to get Japanese name and UID
+    let nameJa = null
+    let prismicUid = null
+    
+    // Try to find the artist in Prismic to get Japanese name and UID
+    // We search even without prismicArticle to ensure we get the best data
+    try {
+      const prismicClient = createClient()
+      // Get all artists and filter by name in JavaScript (more reliable than Prismic filters)
+      const allArtists = await prismicClient.getAllByType('artist', {
+        limit: 100 // Reasonable limit for artist lookup
+      })
+      
+      // Find matching artist by English name (case-insensitive)
+      const matchingArtist = allArtists.find(artist => 
+        artist.data.name_en && 
+        artist.data.name_en.toLowerCase().trim() === artistName.toLowerCase().trim()
+      )
+      
+      if (matchingArtist) {
+        prismicUid = matchingArtist.uid
+        nameJa = matchingArtist.data.name_jp || null
+      }
+    } catch (error) {
+      // If we can't find the artist in Prismic, that's okay - continue with null values
+      console.log(`Could not find artist "${artistName}" in Prismic:`, error.message)
+    }
+    
     const { error: artistInsertError } = await supabase
       .from('artists')
       .insert({
         name: artistName,
+        name_ja: nameJa,
+        prismic_uid: prismicUid,
         likes: 0
       })
       .onConflict('name')

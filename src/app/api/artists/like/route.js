@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { createClient } from '@/prismicio'
 import { invalidateArtistCache } from '../cache-utils'
 
 // Check if Supabase is configured
@@ -281,10 +282,38 @@ export async function GET(request) {
     if (!artist) {
       console.log('Artist not found, creating new record')
       
+      // Try to find the artist in Prismic to get Japanese name and UID
+      let nameJa = null
+      let prismicUid = null
+      
+      try {
+        const prismicClient = createClient()
+        // Get all artists and filter by name in JavaScript (more reliable than Prismic filters)
+        const allArtists = await prismicClient.getAllByType('artist', {
+          limit: 100 // Reasonable limit for artist lookup
+        })
+        
+        // Find matching artist by English name (case-insensitive)
+        const matchingArtist = allArtists.find(artist => 
+          artist.data.name_en && 
+          artist.data.name_en.toLowerCase().trim() === artistName.toLowerCase().trim()
+        )
+        
+        if (matchingArtist) {
+          prismicUid = matchingArtist.uid
+          nameJa = matchingArtist.data.name_jp || null
+        }
+      } catch (error) {
+        // If we can't find the artist in Prismic, that's okay - continue with null values
+        console.log(`Could not find artist "${artistName}" in Prismic:`, error.message)
+      }
+      
       const { error: insertError } = await supabase
         .from('artists')
         .insert({
           name: artistName,
+          name_ja: nameJa,
+          prismic_uid: prismicUid,
           likes: 0
         })
 

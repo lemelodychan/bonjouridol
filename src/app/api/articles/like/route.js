@@ -71,6 +71,67 @@ export async function POST(request) {
         console.log(`Article ${slug} not found in Prismic, creating with default values`)
       }
 
+      // Get or create artist and link to articles table
+      // ONLY for single artists (for likes tracking)
+      // Multiple artists will use JSONB field only
+      let artistId = null
+      if (artists) {
+        // Check if this is a single artist
+        let isSingleArtist = false
+        let artistName = null
+        
+        if (typeof artists === 'string') {
+          // Single artist as string
+          isSingleArtist = true
+          artistName = artists
+        } else if (Array.isArray(artists)) {
+          // Single artist if array has exactly 1 element
+          if (artists.length === 1) {
+            isSingleArtist = true
+            artistName = artists[0]
+          }
+        } else if (typeof artists === 'object' && artists.name) {
+          // Single artist if object has name and no comma/ampersand
+          if (!artists.name.includes(',') && !artists.name.includes('&') && !artists.name.includes(' and ')) {
+            isSingleArtist = true
+            artistName = artists.name
+          }
+        }
+
+        // Only link to artists table if it's a single artist
+        if (isSingleArtist && artistName) {
+          // Find or create artist
+          const { data: existingArtist } = await supabase
+            .from('artists')
+            .select('id')
+            .eq('name', artistName)
+            .maybeSingle()
+
+          if (existingArtist) {
+            artistId = existingArtist.id
+          } else {
+            // Auto-create will handle creation, but we need to get the ID
+            const prismicClient = createClient()
+            let prismicArticleForArtist = null
+            try {
+              prismicArticleForArtist = await prismicClient.getByUID('articles', slug)
+            } catch (error) {
+              // Article not found, that's okay
+            }
+            await autoCreateArtistRecord(supabase, artists, prismicArticleForArtist)
+            // Fetch the created artist
+            const { data: createdArtist } = await supabase
+              .from('artists')
+              .select('id')
+              .eq('name', artistName)
+              .maybeSingle()
+            if (createdArtist) {
+              artistId = createdArtist.id
+            }
+          }
+        }
+      }
+
       // Create new article record
       const { error: insertError } = await supabase
         .from('articles')
@@ -79,7 +140,8 @@ export async function POST(request) {
           type: articleType,
           likes: 0,
           views: 0,
-          artist: artists
+          artist: artists,
+          artist_id: artistId // Link to artists table (only for single artists)
         })
 
       if (insertError) {
@@ -88,9 +150,6 @@ export async function POST(request) {
           { status: 500 }
         )
       }
-
-      // Auto-create artist record if this is a single artist article
-      await autoCreateArtistRecord(supabase, artists)
     }
 
     // Check if user has already liked this article

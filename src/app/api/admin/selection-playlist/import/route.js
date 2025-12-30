@@ -4,13 +4,21 @@ import { createClient as createPrismicClient } from '@/prismicio'
 
 // Normalize function to handle whitespace, special characters, and case
 // This ensures consistent duplicate detection
+// Also normalizes ALL star/symbol variations for consistent matching
 const normalizeString = (str) => {
   if (!str) return ''
   return str
     .trim() // Remove leading/trailing whitespace
     .toLowerCase() // Case insensitive
     .replace(/\s+/g, ' ') // Normalize multiple spaces to single space
+    .replace(/[\u200B-\u200D\uFEFF]/g, '') // Remove zero-width characters
     .normalize('NFKC') // Normalize Unicode (handles full-width/half-width, etc.)
+    // Normalize ALL star/symbol variations to empty string for matching
+    // This includes: ⭐, ⭐︎, ☆, ★, ✦, ✧, ✩, ✪, ✫, ✬, ✭, ✮, ✯, ✰, and more
+    .replace(/[\u2605\u2606\u2729\u272A\u272B\u272C\u272D\u272E\u272F\u2730\u2731\u2732\u2733\u2734\u2735\u2736\u2737\u2738\u2739\u273A\u273B\u273C\u273D\u273E\u273F\u2740\u2741\u2742\u2743\u2744\u2745\u2746\u2747\u2748\u2749\u274A\u274B\u274C\u274D\u274E\u274F\u2750\u2751\u2752\u2753\u2754\u2755\u2756\u2757\u2758\u2759\u275A\u275B\u275C\u275D\u275E\u275F]/g, '')
+    // Also catch any remaining star-like characters
+    .replace(/[⭐︎⭐☆★✦✧✩✪✫✬✭✮✯✰]/g, '')
+    .trim()
 }
 
 // Calculate Levenshtein distance between two strings (for fuzzy matching)
@@ -270,25 +278,141 @@ export async function POST(request) {
       )
     )
 
+    // Get or create artists for the songs
+    const artistMap = new Map() // Map artist_en to artist_id
+    
+    // Get unique artist names from songs to import (with their Prismic UIDs)
+    const uniqueArtistsMap = new Map()
+    for (const song of songs) {
+      if (song.artist_en && !uniqueArtistsMap.has(song.artist_en)) {
+        uniqueArtistsMap.set(song.artist_en, {
+          name: song.artist_en,
+          name_ja: song.artist_ja,
+          prismic_uid: song.artist_uid // Prismic Artist document UID
+        })
+      }
+    }
+    const uniqueArtists = Array.from(uniqueArtistsMap.keys())
+    
+    // Fetch existing artists
+    const { data: existingArtists, error: artistsError } = await supabase
+      .from('artists')
+      .select('id, name, name_ja, prismic_uid')
+      .in('name', uniqueArtists)
+    
+    if (artistsError) {
+      console.error('Error fetching artists:', artistsError)
+      return NextResponse.json(
+        { error: 'Failed to fetch artists' },
+        { status: 500 }
+      )
+    }
+    
+    // Map existing artists
+    for (const artist of existingArtists || []) {
+      artistMap.set(artist.name, {
+        id: artist.id,
+        name_ja: artist.name_ja,
+        prismic_uid: artist.prismic_uid
+      })
+    }
+    
+    // Create missing artists and update Japanese names/Prismic UIDs
+    const artistsToCreate = []
+    const artistsToUpdate = []
+    
+    for (const artistName of uniqueArtists) {
+      const artistInfo = uniqueArtistsMap.get(artistName)
+      
+      if (!artistMap.has(artistName)) {
+        // Create new artist
+        artistsToCreate.push({
+          name: artistName,
+          name_ja: artistInfo.name_ja || null,
+          prismic_uid: artistInfo.prismic_uid || null,
+          likes: 0
+        })
+      } else {
+        // Update existing artist if needed
+        const existingArtist = artistMap.get(artistName)
+        const updates = {}
+        
+        // Update Japanese name if we have a better one from Prismic
+        if (artistInfo.name_ja && (!existingArtist.name_ja || existingArtist.name_ja === '')) {
+          updates.name_ja = artistInfo.name_ja
+        }
+        
+        // Update Prismic UID if not set or if we have a new one
+        if (artistInfo.prismic_uid && (!existingArtist.prismic_uid || existingArtist.prismic_uid === '')) {
+          updates.prismic_uid = artistInfo.prismic_uid
+        }
+        
+        if (Object.keys(updates).length > 0) {
+          artistsToUpdate.push({
+            id: existingArtist.id,
+            ...updates
+          })
+        }
+      }
+    }
+    
+    // Create new artists
+    if (artistsToCreate.length > 0) {
+      const { data: newArtists, error: createError } = await supabase
+        .from('artists')
+        .insert(artistsToCreate)
+        .select('id, name, name_ja, prismic_uid')
+      
+      if (createError) {
+        console.error('Error creating artists:', createError)
+        return NextResponse.json(
+          { error: 'Failed to create artists' },
+          { status: 500 }
+        )
+      }
+      
+      // Add new artists to map
+      for (const artist of newArtists || []) {
+        artistMap.set(artist.name, {
+          id: artist.id,
+          name_ja: artist.name_ja,
+          prismic_uid: artist.prismic_uid
+        })
+      }
+    }
+    
+    // Update existing artists with Japanese names and Prismic UIDs
+    for (const update of artistsToUpdate) {
+      const { id, ...updateData } = update
+      await supabase
+        .from('artists')
+        .update(updateData)
+        .eq('id', id)
+    }
+
     // Filter out duplicates before insertion
     const songsToInsert = songs
       .filter(song => {
         const songKey = `${normalizeString(song.title_en)}|${normalizeString(song.artist_en)}`
         return !existingSongsSet.has(songKey)
       })
-      .map(song => ({
-        title_en: song.title_en,
-        title_ja: song.title_ja || null,
-        artist_en: song.artist_en,
-        artist_ja: song.artist_ja || null,
-        link: song.link,
-        cover_url: song.cover_url || null,
-        purchase_link: null, // Not available from Prismic
-        release_date: null, // Not available from Prismic
-        source: 'prismic',
-        display_order: 0,
-        author_id: null,
-      }))
+      .map(song => {
+        const artistInfo = artistMap.get(song.artist_en)
+        return {
+          title_en: song.title_en,
+          title_ja: song.title_ja || null,
+          artist_en: song.artist_en,
+          artist_ja: song.artist_ja || null,
+          artist_id: artistInfo?.id || null, // Link to artists table
+          link: song.link,
+          cover_url: song.cover_url || null,
+          purchase_link: null, // Not available from Prismic
+          release_date: null, // Not available from Prismic
+          source: 'prismic',
+          display_order: 0,
+          author_id: null,
+        }
+      })
 
     if (songsToInsert.length === 0) {
       return NextResponse.json({

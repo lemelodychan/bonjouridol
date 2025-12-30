@@ -35,10 +35,30 @@ export async function GET(request) {
       )
     }
 
-    // Get all playlist items - explicitly select all fields including purchase_link
+    // Get all playlist items - explicitly select all fields including purchase_link and join with artists
     const { data: playlist, error } = await supabase
       .from('selection_playlist')
-      .select('id, title_en, title_ja, artist_en, artist_ja, link, purchase_link, cover_url, release_date, created_at, updated_at, display_order, author_id')
+      .select(`
+        id, 
+        title_en, 
+        title_ja, 
+        artist_en, 
+        artist_ja, 
+        link, 
+        purchase_link, 
+        cover_url, 
+        release_date, 
+        created_at, 
+        updated_at, 
+        display_order, 
+        author_id,
+        artists (
+          id,
+          name,
+          name_ja,
+          prismic_uid
+        )
+      `)
       .order('display_order', { ascending: true })
       .order('created_at', { ascending: false })
 

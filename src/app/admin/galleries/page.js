@@ -191,40 +191,46 @@ export default function GalleriesPage() {
       setLoadingPending(true)
       
       // First, try to load from localStorage (persists across refreshes)
-      try {
-        const cached = localStorage.getItem(PENDING_MIGRATIONS_KEY)
-        if (cached) {
-          const cachedMigrations = JSON.parse(cached)
-          // Filter out archived galleries from localStorage
-          const activeMigrations = cachedMigrations.filter(m => m.status !== 'Archived')
-          setPendingMigrations(activeMigrations)
-        }
-      } catch (error) {
-        console.error('Error loading from localStorage:', error)
-      }
-      
-      // Then sync with server (which may have more recent data)
-      const response = await fetch('/api/admin/galleries/pending')
-      if (response.ok) {
-        const data = await response.json()
-        const serverMigrations = data.pending || []
-        
-        // Merge: server data takes precedence, but keep localStorage data that server doesn't have
-        const cachedMigrations = JSON.parse(localStorage.getItem(PENDING_MIGRATIONS_KEY) || '[]')
-        // Filter out archived galleries from cached data
-        const activeCachedMigrations = cachedMigrations.filter(m => m.status !== 'Archived')
-        const merged = [...serverMigrations]
-        
-        // Add any cached migrations that aren't in server (in case server was restarted)
-        activeCachedMigrations.forEach(cached => {
-          if (!serverMigrations.find(m => m.id === cached.id || m.uid === cached.uid)) {
-            merged.push(cached)
+        try {
+          const cached = localStorage.getItem(PENDING_MIGRATIONS_KEY)
+          if (cached) {
+            const cachedMigrations = JSON.parse(cached)
+            // Filter out archived, published, and cancelled galleries from localStorage
+            const activeMigrations = cachedMigrations.filter(m => 
+              m.status !== 'Archived' && m.status !== 'published' && m.status !== 'cancelled'
+            )
+            setPendingMigrations(activeMigrations)
           }
-        })
+        } catch (error) {
+          console.error('Error loading from localStorage:', error)
+        }
         
-        // Final filter to ensure no archived items slip through
-        const finalMigrations = merged.filter(m => m.status !== 'Archived')
-        setPendingMigrations(finalMigrations)
+        // Then sync with server (which may have more recent data)
+        const response = await fetch('/api/admin/galleries/pending')
+        if (response.ok) {
+          const data = await response.json()
+          const serverMigrations = data.pending || []
+          
+          // Merge: server data takes precedence, but keep localStorage data that server doesn't have
+          const cachedMigrations = JSON.parse(localStorage.getItem(PENDING_MIGRATIONS_KEY) || '[]')
+          // Filter out archived, published, and cancelled galleries from cached data
+          const activeCachedMigrations = cachedMigrations.filter(m => 
+            m.status !== 'Archived' && m.status !== 'published' && m.status !== 'cancelled'
+          )
+          const merged = [...serverMigrations]
+          
+          // Add any cached migrations that aren't in server (in case server was restarted)
+          activeCachedMigrations.forEach(cached => {
+            if (!serverMigrations.find(m => m.id === cached.id || m.uid === cached.uid)) {
+              merged.push(cached)
+            }
+          })
+          
+          // Final filter to ensure no archived/published/cancelled items slip through
+          const finalMigrations = merged.filter(m => 
+            m.status !== 'Archived' && m.status !== 'published' && m.status !== 'cancelled'
+          )
+          setPendingMigrations(finalMigrations)
         
         // Update localStorage with merged data (excluding archived)
         try {
@@ -259,21 +265,30 @@ export default function GalleriesPage() {
 
   async function removePendingMigration(id) {
     try {
-      // Clear localStorage to avoid duplicates
+      // Update status to 'published' instead of deleting
+      const response = await fetch(`/api/admin/galleries/pending?id=${id}`, {
+        method: 'DELETE',
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to mark as published')
+      }
+      
+      // Clear cache and reload
       clearGalleriesCache()
       
-      // Update local state immediately
+      // Update local state - filter out the published migration
       const updatedMigrations = pendingMigrations.filter(m => m.id !== id)
       setPendingMigrations(updatedMigrations)
       savePendingMigrationsToLocalStorage(updatedMigrations)
       
-      // Also sync with server
-      const response = await fetch(`/api/admin/galleries/pending?id=${id}`, {
-        method: 'DELETE',
-      })
-      // Don't wait for server response - already updated locally
+      // Reload to get fresh data
+      await loadPendingMigrations()
+      await loadGalleries(true)
     } catch (error) {
-      console.error('Error removing pending migration:', error)
+      console.error('Error marking migration as published:', error)
+      setError(error.message || 'Failed to mark as published')
     }
   }
 
@@ -300,13 +315,16 @@ export default function GalleriesPage() {
         throw new Error(errorData.message || 'Failed to discard gallery')
       }
       
-      // Clear localStorage to avoid duplicates
+      // Clear cache
       clearGalleriesCache()
       
-      // Remove from local state
+      // Update local state - filter out the cancelled migration
       const updatedMigrations = pendingMigrations.filter(m => m.id !== migration.id)
       setPendingMigrations(updatedMigrations)
       savePendingMigrationsToLocalStorage(updatedMigrations)
+      
+      // Reload to get fresh data
+      await loadPendingMigrations()
       
       alert('Gallery discarded successfully. It has been archived and removed from the pending list.')
     } catch (error) {
