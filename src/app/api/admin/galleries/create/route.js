@@ -41,6 +41,20 @@ export async function POST(request) {
     // Note: title, type, and lang must be at root level (not just in data) and must be non-empty strings
     // Also note: link and image fields cannot be null - they must be omitted if not provided
     
+    // Sort images alphabetically by media title (filename) before adding to slice
+    // Prismic media title is the filename (e.g., "251229-UUG2_-165" or "251229-UUG2_-165.jpg")
+    const sortedImages = (galleryData.images || []).sort((a, b) => {
+      // Use filename (media title) as primary sort key, fallback to id if filename is missing
+      const filenameA = (a.filename || a.id || '').toLowerCase().trim()
+      const filenameB = (b.filename || b.id || '').toLowerCase().trim()
+      
+      // Use localeCompare for proper alphabetical sorting (handles numbers, special chars)
+      return filenameA.localeCompare(filenameB, undefined, { 
+        numeric: true,  // Enable numeric sorting (e.g., "2" comes before "10")
+        sensitivity: 'base' // Case-insensitive, ignore accents
+      })
+    })
+    
     // Build data object, only including fields that have values
     const data = {
       title: galleryData.title || '',
@@ -49,7 +63,7 @@ export async function POST(request) {
       event_date: galleryData.event_date || null,
       venue: galleryData.venue || '',
       is_official_photos: galleryData.is_official_photos || false,
-      gallery: (galleryData.images || []).map(image => ({
+      gallery: sortedImages.map(image => ({
         image: {
           id: image.id,
           url: image.url || '',

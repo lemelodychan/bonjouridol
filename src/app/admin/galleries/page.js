@@ -377,12 +377,19 @@ export default function GalleriesPage() {
     }
   }
 
-  // Helper function to sort images alphabetically by filename
+  // Helper function to sort images alphabetically by media title (filename)
+  // Prismic media title is the filename (e.g., "251229-UUG2_-165" or "251229-UUG2_-165.jpg")
   function sortImagesAlphabetically(images) {
     return [...images].sort((a, b) => {
-      const filenameA = (a.filename || a.id || '').toLowerCase()
-      const filenameB = (b.filename || b.id || '').toLowerCase()
-      return filenameA.localeCompare(filenameB)
+      // Use filename (media title) as primary sort key, fallback to id if filename is missing
+      const filenameA = (a.filename || a.id || '').toLowerCase().trim()
+      const filenameB = (b.filename || b.id || '').toLowerCase().trim()
+      
+      // Use localeCompare for proper alphabetical sorting (handles numbers, special chars)
+      return filenameA.localeCompare(filenameB, undefined, { 
+        numeric: true,  // Enable numeric sorting (e.g., "2" comes before "10")
+        sensitivity: 'base' // Case-insensitive, ignore accents
+      })
     })
   }
 
@@ -504,9 +511,13 @@ export default function GalleriesPage() {
     setError('')
     
     try {
+      // Ensure images are sorted alphabetically before sending to API
+      const sortedImages = sortImagesAlphabetically(formData.images)
+      
       // If editing, include the documentId so we can try to update the existing document
       const payload = {
         ...formData,
+        images: sortedImages, // Use sorted images
         ...(editingMigrationId && pendingMigrations.find(m => m.id === editingMigrationId)?.documentId
           ? { documentId: pendingMigrations.find(m => m.id === editingMigrationId).documentId }
           : {}),
@@ -554,7 +565,10 @@ export default function GalleriesPage() {
                 documentId: responseData.documentId,
                 repositoryName: responseData.repositoryName,
                 createdAt: existingMigration?.createdAt || new Date().toISOString(),
-                galleryData: formData, // Store full form data for editing
+                galleryData: {
+                  ...formData,
+                  images: sortedImages, // Store sorted images in gallery data
+                },
               }
               
               // Also sync with server (Supabase) - MUST happen for persistence
