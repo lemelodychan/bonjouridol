@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react'
 import styles from './page.module.scss'
 import Button from '@/app/components/IconButton'
-import { IoAddOutline, IoCloseOutline } from 'react-icons/io5'
-import { FiEdit, FiTrash } from 'react-icons/fi'
+import SingleImage from '@/app/components/SingleImage'
+import { IoAddOutline, IoCloseOutline, IoDownloadOutline } from 'react-icons/io5'
+import { FiEdit, FiTrash, FiCheck } from 'react-icons/fi'
 
 const PLAYLIST_CACHE_KEY = 'admin_playlist_cache'
 const CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 hours
@@ -30,6 +31,13 @@ export default function SelectionPlaylistPage() {
   const [coverMode, setCoverMode] = useState('upload') // 'upload' or 'select'
   const [existingCovers, setExistingCovers] = useState([])
   const [loadingCovers, setLoadingCovers] = useState(false)
+  
+  // Import modal state
+  const [showImportModal, setShowImportModal] = useState(false)
+  const [importLoading, setImportLoading] = useState(false)
+  const [importableSongs, setImportableSongs] = useState([])
+  const [selectedSongs, setSelectedSongs] = useState([])
+  const [importing, setImporting] = useState(false)
 
   useEffect(() => {
     loadPlaylist()
@@ -42,7 +50,7 @@ export default function SelectionPlaylistPage() {
   }, [coverMode])
 
   useEffect(() => {
-    if (showForm) {
+    if (showForm || showImportModal) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = 'unset'
@@ -50,7 +58,7 @@ export default function SelectionPlaylistPage() {
     return () => {
       document.body.style.overflow = 'unset'
     }
-  }, [showForm])
+  }, [showForm, showImportModal])
 
   function getCachedPlaylist() {
     try {
@@ -311,18 +319,136 @@ export default function SelectionPlaylistPage() {
     setCoverMode('upload')
   }
 
+  async function handleImportClick() {
+    setShowImportModal(true)
+    setImportLoading(true)
+    setError('')
+    
+    try {
+      const response = await fetch('/api/admin/selection-playlist/import')
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch importable songs')
+      }
+
+      const data = await response.json()
+      const allSongs = data.songs || []
+      // Filter out duplicates - only importable songs can be selected
+      const importableOnly = allSongs.filter(song => !song.isDuplicate)
+      setImportableSongs(allSongs) // Store all songs for display
+      // Select all importable songs by default (exclude duplicates)
+      setSelectedSongs(importableOnly)
+    } catch (error) {
+      console.error('Error fetching importable songs:', error)
+      setError('Failed to fetch importable songs. Please try again.')
+    } finally {
+      setImportLoading(false)
+    }
+  }
+
+  function handleToggleSong(song) {
+    // Don't allow toggling duplicates
+    if (song.isDuplicate) {
+      return
+    }
+    
+    setSelectedSongs(prev => {
+      const isSelected = prev.some(s => 
+        s.title_en === song.title_en && s.artist_en === song.artist_en
+      )
+      
+      if (isSelected) {
+        return prev.filter(s => 
+          !(s.title_en === song.title_en && s.artist_en === song.artist_en)
+        )
+      } else {
+        return [...prev, song]
+      }
+    })
+  }
+
+  function handleToggleAll() {
+    // Only toggle importable songs (exclude duplicates)
+    const importableOnly = importableSongs.filter(song => !song.isDuplicate)
+    
+    if (selectedSongs.length === importableOnly.length) {
+      setSelectedSongs([])
+    } else {
+      setSelectedSongs([...importableOnly])
+    }
+  }
+
+  async function handleConfirmImport() {
+    if (selectedSongs.length === 0) {
+      setError('Please select at least one song to import')
+      return
+    }
+
+    setImporting(true)
+    setError('')
+
+    try {
+      const response = await fetch('/api/admin/selection-playlist/import', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ songs: selectedSongs })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+        throw new Error(errorData.error || 'Failed to import songs')
+      }
+
+      const data = await response.json()
+      
+      // Close modal and refresh playlist
+      setShowImportModal(false)
+      setImportableSongs([])
+      setSelectedSongs([])
+      
+      // Clear cache and refresh playlist
+      clearPlaylistCache()
+      await loadPlaylist(true)
+      
+      // Show success message (you can add a toast notification here)
+      alert(`Successfully imported ${data.imported} song(s)!`)
+    } catch (error) {
+      console.error('Error importing songs:', error)
+      setError(error.message || 'Failed to import songs. Please try again.')
+    } finally {
+      setImporting(false)
+    }
+  }
+
+  function handleCancelImport() {
+    setShowImportModal(false)
+    setImportableSongs([])
+    setSelectedSongs([])
+    setError('')
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>Selection Playlist</h1>
 
-        {!showForm && (
-          <Button
-            onClick={() => setShowForm(true)}
-            variant="Pink"
-            textValue="Add Song"
-            icon={<IoAddOutline />}
-          />
+        {!showForm && !showImportModal && (
+          <div className={styles.headerButtons}>
+            <Button
+              onClick={handleImportClick}
+              variant="Grey"
+              textValue="Import from Prismic"
+              icon={<IoDownloadOutline />}
+            />
+            <Button
+              onClick={() => setShowForm(true)}
+              variant="Pink"
+              textValue="Add Song"
+              icon={<IoAddOutline />}
+            />
+          </div>
         )}
       </div>
 
@@ -546,6 +672,158 @@ export default function SelectionPlaylistPage() {
                 variant="Pink"
                 textValue={editingId ? 'Update Song' : 'Add Song'}
               />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showImportModal && (
+        <div className={styles.modalOverlay} onClick={handleCancelImport}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.formTitle}>
+                Import Songs from Prismic
+              </h2>
+              <button
+                type="button"
+                onClick={handleCancelImport}
+                className={styles.closeButton}
+                aria-label="Close"
+                disabled={importing}
+              >
+                <IoCloseOutline />
+              </button>
+            </div>
+
+            {importLoading ? (
+              <div className={styles.importLoading}>
+                <div className={styles.spinner}></div>
+                <p>Searching for importable songs from Prismic...</p>
+              </div>
+            ) : importableSongs.length === 0 ? (
+              <div className={styles.importEmpty}>
+                <p>No new songs found to import.</p>
+                <p className={styles.emptySubtitle}>
+                  All songs from recently updated artists are already in the playlist.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className={styles.importHeader}>
+                  <p className={styles.importCount}>
+                    Found <strong>{importableSongs.filter(s => !s.isDuplicate).length}</strong> song{importableSongs.filter(s => !s.isDuplicate).length !== 1 ? 's' : ''} to import
+                    {importableSongs.filter(s => s.isDuplicate).length > 0 && (
+                      <span className={styles.duplicateCount}>
+                        {' '}({importableSongs.filter(s => s.isDuplicate).length} duplicate{importableSongs.filter(s => s.isDuplicate).length !== 1 ? 's' : ''} excluded)
+                      </span>
+                    )}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleToggleAll}
+                    className={styles.toggleAllButton}
+                    disabled={importableSongs.filter(s => !s.isDuplicate).length === 0}
+                  >
+                    {selectedSongs.length === importableSongs.filter(s => !s.isDuplicate).length ? 'Deselect All' : 'Select All'}
+                  </button>
+                </div>
+
+                <div className={styles.importList}>
+                  {importableSongs.map((song, index) => {
+                    const isSelected = selectedSongs.some(s => 
+                      s.title_en === song.title_en && s.artist_en === song.artist_en
+                    )
+                    const isDisabled = song.isDuplicate
+                    
+                    return (
+                      <div
+                        key={`${song.artist_uid}-${index}`}
+                        className={`${styles.importItem} ${isSelected ? styles.selected : ''} ${isDisabled ? styles.disabled : ''}`}
+                        onClick={() => !isDisabled && handleToggleSong(song)}
+                      >
+                        <div 
+                          className={`${styles.importCheckbox} ${isSelected ? styles.checked : ''} ${isDisabled ? styles.disabled : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            if (!isDisabled) handleToggleSong(song)
+                          }}
+                        >
+                          {isSelected && <FiCheck />}
+                        </div>
+                        
+                        {song.cover_url && (
+                          <div className={styles.importCover}>
+                            <SingleImage 
+                              image={{ url: song.cover_url }} 
+                              alt={`${song.title_en} cover`}
+                            />
+                          </div>
+                        )}
+                        
+                        <div className={styles.importInfo}>
+                          <div className={styles.importTitleRow}>
+                            <h4 className={styles.importTitle}>
+                              {song.title_en}
+                              {song.title_ja && (
+                                <span className={styles.japanese}> ({song.title_ja})</span>
+                              )}
+                            </h4>
+                            <div className={styles.importBadges}>
+                              {song.isDuplicate && (
+                                <span className={`${styles.badge} ${styles.badgeExisting}`}>
+                                  Existing
+                                </span>
+                              )}
+                              {song.hasCloseMatch && !song.isDuplicate && (
+                                <span className={`${styles.badge} ${styles.badgeWarning}`}>
+                                  Possible Duplicate
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <p className={styles.importArtist}>
+                            {song.artist_en}
+                            {song.artist_ja && (
+                              <span className={styles.japanese}> ({song.artist_ja})</span>
+                            )}
+                          </p>
+                          {song.hasCloseMatch && song.closestMatch && (
+                            <p className={styles.closeMatchInfo}>
+                              Similar to: "{song.closestMatch.title}" by "{song.closestMatch.artist}"
+                            </p>
+                          )}
+                          <a
+                            href={song.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.importLink}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {song.link}
+                          </a>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            )}
+
+            <div className={styles.formActions}>
+              <Button
+                onClick={handleCancelImport}
+                variant="Grey"
+                textValue="Cancel"
+                disabled={importing}
+              />
+              {!importLoading && importableSongs.length > 0 && (
+                <Button
+                  onClick={handleConfirmImport}
+                  variant="Pink"
+                  textValue={importing ? 'Importing...' : `Import ${selectedSongs.length} Song${selectedSongs.length !== 1 ? 's' : ''}`}
+                  disabled={importing || selectedSongs.length === 0}
+                />
+              )}
             </div>
           </div>
         </div>

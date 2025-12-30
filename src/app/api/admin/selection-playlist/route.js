@@ -95,7 +95,7 @@ export async function POST(request) {
     }
 
     const body = await request.json()
-    const { title_en, title_ja, artist_en, artist_ja, link, purchase_link, cover_url, release_date, display_order } = body
+    const { title_en, title_ja, artist_en, artist_ja, link, purchase_link, cover_url, release_date, display_order, source } = body
 
     if (!title_en || !artist_en || !link) {
       return NextResponse.json(
@@ -116,7 +116,8 @@ export async function POST(request) {
         cover_url: cover_url || null,
         release_date: release_date || null,
         author_id: userId,
-        display_order: display_order || 0
+        display_order: display_order || 0,
+        source: source || 'manual'
       })
       .select()
       .single()
@@ -151,7 +152,7 @@ export async function PUT(request) {
     }
 
     const body = await request.json()
-    const { id, title_en, title_ja, artist_en, artist_ja, link, purchase_link, cover_url, release_date, display_order } = body
+    const { id, title_en, title_ja, artist_en, artist_ja, link, purchase_link, cover_url, release_date, display_order, source } = body
 
     if (!id) {
       return NextResponse.json(
@@ -170,6 +171,7 @@ export async function PUT(request) {
     if (cover_url !== undefined) updateData.cover_url = cover_url
     if (release_date !== undefined) updateData.release_date = release_date
     if (display_order !== undefined) updateData.display_order = display_order
+    if (source !== undefined) updateData.source = source
 
     const { data: updatedItem, error } = await supabase
       .from('selection_playlist')
