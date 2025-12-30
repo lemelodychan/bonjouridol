@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import styles from './page.module.scss'
 import Button from '@/app/components/IconButton'
 import CustomSelect from '@/app/components/CustomSelect'
@@ -56,6 +56,10 @@ export default function GalleriesPage() {
   const [exporting, setExporting] = useState(false)
   const [manualImageId, setManualImageId] = useState('')
   const [manualImageUrl, setManualImageUrl] = useState('') // Reusing for create operation
+  
+  // Memoize selected and featured image IDs as Sets for O(1) lookup performance
+  const selectedImageIds = useMemo(() => new Set(formData.images.map(img => img.id)), [formData.images])
+  const featuredImageId = useMemo(() => formData.featured_image_id, [formData.featured_image_id])
 
   useEffect(() => {
     loadGalleries()
@@ -373,18 +377,29 @@ export default function GalleriesPage() {
     }
   }
 
+  // Helper function to sort images alphabetically by filename
+  function sortImagesAlphabetically(images) {
+    return [...images].sort((a, b) => {
+      const filenameA = (a.filename || a.id || '').toLowerCase()
+      const filenameB = (b.filename || b.id || '').toLowerCase()
+      return filenameA.localeCompare(filenameB)
+    })
+  }
+
   function toggleImageSelection(image) {
     setFormData(prev => {
       const isSelected = prev.images.some(img => img.id === image.id)
       if (isSelected) {
+        // When removing, maintain alphabetical order
         return {
           ...prev,
-          images: prev.images.filter(img => img.id !== image.id),
+          images: sortImagesAlphabetically(prev.images.filter(img => img.id !== image.id)),
         }
       } else {
+        // When adding, add to array and sort alphabetically
         return {
           ...prev,
-          images: [...prev.images, image],
+          images: sortImagesAlphabetically([...prev.images, image]),
         }
       }
     })
@@ -393,7 +408,7 @@ export default function GalleriesPage() {
   function selectAllImages() {
     setFormData(prev => ({
       ...prev,
-      images: [...availableImages],
+      images: sortImagesAlphabetically([...availableImages]),
     }))
   }
 
@@ -466,7 +481,7 @@ export default function GalleriesPage() {
 
       setFormData(prev => ({
         ...prev,
-        images: [...prev.images, newImage],
+        images: sortImagesAlphabetically([...prev.images, newImage]),
       }))
 
       // Clear manual entry fields
@@ -692,6 +707,8 @@ export default function GalleriesPage() {
     if (migration.galleryData) {
       // Restore all form data including tags
       const galleryData = migration.galleryData
+      // Sort images alphabetically when loading from existing data
+      const sortedImages = galleryData.images ? sortImagesAlphabetically(galleryData.images) : []
       setFormData({
         title: galleryData.title || '',
         uid: galleryData.uid || '',
@@ -708,7 +725,7 @@ export default function GalleriesPage() {
         meta_title: galleryData.meta_title || '',
         meta_description: galleryData.meta_description || '',
         meta_image: galleryData.meta_image || null,
-        images: galleryData.images || [],
+        images: sortedImages,
       })
       setEditingMigrationId(migration.id)
       setShowForm(true)
@@ -1040,15 +1057,20 @@ export default function GalleriesPage() {
                     {availableImages.length > 0 && (
                     <div className={styles.imageGrid}>
                         {availableImages.map(image => {
-                        const isSelected = formData.images.some(img => img.id === image.id)
-                        const isFeatured = formData.featured_image_id === image.id
+                        const isSelected = selectedImageIds.has(image.id)
+                        const isFeatured = featuredImageId === image.id
                         return (
                             <div
                             key={image.id}
                             className={`${styles.imageItem} ${isSelected ? styles.selected : ''} ${isFeatured ? styles.featured : ''}`}
                             onClick={() => toggleImageSelection(image)}
                             >
-                            <img src={image.url} alt={image.filename || image.id} />
+                            <img 
+                              src={image.url} 
+                              alt={image.filename || image.id} 
+                              loading="lazy"
+                              decoding="async"
+                            />
                             <div className={styles.imageOverlay}>
                                 {isSelected && <FaCheck className={styles.checkmark} />}
                             </div>

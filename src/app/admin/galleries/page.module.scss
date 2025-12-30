@@ -823,6 +823,17 @@
     background-color: var(--white);
     border-radius: 16px;
     border: 1px solid var(--light-grey);
+    /* Performance optimizations for large grids */
+    contain: layout style paint;
+    will-change: scroll-position;
+    /* Limit height and enable smooth scrolling for large grids */
+    max-height: 70vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+    /* Optimize scrolling performance */
+    -webkit-overflow-scrolling: touch;
   
     .imageItem {
       position: relative;
@@ -832,12 +843,18 @@
       cursor: pointer;
       border: 2px solid transparent;
       transition: all 0.2s;
+      /* Performance optimizations */
+      contain: layout style paint;
+      transform: translateZ(0); /* Force GPU acceleration */
     
       img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
+        /* Performance optimizations */
+        will-change: transform;
+        transform: translateZ(0); /* Force GPU acceleration */
       }
     
       &:hover {
