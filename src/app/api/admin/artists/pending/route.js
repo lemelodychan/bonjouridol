@@ -66,61 +66,36 @@ async function fetchPendingMigrationsFromPrismic() {
  */
 async function createSupabaseEntryFromPrismic(prismicDoc, supabase) {
   try {
-    // First check if entry already exists
-    const { data: existingData } = await supabase
-      .from('pending_artist_migrations')
-      .select('*')
-      .eq('uid', prismicDoc.uid)
-      .single()
-    
-    if (existingData) {
-      // Entry exists - only update document_id if missing, don't change status
-      const updates = {}
-      if (!existingData.document_id && prismicDoc.documentId) {
-        updates.document_id = prismicDoc.documentId
-      }
+    // Check if entry with this document_id already exists (to avoid duplicates during sync)
+    if (prismicDoc.documentId) {
+      const { data: existingByDocId } = await supabase
+        .from('pending_artist_migrations')
+        .select('*')
+        .eq('document_id', prismicDoc.documentId)
+        .eq('status', 'pending')
+        .limit(1)
+        .single()
       
-      if (Object.keys(updates).length > 0) {
-        const { data: updatedData, error: updateError } = await supabase
-          .from('pending_artist_migrations')
-          .update(updates)
-          .eq('uid', prismicDoc.uid)
-          .select()
-          .single()
-        
-        if (!updateError && updatedData) {
-          return {
-            id: updatedData.id,
-            name_en: updatedData.name_en,
-            uid: updatedData.uid,
-            releaseTitle: updatedData.release_title,
-            createdAt: updatedData.created_at,
-            documentId: updatedData.document_id,
-            repositoryName: updatedData.repository_name,
-            artistData: updatedData.artist_data,
-            status: updatedData.status,
-            updatedAt: updatedData.updated_at,
-          }
+      if (existingByDocId) {
+        // Entry with this document_id already exists, return it
+        return {
+          id: existingByDocId.id,
+          name_en: existingByDocId.name_en,
+          uid: existingByDocId.uid,
+          releaseTitle: existingByDocId.release_title,
+          createdAt: existingByDocId.created_at,
+          documentId: existingByDocId.document_id,
+          repositoryName: existingByDocId.repository_name,
+          artistData: existingByDocId.artist_data,
+          status: existingByDocId.status,
+          updatedAt: existingByDocId.updated_at,
         }
-      }
-      
-      // Return existing data without changes
-      return {
-        id: existingData.id,
-        name_en: existingData.name_en,
-        uid: existingData.uid,
-        releaseTitle: existingData.release_title,
-        createdAt: existingData.created_at,
-        documentId: existingData.document_id,
-        repositoryName: existingData.repository_name,
-        artistData: existingData.artist_data,
-        status: existingData.status,
-        updatedAt: existingData.updated_at,
       }
     }
     
-    // Entry doesn't exist - create new one
-    const releaseTitle = `New Artists - ${new Date(prismicDoc.createdAt || Date.now()).toISOString().split('T')[0]} - ${prismicDoc.name_en || 'Untitled'}`
+    // Entry doesn't exist - create new one with unique release_title
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+    const releaseTitle = `New Artists - ${new Date(prismicDoc.createdAt || Date.now()).toISOString().split('T')[0]} - ${prismicDoc.name_en || 'Untitled'} - ${timestamp}`
     
     const { data, error } = await supabase
       .from('pending_artist_migrations')
@@ -175,7 +150,9 @@ async function createPrismicDocumentFromSupabase(supabaseEntry) {
 
     const artistData = supabaseEntry.artistData || {}
     const releaseDate = new Date(supabaseEntry.createdAt || Date.now()).toISOString().split('T')[0]
-    const releaseTitle = supabaseEntry.releaseTitle || `New Artists - ${releaseDate} - ${supabaseEntry.name_en || 'Untitled'}`
+    // Make release_title unique by adding timestamp to avoid conflicts
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5)
+    const releaseTitle = supabaseEntry.releaseTitle || `New Artists - ${releaseDate} - ${supabaseEntry.name_en || 'Untitled'} - ${timestamp}`
 
     // Format artist document for Migration API
     const data = {
@@ -289,40 +266,62 @@ export async function GET(request) {
     
     // Sync: Create missing entries
     // 1. If document exists in Prismic but not in Supabase → create in Supabase
+    // Only create if there's no pending entry for this UID
     for (const prismicDoc of prismicMigrations) {
-      const existsInSupabase = supabaseMigrations.find(
-        m => m.documentId === prismicDoc.documentId || m.uid === prismicDoc.uid
+      const hasPendingInSupabase = supabaseMigrations.find(
+        m => m.uid === prismicDoc.uid && m.status === 'pending'
       )
       
-      if (!existsInSupabase) {
-        const created = await createSupabaseEntryFromPrismic(prismicDoc, supabase)
-        if (created) {
-          supabaseMigrations.push(created)
+      // Only create if there's no pending entry (allow multiple published/archived)
+      if (!hasPendingInSupabase) {
+        const existsByDocId = prismicDoc.documentId && supabaseMigrations.find(
+          m => m.documentId === prismicDoc.documentId
+        )
+        
+        if (!existsByDocId) {
+          const created = await createSupabaseEntryFromPrismic(prismicDoc, supabase)
+          if (created) {
+            supabaseMigrations.push(created)
+          }
         }
       }
     }
     
     // 2. If document exists in Supabase but not in Prismic → create in Prismic
+    // Only create Prismic document if there's no existing one for this pending entry
     for (const supabaseEntry of supabaseMigrations) {
-      const existsInPrismic = prismicMigrations.find(
-        p => p.documentId === supabaseEntry.documentId || p.uid === supabaseEntry.uid
-      )
-      
-      if (!existsInPrismic && supabaseEntry.status === 'pending') {
-        await createPrismicDocumentFromSupabase(supabaseEntry)
-        // Note: We don't add to prismicMigrations array since we'll refetch if needed
-        // The document will be synced on next load
+      if (supabaseEntry.status === 'pending') {
+        const existsInPrismic = prismicMigrations.find(
+          p => p.documentId === supabaseEntry.documentId || 
+               (p.uid === supabaseEntry.uid && p.documentId) // Only match if Prismic doc has documentId
+        )
+        
+        if (!existsInPrismic) {
+          await createPrismicDocumentFromSupabase(supabaseEntry)
+          // Note: We don't add to prismicMigrations array since we'll refetch if needed
+          // The document will be synced on next load
+        }
       }
     }
     
     // Re-fetch from Supabase to get any newly created entries
+    // Use DISTINCT ON to get only the latest pending entry per uid
     const { data: refreshedData } = await supabase
       .from('pending_artist_migrations')
       .select('*')
       .in('status', ['pending'])
+      .order('uid', { ascending: true })
       .order('created_at', { ascending: false })
     
-    const finalMigrations = (refreshedData || []).map(row => ({
+    // Get only the latest entry per uid (since we ordered by uid then created_at desc)
+    const latestByUid = new Map()
+    for (const row of refreshedData || []) {
+      if (!latestByUid.has(row.uid)) {
+        latestByUid.set(row.uid, row)
+      }
+    }
+    
+    const finalMigrations = Array.from(latestByUid.values()).map(row => ({
       id: row.id,
       name_en: row.name_en,
       uid: row.uid,
@@ -362,28 +361,101 @@ export async function POST(request) {
       )
     }
     
-    // Build the data object
-    const upsertData = {
-      uid: migrationData.uid,
-      name_en: migrationData.name_en,
-      release_title: migrationData.releaseTitle,
-      document_id: migrationData.documentId,
-      repository_name: migrationData.repositoryName || 'bonjouridol',
-      artist_data: migrationData.artistData || null,
-      status: 'pending',
-    }
-    
-    if (migrationData.createdAt) {
-      upsertData.created_at = migrationData.createdAt
-    }
-    
-    const { data, error } = await supabase
+    // Check if there's already a pending entry for this UID
+    const { data: existingPending } = await supabase
       .from('pending_artist_migrations')
-      .upsert(upsertData, {
-        onConflict: 'uid', // Update if uid already exists
+      .select('*')
+      .eq('uid', migrationData.uid)
+      .eq('status', 'pending')
+      .maybeSingle()
+    
+    if (existingPending) {
+      // Update existing pending entry (editing)
+      const updateData = {
+        name_en: migrationData.name_en,
+        release_title: migrationData.releaseTitle,
+        document_id: migrationData.documentId || existingPending.document_id,
+        repository_name: migrationData.repositoryName || 'bonjouridol',
+        artist_data: migrationData.artistData || null,
+      }
+      
+      const { data, error } = await supabase
+        .from('pending_artist_migrations')
+        .update(updateData)
+        .eq('id', existingPending.id)
+        .select()
+        .single()
+      
+      if (error) {
+        console.error('Error updating pending migration:', error)
+        return NextResponse.json(
+          { error: 'Failed to update pending migration', message: error.message },
+          { status: 500 }
+        )
+      }
+      
+      const pendingMigration = {
+        id: data.id,
+        name_en: data.name_en,
+        uid: data.uid,
+        releaseTitle: data.release_title,
+        createdAt: data.created_at,
+        documentId: data.document_id,
+        repositoryName: data.repository_name,
+        artistData: data.artist_data,
+        status: data.status,
+      }
+      
+      return NextResponse.json({
+        success: true,
+        migration: pendingMigration,
+        updated: true,
       })
-      .select()
-      .single()
+    } else {
+      // Create new pending entry (new document)
+      const insertData = {
+        uid: migrationData.uid,
+        name_en: migrationData.name_en,
+        release_title: migrationData.releaseTitle,
+        document_id: migrationData.documentId,
+        repository_name: migrationData.repositoryName || 'bonjouridol',
+        artist_data: migrationData.artistData || null,
+        status: 'pending',
+        created_at: migrationData.createdAt || new Date().toISOString(),
+      }
+      
+      const { data, error } = await supabase
+        .from('pending_artist_migrations')
+        .insert(insertData)
+        .select()
+        .single()
+      
+      if (error) {
+        console.error('Error creating pending migration:', error)
+        return NextResponse.json(
+          { error: 'Failed to create pending migration', message: error.message },
+          { status: 500 }
+        )
+      }
+      
+      const pendingMigration = {
+        id: data.id,
+        name_en: data.name_en,
+        uid: data.uid,
+        releaseTitle: data.release_title,
+        createdAt: data.created_at,
+        documentId: data.document_id,
+        repositoryName: data.repository_name,
+        artistData: data.artist_data,
+        status: data.status,
+      }
+      
+      return NextResponse.json({
+        success: true,
+        migration: pendingMigration,
+        updated: false,
+      })
+    }
     
     if (error) {
       console.error('Error saving pending migration:', error)

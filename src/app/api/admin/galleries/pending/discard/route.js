@@ -76,12 +76,37 @@ export async function POST(request) {
           const updateUrl = `https://migration.prismic.io/documents/${documentId}`
           
           // Build the update payload - include required fields and archived tag
+          // When archiving, we remove 'pending-migration' tag and add 'archived' tag
           const updatePayload = {
             type: String('gallery'),
             uid: String(migrationData?.uid || uid || ''),
             lang: String('en-us'),
             title: String(migrationData?.gallery_data?.title || 'Archived Gallery'),
-            tags: ['archived', 'pending-migration'], // Mark as archived
+            tags: ['archived'], // Remove pending-migration tag, only keep archived
+          }
+          
+          // Include full data to ensure the update succeeds
+          if (migrationData?.gallery_data) {
+            updatePayload.data = migrationData.gallery_data
+          } else {
+            // If no data, include minimal required fields
+            updatePayload.data = {
+              title: migrationData?.title || 'Archived Gallery',
+              type: 'Gallery',
+              artist_name: '',
+              event_date: '',
+              venue: '',
+              is_official_photos: false,
+              photographer: '',
+              photographer_2: '',
+              featured_image: null,
+              featured_image_id: null,
+              tags: [],
+              meta_title: '',
+              meta_description: '',
+              meta_image: null,
+              images: [],
+            }
           }
           
           const response = await fetch(updateUrl, {
@@ -113,10 +138,10 @@ export async function POST(request) {
       }
     }
     
-    // Update Supabase status to "cancelled"
+    // Update Supabase status to "archived"
     const query = supabase
       .from('pending_gallery_migrations')
-      .update({ status: 'cancelled' })
+      .update({ status: 'archived' })
     
     if (id) {
       query.eq('id', id)

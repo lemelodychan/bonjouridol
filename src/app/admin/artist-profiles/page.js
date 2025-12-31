@@ -54,6 +54,7 @@ export default function ArtistProfilesPage() {
   const [showCoverFinder, setShowCoverFinder] = useState(null) // Stores song index or null
   const [songExistsStatus, setSongExistsStatus] = useState({}) // Track which songs exist in playlist {index: true/false}
   const [songsToImport, setSongsToImport] = useState(new Set()) // Track which songs are marked for import
+  const [showConfirmClose, setShowConfirmClose] = useState(false)
 
   useEffect(() => {
     loadArtists()
@@ -452,7 +453,8 @@ export default function ArtistProfilesPage() {
         await importMarkedSongs()
       }
       
-      handleCancel()
+      // Close without confirmation after successful submission
+      confirmCancel()
       setActiveTab('pending')
       clearArtistsCache()
       await loadArtists(true)
@@ -465,6 +467,31 @@ export default function ArtistProfilesPage() {
   }
 
   function handleCancel() {
+    // Check if form has any data
+    const hasData = formData.name_en || 
+                   formData.name_jp || 
+                   formData.uid || 
+                   formData.profile_picture || 
+                   formData.debut || 
+                   formData.disband || 
+                   (formData.description && formData.description.length > 0 && 
+                    (formData.description[0]?.text || '').trim()) ||
+                   formData.youtube_video ||
+                   formData.song_list.length > 0 ||
+                   formData.website?.url ||
+                   formData.twitter?.url ||
+                   formData.instagram?.url ||
+                   formData.youtube?.url ||
+                   formData.tiktok?.url
+
+    if (hasData) {
+      setShowConfirmClose(true)
+    } else {
+      confirmCancel()
+    }
+  }
+
+  function confirmCancel() {
     setFormData({
       name_en: '',
       name_jp: '',
@@ -488,6 +515,7 @@ export default function ArtistProfilesPage() {
     setError('')
     setSongExistsStatus({})
     setSongsToImport(new Set())
+    setShowConfirmClose(false)
   }
 
   async function checkSongExistence(songs, artistName) {
@@ -922,8 +950,8 @@ export default function ArtistProfilesPage() {
       )}
 
       {showForm && (
-        <div className={styles.modalOverlay} onClick={handleCancel}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
               <div>
                 <h2 className={styles.formTitle}>
@@ -1378,6 +1406,30 @@ export default function ArtistProfilesPage() {
                   }
                 />
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {showConfirmClose && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.confirmModal}>
+            <h3 className={styles.confirmTitle}>Discard Changes?</h3>
+            <p className={styles.confirmMessage}>
+              You have unsaved changes. Are you sure you want to close? All your changes will be lost.
+            </p>
+            <div className={styles.confirmActions}>
+              <Button
+                onClick={() => setShowConfirmClose(false)}
+                variant="Grey"
+                textValue="Keep Editing"
+              />
+              <Button
+                onClick={confirmCancel}
+                variant="Pink"
+                textValue="Discard Changes"
+              />
             </div>
           </div>
         </div>

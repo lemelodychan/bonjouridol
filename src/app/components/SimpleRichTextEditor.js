@@ -13,18 +13,115 @@ export default function SimpleRichTextEditor({ value, onChange, placeholder = 'E
   const [showLinkInput, setShowLinkInput] = useState(false)
   const [linkUrl, setLinkUrl] = useState('')
   const [linkSelection, setLinkSelection] = useState(null)
+  const lastValueRef = useRef(null)
+  const isUpdatingFromInputRef = useRef(false)
 
   // Convert Prismic rich text to HTML
   useEffect(() => {
-    if (!editorRef.current || !value) return
+    if (!editorRef.current) return
 
-    // Only update if editor is empty or value changed significantly
-    const currentText = editorRef.current.innerText.trim()
-    const valueText = prismicToText(value).trim()
+    // Skip if we're updating from user input (prevents cursor reset during typing)
+    if (isUpdatingFromInputRef.current) {
+      isUpdatingFromInputRef.current = false
+      return
+    }
+
+    // Compare with last value to avoid unnecessary updates
+    const valueStr = JSON.stringify(value)
+    if (valueStr === JSON.stringify(lastValueRef.current)) {
+      return
+    }
+
+    // Compare current HTML with what we would generate
+    const currentHtml = editorRef.current.innerHTML
+    const newHtml = prismicToHtml(value)
     
-    if (currentText !== valueText) {
-      const html = prismicToHtml(value)
-      editorRef.current.innerHTML = html
+    // Only update if HTML is actually different
+    if (currentHtml === newHtml) {
+      lastValueRef.current = value
+      return
+    }
+
+    // Save cursor position before updating
+    const selection = window.getSelection()
+    let startOffset = 0
+    let endOffset = 0
+    
+    if (selection.rangeCount > 0 && editorRef.current.contains(selection.anchorNode)) {
+      const range = selection.getRangeAt(0)
+      
+      // Calculate start offset
+      const preRange = range.cloneRange()
+      preRange.selectNodeContents(editorRef.current)
+      preRange.setEnd(range.startContainer, range.startOffset)
+      startOffset = preRange.toString().length
+      
+      // Calculate end offset
+      const postRange = range.cloneRange()
+      postRange.selectNodeContents(editorRef.current)
+      postRange.setEnd(range.endContainer, range.endOffset)
+      endOffset = postRange.toString().length
+    }
+    
+    // Update HTML
+    editorRef.current.innerHTML = newHtml
+    lastValueRef.current = value
+    
+    // Restore cursor position
+    if (startOffset > 0 || endOffset > 0) {
+      try {
+        const walker = document.createTreeWalker(
+          editorRef.current,
+          NodeFilter.SHOW_TEXT,
+          null
+        )
+        
+        let currentOffset = 0
+        let startNode = null
+        let startNodeOffset = 0
+        let endNode = null
+        let endNodeOffset = 0
+        
+        while (walker.nextNode()) {
+          const node = walker.currentNode
+          const nodeLength = node.textContent.length
+          
+          if (!startNode && currentOffset + nodeLength >= startOffset) {
+            startNode = node
+            startNodeOffset = startOffset - currentOffset
+          }
+          
+          if (!endNode && currentOffset + nodeLength >= endOffset) {
+            endNode = node
+            endNodeOffset = endOffset - currentOffset
+            break
+          }
+          
+          currentOffset += nodeLength
+        }
+        
+        if (startNode) {
+          const newRange = document.createRange()
+          const startPos = Math.min(startNodeOffset, startNode.textContent.length)
+          newRange.setStart(startNode, startPos)
+          
+          if (endNode) {
+            const endPos = Math.min(endNodeOffset, endNode.textContent.length)
+            newRange.setEnd(endNode, endPos)
+          } else {
+            newRange.setEnd(startNode, startPos)
+          }
+          
+          selection.removeAllRanges()
+          selection.addRange(newRange)
+        }
+      } catch (e) {
+        // If restoration fails, just focus the editor
+        editorRef.current.focus()
+      }
+    } else if (newHtml) {
+      // If no selection but we have content, focus the editor
+      editorRef.current.focus()
     }
   }, [value])
 
@@ -140,6 +237,9 @@ export default function SimpleRichTextEditor({ value, onChange, placeholder = 'E
   function handleInput() {
     if (!editorRef.current) return
     
+    // Mark that we're updating from user input to prevent cursor reset
+    isUpdatingFromInputRef.current = true
+    
     const html = editorRef.current.innerHTML
     const prismicData = htmlToPrismic(html)
     onChange(prismicData)
@@ -148,6 +248,7 @@ export default function SimpleRichTextEditor({ value, onChange, placeholder = 'E
   function handleBold() {
     document.execCommand('bold', false, null)
     editorRef.current?.focus()
+    isUpdatingFromInputRef.current = true
     handleInput()
   }
 
@@ -189,6 +290,7 @@ export default function SimpleRichTextEditor({ value, onChange, placeholder = 'E
     setLinkUrl('')
     setLinkSelection(null)
     editorRef.current?.focus()
+    isUpdatingFromInputRef.current = true
     handleInput()
   }
 
@@ -206,6 +308,7 @@ export default function SimpleRichTextEditor({ value, onChange, placeholder = 'E
         // Normal enter - create new paragraph
         e.preventDefault()
         document.execCommand('insertParagraph', false, null)
+        isUpdatingFromInputRef.current = true
         handleInput()
       }
     }
@@ -216,6 +319,7 @@ export default function SimpleRichTextEditor({ value, onChange, placeholder = 'E
     e.preventDefault()
     const text = e.clipboardData.getData('text/plain')
     document.execCommand('insertText', false, text)
+    isUpdatingFromInputRef.current = true
     handleInput()
   }
 

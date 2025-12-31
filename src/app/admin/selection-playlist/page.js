@@ -7,7 +7,8 @@ import SingleImage from '@/app/components/SingleImage'
 import SearchableSelect from '@/app/components/SearchableSelect'
 import CoverFinder from '@/app/components/CoverFinder'
 import { IoAddOutline, IoCloseOutline, IoDownloadOutline } from 'react-icons/io5'
-import { FiEdit, FiTrash, FiCheck, FiSearch, FiUpload } from 'react-icons/fi'
+import { FiEdit, FiTrash, FiCheck, FiSearch, FiUpload, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
+import CustomSelect from '@/app/components/CustomSelect'
 
 const PLAYLIST_CACHE_KEY = 'admin_playlist_cache'
 const CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 hours
@@ -44,6 +45,12 @@ export default function SelectionPlaylistPage() {
   const [importableSongs, setImportableSongs] = useState([])
   const [selectedSongs, setSelectedSongs] = useState([])
   const [importing, setImporting] = useState(false)
+  const [showConfirmClose, setShowConfirmClose] = useState(false)
+  const [showConfirmCloseImport, setShowConfirmCloseImport] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sortBy, setSortBy] = useState('latest') // 'latest' or 'alphabetical'
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 20
 
   useEffect(() => {
     loadPlaylist()
@@ -403,6 +410,26 @@ export default function SelectionPlaylistPage() {
   }
 
   function handleCancel() {
+    // Check if form has any data
+    const hasData = formData.title_en || 
+                   formData.title_ja || 
+                   formData.artist_id || 
+                   formData.artist_en || 
+                   formData.artist_ja || 
+                   formData.link || 
+                   formData.purchase_link || 
+                   formData.cover_url || 
+                   formData.release_date ||
+                   formData.display_order > 0
+
+    if (hasData) {
+      setShowConfirmClose(true)
+    } else {
+      confirmCancel()
+    }
+  }
+
+  function confirmCancel() {
     setFormData({
       title_en: '',
       title_ja: '',
@@ -415,8 +442,9 @@ export default function SelectionPlaylistPage() {
       release_date: '',
       display_order: 0
     })
-      setEditingId(null)
-      setShowForm(false)
+    setEditingId(null)
+    setShowForm(false)
+    setShowConfirmClose(false)
   }
 
   async function handleImportClick() {
@@ -523,11 +551,75 @@ export default function SelectionPlaylistPage() {
   }
 
   function handleCancelImport() {
+    // Check if there are selected songs
+    if (selectedSongs.length > 0) {
+      setShowConfirmCloseImport(true)
+    } else {
+      confirmCancelImport()
+    }
+  }
+
+  function confirmCancelImport() {
     setShowImportModal(false)
     setImportableSongs([])
     setSelectedSongs([])
     setError('')
+    setShowConfirmCloseImport(false)
   }
+
+  // Filter and sort playlist
+  const filteredAndSortedPlaylist = useMemo(() => {
+    let result = [...playlist]
+    
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim()
+      result = result.filter(item => {
+        const titleEn = item.title_en?.toLowerCase() || ''
+        const titleJa = item.title_ja?.toLowerCase() || ''
+        const artistEn = item.artists?.name?.toLowerCase() || item.artist_en?.toLowerCase() || ''
+        const artistJa = item.artists?.name_ja?.toLowerCase() || item.artist_ja?.toLowerCase() || ''
+        
+        return titleEn.includes(query) ||
+               titleJa.includes(query) ||
+               artistEn.includes(query) ||
+               artistJa.includes(query)
+      })
+    }
+    
+    // Sort
+    if (sortBy === 'alphabetical') {
+      result.sort((a, b) => {
+        const titleA = (a.title_en || '').toLowerCase()
+        const titleB = (b.title_en || '').toLowerCase()
+        return titleA.localeCompare(titleB)
+      })
+    } else if (sortBy === 'latest') {
+      // Sort by display_order (lower number = higher priority) or by id (newer first)
+      result.sort((a, b) => {
+        if (a.display_order !== null && b.display_order !== null) {
+          return a.display_order - b.display_order
+        }
+        if (a.display_order !== null) return -1
+        if (b.display_order !== null) return 1
+        // If no display_order, sort by id (newer first)
+        return b.id - a.id
+      })
+    }
+    
+    return result
+  }, [playlist, searchQuery, sortBy])
+  
+  // Reset to page 1 when search or sort changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, sortBy])
+  
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredAndSortedPlaylist.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedPlaylist = filteredAndSortedPlaylist.slice(startIndex, endIndex)
 
   return (
     <div className={styles.container}>
@@ -555,8 +647,8 @@ export default function SelectionPlaylistPage() {
       {error && <div className={styles.error}>{error}</div>}
 
       {showForm && (
-        <div className={styles.modalOverlay} onClick={handleCancel}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
               <h2 className={styles.formTitle}>
                 {editingId ? 'Edit Song' : 'Add New Song'}
@@ -729,9 +821,57 @@ export default function SelectionPlaylistPage() {
         </div>
       )}
 
+      {/* Confirmation Modal for Form */}
+      {showConfirmClose && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.confirmModal}>
+            <h3 className={styles.confirmTitle}>Discard Changes?</h3>
+            <p className={styles.confirmMessage}>
+              You have unsaved changes. Are you sure you want to close? All your changes will be lost.
+            </p>
+            <div className={styles.confirmActions}>
+              <Button
+                onClick={() => setShowConfirmClose(false)}
+                variant="Grey"
+                textValue="Keep Editing"
+              />
+              <Button
+                onClick={confirmCancel}
+                variant="Pink"
+                textValue="Discard Changes"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal for Import */}
+      {showConfirmCloseImport && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.confirmModal}>
+            <h3 className={styles.confirmTitle}>Cancel Import?</h3>
+            <p className={styles.confirmMessage}>
+              You have {selectedSongs.length} song{selectedSongs.length !== 1 ? 's' : ''} selected. Are you sure you want to cancel?
+            </p>
+            <div className={styles.confirmActions}>
+              <Button
+                onClick={() => setShowConfirmCloseImport(false)}
+                variant="Grey"
+                textValue="Continue Import"
+              />
+              <Button
+                onClick={confirmCancelImport}
+                variant="Pink"
+                textValue="Cancel Import"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {showCoverFinder && (
-        <div className={styles.modalOverlay} onClick={handleCoverFinderClose}>
-          <div className={styles.coverFinderModal} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.coverFinderModal}>
             <CoverFinder
               artistName={formData.artist_en || ''}
               songTitle={formData.title_en || ''}
@@ -744,8 +884,8 @@ export default function SelectionPlaylistPage() {
       )}
 
       {showImportModal && (
-        <div className={styles.modalOverlay} onClick={handleCancelImport}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
               <h2 className={styles.formTitle}>
                 Import Songs from Prismic
@@ -895,6 +1035,36 @@ export default function SelectionPlaylistPage() {
         </div>
       )}
 
+      {!showForm && !showImportModal && (
+        <div className={styles.searchAndSortControls}>
+          <div className={styles.searchBar}>
+            <FiSearch className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Search by song title or artist..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={styles.searchInput}
+            />
+          </div>
+          <div className={styles.controlsRight}>
+            <div className={styles.sortControl}>
+              <label htmlFor="sort-select" className={styles.sortLabel}>Sort by:</label>
+              <CustomSelect
+                id="sort-select"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                options={[
+                  { value: 'latest', label: 'Display Order' },
+                  { value: 'alphabetical', label: 'Alphabetical' }
+                ]}
+                className={styles.sortSelect}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className={styles.content}>
         <div className={styles.playlist}>
           {loading ? (
@@ -921,13 +1091,16 @@ export default function SelectionPlaylistPage() {
                 </div>
               ))}
             </>
-          ) : playlist.length === 0 ? (
+          ) : paginatedPlaylist.length === 0 ? (
             <div className={styles.empty}>
-              <p>No songs in the playlist yet.</p>
-              <p className={styles.emptySubtitle}>Click "Add Song" to get started.</p>
+              <p>{searchQuery ? 'No songs found matching your search.' : 'No songs in the playlist yet.'}</p>
+              <p className={styles.emptySubtitle}>
+                {searchQuery ? 'Try a different search term.' : 'Click "Add Song" to get started.'}
+              </p>
             </div>
           ) : (
-            playlist.map((item) => (
+            <>
+              {paginatedPlaylist.map((item) => (
               <div key={item.id} className={styles.playlistItem}>
                 {item.cover_url && (
                   <div className={styles.itemCover}>
@@ -1009,7 +1182,31 @@ export default function SelectionPlaylistPage() {
                   </button>
                 </div>
               </div>
-            ))
+              ))}
+              {totalPages > 1 && (
+                <div className={styles.pagination}>
+                  <button
+                    className={styles.paginationButton}
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    <FiChevronLeft />
+                    Previous
+                  </button>
+                  <span className={styles.paginationInfo}>
+                    Page {currentPage} of {totalPages} ({filteredAndSortedPlaylist.length} total{searchQuery ? ` matching "${searchQuery}"` : ''})
+                  </span>
+                  <button
+                    className={styles.paginationButton}
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                    <FiChevronRight />
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

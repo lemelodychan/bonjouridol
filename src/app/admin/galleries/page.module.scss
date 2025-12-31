@@ -1140,4 +1140,101 @@
   }
 }
 
+.confirmModal {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+
+  .confirmTitle {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    color: var(--dark-grey);
+  }
+
+  .confirmMessage {
+    font-size: var(--font-size);
+    color: var(--medium-grey);
+    margin: 0 0 1.5rem 0;
+    line-height: 1.5;
+  }
+
+  .confirmActions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+  }
+}
+
+.searchAndSortControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+
+  .searchBar {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .searchIcon {
+      position: absolute;
+      left: 1rem;
+      color: var(--medium-grey);
+      font-size: 1.1rem;
+      pointer-events: none;
+    }
+
+    .searchInput {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.75rem;
+      border: 2px solid var(--light-grey);
+      border-radius: 8px;
+      font-size: var(--font-size);
+      font-family: var(--font-text);
+      background-color: var(--white);
+      color: var(--dark-grey);
+      transition: all 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: var(--bi-indigo);
+      }
+
+      &::placeholder {
+        color: var(--medium-grey);
+      }
+    }
+  }
+
+  .controlsRight {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .sortControl {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .sortLabel {
+      font-size: var(--font-size);
+      color: var(--dark-grey);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .sortSelect {
+      min-width: 180px;
+    }
+  }
+}
+
 

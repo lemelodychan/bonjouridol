@@ -1618,6 +1618,36 @@
   }
 }
 
+.confirmModal {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+
+  .confirmTitle {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    color: var(--dark-grey);
+  }
+
+  .confirmMessage {
+    font-size: var(--font-size);
+    color: var(--medium-grey);
+    margin: 0 0 1.5rem 0;
+    line-height: 1.5;
+  }
+
+  .confirmActions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+  }
+}
+
 .coverFinderModal {
   background: var(--white);
   border-radius: 16px;

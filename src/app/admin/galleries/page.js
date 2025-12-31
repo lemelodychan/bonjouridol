@@ -14,7 +14,6 @@ import { FaImage } from "react-icons/fa6";
 import { format } from 'date-fns'
 
 const GALLERIES_CACHE_KEY = 'admin_galleries_cache'
-const PENDING_MIGRATIONS_KEY = 'admin_pending_migrations'
 const CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 hours
 
 export default function GalleriesPage() {
@@ -28,6 +27,8 @@ export default function GalleriesPage() {
   const [showForm, setShowForm] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 20
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sortBy, setSortBy] = useState('latest') // 'latest' or 'alphabetical'
   const [editingMigrationId, setEditingMigrationId] = useState(null)
   const [formData, setFormData] = useState({
     title: '',
@@ -56,6 +57,7 @@ export default function GalleriesPage() {
   const [exporting, setExporting] = useState(false)
   const [manualImageId, setManualImageId] = useState('')
   const [manualImageUrl, setManualImageUrl] = useState('') // Reusing for create operation
+  const [showConfirmClose, setShowConfirmClose] = useState(false)
   
   // Memoize selected and featured image IDs as Sets for O(1) lookup performance
   const selectedImageIds = useMemo(() => new Set(formData.images.map(img => img.id)), [formData.images])
@@ -126,7 +128,6 @@ export default function GalleriesPage() {
   function clearGalleriesCache() {
     try {
       localStorage.removeItem(GALLERIES_CACHE_KEY)
-      localStorage.removeItem(PENDING_MIGRATIONS_KEY)
     } catch (error) {
       console.error('Error clearing galleries cache:', error)
     }
@@ -194,76 +195,19 @@ export default function GalleriesPage() {
     try {
       setLoadingPending(true)
       
-      // First, try to load from localStorage (persists across refreshes)
-        try {
-          const cached = localStorage.getItem(PENDING_MIGRATIONS_KEY)
-          if (cached) {
-            const cachedMigrations = JSON.parse(cached)
-            // Filter out archived, published, and cancelled galleries from localStorage
-            const activeMigrations = cachedMigrations.filter(m => 
-              m.status !== 'Archived' && m.status !== 'published' && m.status !== 'cancelled'
-            )
-            setPendingMigrations(activeMigrations)
-          }
-        } catch (error) {
-          console.error('Error loading from localStorage:', error)
-        }
-        
-        // Then sync with server (which may have more recent data)
-        const response = await fetch('/api/admin/galleries/pending')
-        if (response.ok) {
-          const data = await response.json()
-          const serverMigrations = data.pending || []
-          
-          // Merge: server data takes precedence, but keep localStorage data that server doesn't have
-          const cachedMigrations = JSON.parse(localStorage.getItem(PENDING_MIGRATIONS_KEY) || '[]')
-          // Filter out archived, published, and cancelled galleries from cached data
-          const activeCachedMigrations = cachedMigrations.filter(m => 
-            m.status !== 'Archived' && m.status !== 'published' && m.status !== 'cancelled'
-          )
-          const merged = [...serverMigrations]
-          
-          // Add any cached migrations that aren't in server (in case server was restarted)
-          activeCachedMigrations.forEach(cached => {
-            if (!serverMigrations.find(m => m.id === cached.id || m.uid === cached.uid)) {
-              merged.push(cached)
-            }
-          })
-          
-          // Final filter to ensure no archived/published/cancelled items slip through
-          const finalMigrations = merged.filter(m => 
-            m.status !== 'Archived' && m.status !== 'published' && m.status !== 'cancelled'
-          )
-          setPendingMigrations(finalMigrations)
-        
-        // Update localStorage with merged data (excluding archived)
-        try {
-          localStorage.setItem(PENDING_MIGRATIONS_KEY, JSON.stringify(finalMigrations))
-        } catch (error) {
-          console.error('Error saving to localStorage:', error)
-        }
+      const response = await fetch('/api/admin/galleries/pending')
+      if (response.ok) {
+        const data = await response.json()
+        const serverMigrations = data.pending || []
+        setPendingMigrations(serverMigrations)
+      } else {
+        setError('Failed to load pending migrations')
       }
     } catch (error) {
       console.error('Error fetching pending migrations:', error)
-      // Fallback to localStorage if server fails
-      try {
-        const cached = localStorage.getItem(PENDING_MIGRATIONS_KEY)
-        if (cached) {
-          setPendingMigrations(JSON.parse(cached))
-        }
-      } catch (e) {
-        console.error('Error loading from localStorage fallback:', e)
-      }
+      setError('Failed to load pending migrations')
     } finally {
       setLoadingPending(false)
-    }
-  }
-  
-  function savePendingMigrationsToLocalStorage(migrations) {
-    try {
-      localStorage.setItem(PENDING_MIGRATIONS_KEY, JSON.stringify(migrations))
-    } catch (error) {
-      console.error('Error saving pending migrations to localStorage:', error)
     }
   }
 
@@ -281,11 +225,6 @@ export default function GalleriesPage() {
       
       // Clear cache and reload
       clearGalleriesCache()
-      
-      // Update local state - filter out the published migration
-      const updatedMigrations = pendingMigrations.filter(m => m.id !== id)
-      setPendingMigrations(updatedMigrations)
-      savePendingMigrationsToLocalStorage(updatedMigrations)
       
       // Reload to get fresh data
       await loadPendingMigrations()
@@ -322,11 +261,6 @@ export default function GalleriesPage() {
       // Clear cache
       clearGalleriesCache()
       
-      // Update local state - filter out the cancelled migration
-      const updatedMigrations = pendingMigrations.filter(m => m.id !== migration.id)
-      setPendingMigrations(updatedMigrations)
-      savePendingMigrationsToLocalStorage(updatedMigrations)
-      
       // Reload to get fresh data
       await loadPendingMigrations()
       
@@ -337,11 +271,54 @@ export default function GalleriesPage() {
     }
   }
 
+  // Filter and sort galleries (only for published tab)
+  const filteredAndSortedGalleries = useMemo(() => {
+    if (activeTab !== 'published') {
+      return galleries
+    }
+    
+    let result = [...galleries]
+    
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim()
+      result = result.filter(gallery => 
+        gallery.title?.toLowerCase().includes(query) ||
+        gallery.uid?.toLowerCase().includes(query) ||
+        gallery.artist_name?.toLowerCase().includes(query) ||
+        gallery.venue?.toLowerCase().includes(query)
+      )
+    }
+    
+    // Sort
+    if (sortBy === 'alphabetical') {
+      result.sort((a, b) => {
+        const titleA = (a.title || '').toLowerCase()
+        const titleB = (b.title || '').toLowerCase()
+        return titleA.localeCompare(titleB)
+      })
+    } else if (sortBy === 'latest') {
+      // Sort by last_publication_date (most recent first)
+      result.sort((a, b) => {
+        const dateA = new Date(a.last_publication_date || 0)
+        const dateB = new Date(b.last_publication_date || 0)
+        return dateB - dateA
+      })
+    }
+    
+    return result
+  }, [galleries, searchQuery, sortBy, activeTab])
+  
+  // Reset to page 1 when search, sort, or tab changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, sortBy, activeTab])
+  
   // Pagination calculations
-  const totalPages = Math.ceil(galleries.length / itemsPerPage)
+  const totalPages = Math.ceil(filteredAndSortedGalleries.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const paginatedGalleries = galleries.slice(startIndex, endIndex)
+  const paginatedGalleries = filteredAndSortedGalleries.slice(startIndex, endIndex)
 
   async function searchImagesBySuffix() {
     if (!imageSearchSuffix.trim()) {
@@ -621,14 +598,13 @@ export default function GalleriesPage() {
               clearGalleriesCache()
               
               setPendingMigrations(updatedMigrations)
-              savePendingMigrationsToLocalStorage(updatedMigrations)
             } catch (error) {
               console.error('Error storing pending migration:', error)
             }
           }
       
-      // Reset form and close modal
-      handleCancel()
+      // Reset form and close modal without confirmation after successful submission
+      confirmCancel()
       
       // Switch to pending tab to show the new migration
       setActiveTab('pending')
@@ -645,6 +621,30 @@ export default function GalleriesPage() {
   }
 
   function handleCancel() {
+    // Check if form has any data
+    const hasData = formData.title || 
+                   formData.uid || 
+                   formData.artist_name || 
+                   formData.event_date || 
+                   formData.venue || 
+                   formData.photographer || 
+                   formData.photographer_2 || 
+                   formData.featured_image || 
+                   formData.featured_image_id ||
+                   formData.tags.length > 0 ||
+                   formData.meta_title ||
+                   formData.meta_description ||
+                   formData.meta_image ||
+                   formData.images.length > 0
+
+    if (hasData) {
+      setShowConfirmClose(true)
+    } else {
+      confirmCancel()
+    }
+  }
+
+  function confirmCancel() {
     setFormData({
       title: '',
       uid: '',
@@ -671,6 +671,7 @@ export default function GalleriesPage() {
     setEditingMigrationId(null)
     setFormTab('content') // Reset to content tab
     setError('')
+    setShowConfirmClose(false)
   }
 
   function handleToggleTag(tag) {
@@ -803,8 +804,8 @@ export default function GalleriesPage() {
       )}
 
       {showForm && (
-        <div className={styles.modalOverlay} onClick={handleCancel}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
               <div>
                 <h2 className={styles.formTitle}>
@@ -1177,6 +1178,30 @@ export default function GalleriesPage() {
         </div>
       )}
 
+      {/* Confirmation Modal */}
+      {showConfirmClose && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.confirmModal}>
+            <h3 className={styles.confirmTitle}>Discard Changes?</h3>
+            <p className={styles.confirmMessage}>
+              You have unsaved changes. Are you sure you want to close? All your changes will be lost.
+            </p>
+            <div className={styles.confirmActions}>
+              <Button
+                onClick={() => setShowConfirmClose(false)}
+                variant="Grey"
+                textValue="Keep Editing"
+              />
+              <Button
+                onClick={confirmCancel}
+                variant="Pink"
+                textValue="Discard Changes"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {!showForm && (
         <div className={styles.content}>
           {activeTab === 'published' && loading ? (
@@ -1198,11 +1223,42 @@ export default function GalleriesPage() {
             </div>
           ) : activeTab === 'published' ? (
             <>
+              {/* Search and Sort Controls */}
+              <div className={styles.searchAndSortControls}>
+                <div className={styles.searchBar}>
+                  <FiSearch className={styles.searchIcon} />
+                  <input
+                    type="text"
+                    placeholder="Search by gallery title, UID, artist, or venue..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className={styles.searchInput}
+                  />
+                </div>
+                <div className={styles.controlsRight}>
+                  <div className={styles.sortControl}>
+                    <label htmlFor="sort-select" className={styles.sortLabel}>Sort by:</label>
+                    <CustomSelect
+                      id="sort-select"
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      options={[
+                        { value: 'latest', label: 'Latest Updated' },
+                        { value: 'alphabetical', label: 'Alphabetical' }
+                      ]}
+                      className={styles.sortSelect}
+                    />
+                  </div>
+                </div>
+              </div>
+              
               <div className={styles.galleriesList}>
                 {paginatedGalleries.length === 0 ? (
                   <div className={styles.empty}>
-                    <p>No galleries found.</p>
-                    <p className={styles.emptySubtitle}>Click "Create Gallery" to get started.</p>
+                    <p>{searchQuery ? 'No galleries found matching your search.' : 'No galleries found.'}</p>
+                    <p className={styles.emptySubtitle}>
+                      {searchQuery ? 'Try a different search term.' : 'Click "Create Gallery" to get started.'}
+                    </p>
                   </div>
                 ) : (
                   paginatedGalleries.map((gallery) => {
@@ -1263,7 +1319,7 @@ export default function GalleriesPage() {
                     Previous
                   </button>
                   <span className={styles.paginationInfo}>
-                    Page {currentPage} of {totalPages} ({galleries.length} total)
+                    Page {currentPage} of {totalPages} ({filteredAndSortedGalleries.length} total{searchQuery ? ` matching "${searchQuery}"` : ''})
                   </span>
                   <button
                     className={styles.paginationButton}
