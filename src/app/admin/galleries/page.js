@@ -609,6 +609,9 @@ export default function GalleriesPage() {
       // Switch to pending tab to show the new migration
       setActiveTab('pending')
       
+      // Reload pending migrations to show the new entry
+      await loadPendingMigrations()
+      
       // Invalidate cache and reload galleries list (won't show the new one until published, but good to refresh)
       clearGalleriesCache()
       await loadGalleries(true)
@@ -843,7 +846,13 @@ export default function GalleriesPage() {
               </button>
             </div>
 
-            <form className={styles.form}>
+            <form 
+              className={styles.form}
+              onSubmit={(e) => {
+                e.preventDefault()
+                handleCreate()
+              }}
+            >
               {formTab === 'content' && (
               <div className={styles.formGrid}>
                 <div className={styles.formGroup}>

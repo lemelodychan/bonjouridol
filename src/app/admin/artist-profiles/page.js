@@ -456,6 +456,10 @@ export default function ArtistProfilesPage() {
       // Close without confirmation after successful submission
       confirmCancel()
       setActiveTab('pending')
+      
+      // Reload pending migrations to show the new entry
+      await loadPendingMigrations()
+      
       clearArtistsCache()
       await loadArtists(true)
     } catch (error) {
@@ -1002,7 +1006,13 @@ export default function ArtistProfilesPage() {
               </button>
             </div>
 
-            <form className={styles.form}>
+            <form 
+              className={styles.form}
+              onSubmit={(e) => {
+                e.preventDefault()
+                handleCreate()
+              }}
+            >
               {formTab === 'basic' && (
                 <div className={styles.formGrid}>
                   <div className={styles.formGroup}>
