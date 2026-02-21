@@ -1,4 +1,5 @@
 import { createClient } from '@/prismicio'
+import { getKnownArtistNames, resolveArtistNames } from "@/utils/artistUtils";
 import styles from "./page.module.scss"
 
 import { components } from "@/slices";
@@ -72,8 +73,8 @@ export default async function Page({ params }) {
       },
   });
 
-  const artistNames = gallery.data.artist_name || "";
-  const artistArray = artistNames.split(',').map(name => name.trim());
+  const knownArtists = await getKnownArtistNames();
+  const artistArray = resolveArtistNames(gallery.data.artist_name, knownArtists);
 
   const eventDate = gallery.data.event_date || gallery.first_publication_date;
   const formattedEventDate = eventDate 

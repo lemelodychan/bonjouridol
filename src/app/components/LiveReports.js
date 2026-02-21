@@ -2,6 +2,7 @@ import React from "react";
 import Slider from "./Slider";
 import { createClient } from "@/prismicio";
 import * as prismic from "@prismicio/client";
+import { getKnownArtistNames, resolveArtistNames } from "@/utils/artistUtils";
 
 import Link from "next/link";
 import Button from "./IconButton";
@@ -12,28 +13,31 @@ import styles from "./LiveReports.module.scss";
 export default async function LiveReports() {
   const client = createClient();
 
-  const results = await client.getByType("articles", {
-    fetchOptions: {
-      next: { 
-        tags: ["prismic", "articles"],
-        revalidate: 3600 // Cache for 1 hour
+  const [results, knownArtists] = await Promise.all([
+    client.getByType("articles", {
+      fetchOptions: {
+        next: { 
+          tags: ["prismic", "articles"],
+          revalidate: 3600 // Cache for 1 hour
+        },
       },
-    },
-    pageSize: 8,
-    orderings: [
-      {
-        field: "my.articles.publication_date",
-        direction: "desc",
-      },
-      {
-        field: "document.first_publication_date",
-        direction: "desc",
-      },
-    ],
-    filters: [
-      prismic.filter.any("my.articles.type", ["Live report"]),
-    ],
-  });
+      pageSize: 8,
+      orderings: [
+        {
+          field: "my.articles.publication_date",
+          direction: "desc",
+        },
+        {
+          field: "document.first_publication_date",
+          direction: "desc",
+        },
+      ],
+      filters: [
+        prismic.filter.any("my.articles.type", ["Live report"]),
+      ],
+    }),
+    getKnownArtistNames(),
+  ]);
 
   if (!results || !results.results || results.results.length === 0) {
     return null; // Return nothing if no articles found
@@ -47,6 +51,7 @@ export default async function LiveReports() {
     first_publication_date: item.first_publication_date,
     publication_date: item.data.publication_date,
     idol_name: item.data.idol_name,
+    groups: resolveArtistNames(item.data.idol_name, knownArtists),
   }));
 
   return (

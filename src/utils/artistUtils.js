@@ -1,7 +1,119 @@
 import { createClient } from '@/prismicio'
 
+// ──────────────────────────────────────────────
+// Server-side cache for known artist names
+// Refreshes every hour to stay reasonably up-to-date
+// ──────────────────────────────────────────────
+let cachedArtistNames = null
+let cacheTimestamp = 0
+const CACHE_TTL = 1000 * 60 * 60 // 1 hour
+
 /**
- * Utility function to extract artist data from idol_name field
+ * Fetch and cache the list of known artist names from Prismic.
+ * Uses a 1-hour TTL so new artists are picked up without hammering the API.
+ * @returns {Promise<string[]>} - Array of known artist English names
+ */
+export async function getKnownArtistNames() {
+  const now = Date.now()
+
+  if (cachedArtistNames && (now - cacheTimestamp) < CACHE_TTL) {
+    return cachedArtistNames
+  }
+
+  try {
+    const client = createClient()
+    const artists = await client.getAllByType('artist', {
+      fetchOptions: {
+        next: {
+          tags: ['prismic', 'artists'],
+          revalidate: 3600
+        }
+      }
+    })
+
+    cachedArtistNames = artists
+      .map(a => a.data.name_en)
+      .filter(Boolean)
+      .map(name => name.trim())
+
+    cacheTimestamp = now
+    return cachedArtistNames
+  } catch (error) {
+    console.error('Failed to fetch known artist names:', error.message)
+    // Return stale cache if available, empty array otherwise
+    return cachedArtistNames || []
+  }
+}
+
+/**
+ * Resolve artist/group names from an idol_name string using a known-artists
+ * list to avoid splitting names that contain commas.
+ *
+ * Algorithm:
+ * 1. Split the string by commas into segments
+ * 2. Try to greedily re-join consecutive segments that together form a known
+ *    artist name (longest span first)
+ * 3. Single segments that don't match any multi-segment known name are kept as-is
+ *
+ * This only operates at comma boundaries — it will never match a known name
+ * inside another name (e.g. "FRUITS ZIPPER" inside "SAKURAI YUI (FRUITS ZIPPER)").
+ *
+ * @param {string} idolNameString - The raw idol_name field (e.g. "A, B, FRUITS ZIPPER")
+ * @param {string[]} knownArtistNames - Array of known artist names from the directory
+ * @returns {string[]} - Resolved array of group/artist names
+ */
+export function resolveArtistNames(idolNameString, knownArtistNames = []) {
+  if (!idolNameString || typeof idolNameString !== 'string') return []
+
+  const trimmed = idolNameString.trim()
+  if (!trimmed) return []
+
+  // Split by comma first
+  const segments = trimmed.split(',').map(s => s.trim()).filter(Boolean)
+
+  // If only one segment or no known artists, return as-is
+  if (segments.length <= 1 || !knownArtistNames || knownArtistNames.length === 0) {
+    return segments
+  }
+
+  // Build a Set of known names (lowercase) for fast lookup
+  const knownLower = new Set(knownArtistNames.map(n => n.toLowerCase().trim()))
+  // Map for recovering canonical casing
+  const knownCasing = new Map(knownArtistNames.map(n => [n.toLowerCase().trim(), n]))
+
+  const result = []
+  let i = 0
+
+  while (i < segments.length) {
+    let matched = false
+
+    // Try joining consecutive segments from longest span down to 2
+    for (let span = segments.length - i; span >= 2; span--) {
+      const joined = segments.slice(i, i + span).join(', ')
+      const joinedLower = joined.toLowerCase()
+
+      if (knownLower.has(joinedLower)) {
+        // Use the canonical casing from the known artists list
+        result.push(knownCasing.get(joinedLower))
+        i += span
+        matched = true
+        break
+      }
+    }
+
+    if (!matched) {
+      // Single segment — use as-is
+      result.push(segments[i])
+      i++
+    }
+  }
+
+  return result
+}
+
+/**
+ * Utility function to extract artist data from idol_name field.
+ * Simple version without known-artists matching (legacy / sync use).
  * @param {string} idolName - The idol_name field from Prismic
  * @returns {string[]|null} - Array of artist names or null if no data
  */

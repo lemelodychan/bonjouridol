@@ -55,6 +55,77 @@
                 }
             }
 
+            .Groups {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                z-index: 3;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 4px;
+                justify-content: flex-end;
+                max-width: 60%;
+
+                .Group {
+                    display: inline-block;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    background-color: white;
+                    color: var(--bi-dark-pink);
+                    text-transform: uppercase;
+                    font-weight: bold;
+                    font-size: var(--font-size-sm);
+                    letter-spacing: 0.5px;
+                    white-space: nowrap;
+
+                    &.GroupCounter {
+                        cursor: pointer;
+                        transition: var(--transi);
+                        position: relative;
+
+                        &:hover {
+                            background-color: var(--bi-dark-pink);
+                            color: var(--white);
+                        }
+                    }
+                }
+
+                .GroupTooltip {
+                    position: absolute;
+                    top: 100%;
+                    right: 0;
+                    margin-top: 8px;
+                    z-index: 10;
+                    width: fit-content;
+                    min-width: 140px;
+                    max-width: 280px;
+
+                    .TooltipContent {
+                        background-color: var(--white);
+                        border-radius: 8px;
+                        padding: 8px;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                        border: 1px solid rgba(0, 0, 0, 0.1);
+                        display: flex;
+                        flex-direction: column;
+                        gap: 4px;
+
+                        .TooltipGroup {
+                            display: block;
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            color: var(--bi-dark-pink);
+                            text-transform: uppercase;
+                            font-weight: bold;
+                            font-size: var(--font-size-sm);
+                            letter-spacing: 0.5px;
+                            white-space: nowrap;
+                        }
+                    }
+                }
+            }
+
             .Content {
                 display: flex;
                 flex-direction: column;
@@ -86,23 +157,14 @@
                         font-size: var(--font-size-sm);
                         letter-spacing: 0.5px;
                     
-                        &.discovery, &.livereport {
+                        &.discovery, &.livereport, &.interview,
+                        &.behindthescenes, &.gallery {
                             background-color: var(--bi-indigo);
                             order: 2;
                         }
                         &.pr {
                             background-color: var(--bi-dark-pink);
                             order: 1;
-                        }
-                        &.group {
-                            position: absolute;
-                            top: 16px;
-                            right: 16px;
-                            background-color: white;
-                            color: var(--bi-dark-pink);
-                            order: 0;
-                            white-space: nowrap;
-                            z-index: 3;
                         }
                         &:empty { display: none; }
                     }

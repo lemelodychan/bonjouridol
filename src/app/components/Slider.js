@@ -48,6 +48,13 @@ const Slider = ({ slides }) => {
                     ? format(new Date(publicationDate), "MMMM d, yyyy")
                     : "Unknown date";
 
+                    // Use pre-resolved groups if available, fall back to simple comma split
+                    const groupArray = item.groups && item.groups.length > 0
+                        ? item.groups
+                        : (item.idol_name
+                            ? item.idol_name.split(',').map(name => name.trim()).filter(name => name)
+                            : []);
+
                     return (
                     <SwiperSlide key={item.id} className={styles.Slide}>
                         <PrismicLink className={styles.DiscoveryPost} href={`/articles/${item.uid}`}>
@@ -57,33 +64,31 @@ const Slider = ({ slides }) => {
                                 alt={item.data.featured_image.alt || ""}
                             />
                         </div>
+                        {groupArray.length > 0 && (
+                            <GroupTags groups={groupArray} />
+                        )}
                         <div className={styles.Content}>
                             <div className={styles.Tags}>
-                            {item.idol_name && (
-                                <span key="group" className={`${styles.Tag} ${styles.group}`}>
-                                    {item.idol_name}
-                                </span>
-                            )}
-                            {item.tags.map((tag) => {
-                                const sanitizedTag = tag
-                                .normalize("NFD")
-                                .replace(/[\u0300-\u036f]/g, "")
-                                .replace(/\s+/g, "")
-                                .toLowerCase();
-                                return (
-                                <span key={tag} className={`${styles.Tag} ${styles[sanitizedTag]}`}>
-                                    {tag}
-                                </span>
-                                );
-                            })}
+                                {item.tags.map((tag) => {
+                                    const sanitizedTag = tag
+                                    .normalize("NFD")
+                                    .replace(/[\u0300-\u036f]/g, "")
+                                    .replace(/\s+/g, "")
+                                    .toLowerCase();
+                                    return (
+                                    <span key={tag} className={`${styles.Tag} ${styles[sanitizedTag]}`}>
+                                        {tag}
+                                    </span>
+                                    );
+                                })}
                             </div>
                             <div className={styles.Title}>
-                            <h3>
-                                <span>{item.data.title}</span>
-                                <span className={styles.icon}>
-                                <IoArrowForwardOutline />
-                                </span>
-                            </h3>
+                                <h3>
+                                    <span>{item.data.title}</span>
+                                    <span className={styles.icon}>
+                                    <IoArrowForwardOutline />
+                                    </span>
+                                </h3>
                             </div>
                             <span className={styles.Date}>{formattedDate}</span>
                         </div>
@@ -106,3 +111,76 @@ const Slider = ({ slides }) => {
 };
 
 export default Slider;
+
+// GroupTags component with +N counter and tooltip
+function GroupTags({ groups }) {
+    const [showTooltip, setShowTooltip] = useState(false);
+    const [isDesktop, setIsDesktop] = useState(false);
+
+    const firstGroup = groups[0];
+    const remainingGroups = groups.slice(1);
+    const hasMore = remainingGroups.length > 0;
+
+    React.useEffect(() => {
+        const checkIsDesktop = () => {
+            if (typeof window !== 'undefined') {
+                setIsDesktop(window.innerWidth > 768);
+            }
+        };
+        
+        checkIsDesktop();
+        if (typeof window !== 'undefined') {
+            window.addEventListener('resize', checkIsDesktop);
+            return () => {
+                window.removeEventListener('resize', checkIsDesktop);
+            };
+        }
+    }, []);
+
+    const handleCounterClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setShowTooltip(!showTooltip);
+    };
+
+    const handleMouseEnter = () => {
+        if (isDesktop) {
+            setShowTooltip(true);
+        }
+    };
+
+    const handleMouseLeave = () => {
+        if (isDesktop) {
+            setShowTooltip(false);
+        }
+    };
+
+    return (
+        <div className={styles.Groups}>
+            <span className={styles.Group}>
+                {firstGroup}
+            </span>
+            {hasMore && (
+                <span
+                    className={`${styles.Group} ${styles.GroupCounter}`}
+                    onClick={handleCounterClick}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                >
+                    +{remainingGroups.length}
+                    {showTooltip && (
+                        <div className={styles.GroupTooltip}>
+                            <div className={styles.TooltipContent}>
+                                {remainingGroups.map((group, index) => (
+                                    <span key={index} className={styles.TooltipGroup}>
+                                        {group}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </span>
+            )}
+        </div>
+    );
+}

@@ -1,5 +1,6 @@
 import { createClient } from "@/prismicio";
 import * as prismic from "@prismicio/client";
+import { getKnownArtistNames, resolveArtistNames } from "@/utils/artistUtils";
 
 import DocListContainer from "../components/DocList";
 import GalleryList from "../components/GalleryList";
@@ -57,6 +58,7 @@ export default async function SearchPage({ searchParams }) {
     }
   
     const client = createClient();
+    const knownArtists = await getKnownArtistNames();
     let results = [];
     let resultsGallery = [];
     let totalPages = 0;
@@ -152,6 +154,16 @@ export default async function SearchPage({ searchParams }) {
           // Limit galleries to 10 latest for author searches
           const limitedGalleries = photographerGalleries.slice(0, 10);
           resultsGallery = limitedGalleries;
+
+          // Resolve artist names for all results
+          results = results.map(item => ({
+            ...item,
+            resolvedArtists: resolveArtistNames(item.data.idol_name, knownArtists),
+          }));
+          resultsGallery = resultsGallery.map(item => ({
+            ...item,
+            resolvedArtists: resolveArtistNames(item.data.artist_name, knownArtists),
+          }));
 
           // Fetch like counts for all articles
           const articleSlugs = results.map(item => item.uid).filter(Boolean);
@@ -357,6 +369,16 @@ export default async function SearchPage({ searchParams }) {
             ...partialMatchGallery.results.filter((item) => !exactMatchIds.has(item.id)),
         ];
         resultsGallery = combinedResultsGallery;
+
+        // Resolve artist names for all results
+        results = results.map(item => ({
+          ...item,
+          resolvedArtists: resolveArtistNames(item.data.idol_name, knownArtists),
+        }));
+        resultsGallery = resultsGallery.map(item => ({
+          ...item,
+          resolvedArtists: resolveArtistNames(item.data.artist_name, knownArtists),
+        }));
 
         return (
             <div className={styles.SearchPage}>

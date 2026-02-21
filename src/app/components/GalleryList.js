@@ -52,8 +52,10 @@ export default function GalleryList({ results }) {
                 ? format(new Date(publicationDate), "MMMM d, yyyy")
                 : "Unknown date";
 
-              const artistNames = item.data.artist_name || "";
-              const artistArray = artistNames.split(',').map(name => name.trim());
+              // Use pre-resolved artists if available, fall back to simple comma split
+              const artistArray = item.resolvedArtists && item.resolvedArtists.length > 0
+                ? item.resolvedArtists
+                : (item.data.artist_name || "").split(',').map(name => name.trim()).filter(name => name);
 
               return (
                 <SwiperSlide key={item.id} className={styles.Slide}>

@@ -234,11 +234,15 @@ export function DocListContent({ results, currentPage, totalPages, postType, lik
             const photographerName = item.data.photographer?.uid || "Bonjour Idol";
             const photographerName2 = item.data.photographer_2?.uid;
 
-            // Use artist_name for galleries, idol_name for articles
-            const artistNames = postType === "Gallery" 
-              ? (item.data.artist_name || "")
-              : (item.data.idol_name || "");
-            const artistArray = artistNames.split(',').map(name => name.trim()).filter(name => name);
+            // Use pre-resolved artists if available, fall back to simple comma split
+            const artistArray = item.resolvedArtists && item.resolvedArtists.length > 0
+              ? item.resolvedArtists
+              : (() => {
+                  const artistNames = postType === "Gallery" 
+                    ? (item.data.artist_name || "")
+                    : (item.data.idol_name || "");
+                  return artistNames.split(',').map(name => name.trim()).filter(name => name);
+                })();
 
             return (
               <Link key={item.id} className={styles.Post} href={linkPath}>

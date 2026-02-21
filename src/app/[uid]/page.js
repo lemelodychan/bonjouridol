@@ -3,6 +3,7 @@ import * as prismic from "@prismicio/client";
 import { SliceZone } from "@prismicio/react";
 import { components } from "@/slices";
 import DocListContainer from "../components/DocList";
+import { getKnownArtistNames, resolveArtistNames } from "@/utils/artistUtils";
 
 // Import Supabase client for server-side like fetching
 const { createSupabaseClient } = await import('@/lib/supabase');
@@ -273,6 +274,16 @@ export default async function Page({ params, searchParams }) {
       } catch (error) {
         console.error("Error fetching galleries:", error);
       }
+    }
+
+    // Resolve artist names for all results
+    if (results.length > 0) {
+      const knownArtists = await getKnownArtistNames();
+      const nameField = category === "galleries" ? "artist_name" : "idol_name";
+      results = results.map(item => ({
+        ...item,
+        resolvedArtists: resolveArtistNames(item.data[nameField], knownArtists),
+      }));
     }
 
     return (
