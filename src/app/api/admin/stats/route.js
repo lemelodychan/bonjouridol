@@ -139,10 +139,10 @@ export async function GET(request) {
       .from('artist_likes')
       .select('artist_name, like_count')
 
-    // Get all articles with their artist field and total likes
+    // Get all articles with their artist field, likes, and views
     const { data: allArticles, error: articlesWithArtistsError } = await finalSupabase
       .from('articles')
-      .select('slug, artist, likes')
+      .select('slug, artist, likes, views')
 
     // Get article likes from article_likes table
     const { data: articleLikesForArtists, error: articleLikesForArtistsError } = await finalSupabase
@@ -214,7 +214,7 @@ export async function GET(request) {
       artistRankings = Array.from(artistLikeMap.entries())
         .map(([name, totalLikes]) => ({ name, totalLikes }))
         .sort((a, b) => b.totalLikes - a.totalLikes)
-        .slice(0, 20)
+        .slice(0, 10)
     } else if (artists) {
       // Fallback to artists table likes column
       artistRankings = artists.map(artist => ({
@@ -239,7 +239,7 @@ export async function GET(request) {
       articleLikeRankings = Array.from(articleLikeMap.entries())
         .map(([slug, totalLikes]) => ({ slug, totalLikes }))
         .sort((a, b) => b.totalLikes - a.totalLikes)
-        .slice(0, 20)
+        .slice(0, 10)
     } else {
       // Fallback to articles table likes column
       const { data: articles, error: articlesRankError } = await finalSupabase
@@ -256,12 +256,12 @@ export async function GET(request) {
       }
     }
 
-    // Get article rankings by views
+    // Get article rankings by views (top 10)
     const { data: articles, error: articlesViewError } = await finalSupabase
       .from('articles')
       .select('slug, views')
       .order('views', { ascending: false })
-      .limit(20)
+      .limit(10)
 
     let articleViewRankings = []
     if (!articlesViewError && articles) {
@@ -270,6 +270,9 @@ export async function GET(request) {
         totalViews: article.views || 0
       }))
     }
+
+    // Total views across all articles (from the full allArticles query)
+    const totalViews = (allArticles || []).reduce((sum, a) => sum + (a.views || 0), 0)
 
     // Calculate total likes across the platform
     let totalLikes = 0
@@ -320,10 +323,11 @@ export async function GET(request) {
       totalArtists: totalArtists || 0,
       totalArticles: totalArticles || 0,
       totalLikes: totalLikes || 0,
+      totalViews: totalViews || 0,
       totalAssets: totalAssets || 0,
       artistRankings,
       articleLikeRankings,
-      articleViewRankings
+      articleViewRankings,
     })
 
   } catch (error) {

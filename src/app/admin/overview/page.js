@@ -2,143 +2,174 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  AreaChart, Area, Legend,
+} from 'recharts'
 import styles from './page.module.scss'
 import Button from '@/app/components/IconButton'
 import { IoRefreshOutline } from 'react-icons/io5'
 
 const CACHE_KEY = 'admin_stats_cache'
-const CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 hours
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+
+// Brand colours (matching CSS variables)
+const PINK   = '#FF3194'
+const INDIGO = '#7272FC'
+const GOLD   = '#FFC107'
+const GRID   = '#ebebeb'
+
+/** Convert "2025-03-01" → "Mar 1" for axis ticks */
+function fmtDate(str) {
+  if (!str) return ''
+  const d = new Date(str + 'T00:00:00')
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
+/** Turn an article slug into a readable label */
+function fmtSlug(slug) {
+  if (!slug) return ''
+  // Remove leading date prefix (e.g. "2024-11-15-")
+  let s = slug.replace(/^\d{4}-\d{2}-\d{2}-/, '')
+  s = s.replace(/-/g, ' ')
+  return s.length > 32 ? s.slice(0, 30) + '…' : s
+}
+
+/** Compact number formatter for axis ticks */
+function fmtNum(n) {
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`
+  return String(n)
+}
+
+const CustomTooltip = ({ active, payload, label, unit = '' }) => {
+  if (!active || !payload?.length) return null
+  return (
+    <div className={styles.tooltip}>
+      <p className={styles.tooltipLabel}>{label}</p>
+      {payload.map(p => (
+        <p key={p.dataKey} style={{ color: p.color }} className={styles.tooltipRow}>
+          {p.name}: <strong>{(p.value ?? 0).toLocaleString()}{unit}</strong>
+        </p>
+      ))}
+    </div>
+  )
+}
 
 export default function OverviewPage() {
   const [stats, setStats] = useState({
-    totalArtists: 0,
-    totalArticles: 0,
-    totalLikes: 0,
-    totalAssets: 0,
-    artistRankings: [],
-    articleLikeRankings: [],
-    articleViewRankings: []
+    totalArtists: 0, totalArticles: 0, totalLikes: 0,
+    totalViews: 0, totalAssets: 0,
+    artistRankings: [], articleLikeRankings: [], articleViewRankings: [],
   })
+  const [analytics, setAnalytics] = useState(null)   // Umami data
   const [loading, setLoading] = useState(true)
+  const [analyticsLoading, setAnalyticsLoading] = useState(true)
   const [error, setError] = useState('')
   const [refreshing, setRefreshing] = useState(false)
 
   useEffect(() => {
     loadStats()
+    fetchAnalytics()
   }, [])
 
-  function getCachedStats() {
+  // ── Cache helpers ──────────────────────────────────────────────────────────
+  function getCached() {
     try {
-      const cached = localStorage.getItem(CACHE_KEY)
-      if (!cached) return null
-
-      const { data, timestamp } = JSON.parse(cached)
-      const now = Date.now()
-
-      // Check if cache is still valid (within 24 hours)
-      if (now - timestamp < CACHE_DURATION) {
-        return data
-      }
-
-      // Cache expired, remove it
+      const raw = localStorage.getItem(CACHE_KEY)
+      if (!raw) return null
+      const { data, timestamp } = JSON.parse(raw)
+      if (Date.now() - timestamp < CACHE_DURATION) return data
       localStorage.removeItem(CACHE_KEY)
       return null
-    } catch (error) {
-      console.error('Error reading cache:', error)
-      return null
-    }
+    } catch { return null }
   }
 
-  function setCachedStats(data) {
-    try {
-      const cacheData = {
-        data,
-        timestamp: Date.now()
-      }
-      localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData))
-    } catch (error) {
-      console.error('Error setting cache:', error)
-    }
+  function setCached(data) {
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() })) }
+    catch { /* storage full – ignore */ }
   }
 
-  function clearCache() {
-    try {
-      localStorage.removeItem(CACHE_KEY)
-    } catch (error) {
-      console.error('Error clearing cache:', error)
-    }
-  }
-
+  // ── Stats ─────────────────────────────────────────────────────────────────
   async function loadStats(forceRefresh = false) {
-    // Check cache first if not forcing refresh
     if (!forceRefresh) {
-      const cachedStats = getCachedStats()
-      if (cachedStats) {
-        setStats(cachedStats)
+      const cached = getCached()
+      if (cached) {
+        setStats(cached)
         setLoading(false)
-        // Fetch fresh data in background
         fetchStats(true)
         return
       }
     }
-
-    // No cache or force refresh - fetch from API
     await fetchStats(false, forceRefresh)
   }
 
-  async function fetchStats(silent = false, forceRefresh = false) {
+  async function fetchStats(silent = false) {
     try {
-      if (!silent) {
-        setLoading(true)
-      } else {
-        setRefreshing(true)
-      }
+      if (!silent) setLoading(true)
+      else setRefreshing(true)
       setError('')
-      
-      const response = await fetch('/api/admin/stats', {
-        cache: 'no-store' // Always fetch fresh data from API
-      })
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
-        throw new Error(errorData.error || `Failed to fetch stats (${response.status})`)
-      }
 
-      const data = await response.json()
-      setStats(data)
-      setCachedStats(data) // Cache the fresh data
-      setError('')
-    } catch (error) {
-      console.error('Error fetching stats:', error)
-      if (!silent) {
-        setError(error.message || 'Failed to load statistics. Please try again.')
+      const res = await fetch('/api/admin/stats', { cache: 'no-store' })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.error || `Failed to fetch stats (${res.status})`)
       }
+      const data = await res.json()
+      setStats(data)
+      setCached(data)
+    } catch (e) {
+      console.error(e)
+      if (!silent) setError(e.message || 'Failed to load statistics.')
     } finally {
       setLoading(false)
       setRefreshing(false)
     }
   }
 
-  async function handleRefresh() {
-    clearCache()
-    await loadStats(true)
+  // ── Analytics (Umami) ─────────────────────────────────────────────────────
+  async function fetchAnalytics() {
+    try {
+      setAnalyticsLoading(true)
+      const res = await fetch('/api/admin/analytics', { cache: 'no-store' })
+      if (res.ok) {
+        const data = await res.json()
+        setAnalytics(data)
+      }
+    } catch (e) {
+      console.error('Analytics fetch error:', e)
+    } finally {
+      setAnalyticsLoading(false)
+    }
   }
 
+  async function handleRefresh() {
+    try { localStorage.removeItem(CACHE_KEY) } catch {}
+    await Promise.all([loadStats(true), fetchAnalytics()])
+  }
+
+  // ── Derived chart data ─────────────────────────────────────────────────────
+  const artistChartData = [...(stats.artistRankings || [])]
+    .reverse()
+    .map(r => ({ label: r.name, value: r.totalLikes }))
+
+  const articleLikeChartData = [...(stats.articleLikeRankings || [])]
+    .reverse()
+    .map(r => ({ label: fmtSlug(r.slug), slug: r.slug, value: r.totalLikes }))
+
+  const articleViewChartData = [...(stats.articleViewRankings || [])]
+    .reverse()
+    .map(r => ({ label: fmtSlug(r.slug), slug: r.slug, value: r.totalViews }))
+
+  // ── Render ─────────────────────────────────────────────────────────────────
   if (loading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loading}>Loading statistics...</div>
-      </div>
-    )
+    return <div className={styles.container}><div className={styles.loading}>Loading statistics…</div></div>
   }
 
   if (error) {
     return (
       <div className={styles.container}>
         <div className={styles.error}>{error}</div>
-        <button onClick={() => loadStats(true)} className={styles.retryButton}>
-          Retry
-        </button>
+        <button onClick={() => loadStats(true)} className={styles.retryButton}>Retry</button>
       </div>
     )
   }
@@ -151,20 +182,26 @@ export default function OverviewPage() {
           onClick={handleRefresh}
           disabled={refreshing || loading}
           variant="White"
-          textValue={refreshing ? 'Refreshing...' : 'Refresh Data'}
+          textValue={refreshing ? 'Refreshing…' : 'Refresh Data'}
           icon={<IoRefreshOutline />}
         />
       </div>
 
       <div className={styles.content}>
+
+        {/* ── Stat cards ── */}
         <div className={styles.statsGrid}>
           <div className={styles.statCard}>
             <div className={styles.statValue}>{stats.totalArtists}</div>
-            <div className={styles.statLabel}>Total Artists</div>
+            <div className={styles.statLabel}>Artists</div>
           </div>
           <div className={styles.statCard}>
             <div className={styles.statValue}>{stats.totalArticles}</div>
-            <div className={styles.statLabel}>Total Articles</div>
+            <div className={styles.statLabel}>Articles</div>
+          </div>
+          <div className={styles.statCard}>
+            <div className={styles.statValue}>{(stats.totalViews || 0).toLocaleString()}</div>
+            <div className={styles.statLabel}>Total Views</div>
           </div>
           <div className={styles.statCard}>
             <div className={styles.statValue}>{(stats.totalLikes || 0).toLocaleString()}</div>
@@ -172,105 +209,188 @@ export default function OverviewPage() {
           </div>
           <div className={styles.statCard}>
             <div className={styles.statValue}>{(stats.totalAssets || 0).toLocaleString()}</div>
-            <div className={styles.statLabel}>Total Photos</div>
+            <div className={styles.statLabel}>Photos</div>
           </div>
         </div>
 
-        <div className={styles.rankingsSection}>
-          <div className={styles.rankingCard}>
-            <h2 className={styles.rankingTitle}>Top Artists by Likes</h2>
-            {stats.artistRankings.length > 0 ? (
-              <div className={styles.tableWrapper}>
-                <table className={styles.rankingTable}>
-                  <thead className={styles.tableHeader}>
-                    <tr>
-                      <th className={styles.tableHeaderCellRank}></th>
-                      <th className={styles.tableHeaderCellName}>Artist</th>
-                      <th className={styles.tableHeaderCellLikes}>🥐</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stats.artistRankings.map((artist, index) => (
-                      <tr key={artist.name} className={styles.tableRow}>
-                        <td className={styles.tableCellRank}>{index + 1}</td>
-                        <td className={styles.tableCellName}>{artist.name}</td>
-                        <td className={styles.tableCellLikes}>{artist.totalLikes.toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+        {/* ── Traffic chart (Umami) ── */}
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Traffic — last 30 days</h2>
+            {analytics?.stats && (
+              <div className={styles.trafficSummary}>
+                <span className={styles.trafficStat}>
+                  <span className={styles.trafficDot} style={{ background: PINK }} />
+                  <strong>{(analytics.stats.pageviews?.value ?? 0).toLocaleString()}</strong> pageviews
+                </span>
+                <span className={styles.trafficStat}>
+                  <span className={styles.trafficDot} style={{ background: INDIGO }} />
+                  <strong>{(analytics.stats.visitors?.value ?? 0).toLocaleString()}</strong> visitors
+                </span>
               </div>
-            ) : (
-              <p className={styles.noData}>No artist data available</p>
             )}
           </div>
 
-          <div className={styles.rankingCard}>
-            <h2 className={styles.rankingTitle}>Top Articles by Likes</h2>
-            {stats.articleLikeRankings.length > 0 ? (
-              <div className={styles.tableWrapper}>
-                <table className={styles.rankingTable}>
-                  <thead className={styles.tableHeader}>
-                    <tr>
-                      <th className={styles.tableHeaderCellRank}></th>
-                      <th className={styles.tableHeaderCellName}>Article Slug</th>
-                      <th className={styles.tableHeaderCellLikes}>🥐</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stats.articleLikeRankings.map((article, index) => (
-                      <tr key={article.slug} className={styles.tableRow}>
-                        <td className={styles.tableCellRank}>{index + 1}</td>
-                        <td className={styles.tableCellName}>
-                          <Link href={`https://www.bonjouridol.com/articles/${article.slug}`} target="_blank" rel="noopener noreferrer" className={styles.articleLink}>
-                            {article.slug}
-                          </Link>
-                        </td>
-                        <td className={styles.tableCellLikes}>{article.totalLikes.toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <p className={styles.noData}>No article like data available</p>
-            )}
-          </div>
+          {analyticsLoading ? (
+            <div className={styles.chartPlaceholder}>Loading traffic data…</div>
+          ) : !analytics?.configured ? (
+            <div className={styles.chartPlaceholder}>
+              <p>Traffic analytics not configured.</p>
+              <p className={styles.hint}>Add <code>UMAMI_API_SECRET</code> to your environment variables.<br />Generate a key in Umami Cloud → Settings → API Keys.</p>
+            </div>
+          ) : analytics.error ? (
+            <div className={styles.chartPlaceholder}>Could not load traffic data: {analytics.error}</div>
+          ) : analytics.pageviews?.length === 0 ? (
+            <div className={styles.chartPlaceholder}>No traffic data for the last 30 days.</div>
+          ) : (
+            <div className={styles.areaChartWrap}>
+              <ResponsiveContainer width="100%" height={200}>
+                <AreaChart data={analytics.pageviews} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="pvFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%"   stopColor={PINK}   stopOpacity={0.18} />
+                      <stop offset="100%" stopColor={PINK}   stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="visFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%"   stopColor={INDIGO} stopOpacity={0.14} />
+                      <stop offset="100%" stopColor={INDIGO} stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke={GRID} vertical={false} />
+                  <XAxis
+                    dataKey="date"
+                    tickFormatter={fmtDate}
+                    tick={{ fontSize: 11, fill: '#888' }}
+                    axisLine={false} tickLine={false}
+                    interval={4}
+                  />
+                  <YAxis
+                    tickFormatter={fmtNum}
+                    tick={{ fontSize: 11, fill: '#888' }}
+                    axisLine={false} tickLine={false}
+                    width={36}
+                  />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend
+                    iconType="circle" iconSize={8}
+                    formatter={v => <span style={{ fontSize: 12, color: '#555' }}>{v}</span>}
+                  />
+                  <Area
+                    type="monotone" dataKey="pageviews" name="Pageviews"
+                    stroke={PINK} strokeWidth={2} fill="url(#pvFill)" dot={false}
+                  />
+                  <Area
+                    type="monotone" dataKey="visitors" name="Visitors"
+                    stroke={INDIGO} strokeWidth={2} fill="url(#visFill)" dot={false}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </section>
 
-          <div className={styles.rankingCard} style={{ gridColumn: 'span 2' }}>
-            <h2 className={styles.rankingTitle}>Top Articles by Views</h2>
-            {stats.articleViewRankings.length > 0 ? (
-              <div className={styles.tableWrapper}>
-                <table className={styles.rankingTable}>
-                  <thead className={styles.tableHeader}>
-                    <tr>
-                      <th className={styles.tableHeaderCellRank}></th>
-                      <th className={styles.tableHeaderCellName}>Article Slug</th>
-                      <th className={styles.tableHeaderCellLikes}>Views</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stats.articleViewRankings.map((article, index) => (
-                      <tr key={article.slug} className={styles.tableRow}>
-                        <td className={styles.tableCellRank}>{index + 1}</td>
-                        <td className={styles.tableCellName}>
-                          <Link href={`https://www.bonjouridol.com/articles/${article.slug}`} target="_blank" rel="noopener noreferrer" className={styles.articleLink}>
-                            {article.slug}
-                          </Link>
-                        </td>
-                        <td className={styles.tableCellLikes}>{article.totalViews.toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+        {/* ── Ranking bar charts ── */}
+        <div className={styles.chartsGrid}>
+
+          {/* Artists by likes */}
+          <section className={styles.chartCard}>
+            <h2 className={styles.chartTitle}>Top Artists by 🥐</h2>
+            {artistChartData.length === 0 ? (
+              <p className={styles.noData}>No data</p>
             ) : (
-              <p className={styles.noData}>No article view data available</p>
+              <ResponsiveContainer width="100%" height={320}>
+                <BarChart layout="vertical" data={artistChartData}
+                  margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
+                  <XAxis type="number" tickFormatter={fmtNum}
+                    tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
+                  <YAxis type="category" dataKey="label" width={110}
+                    tick={{ fontSize: 12, fill: '#444' }} axisLine={false} tickLine={false} />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: '#fafafa' }} />
+                  <Bar dataKey="value" name="🥐" fill={PINK} radius={[0, 6, 6, 0]} barSize={18} />
+                </BarChart>
+              </ResponsiveContainer>
             )}
-          </div>
+          </section>
+
+          {/* Articles by likes */}
+          <section className={styles.chartCard}>
+            <h2 className={styles.chartTitle}>Top Articles by 🥐</h2>
+            {articleLikeChartData.length === 0 ? (
+              <p className={styles.noData}>No data</p>
+            ) : (
+              <ResponsiveContainer width="100%" height={320}>
+                <BarChart layout="vertical" data={articleLikeChartData}
+                  margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
+                  <XAxis type="number" tickFormatter={fmtNum}
+                    tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
+                  <YAxis type="category" dataKey="label" width={130}
+                    tick={{ fontSize: 11, fill: '#444' }} axisLine={false} tickLine={false} />
+                  <Tooltip
+                    content={({ active, payload }) =>
+                      active && payload?.length ? (
+                        <div className={styles.tooltip}>
+                          <p className={styles.tooltipLabel}>
+                            <Link href={`https://www.bonjouridol.com/articles/${payload[0]?.payload?.slug}`}
+                              target="_blank" className={styles.tooltipLink}>
+                              {payload[0]?.payload?.slug}
+                            </Link>
+                          </p>
+                          <p style={{ color: INDIGO }} className={styles.tooltipRow}>
+                            🥐 <strong>{(payload[0]?.value ?? 0).toLocaleString()}</strong>
+                          </p>
+                        </div>
+                      ) : null
+                    }
+                    cursor={{ fill: '#fafafa' }}
+                  />
+                  <Bar dataKey="value" name="🥐" fill={INDIGO} radius={[0, 6, 6, 0]} barSize={18} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </section>
+
+          {/* Articles by views */}
+          <section className={styles.chartCard}>
+            <h2 className={styles.chartTitle}>Top Articles by Views</h2>
+            {articleViewChartData.length === 0 ? (
+              <p className={styles.noData}>No data</p>
+            ) : (
+              <ResponsiveContainer width="100%" height={320}>
+                <BarChart layout="vertical" data={articleViewChartData}
+                  margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
+                  <XAxis type="number" tickFormatter={fmtNum}
+                    tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
+                  <YAxis type="category" dataKey="label" width={130}
+                    tick={{ fontSize: 11, fill: '#444' }} axisLine={false} tickLine={false} />
+                  <Tooltip
+                    content={({ active, payload }) =>
+                      active && payload?.length ? (
+                        <div className={styles.tooltip}>
+                          <p className={styles.tooltipLabel}>
+                            <Link href={`https://www.bonjouridol.com/articles/${payload[0]?.payload?.slug}`}
+                              target="_blank" className={styles.tooltipLink}>
+                              {payload[0]?.payload?.slug}
+                            </Link>
+                          </p>
+                          <p style={{ color: GOLD }} className={styles.tooltipRow}>
+                            Views: <strong>{(payload[0]?.value ?? 0).toLocaleString()}</strong>
+                          </p>
+                        </div>
+                      ) : null
+                    }
+                    cursor={{ fill: '#fafafa' }}
+                  />
+                  <Bar dataKey="value" name="Views" fill={GOLD} radius={[0, 6, 6, 0]} barSize={18} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </section>
+
         </div>
       </div>
     </div>
   )
 }
-
