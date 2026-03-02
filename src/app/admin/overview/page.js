@@ -41,6 +41,11 @@ function fmtNum(n) {
   return String(n)
 }
 
+function toDateStr(d) { return d.toISOString().slice(0, 10) }
+const TODAY          = toDateStr(new Date())
+const DEFAULT_START  = toDateStr(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))
+const SIX_MONTHS_AGO = toDateStr(new Date(Date.now() - 183 * 24 * 60 * 60 * 1000))
+
 const CustomTooltip = ({ active, payload, label, unit = '' }) => {
   if (!active || !payload?.length) return null
   return (
@@ -61,15 +66,17 @@ export default function OverviewPage() {
     totalViews: 0, totalAssets: 0,
     artistRankings: [], articleLikeRankings: [], articleViewRankings: [],
   })
-  const [analytics, setAnalytics] = useState(null)   // Umami data
+  const [analytics, setAnalytics] = useState(null)
   const [loading, setLoading] = useState(true)
   const [analyticsLoading, setAnalyticsLoading] = useState(true)
   const [error, setError] = useState('')
   const [refreshing, setRefreshing] = useState(false)
+  const [rangeStart, setRangeStart] = useState(DEFAULT_START)
+  const [rangeEnd,   setRangeEnd]   = useState(TODAY)
 
   useEffect(() => {
     loadStats()
-    fetchAnalytics()
+    fetchAnalytics(DEFAULT_START, TODAY)
   }, [])
 
   // ── Cache helpers ──────────────────────────────────────────────────────────
@@ -127,14 +134,13 @@ export default function OverviewPage() {
   }
 
   // ── Analytics (Umami) ─────────────────────────────────────────────────────
-  async function fetchAnalytics() {
+  async function fetchAnalytics(start, end) {
     try {
       setAnalyticsLoading(true)
-      const res = await fetch('/api/admin/analytics', { cache: 'no-store' })
-      if (res.ok) {
-        const data = await res.json()
-        setAnalytics(data)
-      }
+      const params = new URLSearchParams({ startAt: start, endAt: end })
+      const res = await fetch(`/api/admin/analytics?${params}`, { cache: 'no-store' })
+      const data = await res.json().catch(() => null)
+      if (data) setAnalytics(data)
     } catch (e) {
       console.error('Analytics fetch error:', e)
     } finally {
@@ -144,20 +150,20 @@ export default function OverviewPage() {
 
   async function handleRefresh() {
     try { localStorage.removeItem(CACHE_KEY) } catch {}
-    await Promise.all([loadStats(true), fetchAnalytics()])
+    await Promise.all([loadStats(true), fetchAnalytics(rangeStart, rangeEnd)])
   }
 
-  // ── Derived chart data ─────────────────────────────────────────────────────
+  // ── Derived chart data (top 10 for charts; full list for tables) ──────────
   const artistChartData = [...(stats.artistRankings || [])]
-    .reverse()
+    .slice(0, 10)
     .map(r => ({ label: r.name, value: r.totalLikes }))
 
   const articleLikeChartData = [...(stats.articleLikeRankings || [])]
-    .reverse()
+    .slice(0, 10)
     .map(r => ({ label: fmtSlug(r.slug), slug: r.slug, value: r.totalLikes }))
 
   const articleViewChartData = [...(stats.articleViewRankings || [])]
-    .reverse()
+    .slice(0, 10)
     .map(r => ({ label: fmtSlug(r.slug), slug: r.slug, value: r.totalViews }))
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -216,19 +222,39 @@ export default function OverviewPage() {
         {/* ── Traffic chart (Umami) ── */}
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Traffic — last 30 days</h2>
+            <h2 className={styles.sectionTitle}>Traffic</h2>
             {analytics?.stats && (
               <div className={styles.trafficSummary}>
                 <span className={styles.trafficStat}>
                   <span className={styles.trafficDot} style={{ background: PINK }} />
-                  <strong>{(analytics.stats.pageviews?.value ?? 0).toLocaleString()}</strong> pageviews
+                  <strong>{(analytics.stats.pageviews ?? 0).toLocaleString()}</strong> pageviews
                 </span>
                 <span className={styles.trafficStat}>
                   <span className={styles.trafficDot} style={{ background: INDIGO }} />
-                  <strong>{(analytics.stats.visitors?.value ?? 0).toLocaleString()}</strong> visitors
+                  <strong>{(analytics.stats.visitors ?? 0).toLocaleString()}</strong> visitors
                 </span>
               </div>
             )}
+            <div className={styles.dateRange}>
+              <input
+                type="date" className={styles.dateInput}
+                value={rangeStart} min={SIX_MONTHS_AGO} max={rangeEnd}
+                onChange={e => setRangeStart(e.target.value)}
+              />
+              <span className={styles.dateRangeSep}>→</span>
+              <input
+                type="date" className={styles.dateInput}
+                value={rangeEnd} min={rangeStart} max={TODAY}
+                onChange={e => setRangeEnd(e.target.value)}
+              />
+              <button
+                className={styles.applyBtn}
+                onClick={() => fetchAnalytics(rangeStart, rangeEnd)}
+                disabled={analyticsLoading}
+              >
+                {analyticsLoading ? '…' : 'Apply'}
+              </button>
+            </div>
           </div>
 
           {analyticsLoading ? (
@@ -295,97 +321,167 @@ export default function OverviewPage() {
           {/* Artists by likes */}
           <section className={styles.chartCard}>
             <h2 className={styles.chartTitle}>Top Artists by 🥐</h2>
-            {artistChartData.length === 0 ? (
+            {stats.artistRankings?.length === 0 ? (
               <p className={styles.noData}>No data</p>
             ) : (
-              <ResponsiveContainer width="100%" height={320}>
-                <BarChart layout="vertical" data={artistChartData}
-                  margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
-                  <XAxis type="number" tickFormatter={fmtNum}
-                    tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
-                  <YAxis type="category" dataKey="label" width={110}
-                    tick={{ fontSize: 12, fill: '#444' }} axisLine={false} tickLine={false} />
-                  <Tooltip content={<CustomTooltip />} cursor={{ fill: '#fafafa' }} />
-                  <Bar dataKey="value" name="🥐" fill={PINK} radius={[0, 6, 6, 0]} barSize={18} />
-                </BarChart>
-              </ResponsiveContainer>
+              <>
+                <ResponsiveContainer width="100%" height={320}>
+                  <BarChart layout="vertical" data={artistChartData}
+                    margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
+                    <XAxis type="number" tickFormatter={fmtNum}
+                      tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
+                    <YAxis type="category" dataKey="label" width={110}
+                      tick={{ fontSize: 12, fill: '#444' }} axisLine={false} tickLine={false} />
+                    <Tooltip content={<CustomTooltip />} cursor={{ fill: '#fafafa' }} />
+                    <Bar dataKey="value" name="🥐" fill={PINK} radius={[0, 6, 6, 0]} barSize={18} />
+                  </BarChart>
+                </ResponsiveContainer>
+                <table className={styles.rankTable}>
+                  <thead>
+                    <tr>
+                      <th className={styles.rankNum}>#</th>
+                      <th className={styles.rankName}>Artist</th>
+                      <th className={styles.rankCount}>🥐</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.artistRankings.map((r, i) => (
+                      <tr key={r.name} className={styles.rankRow}>
+                        <td className={styles.rankNum}>{i + 1}</td>
+                        <td className={styles.rankName}>{r.name}</td>
+                        <td className={styles.rankCount}>{r.totalLikes.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
             )}
           </section>
 
           {/* Articles by likes */}
           <section className={styles.chartCard}>
             <h2 className={styles.chartTitle}>Top Articles by 🥐</h2>
-            {articleLikeChartData.length === 0 ? (
+            {stats.articleLikeRankings?.length === 0 ? (
               <p className={styles.noData}>No data</p>
             ) : (
-              <ResponsiveContainer width="100%" height={320}>
-                <BarChart layout="vertical" data={articleLikeChartData}
-                  margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
-                  <XAxis type="number" tickFormatter={fmtNum}
-                    tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
-                  <YAxis type="category" dataKey="label" width={130}
-                    tick={{ fontSize: 11, fill: '#444' }} axisLine={false} tickLine={false} />
-                  <Tooltip
-                    content={({ active, payload }) =>
-                      active && payload?.length ? (
-                        <div className={styles.tooltip}>
-                          <p className={styles.tooltipLabel}>
-                            <Link href={`https://www.bonjouridol.com/articles/${payload[0]?.payload?.slug}`}
-                              target="_blank" className={styles.tooltipLink}>
-                              {payload[0]?.payload?.slug}
-                            </Link>
-                          </p>
-                          <p style={{ color: INDIGO }} className={styles.tooltipRow}>
-                            🥐 <strong>{(payload[0]?.value ?? 0).toLocaleString()}</strong>
-                          </p>
-                        </div>
-                      ) : null
-                    }
-                    cursor={{ fill: '#fafafa' }}
-                  />
-                  <Bar dataKey="value" name="🥐" fill={INDIGO} radius={[0, 6, 6, 0]} barSize={18} />
-                </BarChart>
-              </ResponsiveContainer>
+              <>
+                <ResponsiveContainer width="100%" height={320}>
+                  <BarChart layout="vertical" data={articleLikeChartData}
+                    margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
+                    <XAxis type="number" tickFormatter={fmtNum}
+                      tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
+                    <YAxis type="category" dataKey="label" width={130}
+                      tick={{ fontSize: 11, fill: '#444' }} axisLine={false} tickLine={false} />
+                    <Tooltip
+                      content={({ active, payload }) =>
+                        active && payload?.length ? (
+                          <div className={styles.tooltip}>
+                            <p className={styles.tooltipLabel}>
+                              <Link href={`https://www.bonjouridol.com/articles/${payload[0]?.payload?.slug}`}
+                                target="_blank" className={styles.tooltipLink}>
+                                {payload[0]?.payload?.slug}
+                              </Link>
+                            </p>
+                            <p style={{ color: INDIGO }} className={styles.tooltipRow}>
+                              🥐 <strong>{(payload[0]?.value ?? 0).toLocaleString()}</strong>
+                            </p>
+                          </div>
+                        ) : null
+                      }
+                      cursor={{ fill: '#fafafa' }}
+                    />
+                    <Bar dataKey="value" name="🥐" fill={INDIGO} radius={[0, 6, 6, 0]} barSize={18} />
+                  </BarChart>
+                </ResponsiveContainer>
+                <table className={styles.rankTable}>
+                  <thead>
+                    <tr>
+                      <th className={styles.rankNum}>#</th>
+                      <th className={styles.rankName}>Article</th>
+                      <th className={styles.rankCount}>🥐</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.articleLikeRankings.map((r, i) => (
+                      <tr key={r.slug} className={styles.rankRow}>
+                        <td className={styles.rankNum}>{i + 1}</td>
+                        <td className={styles.rankName}>
+                          <Link href={`https://www.bonjouridol.com/articles/${r.slug}`}
+                            target="_blank" className={styles.rankLink}>
+                            {fmtSlug(r.slug)}
+                          </Link>
+                        </td>
+                        <td className={styles.rankCount}>{r.totalLikes.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
             )}
           </section>
 
           {/* Articles by views */}
           <section className={styles.chartCard}>
             <h2 className={styles.chartTitle}>Top Articles by Views</h2>
-            {articleViewChartData.length === 0 ? (
+            {stats.articleViewRankings?.length === 0 ? (
               <p className={styles.noData}>No data</p>
             ) : (
-              <ResponsiveContainer width="100%" height={320}>
-                <BarChart layout="vertical" data={articleViewChartData}
-                  margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
-                  <XAxis type="number" tickFormatter={fmtNum}
-                    tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
-                  <YAxis type="category" dataKey="label" width={130}
-                    tick={{ fontSize: 11, fill: '#444' }} axisLine={false} tickLine={false} />
-                  <Tooltip
-                    content={({ active, payload }) =>
-                      active && payload?.length ? (
-                        <div className={styles.tooltip}>
-                          <p className={styles.tooltipLabel}>
-                            <Link href={`https://www.bonjouridol.com/articles/${payload[0]?.payload?.slug}`}
-                              target="_blank" className={styles.tooltipLink}>
-                              {payload[0]?.payload?.slug}
-                            </Link>
-                          </p>
-                          <p style={{ color: GOLD }} className={styles.tooltipRow}>
-                            Views: <strong>{(payload[0]?.value ?? 0).toLocaleString()}</strong>
-                          </p>
-                        </div>
-                      ) : null
-                    }
-                    cursor={{ fill: '#fafafa' }}
-                  />
-                  <Bar dataKey="value" name="Views" fill={GOLD} radius={[0, 6, 6, 0]} barSize={18} />
-                </BarChart>
-              </ResponsiveContainer>
+              <>
+                <ResponsiveContainer width="100%" height={320}>
+                  <BarChart layout="vertical" data={articleViewChartData}
+                    margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
+                    <XAxis type="number" tickFormatter={fmtNum}
+                      tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
+                    <YAxis type="category" dataKey="label" width={130}
+                      tick={{ fontSize: 11, fill: '#444' }} axisLine={false} tickLine={false} />
+                    <Tooltip
+                      content={({ active, payload }) =>
+                        active && payload?.length ? (
+                          <div className={styles.tooltip}>
+                            <p className={styles.tooltipLabel}>
+                              <Link href={`https://www.bonjouridol.com/articles/${payload[0]?.payload?.slug}`}
+                                target="_blank" className={styles.tooltipLink}>
+                                {payload[0]?.payload?.slug}
+                              </Link>
+                            </p>
+                            <p style={{ color: GOLD }} className={styles.tooltipRow}>
+                              Views: <strong>{(payload[0]?.value ?? 0).toLocaleString()}</strong>
+                            </p>
+                          </div>
+                        ) : null
+                      }
+                      cursor={{ fill: '#fafafa' }}
+                    />
+                    <Bar dataKey="value" name="Views" fill={GOLD} radius={[0, 6, 6, 0]} barSize={18} />
+                  </BarChart>
+                </ResponsiveContainer>
+                <table className={styles.rankTable}>
+                  <thead>
+                    <tr>
+                      <th className={styles.rankNum}>#</th>
+                      <th className={styles.rankName}>Article</th>
+                      <th className={styles.rankCount}>Views</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.articleViewRankings.map((r, i) => (
+                      <tr key={r.slug} className={styles.rankRow}>
+                        <td className={styles.rankNum}>{i + 1}</td>
+                        <td className={styles.rankName}>
+                          <Link href={`https://www.bonjouridol.com/articles/${r.slug}`}
+                            target="_blank" className={styles.rankLink}>
+                            {fmtSlug(r.slug)}
+                          </Link>
+                        </td>
+                        <td className={styles.rankCount}>{r.totalViews.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
             )}
           </section>
 
