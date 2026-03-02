@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/prismicio'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
-// Get Supabase client for persistent storage
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -12,29 +10,117 @@ function getSupabaseClient() {
     return null
   }
 
-  return createSupabaseClient(
-    supabaseUrl,
-    serviceKey || anonKey,
-    {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-      }
+  return createSupabaseClient(supabaseUrl, serviceKey || anonKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
+}
+
+/**
+ * Best-effort: update the Prismic document to remove the 'pending-migration'
+ * tag and set it to 'archived'. Builds the correct Prismic document format
+ * from the stored form data so the PUT does not wipe existing content.
+ * Failures are intentionally swallowed — the Supabase status update is the
+ * authoritative action.
+ */
+async function archiveInPrismic(documentId, entry) {
+  if (!documentId) return { archived: false, error: 'No document ID' }
+
+  const MIGRATION_TOKEN = process.env.PRISMIC_MASTER_TOKEN
+  const REPOSITORY_NAME = process.env.REPO_NAME || 'bonjouridol'
+
+  if (!MIGRATION_TOKEN) return { archived: false, error: 'Migration token not configured' }
+
+  try {
+    const galleryData = entry.galleryData || {}
+
+    // Build the correct Prismic document data format from stored form data
+    const data = {
+      title: entry.title || galleryData.title || '',
+      type: galleryData.type || 'Gallery',
+      artist_name: galleryData.artist_name || '',
+      event_date: galleryData.event_date || null,
+      venue: galleryData.venue || '',
+      is_official_photos: galleryData.is_official_photos || false,
+      gallery: (galleryData.images || []).map(image => ({
+        image: {
+          id: image.id,
+          url: image.url || '',
+          width: image.dimensions?.width || null,
+          height: image.dimensions?.height || null,
+          alt: image.alt || null,
+          copyright: image.copyright || null,
+        },
+      })),
+      meta_title: galleryData.meta_title || '',
+      meta_description: galleryData.meta_description || '',
     }
-  )
+
+    if (galleryData.photographer) {
+      data.photographer = { id: galleryData.photographer, type: 'author', link_type: 'Document', isBroken: false }
+    }
+    if (galleryData.photographer_2) {
+      data.photographer_2 = { id: galleryData.photographer_2, type: 'author', link_type: 'Document', isBroken: false }
+    }
+    if (galleryData.featured_image_id) {
+      const featuredImg = (galleryData.images || []).find(img => img.id === galleryData.featured_image_id)
+      if (featuredImg) {
+        data.featured_image = {
+          id: featuredImg.id,
+          url: featuredImg.url,
+          width: featuredImg.dimensions?.width || null,
+          height: featuredImg.dimensions?.height || null,
+          alt: featuredImg.alt || null,
+        }
+      }
+    } else if (galleryData.featured_image && typeof galleryData.featured_image === 'object') {
+      data.featured_image = galleryData.featured_image
+    }
+    if (galleryData.meta_image && typeof galleryData.meta_image === 'object') {
+      data.meta_image = galleryData.meta_image
+    }
+
+    const response = await fetch(`https://migration.prismic.io/documents/${documentId}`, {
+      method: 'PUT',
+      headers: {
+        'repository': REPOSITORY_NAME,
+        'Authorization': `Bearer ${MIGRATION_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        type: 'gallery',
+        uid: entry.uid || '',
+        lang: 'en-us',
+        title: entry.title || '',
+        tags: ['archived'],
+        data,
+      }),
+    })
+
+    if (response.ok) {
+      return { archived: true, error: null }
+    }
+
+    const errorText = await response.text()
+    const msg = `Prismic API returned ${response.status}: ${errorText}`
+    console.warn(`Failed to archive Prismic document ${documentId}:`, msg)
+    return { archived: false, error: msg }
+  } catch (e) {
+    console.error('Error attempting to archive in Prismic:', e)
+    return { archived: false, error: e.message }
+  }
 }
 
 export async function POST(request) {
   try {
     const { id, uid, documentId } = await request.json()
-    
+
     if (!id && !uid) {
       return NextResponse.json(
         { error: 'Migration ID or UID is required' },
         { status: 400 }
       )
     }
-    
+
     const supabase = getSupabaseClient()
     if (!supabase) {
       return NextResponse.json(
@@ -42,115 +128,40 @@ export async function POST(request) {
         { status: 500 }
       )
     }
-    
-    // Archive the document in Prismic migration release
-    // This matches the manual "archive" action in Prismic's migration release section
-    let prismicArchived = false
-    let prismicError = null
-    
-    if (documentId) {
-      try {
-        const MIGRATION_TOKEN = process.env.PRISMIC_MASTER_TOKEN
-        const REPOSITORY_NAME = process.env.REPO_NAME || 'bonjouridol'
-        
-        if (MIGRATION_TOKEN) {
-          // Get the migration data from Supabase to get the full document structure
-          let migrationData = null
-          if (supabase) {
-            const query = supabase
-              .from('pending_gallery_migrations')
-              .select('gallery_data, release_title, uid')
-            
-            if (id) {
-              query.eq('id', id)
-            } else if (uid) {
-              query.eq('uid', uid)
-            }
-            
-            const { data } = await query.single()
-            migrationData = data
-          }
-          
-          // Update the document via Migration API to mark it as archived
-          // This should archive it in the migration release, similar to manual archiving
-          const updateUrl = `https://migration.prismic.io/documents/${documentId}`
-          
-          // Build the update payload - include required fields and archived tag
-          // When archiving, we remove 'pending-migration' tag and add 'archived' tag
-          const updatePayload = {
-            type: String('gallery'),
-            uid: String(migrationData?.uid || uid || ''),
-            lang: String('en-us'),
-            title: String(migrationData?.gallery_data?.title || 'Archived Gallery'),
-            tags: ['archived'], // Remove pending-migration tag, only keep archived
-          }
-          
-          // Include full data to ensure the update succeeds
-          if (migrationData?.gallery_data) {
-            updatePayload.data = migrationData.gallery_data
-          } else {
-            // If no data, include minimal required fields
-            updatePayload.data = {
-              title: migrationData?.title || 'Archived Gallery',
-              type: 'Gallery',
-              artist_name: '',
-              event_date: '',
-              venue: '',
-              is_official_photos: false,
-              photographer: '',
-              photographer_2: '',
-              featured_image: null,
-              featured_image_id: null,
-              tags: [],
-              meta_title: '',
-              meta_description: '',
-              meta_image: null,
-              images: [],
-            }
-          }
-          
-          const response = await fetch(updateUrl, {
-            method: 'PUT',
-            headers: {
-              'repository': REPOSITORY_NAME,
-              'Authorization': `Bearer ${MIGRATION_TOKEN}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatePayload),
-          })
-          
-          if (response.ok) {
-            prismicArchived = true
-            console.log(`Successfully archived Prismic document ${documentId} in migration release`)
-          } else {
-            const errorText = await response.text()
-            prismicError = `Prismic API returned ${response.status}: ${errorText}`
-            console.warn(`Failed to archive Prismic document ${documentId}:`, prismicError)
-          }
-        } else {
-          prismicError = 'Migration token not configured'
-          console.warn('Cannot archive Prismic document: Migration token not found')
-        }
-      } catch (error) {
-        prismicError = error.message
-        console.error('Error attempting to archive in Prismic:', error)
-        // Continue anyway - we'll still update Supabase
-      }
+
+    // Fetch the full migration data from Supabase so we can build the correct
+    // Prismic document payload for the tag update.
+    const fetchQuery = supabase
+      .from('pending_gallery_migrations')
+      .select('gallery_data, release_title, uid, title')
+    if (id) {
+      fetchQuery.eq('id', id)
+    } else {
+      fetchQuery.eq('uid', uid)
     }
-    
-    // Update Supabase status to "archived"
-    const query = supabase
+    const { data: migrationData } = await fetchQuery.single()
+
+    // Best-effort: archive the document in Prismic
+    const prismicResult = documentId
+      ? await archiveInPrismic(documentId, {
+          uid: migrationData?.uid || uid || '',
+          title: migrationData?.title || '',
+          galleryData: migrationData?.gallery_data || {},
+        })
+      : { archived: false, error: 'No document ID provided' }
+
+    // Update Supabase status to 'archived'
+    const updateQuery = supabase
       .from('pending_gallery_migrations')
       .update({ status: 'archived' })
-    
     if (id) {
-      query.eq('id', id)
+      updateQuery.eq('id', id)
     } else {
-      query.eq('uid', uid)
+      updateQuery.eq('uid', uid)
     }
-    
-    const { data, error } = await query.select().single()
-    
+
+    const { data, error } = await updateQuery.select().single()
+
     if (error) {
       console.error('Error archiving pending migration:', error)
       return NextResponse.json(
@@ -158,14 +169,11 @@ export async function POST(request) {
         { status: 500 }
       )
     }
-    
+
     if (!data) {
-      return NextResponse.json(
-        { error: 'Migration not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Migration not found' }, { status: 404 })
     }
-    
+
     return NextResponse.json({
       success: true,
       migration: {
@@ -173,13 +181,13 @@ export async function POST(request) {
         uid: data.uid,
         title: data.title,
         status: data.status,
-        prismicArchived,
-        prismicError,
+        prismicArchived: prismicResult.archived,
+        prismicError: prismicResult.error,
       },
-      message: prismicArchived 
+      message: prismicResult.archived
         ? 'Gallery archived successfully in both Supabase and Prismic'
-        : prismicError
-          ? `Gallery archived in Supabase. Note: Could not archive in Prismic (${prismicError}). You may need to manually delete it from the Prismic dashboard.`
+        : prismicResult.error
+          ? `Gallery archived in Supabase. Note: Could not archive in Prismic (${prismicResult.error}). You may need to manually delete it from the Prismic dashboard.`
           : 'Gallery archived successfully in Supabase',
     })
   } catch (error) {
@@ -190,4 +198,3 @@ export async function POST(request) {
     )
   }
 }
-

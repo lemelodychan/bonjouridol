@@ -14,7 +14,7 @@ import { FaImage } from "react-icons/fa6";
 import { format } from 'date-fns'
 
 const GALLERIES_CACHE_KEY = 'admin_galleries_cache'
-const CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 hours
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
 
 export default function GalleriesPage() {
   const [activeTab, setActiveTab] = useState('pending') // 'pending' or 'published'
