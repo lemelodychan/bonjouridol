@@ -10,34 +10,106 @@ function getSupabaseClient() {
     return null
   }
 
-  return createSupabaseClient(
-    supabaseUrl,
-    serviceKey || anonKey,
-    {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-      }
-    }
-  )
+  return createSupabaseClient(supabaseUrl, serviceKey || anonKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
 }
 
 /**
- * Discard a pending artist migration by archiving it in Prismic and Supabase
- * This sets the status to 'archived' in Supabase and adds 'archived' tag in Prismic
- * Archived items are filtered out from the pending list
+ * Best-effort: update the Prismic document to remove the 'pending-migration'
+ * tag and set it to 'archived'. Builds the correct Prismic document format
+ * from the stored form data so the PUT does not wipe existing content.
+ * Failures are intentionally swallowed — the Supabase status update is the
+ * authoritative action.
  */
+async function archiveInPrismic(documentId, entry) {
+  if (!documentId) return { archived: false, error: 'No document ID' }
+
+  const MIGRATION_TOKEN = process.env.PRISMIC_MASTER_TOKEN
+  const REPOSITORY_NAME = process.env.REPO_NAME || 'bonjouridol'
+
+  if (!MIGRATION_TOKEN) return { archived: false, error: 'Migration token not configured' }
+
+  try {
+    const artistData = entry.artistData || {}
+
+    // Build the correct Prismic document data format from stored form data
+    const data = {
+      name_en: entry.name_en || artistData.name_en || '',
+      name_jp: artistData.name_jp || '',
+      debut: artistData.debut || '',
+      disband: artistData.disband || '',
+      description: artistData.description || [],
+      youtube_video: artistData.youtube_video || '',
+      song_list: (artistData.song_list || []).map(song => ({
+        song_title_en: song.song_title_en || '',
+        song_title_ja: song.song_title_ja || '',
+        song_link: song.song_link || { link_type: 'Any' },
+        song_cover: song.song_cover || {},
+      })),
+    }
+
+    if (artistData.profile_picture && typeof artistData.profile_picture === 'object') {
+      data.profile_picture = artistData.profile_picture
+    }
+    if (artistData.website && typeof artistData.website === 'object') {
+      data.website = artistData.website
+    }
+    if (artistData.twitter && typeof artistData.twitter === 'object') {
+      data.twitter = artistData.twitter
+    }
+    if (artistData.instagram && typeof artistData.instagram === 'object') {
+      data.instagram = artistData.instagram
+    }
+    if (artistData.youtube && typeof artistData.youtube === 'object') {
+      data.youtube = artistData.youtube
+    }
+    if (artistData.tiktok && typeof artistData.tiktok === 'object') {
+      data.tiktok = artistData.tiktok
+    }
+
+    const response = await fetch(`https://migration.prismic.io/documents/${documentId}`, {
+      method: 'PUT',
+      headers: {
+        'repository': REPOSITORY_NAME,
+        'Authorization': `Bearer ${MIGRATION_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        type: 'artist',
+        uid: entry.uid || '',
+        lang: 'en-us',
+        title: entry.name_en || '',
+        tags: ['archived'],
+        data,
+      }),
+    })
+
+    if (response.ok) {
+      return { archived: true, error: null }
+    }
+
+    const errorText = await response.text()
+    const msg = `Prismic API returned ${response.status}: ${errorText}`
+    console.warn(`Failed to archive Prismic artist document ${documentId}:`, msg)
+    return { archived: false, error: msg }
+  } catch (e) {
+    console.error('Error attempting to archive artist in Prismic:', e)
+    return { archived: false, error: e.message }
+  }
+}
+
 export async function POST(request) {
   try {
     const { id, uid, documentId } = await request.json()
-    
+
     if (!id && !uid) {
       return NextResponse.json(
         { error: 'Migration ID or UID is required' },
         { status: 400 }
       )
     }
-    
+
     const supabase = getSupabaseClient()
     if (!supabase) {
       return NextResponse.json(
@@ -45,140 +117,58 @@ export async function POST(request) {
         { status: 500 }
       )
     }
-    
-    // Archive the document in Prismic migration release
-    // This matches the manual "archive" action in Prismic's migration release section
-    let prismicArchived = false
-    let prismicError = null
-    
-    console.log('Discarding artist migration:', { id, uid, documentId })
-    
-    if (documentId) {
-      try {
-        const MIGRATION_TOKEN = process.env.PRISMIC_MASTER_TOKEN
-        const REPOSITORY_NAME = process.env.REPO_NAME || 'bonjouridol'
-        
-        if (MIGRATION_TOKEN) {
-          // Get the migration data from Supabase to get the full document structure
-          let migrationData = null
-          const query = supabase
-            .from('pending_artist_migrations')
-            .select('artist_data, release_title, uid, name_en')
-          
-          if (id) {
-            query.eq('id', id)
-          } else if (uid) {
-            query.eq('uid', uid)
-          }
-          
-          const { data, error: queryError } = await query.single()
-          
-          if (queryError || !data) {
-            prismicError = `Failed to fetch migration data: ${queryError?.message || 'No data found'}`
-            console.error('Error fetching migration data:', queryError)
-          } else {
-            migrationData = data
-            console.log('Fetched migration data for archiving:', { uid: migrationData.uid, name_en: migrationData.name_en })
-          }
-          
-          // Update the document via Migration API to mark it as archived
-          // This should archive it in the migration release, similar to manual archiving
-          const updateUrl = `https://migration.prismic.io/documents/${documentId}`
-          
-          // Build the update payload - include required fields and archived tag
-          // When archiving, we remove 'pending-migration' tag and add 'archived' tag
-          const updatePayload = {
-            type: String('artist'),
-            uid: String(migrationData?.uid || uid || ''),
-            lang: String('en-us'),
-            title: String(migrationData?.name_en || 'Archived Artist'),
-            tags: ['archived'], // Remove pending-migration tag, only keep archived
-          }
-          
-          // Include full data to ensure the update succeeds
-          if (migrationData?.artist_data) {
-            updatePayload.data = migrationData.artist_data
-          } else {
-            // If no data, include minimal required fields
-            updatePayload.data = {
-              name_en: migrationData?.name_en || 'Archived Artist',
-              name_jp: '',
-              profile_picture: null,
-              debut: '',
-              disband: '',
-              description: [],
-              youtube_video: '',
-              song_list: [],
-              website: { link_type: 'Web', url: '' },
-              twitter: { link_type: 'Web', url: '' },
-              instagram: { link_type: 'Web', url: '' },
-              youtube: { link_type: 'Web', url: '' },
-              tiktok: { link_type: 'Web', url: '' },
-            }
-          }
-          
-          const response = await fetch(updateUrl, {
-            method: 'PUT',
-            headers: {
-              'repository': REPOSITORY_NAME,
-              'Authorization': `Bearer ${MIGRATION_TOKEN}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatePayload),
-          })
-          
-          const responseText = await response.text()
-          
-          if (response.ok) {
-            prismicArchived = true
-            console.log(`Successfully archived Prismic document ${documentId} in migration release`)
-          } else {
-            prismicError = `Prismic API error: ${response.status} - ${responseText}`
-            console.error('Migration API error:', response.status, responseText)
-            
-            // Try to parse error for more details
-            try {
-              const errorJson = JSON.parse(responseText)
-              console.error('Prismic error details:', errorJson)
-            } catch {
-              // Not JSON, already logged as text
-            }
-          }
-        }
-      } catch (error) {
-        prismicError = error.message
-        console.error('Error archiving in Prismic:', error)
-      }
+
+    // Fetch the full migration data from Supabase so we can build the correct
+    // Prismic document payload for the tag update.
+    const fetchQuery = supabase
+      .from('pending_artist_migrations')
+      .select('artist_data, release_title, uid, name_en')
+    if (id) {
+      fetchQuery.eq('id', id)
+    } else {
+      fetchQuery.eq('uid', uid)
     }
-    
+    const { data: migrationData } = await fetchQuery.single()
+
+    // Best-effort: archive the document in Prismic
+    const prismicResult = documentId
+      ? await archiveInPrismic(documentId, {
+          uid: migrationData?.uid || uid || '',
+          name_en: migrationData?.name_en || '',
+          artistData: migrationData?.artist_data || {},
+        })
+      : { archived: false, error: 'No document ID provided' }
+
     // Update status to 'archived' in Supabase
     const updateQuery = supabase
       .from('pending_artist_migrations')
       .update({ status: 'archived' })
-    
     if (id) {
       updateQuery.eq('id', id)
-    } else if (uid) {
+    } else {
       updateQuery.eq('uid', uid)
     }
-    
+
     const { error: supabaseError } = await updateQuery
-    
+
     if (supabaseError) {
-      console.error('Error updating Supabase:', supabaseError)
+      console.error('Error archiving artist migration in Supabase:', supabaseError)
       return NextResponse.json(
-        { error: 'Failed to update Supabase', message: supabaseError.message },
+        { error: 'Failed to archive artist migration', message: supabaseError.message },
         { status: 500 }
       )
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Artist discarded successfully',
-      prismicArchived,
-      prismicError: prismicError || null,
+      message: prismicResult.archived
+        ? 'Artist archived successfully in both Supabase and Prismic'
+        : prismicResult.error
+          ? `Artist archived in Supabase. Note: Could not archive in Prismic (${prismicResult.error}). You may need to manually delete it from the Prismic dashboard.`
+          : 'Artist archived successfully in Supabase',
+      prismicArchived: prismicResult.archived,
+      prismicError: prismicResult.error,
     })
-
   } catch (error) {
     console.error('Error discarding artist:', error)
     return NextResponse.json(
@@ -187,4 +177,3 @@ export async function POST(request) {
     )
   }
 }
-

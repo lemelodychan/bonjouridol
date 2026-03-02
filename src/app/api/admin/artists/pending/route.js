@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/prismicio'
-import * as prismic from '@prismicio/client'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
-// Get Supabase client for persistent storage
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -13,222 +11,131 @@ function getSupabaseClient() {
     return null
   }
 
-  return createSupabaseClient(
-    supabaseUrl,
-    serviceKey || anonKey,
-    {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-      }
-    }
-  )
+  return createSupabaseClient(supabaseUrl, serviceKey || anonKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
 }
 
 /**
- * Try to fetch pending migrations from Prismic by querying for documents
- * with the 'pending-migration' tag that haven't been published yet
+ * Fetch UIDs of all published artists from Prismic Content API.
+ * Used by the GET handler to auto-detect when a pending migration's release
+ * has been published in Prismic.
+ *
+ * Note: the Content API only returns *published* documents — draft documents
+ * created via the Migration API are invisible here. That is intentional: we
+ * cross-reference pending Supabase entries against this list so that anything
+ * whose uid now appears in Prismic must have been published.
  */
-async function fetchPendingMigrationsFromPrismic() {
+async function fetchPublishedArtistUids() {
   try {
     const client = createClient()
-    
-    try {
-      const drafts = await client.getAllByType('artist', {
-        filters: [
-          prismic.filter.at('document.tags', ['pending-migration'])
-        ],
-        pageSize: 100,
-      })
-      
-      return drafts.map(doc => ({
-        id: doc.id,
-        name_en: doc.data.name_en || 'Untitled',
-        name_jp: doc.data.name_jp || '',
-        uid: doc.uid || '',
-        releaseTitle: `New Artists - ${new Date(doc.first_publication_date || Date.now()).toISOString().split('T')[0]} - ${doc.data.name_en || 'Untitled'}`,
-        createdAt: doc.first_publication_date || new Date().toISOString(),
-        documentId: doc.id,
-        repositoryName: process.env.REPO_NAME || 'bonjouridol',
-        artistData: doc.data, // Full document data
-      }))
-    } catch (error) {
-      return []
-    }
-  } catch (error) {
-    return []
+    const docs = await client.getAllByType('artist', { pageSize: 100 })
+    return new Set(docs.map(doc => doc.uid))
+  } catch (e) {
+    console.warn('Could not fetch published artists from Prismic:', e.message)
+    return new Set()
   }
 }
 
 /**
- * Create a Supabase entry from a Prismic document
- * Uses upsert to handle cases where the entry already exists
+ * Best-effort: remove the 'pending-migration' tag from a Prismic artist document
+ * after its migration release has been published or discarded.
+ *
+ * Builds the correct Prismic document format from the stored form data so the
+ * PUT does not wipe existing content. Failures are intentionally swallowed —
+ * the Supabase status update is the authoritative action.
  */
-async function createSupabaseEntryFromPrismic(prismicDoc, supabase) {
+async function removePendingTagFromPrismic(documentId, entry) {
+  if (!documentId) return
+  const MIGRATION_TOKEN = process.env.PRISMIC_MASTER_TOKEN
+  const REPOSITORY_NAME = process.env.REPO_NAME
+  if (!MIGRATION_TOKEN) return
+
   try {
-    // Check if entry with this document_id already exists (to avoid duplicates during sync)
-    if (prismicDoc.documentId) {
-      const { data: existingByDocId } = await supabase
-        .from('pending_artist_migrations')
-        .select('*')
-        .eq('document_id', prismicDoc.documentId)
-        .eq('status', 'pending')
-        .limit(1)
-        .single()
-      
-      if (existingByDocId) {
-        // Entry with this document_id already exists, return it
-        return {
-          id: existingByDocId.id,
-          name_en: existingByDocId.name_en,
-          uid: existingByDocId.uid,
-          releaseTitle: existingByDocId.release_title,
-          createdAt: existingByDocId.created_at,
-          documentId: existingByDocId.document_id,
-          repositoryName: existingByDocId.repository_name,
-          artistData: existingByDocId.artist_data,
-          status: existingByDocId.status,
-          updatedAt: existingByDocId.updated_at,
-        }
-      }
-    }
-    
-    // Entry doesn't exist - create new one with unique release_title
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
-    const releaseTitle = `New Artists - ${new Date(prismicDoc.createdAt || Date.now()).toISOString().split('T')[0]} - ${prismicDoc.name_en || 'Untitled'} - ${timestamp}`
-    
-    const { data, error } = await supabase
-      .from('pending_artist_migrations')
-      .insert({
-        uid: prismicDoc.uid,
-        name_en: prismicDoc.name_en,
-        release_title: releaseTitle,
-        document_id: prismicDoc.documentId,
-        repository_name: prismicDoc.repositoryName || 'bonjouridol',
-        artist_data: prismicDoc.artistData || null,
-        status: 'pending',
-        created_at: prismicDoc.createdAt,
-      })
-      .select()
-      .single()
-    
-    if (error) {
-      console.error('Error creating Supabase entry from Prismic:', error)
-      return null
-    }
-    
-    return {
-      id: data.id,
-      name_en: data.name_en,
-      uid: data.uid,
-      releaseTitle: data.release_title,
-      createdAt: data.created_at,
-      documentId: data.document_id,
-      repositoryName: data.repository_name,
-      artistData: data.artist_data,
-      status: data.status,
-      updatedAt: data.updated_at,
-    }
-  } catch (error) {
-    console.error('Error creating Supabase entry from Prismic:', error)
-    return null
-  }
-}
+    const artistData = entry.artistData || {}
+    const userTags = [] // artists don't have user-facing tags like galleries
 
-/**
- * Create a Prismic document from a Supabase entry
- */
-async function createPrismicDocumentFromSupabase(supabaseEntry) {
-  try {
-    const REPOSITORY_NAME = process.env.REPO_NAME
-    const MIGRATION_TOKEN = process.env.PRISMIC_MASTER_TOKEN
-
-    if (!MIGRATION_TOKEN) {
-      console.error('Migration API token not configured')
-      return null
-    }
-
-    const artistData = supabaseEntry.artistData || {}
-    const releaseDate = new Date(supabaseEntry.createdAt || Date.now()).toISOString().split('T')[0]
-    // Make release_title unique by adding timestamp to avoid conflicts
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5)
-    const releaseTitle = supabaseEntry.releaseTitle || `New Artists - ${releaseDate} - ${supabaseEntry.name_en || 'Untitled'} - ${timestamp}`
-
-    // Format artist document for Migration API
+    // Build Prismic document data format from stored form data
     const data = {
-      name_en: supabaseEntry.name_en || '',
+      name_en: entry.name_en || artistData.name_en || '',
       name_jp: artistData.name_jp || '',
-      profile_picture: artistData.profile_picture || null,
       debut: artistData.debut || '',
       disband: artistData.disband || '',
       description: artistData.description || [],
       youtube_video: artistData.youtube_video || '',
-      song_list: artistData.song_list || [],
-      website: artistData.website || { link_type: 'Web', url: '' },
-      twitter: artistData.twitter || { link_type: 'Web', url: '' },
-      instagram: artistData.instagram || { link_type: 'Web', url: '' },
-      youtube: artistData.youtube || { link_type: 'Web', url: '' },
-      tiktok: artistData.tiktok || { link_type: 'Web', url: '' },
+      song_list: (artistData.song_list || []).map(song => ({
+        song_title_en: song.song_title_en || '',
+        song_title_ja: song.song_title_ja || '',
+        song_link: song.song_link || { link_type: 'Any' },
+        song_cover: song.song_cover || {},
+      })),
     }
 
-    const documentToSend = {
-      type: 'artist',
-      uid: supabaseEntry.uid,
-      lang: 'en-us',
-      title: supabaseEntry.name_en || 'Untitled',
-      data: data,
-      release_title: releaseTitle,
-      tags: ['pending-migration'],
+    if (artistData.profile_picture && typeof artistData.profile_picture === 'object') {
+      data.profile_picture = artistData.profile_picture
+    }
+    if (artistData.website && typeof artistData.website === 'object') {
+      data.website = artistData.website
+    }
+    if (artistData.twitter && typeof artistData.twitter === 'object') {
+      data.twitter = artistData.twitter
+    }
+    if (artistData.instagram && typeof artistData.instagram === 'object') {
+      data.instagram = artistData.instagram
+    }
+    if (artistData.youtube && typeof artistData.youtube === 'object') {
+      data.youtube = artistData.youtube
+    }
+    if (artistData.tiktok && typeof artistData.tiktok === 'object') {
+      data.tiktok = artistData.tiktok
     }
 
-    const createUrl = new URL('https://migration.prismic.io/documents')
-    createUrl.searchParams.set('release_title', releaseTitle)
-    
-    const response = await fetch(createUrl.toString(), {
-      method: 'POST',
+    const response = await fetch(`https://migration.prismic.io/documents/${documentId}`, {
+      method: 'PUT',
       headers: {
         'repository': REPOSITORY_NAME,
         'Authorization': `Bearer ${MIGRATION_TOKEN}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(documentToSend),
+      body: JSON.stringify({
+        type: 'artist',
+        uid: entry.uid || '',
+        lang: 'en-us',
+        title: entry.name_en || '',
+        tags: userTags,
+        data,
+      }),
     })
 
-    const responseText = await response.text()
-
     if (!response.ok) {
-      console.error('Error creating Prismic document from Supabase:', response.status, responseText)
-      return null
+      const text = await response.text()
+      console.warn(`Could not remove pending-migration tag from Prismic artist document ${documentId}: ${response.status} ${text}`)
     }
+  } catch (e) {
+    console.warn(`Could not remove pending-migration tag from Prismic artist document ${documentId}:`, e.message)
+  }
+}
 
-    let createdDoc
-    try {
-      createdDoc = JSON.parse(responseText)
-    } catch {
-      // Response might not be JSON
-      return null
-    }
-
-    // Update Supabase with the new document ID
-    const supabase = getSupabaseClient()
-    if (supabase && createdDoc.id) {
-      await supabase
-        .from('pending_artist_migrations')
-        .update({ document_id: createdDoc.id })
-        .eq('id', supabaseEntry.id)
-    }
-
-    return createdDoc
-  } catch (error) {
-    console.error('Error creating Prismic document from Supabase:', error)
-    return null
+/** Map a Supabase row to the API response shape. */
+function mapRow(row) {
+  return {
+    id: row.id,
+    name_en: row.name_en,
+    uid: row.uid,
+    releaseTitle: row.release_title,
+    createdAt: row.created_at,
+    documentId: row.document_id,
+    repositoryName: row.repository_name,
+    artistData: row.artist_data,
+    status: row.status,
+    updatedAt: row.updated_at,
   }
 }
 
 export async function GET(request) {
   try {
     const supabase = getSupabaseClient()
-    
+
     if (!supabase) {
       return NextResponse.json({
         success: true,
@@ -237,108 +144,48 @@ export async function GET(request) {
         source: 'Supabase not configured',
       })
     }
-    
-    // Fetch from both Supabase and Prismic
-    let supabaseMigrations = []
+
+    // 1. Supabase is the single source of truth for pending migrations.
+    //    Fetch all entries currently in 'pending' status.
     const { data, error } = await supabase
       .from('pending_artist_migrations')
       .select('*')
-      .in('status', ['pending']) // Only get pending, exclude published, cancelled, and archived
+      .eq('status', 'pending')
       .order('created_at', { ascending: false })
-    
-    if (!error && data) {
-      supabaseMigrations = data.map(row => ({
-        id: row.id,
-        name_en: row.name_en,
-        uid: row.uid,
-        releaseTitle: row.release_title,
-        createdAt: row.created_at,
-        documentId: row.document_id,
-        repositoryName: row.repository_name,
-        artistData: row.artist_data, // Full artist data for editing
-        status: row.status,
-        updatedAt: row.updated_at,
-      }))
+
+    if (error) {
+      throw new Error(error.message)
     }
-    
-    // Fetch from Prismic
-    const prismicMigrations = await fetchPendingMigrationsFromPrismic()
-    
-    // Sync: Create missing entries
-    // 1. If document exists in Prismic but not in Supabase → create in Supabase
-    // Only create if there's no pending entry for this UID
-    for (const prismicDoc of prismicMigrations) {
-      const hasPendingInSupabase = supabaseMigrations.find(
-        m => m.uid === prismicDoc.uid && m.status === 'pending'
-      )
-      
-      // Only create if there's no pending entry (allow multiple published/archived)
-      if (!hasPendingInSupabase) {
-        const existsByDocId = prismicDoc.documentId && supabaseMigrations.find(
-          m => m.documentId === prismicDoc.documentId
-        )
-        
-        if (!existsByDocId) {
-          const created = await createSupabaseEntryFromPrismic(prismicDoc, supabase)
-          if (created) {
-            supabaseMigrations.push(created)
-          }
-        }
+
+    const supabaseMigrations = (data || []).map(mapRow)
+
+    // 2. Fetch UIDs of all published artists from Prismic Content API.
+    //    This is how we detect that an admin has published a migration release in Prismic
+    //    without needing a separate "Mark as Published" manual step.
+    const publishedUids = await fetchPublishedArtistUids()
+
+    // 3. Auto-detect and resolve artists that have been published in Prismic.
+    //    If a pending entry's uid now exists as a published Prismic document, its
+    //    migration release was published — update Supabase status automatically.
+    const stillPending = []
+    for (const entry of supabaseMigrations) {
+      if (publishedUids.has(entry.uid)) {
+        await supabase
+          .from('pending_artist_migrations')
+          .update({ status: 'published' })
+          .eq('id', entry.id)
+        // Best-effort: clean up the pending-migration tag in Prismic
+        await removePendingTagFromPrismic(entry.documentId, entry)
+      } else {
+        stillPending.push(entry)
       }
     }
-    
-    // 2. If document exists in Supabase but not in Prismic → create in Prismic
-    // Only create Prismic document if there's no existing one for this pending entry
-    for (const supabaseEntry of supabaseMigrations) {
-      if (supabaseEntry.status === 'pending') {
-        const existsInPrismic = prismicMigrations.find(
-          p => p.documentId === supabaseEntry.documentId || 
-               (p.uid === supabaseEntry.uid && p.documentId) // Only match if Prismic doc has documentId
-        )
-        
-        if (!existsInPrismic) {
-          await createPrismicDocumentFromSupabase(supabaseEntry)
-          // Note: We don't add to prismicMigrations array since we'll refetch if needed
-          // The document will be synced on next load
-        }
-      }
-    }
-    
-    // Re-fetch from Supabase to get any newly created entries
-    // Use DISTINCT ON to get only the latest pending entry per uid
-    const { data: refreshedData } = await supabase
-      .from('pending_artist_migrations')
-      .select('*')
-      .in('status', ['pending'])
-      .order('uid', { ascending: true })
-      .order('created_at', { ascending: false })
-    
-    // Get only the latest entry per uid (since we ordered by uid then created_at desc)
-    const latestByUid = new Map()
-    for (const row of refreshedData || []) {
-      if (!latestByUid.has(row.uid)) {
-        latestByUid.set(row.uid, row)
-      }
-    }
-    
-    const finalMigrations = Array.from(latestByUid.values()).map(row => ({
-      id: row.id,
-      name_en: row.name_en,
-      uid: row.uid,
-      releaseTitle: row.release_title,
-      createdAt: row.created_at,
-      documentId: row.document_id,
-      repositoryName: row.repository_name,
-      artistData: row.artist_data,
-      status: row.status,
-      updatedAt: row.updated_at,
-    }))
-    
+
     return NextResponse.json({
       success: true,
-      pending: finalMigrations,
-      total: finalMigrations.length,
-      source: 'Supabase (synced with Prismic)',
+      pending: stillPending,
+      total: stillPending.length,
+      source: 'Supabase',
     })
   } catch (error) {
     console.error('Error fetching pending migrations:', error)
@@ -352,7 +199,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const migrationData = await request.json()
-    
+
     const supabase = getSupabaseClient()
     if (!supabase) {
       return NextResponse.json(
@@ -360,32 +207,33 @@ export async function POST(request) {
         { status: 500 }
       )
     }
-    
-    // Check if there's already a pending entry for this UID
-    const { data: existingPending } = await supabase
+
+    // Check if any entry exists for this UID regardless of status.
+    // The uid column has a UNIQUE constraint, so we must handle all statuses
+    // here rather than only checking for 'pending' — otherwise creating/editing
+    // an artist whose previous entry was published or archived would silently
+    // fail on the INSERT with a unique-constraint violation.
+    const { data: existingAny } = await supabase
       .from('pending_artist_migrations')
       .select('*')
       .eq('uid', migrationData.uid)
-      .eq('status', 'pending')
       .maybeSingle()
-    
-    if (existingPending) {
-      // Update existing pending entry (editing)
-      const updateData = {
-        name_en: migrationData.name_en,
-        release_title: migrationData.releaseTitle,
-        document_id: migrationData.documentId || existingPending.document_id,
-        repository_name: migrationData.repositoryName || 'bonjouridol',
-        artist_data: migrationData.artistData || null,
-      }
-      
+
+    if (existingAny?.status === 'pending') {
+      // Update existing pending entry (normal editing flow)
       const { data, error } = await supabase
         .from('pending_artist_migrations')
-        .update(updateData)
-        .eq('id', existingPending.id)
+        .update({
+          name_en: migrationData.name_en,
+          release_title: migrationData.releaseTitle,
+          document_id: migrationData.documentId || existingAny.document_id,
+          repository_name: migrationData.repositoryName || 'bonjouridol',
+          artist_data: migrationData.artistData || null,
+        })
+        .eq('id', existingAny.id)
         .select()
         .single()
-      
+
       if (error) {
         console.error('Error updating pending migration:', error)
         return NextResponse.json(
@@ -393,43 +241,55 @@ export async function POST(request) {
           { status: 500 }
         )
       }
-      
-      const pendingMigration = {
-        id: data.id,
-        name_en: data.name_en,
-        uid: data.uid,
-        releaseTitle: data.release_title,
-        createdAt: data.created_at,
-        documentId: data.document_id,
-        repositoryName: data.repository_name,
-        artistData: data.artist_data,
-        status: data.status,
-      }
-      
-      return NextResponse.json({
-        success: true,
-        migration: pendingMigration,
-        updated: true,
-      })
-    } else {
-      // Create new pending entry (new document)
-      const insertData = {
-        uid: migrationData.uid,
-        name_en: migrationData.name_en,
-        release_title: migrationData.releaseTitle,
-        document_id: migrationData.documentId,
-        repository_name: migrationData.repositoryName || 'bonjouridol',
-        artist_data: migrationData.artistData || null,
-        status: 'pending',
-        created_at: migrationData.createdAt || new Date().toISOString(),
-      }
-      
+
+      return NextResponse.json({ success: true, migration: mapRow(data), updated: true })
+
+    } else if (existingAny) {
+      // Reactivate a previously published or archived entry with the same uid.
+      // This handles the case where an admin discards an artist then wants to
+      // recreate it — rather than inserting a duplicate (which would fail on the
+      // UNIQUE constraint), we bring the existing row back to pending.
       const { data, error } = await supabase
         .from('pending_artist_migrations')
-        .insert(insertData)
+        .update({
+          name_en: migrationData.name_en,
+          release_title: migrationData.releaseTitle,
+          document_id: migrationData.documentId || existingAny.document_id,
+          repository_name: migrationData.repositoryName || 'bonjouridol',
+          artist_data: migrationData.artistData || null,
+          status: 'pending',
+        })
+        .eq('id', existingAny.id)
         .select()
         .single()
-      
+
+      if (error) {
+        console.error('Error reactivating pending migration:', error)
+        return NextResponse.json(
+          { error: 'Failed to reactivate pending migration', message: error.message },
+          { status: 500 }
+        )
+      }
+
+      return NextResponse.json({ success: true, migration: mapRow(data), updated: true, reactivated: true })
+
+    } else {
+      // Create new pending entry
+      const { data, error } = await supabase
+        .from('pending_artist_migrations')
+        .insert({
+          uid: migrationData.uid,
+          name_en: migrationData.name_en,
+          release_title: migrationData.releaseTitle,
+          document_id: migrationData.documentId,
+          repository_name: migrationData.repositoryName || 'bonjouridol',
+          artist_data: migrationData.artistData || null,
+          status: 'pending',
+          created_at: migrationData.createdAt || new Date().toISOString(),
+        })
+        .select()
+        .single()
+
       if (error) {
         console.error('Error creating pending migration:', error)
         return NextResponse.json(
@@ -437,50 +297,9 @@ export async function POST(request) {
           { status: 500 }
         )
       }
-      
-      const pendingMigration = {
-        id: data.id,
-        name_en: data.name_en,
-        uid: data.uid,
-        releaseTitle: data.release_title,
-        createdAt: data.created_at,
-        documentId: data.document_id,
-        repositoryName: data.repository_name,
-        artistData: data.artist_data,
-        status: data.status,
-      }
-      
-      return NextResponse.json({
-        success: true,
-        migration: pendingMigration,
-        updated: false,
-      })
+
+      return NextResponse.json({ success: true, migration: mapRow(data), updated: false })
     }
-    
-    if (error) {
-      console.error('Error saving pending migration:', error)
-      return NextResponse.json(
-        { error: 'Failed to save pending migration', message: error.message },
-        { status: 500 }
-      )
-    }
-    
-    const pendingMigration = {
-      id: data.id,
-      name_en: data.name_en,
-      uid: data.uid,
-      releaseTitle: data.release_title,
-      createdAt: data.created_at,
-      documentId: data.document_id,
-      repositoryName: data.repository_name,
-      artistData: data.artist_data,
-      status: data.status,
-    }
-    
-    return NextResponse.json({
-      success: true,
-      migration: pendingMigration,
-    })
   } catch (error) {
     console.error('Error creating pending migration:', error)
     return NextResponse.json(
@@ -495,16 +314,16 @@ export async function PUT(request) {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
     const uid = searchParams.get('uid')
-    
+
     if (!id && !uid) {
       return NextResponse.json(
         { error: 'Migration ID or UID is required' },
         { status: 400 }
       )
     }
-    
+
     const migrationData = await request.json()
-    
+
     const supabase = getSupabaseClient()
     if (!supabase) {
       return NextResponse.json(
@@ -512,28 +331,23 @@ export async function PUT(request) {
         { status: 500 }
       )
     }
-    
-    // Build update object
+
     const updateData = {}
     if (migrationData.name_en) updateData.name_en = migrationData.name_en
     if (migrationData.releaseTitle) updateData.release_title = migrationData.releaseTitle
     if (migrationData.documentId) updateData.document_id = migrationData.documentId
     if (migrationData.artistData) updateData.artist_data = migrationData.artistData
     if (migrationData.status) updateData.status = migrationData.status
-    
-    // Update by id or uid
-    const query = supabase
-      .from('pending_artist_migrations')
-      .update(updateData)
-    
+
+    const query = supabase.from('pending_artist_migrations').update(updateData)
     if (id) {
       query.eq('id', id)
     } else {
       query.eq('uid', uid)
     }
-    
+
     const { data, error } = await query.select().single()
-    
+
     if (error) {
       console.error('Error updating pending migration:', error)
       return NextResponse.json(
@@ -541,28 +355,12 @@ export async function PUT(request) {
         { status: 500 }
       )
     }
-    
+
     if (!data) {
-      return NextResponse.json(
-        { error: 'Migration not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Migration not found' }, { status: 404 })
     }
-    
-    return NextResponse.json({
-      success: true,
-      migration: {
-        id: data.id,
-        name_en: data.name_en,
-        uid: data.uid,
-        releaseTitle: data.release_title,
-        createdAt: data.created_at,
-        documentId: data.document_id,
-        repositoryName: data.repository_name,
-        artistData: data.artist_data,
-        status: data.status,
-      },
-    })
+
+    return NextResponse.json({ success: true, migration: mapRow(data) })
   } catch (error) {
     console.error('Error updating pending migration:', error)
     return NextResponse.json(
@@ -577,14 +375,14 @@ export async function DELETE(request) {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
     const uid = searchParams.get('uid')
-    
+
     if (!id && !uid) {
       return NextResponse.json(
         { error: 'Migration ID or UID is required' },
         { status: 400 }
       )
     }
-    
+
     const supabase = getSupabaseClient()
     if (!supabase) {
       return NextResponse.json(
@@ -592,20 +390,29 @@ export async function DELETE(request) {
         { status: 500 }
       )
     }
-    
-    // Update status to 'published' instead of deleting
-    const query = supabase
+
+    // Fetch the entry first so we have the documentId and artist data
+    // needed for the Prismic tag cleanup below.
+    const fetchQuery = supabase.from('pending_artist_migrations').select('*')
+    if (id) {
+      fetchQuery.eq('id', id)
+    } else {
+      fetchQuery.eq('uid', uid)
+    }
+    const { data: entryData } = await fetchQuery.maybeSingle()
+
+    // Update status to 'published'
+    const updateQuery = supabase
       .from('pending_artist_migrations')
       .update({ status: 'published' })
-    
     if (id) {
-      query.eq('id', id)
+      updateQuery.eq('id', id)
     } else {
-      query.eq('uid', uid)
+      updateQuery.eq('uid', uid)
     }
-    
-    const { data, error } = await query.select().single()
-    
+
+    const { data, error } = await updateQuery.select().single()
+
     if (error) {
       console.error('Error updating migration status:', error)
       return NextResponse.json(
@@ -613,7 +420,16 @@ export async function DELETE(request) {
         { status: 500 }
       )
     }
-    
+
+    // Best-effort: remove the pending-migration tag from the Prismic document
+    if (entryData?.document_id) {
+      await removePendingTagFromPrismic(entryData.document_id, {
+        uid: entryData.uid,
+        name_en: entryData.name_en,
+        artistData: entryData.artist_data,
+      })
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Migration marked as published',
@@ -627,4 +443,3 @@ export async function DELETE(request) {
     )
   }
 }
-

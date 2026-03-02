@@ -12,7 +12,7 @@ import { FaCheck } from "react-icons/fa6"
 import { format } from 'date-fns'
 
 const ARTISTS_CACHE_KEY = 'admin_artists_cache'
-const CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 hours
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
 
 export default function ArtistProfilesPage() {
   const [activeTab, setActiveTab] = useState('pending') // 'pending' or 'published'
