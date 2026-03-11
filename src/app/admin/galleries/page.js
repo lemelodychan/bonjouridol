@@ -5,7 +5,7 @@ import styles from './page.module.scss'
 import Button from '@/app/components/IconButton'
 import CustomSelect from '@/app/components/CustomSelect'
 import { IoAddOutline, IoCloseOutline, IoDownloadOutline } from 'react-icons/io5'
-import { FiEdit, FiTrash2, FiSearch, FiExternalLink, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
+import { FiEdit, FiSearch, FiExternalLink, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { IoStarOutline, IoStar, IoCheckmark } from 'react-icons/io5'
 import { FaCheck } from "react-icons/fa6";
 import { FaRegStar, FaStar } from "react-icons/fa6";
@@ -232,42 +232,6 @@ export default function GalleriesPage() {
     } catch (error) {
       console.error('Error marking migration as published:', error)
       setError(error.message || 'Failed to mark as published')
-    }
-  }
-
-  async function discardPendingMigration(migration) {
-    if (!confirm(`Are you sure you want to discard "${migration.title}"? This will archive it in Prismic and remove it from the pending list.`)) {
-      return
-    }
-    
-    try {
-      const response = await fetch('/api/admin/galleries/pending/discard', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: migration.id,
-          uid: migration.uid,
-          documentId: migration.documentId,
-        }),
-      })
-      
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to discard gallery')
-      }
-      
-      // Clear cache
-      clearGalleriesCache()
-      
-      // Reload to get fresh data
-      await loadPendingMigrations()
-      
-      alert('Gallery discarded successfully. It has been archived and removed from the pending list.')
-    } catch (error) {
-      console.error('Error discarding pending migration:', error)
-      alert(`Error discarding gallery: ${error.message}`)
     }
   }
 
@@ -511,6 +475,13 @@ export default function GalleriesPage() {
       const responseData = await response.json()
 
       if (!response.ok) {
+        if (response.status === 409) {
+          // The release was published by someone else while this form was open.
+          // Close the form and refresh the pending list so the stale entry clears.
+          confirmCancel()
+          await loadPendingMigrations()
+          setActiveTab('pending')
+        }
         throw new Error(responseData.error || 'Failed to create gallery')
       }
 
@@ -1422,14 +1393,6 @@ export default function GalleriesPage() {
                             </a>
                         </span>
                         <span className={styles.pendingActionsRight}>
-                          <button
-                            onClick={() => discardPendingMigration(migration)}
-                            className={styles.discardPending}
-                            title="Discard and archive this gallery"
-                          >
-                            <FiTrash2 />
-                            Discard
-                          </button>
                           <button
                             onClick={() => removePendingMigration(migration.id)}
                             className={styles.removePending}

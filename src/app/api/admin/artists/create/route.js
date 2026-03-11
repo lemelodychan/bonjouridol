@@ -53,28 +53,8 @@ export async function POST(request) {
       )
     }
 
-    // Check if document with this UID already exists in Prismic
-    let existingDocumentId = artistData.documentId || null
-    let isUpdate = false
-    
-    if (!existingDocumentId) {
-      try {
-        const prismicClient = createClient()
-        const existingDoc = await prismicClient.getByUID('artist', artistData.uid)
-        if (existingDoc && existingDoc.id) {
-          existingDocumentId = existingDoc.id
-          isUpdate = true
-          console.log(`Found existing artist document with UID "${artistData.uid}", will patch document ID: ${existingDocumentId}`)
-        }
-      } catch (error) {
-        // Document doesn't exist, will create new one
-        console.log(`No existing artist document found with UID "${artistData.uid}", will create new document`)
-      }
-    } else {
-      isUpdate = true
-    }
-    
-    const documentId = existingDocumentId
+    const isUpdate = !!artistData.documentId
+    const documentId = artistData.documentId || null
 
     // Format artist document for Migration API
     const data = {
@@ -114,17 +94,11 @@ export async function POST(request) {
       data.tiktok = artistData.tiktok
     }
 
-    const document = {
-      type: 'artist',
-      uid: (artistData.uid || '').trim(),
-      lang: 'en-us',
-      title: (artistData.name_en || '').trim(), // Required at root level
-      data: data,
-    }
-
-    // Generate release title
+    // Include the UID so each artist gets a unique release label.
+    // This prevents release label collisions when two artists share a name or are
+    // created on the same day, which would break orphan detection in the pending route.
     const releaseDate = new Date().toISOString().split('T')[0] // YYYY-MM-DD
-    const releaseTitle = `New Artists - ${releaseDate} - ${(artistData.name_en || '').trim()}`
+    const releaseTitle = `New Artists - ${releaseDate} - ${(artistData.name_en || '').trim()} [${(artistData.uid || '').trim()}]`
 
     const documentToSend = {
       type: String('artist'),
@@ -148,7 +122,22 @@ export async function POST(request) {
     let wasUpdated = false
 
     if (isUpdate && documentId) {
-      // Try to UPDATE existing document
+      // Guard: if the UID is already published in Prismic, the migration release was
+      // published by someone else while this form was open.  Sending a PUT now could
+      // silently patch live published content, so we block it here instead.
+      try {
+        const prismicClient = createClient()
+        const alreadyPublished = await prismicClient.getByUID('artist', artistData.uid).catch(() => null)
+        if (alreadyPublished) {
+          return NextResponse.json(
+            { error: 'This artist has already been published in Prismic. Reload the pending migrations list — this entry will be cleared automatically.' },
+            { status: 409 }
+          )
+        }
+      } catch {
+        // Content API unreachable — proceed; worst case the Migration API PUT will fail
+      }
+
       const updateUrl = `https://migration.prismic.io/documents/${documentId}`
       
       response = await fetch(updateUrl, {
@@ -165,12 +154,21 @@ export async function POST(request) {
       
       if (response.ok) {
         wasUpdated = true
-      } else if (response.status === 404 || response.status === 405 || response.status === 400) {
-        console.log(`Update failed (${response.status}), falling back to create new document`)
+      } else {
+        // Never fall back to creating a new document when updating a known draft document.
+        // Creating a new document would spawn a second orphaned migration release in Prismic.
+        let errorMessage = `Failed to update artist draft (Prismic returned ${response.status})`
+        if (response.status === 404) {
+          errorMessage = 'The Prismic draft document no longer exists — it may have been deleted or its migration release was discarded. Please create the artist again from scratch.'
+        }
+        return NextResponse.json(
+          { error: errorMessage, status: response.status, details: responseText },
+          { status: response.status === 404 ? 404 : 422 }
+        )
       }
     }
 
-    // If not updating (or update failed), create new document
+    // Create new document (only reached when no draft documentId was provided)
     if (!wasUpdated) {
       const createUrl = new URL('https://migration.prismic.io/documents')
       createUrl.searchParams.set('release_title', releaseTitle)
@@ -187,68 +185,34 @@ export async function POST(request) {
 
       responseText = await response.text()
 
-      // If creation fails with "document with this UID already exists", try to patch instead
+      // If direct format fails, try wrapped format (some API versions require it)
       if (!response.ok) {
         try {
           const error = JSON.parse(responseText)
-          
-          // Check if error is about existing UID
-          if (error.message && error.message.includes('already exists') && !isUpdate) {
-            // Try to find the document again and patch it
-            try {
-              const prismicClient = createClient()
-              const existingDoc = await prismicClient.getByUID('artist', artistData.uid)
-              if (existingDoc && existingDoc.id) {
-                console.log(`Document exists, switching to patch mode with ID: ${existingDoc.id}`)
-                const patchUrl = `https://migration.prismic.io/documents/${existingDoc.id}`
-                
-                response = await fetch(patchUrl, {
-                  method: 'PUT',
-                  headers: {
-                    'repository': REPOSITORY_NAME,
-                    'Authorization': `Bearer ${MIGRATION_TOKEN}`,
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(requestBody),
-                })
-                
-                responseText = await response.text()
-                if (response.ok) {
-                  wasUpdated = true
-                }
-              }
-            } catch (patchError) {
-              console.error('Error patching existing document:', patchError)
+          if (error.details && error.details.some(d =>
+            d.property === 'title' ||
+            d.property === 'type' ||
+            d.property === 'lang' ||
+            d.property === 'release_title' ||
+            d.property?.includes('release')
+          )) {
+            requestBody = {
+              documents: [documentToSend],
+              release_title: releaseTitle,
             }
-          }
-          
-          // If still not OK and not a UID conflict, try wrapped format
-          if (!response.ok && !error.message?.includes('already exists')) {
-            if (error.details && error.details.some(d => 
-              d.property === 'title' || 
-              d.property === 'type' || 
-              d.property === 'lang' ||
-              d.property === 'release_title' ||
-              d.property?.includes('release')
-            )) {
-              requestBody = {
-                documents: [documentToSend],
-                release_title: releaseTitle,
-              }
-              const wrappedUrl = new URL('https://migration.prismic.io/documents')
-              wrappedUrl.searchParams.set('release_title', releaseTitle)
-              
-              response = await fetch(wrappedUrl.toString(), {
-                method: 'POST',
-                headers: {
-                  'repository': REPOSITORY_NAME,
-                  'Authorization': `Bearer ${MIGRATION_TOKEN}`,
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody),
-              })
-              responseText = await response.text()
-            }
+            const wrappedUrl = new URL('https://migration.prismic.io/documents')
+            wrappedUrl.searchParams.set('release_title', releaseTitle)
+
+            response = await fetch(wrappedUrl.toString(), {
+              method: 'POST',
+              headers: {
+                'repository': REPOSITORY_NAME,
+                'Authorization': `Bearer ${MIGRATION_TOKEN}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(requestBody),
+            })
+            responseText = await response.text()
           }
         } catch {
           // Not JSON, continue with original response

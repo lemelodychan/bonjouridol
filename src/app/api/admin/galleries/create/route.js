@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { createClient } from '@/prismicio'
 
 /**
  * Create or update a gallery document using Prismic Migration API
@@ -120,17 +121,12 @@ export async function POST(request) {
       data.meta_image = galleryData.meta_image
     }
     
-    const document = {
-      type: 'gallery',
-      uid: (galleryData.uid || '').trim(),
-      lang: 'en-us',
-      title: (galleryData.title || '').trim(), // Required at root level, must be non-empty
-      data: data,
-    }
-
-    // Generate release title in format: "New Galleries - [date] - [gallery title]"
+    // Include the UID in the release title so each gallery gets a unique release label.
+    // This prevents two galleries with the same title on the same day from sharing a
+    // Prismic release label, which would break the orphan-detection check in the
+    // pending route (which keys off the label to verify a release still exists).
     const releaseDate = new Date().toISOString().split('T')[0] // YYYY-MM-DD
-    const releaseTitle = `New Galleries - ${releaseDate} - ${(galleryData.title || '').trim()}`
+    const releaseTitle = `New Galleries - ${releaseDate} - ${(galleryData.title || '').trim()} [${(galleryData.uid || '').trim()}]`
 
     // Ensure all root-level fields are explicitly strings
     const documentToSend = {
@@ -164,8 +160,22 @@ export async function POST(request) {
     let wasUpdated = false
     
     if (isUpdate && documentId) {
-      // Try to UPDATE existing document
-      // Note: Migration API may not support updates, but we'll try
+      // Guard: if the UID is already published in Prismic, the migration release was
+      // published by someone else while this form was open.  Sending a PUT now could
+      // silently patch live published content, so we block it here instead.
+      try {
+        const prismicClient = createClient()
+        const alreadyPublished = await prismicClient.getByUID('gallery', galleryData.uid).catch(() => null)
+        if (alreadyPublished) {
+          return NextResponse.json(
+            { error: 'This gallery has already been published in Prismic. Reload the pending migrations list — this entry will be cleared automatically.' },
+            { status: 409 }
+          )
+        }
+      } catch {
+        // Content API unreachable — proceed; worst case the Migration API PUT will fail
+      }
+
       const updateUrl = `https://migration.prismic.io/documents/${documentId}`
       
       response = await fetch(updateUrl, {
@@ -179,17 +189,25 @@ export async function POST(request) {
       })
       
       responseText = await response.text()
-      
-      // If update succeeds, mark as updated
+
       if (response.ok) {
         wasUpdated = true
-      } else if (response.status === 404 || response.status === 405 || response.status === 400) {
-        // If update fails (404 = document not found, or 405 = method not allowed), fall back to create
-        console.log(`Update failed (${response.status}), falling back to create new document`)
+      } else {
+        // Never fall back to creating a new document when an update was requested.
+        // Creating a new document would spawn a second orphaned migration release in Prismic.
+        // If the document is gone (404), the admin should recreate the gallery from scratch.
+        let errorMessage = `Failed to update gallery (Prismic returned ${response.status})`
+        if (response.status === 404) {
+          errorMessage = 'The Prismic draft document no longer exists — it may have been deleted or its migration release was discarded. Please create the gallery again from scratch.'
+        }
+        return NextResponse.json(
+          { error: errorMessage, status: response.status, details: responseText },
+          { status: response.status === 404 ? 404 : 422 }
+        )
       }
     }
-    
-    // If not updating (or update failed), create new document
+
+    // Create new document (only reached when documentId was NOT provided, i.e. not editing)
     if (!wasUpdated) {
       // First try: Direct document (not wrapped) with release_title as query param
       const createUrl = new URL('https://migration.prismic.io/documents')

@@ -17,6 +17,34 @@ function getSupabaseClient() {
 }
 
 /**
+ * Fetch the set of active (non-master) release labels from the Prismic
+ * Content Delivery API.  Every migration release created via the Migration API
+ * appears here as a ref whose `label` equals the `release_title` we passed
+ * when creating the document.
+ *
+ * Returns null if the call fails — callers treat null as "could not verify,
+ * keep all entries" so the check is always fail-safe.
+ */
+async function fetchActivePrismicReleaseLabels() {
+  try {
+    const REPOSITORY_NAME = process.env.REPO_NAME
+    const ACCESS_TOKEN = process.env.PRISMIC_ACCESS_TOKEN
+    const url = `https://${REPOSITORY_NAME}.cdn.prismic.io/api/v2`
+    const response = await fetch(url, {
+      headers: ACCESS_TOKEN ? { Authorization: `Token ${ACCESS_TOKEN}` } : {},
+      next: { revalidate: 0 },
+    })
+    if (!response.ok) return null
+    const data = await response.json()
+    const nonMasterRefs = (data.refs || []).filter(ref => !ref.isMasterRef)
+    return new Set(nonMasterRefs.map(ref => ref.label))
+  } catch (e) {
+    console.warn('Could not fetch Prismic release refs for orphan detection:', e.message)
+    return null
+  }
+}
+
+/**
  * Fetch UIDs of all published galleries from Prismic Content API.
  * Used by the GET handler to auto-detect when a pending migration's release
  * has been published in Prismic.
@@ -170,23 +198,37 @@ export async function GET(request) {
 
     const supabaseMigrations = (data || []).map(mapRow)
 
-    // 2. Fetch UIDs of all published galleries from Prismic Content API.
-    //    This is how we detect that an admin has published a migration release in Prismic
-    //    without needing a separate "Mark as Published" manual step.
-    const publishedUids = await fetchPublishedGalleryUids()
+    // 2. Fetch active Prismic release labels and published UIDs in parallel.
+    const [activeReleaseLabels, publishedUids] = await Promise.all([
+      fetchActivePrismicReleaseLabels(),
+      fetchPublishedGalleryUids(),
+    ])
 
-    // 3. Auto-detect and resolve galleries that have been published in Prismic.
-    //    If a pending entry's uid now exists as a published Prismic document, its
-    //    migration release was published — update Supabase status automatically.
+    // 3. Reconcile each pending entry.
+    //    a) If the entry's UID now exists as a *published* document → mark published.
+    //    b) If the entry's migration release no longer exists in Prismic at all →
+    //       the release was deleted without publishing → orphan, mark archived.
+    //    c) Otherwise → still genuinely pending.
     const stillPending = []
     for (const entry of supabaseMigrations) {
       if (publishedUids.has(entry.uid)) {
+        // Release was published — auto-mark and clean up tag
         await supabase
           .from('pending_gallery_migrations')
           .update({ status: 'published' })
           .eq('id', entry.id)
-        // Best-effort: clean up the pending-migration tag in Prismic
         await removePendingTagFromPrismic(entry.documentId, entry)
+      } else if (
+        activeReleaseLabels !== null &&
+        entry.releaseTitle &&
+        !activeReleaseLabels.has(entry.releaseTitle)
+      ) {
+        // Migration release no longer exists in Prismic → ghost entry, archive it
+        console.log(`Archiving orphaned gallery migration: uid="${entry.uid}" release="${entry.releaseTitle}"`)
+        await supabase
+          .from('pending_gallery_migrations')
+          .update({ status: 'archived' })
+          .eq('id', entry.id)
       } else {
         stillPending.push(entry)
       }

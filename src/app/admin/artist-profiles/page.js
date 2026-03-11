@@ -221,46 +221,6 @@ export default function ArtistProfilesPage() {
     }
   }
 
-  async function discardPendingMigration(migration) {
-    if (!confirm(`Are you sure you want to discard "${migration.name_en}"? This will archive it in Prismic and remove it from the pending list.`)) {
-      return
-    }
-    
-    try {
-      const response = await fetch('/api/admin/artists/pending/discard', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: migration.id,
-          uid: migration.uid,
-          documentId: migration.documentId,
-        }),
-      })
-      
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to discard artist')
-      }
-      
-      // Clear cache
-      clearArtistsCache()
-      
-      // Update local state - filter out the cancelled migration
-      const updatedMigrations = pendingMigrations.filter(m => m.id !== migration.id)
-      setPendingMigrations(updatedMigrations)
-      
-      // Reload to get fresh data
-      await loadPendingMigrations()
-      
-      alert('Artist discarded successfully. It has been archived and removed from the pending list.')
-    } catch (error) {
-      console.error('Error discarding pending migration:', error)
-      alert(`Error discarding artist: ${error.message}`)
-    }
-  }
-
   // Calculate active filter count
   const activeFilterCount = useMemo(() => {
     let count = 0
@@ -371,6 +331,12 @@ export default function ArtistProfilesPage() {
       const responseData = await response.json()
 
       if (!response.ok) {
+        if (response.status === 409) {
+          // The release was published by someone else while this form was open.
+          confirmCancel()
+          await loadPendingMigrations()
+          setActiveTab('pending')
+        }
         throw new Error(responseData.error || 'Failed to create artist')
       }
 
@@ -1772,14 +1738,6 @@ export default function ArtistProfilesPage() {
                           </a>
                         </span>
                         <span className={styles.pendingActionsRight}>
-                          <button
-                            onClick={() => discardPendingMigration(migration)}
-                            className={styles.discardPending}
-                            title="Discard and archive this artist"
-                          >
-                            <FiTrash2 />
-                            Discard
-                          </button>
                           <button
                             onClick={() => removePendingMigration(migration.id)}
                             className={styles.removePending}
