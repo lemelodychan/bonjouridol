@@ -36,7 +36,7 @@ export default async function HeroPost() {
           },
         ],
         filters: [
-          prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Discovery', 'Behind the scenes']),
+          prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Discovery', 'Behind the scenes', 'Editorial']),
         ],
     });
     const latestPost = results.results[0]

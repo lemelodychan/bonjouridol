@@ -63,6 +63,7 @@ interface ArticlesDocumentData {
     | "Interview"
     | "Discovery"
     | "Behind the scenes"
+    | "Editorial"
     | "Other",
     "filled"
   >;
@@ -1135,6 +1136,7 @@ export interface DocListSliceDefaultPrimary {
     | "Press Releases"
     | "Galleries"
     | "All documents"
+    | "Editorials"
   >;
 }
 

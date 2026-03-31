@@ -37,10 +37,10 @@ export default async function LatestPost() {
           },
         ],
         filters: [
-          prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Discovery', 'Behind the scenes']),
+          prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Discovery', 'Behind the scenes', 'Editorial']),
         ],
     });
-    
+
     const heroPostId = heroPostResponse.results[0]?.id;
     
     // Fetch only the next 4 articles (we need 3, but fetch 4 in case hero is in the first page)
@@ -64,7 +64,7 @@ export default async function LatestPost() {
           },
         ],
         filters: [
-            prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Discovery', 'Behind the scenes']),
+            prismic.filter.any('document.tags', ['Live Report', 'Interview', 'Discovery', 'Behind the scenes', 'Editorial']),
         ],
     });
     

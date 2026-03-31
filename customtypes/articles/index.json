@@ -37,6 +37,7 @@
             "Interview",
             "Discovery",
             "Behind the scenes",
+            "Editorial",
             "Other"
           ],
           "default_value": "Live report"
