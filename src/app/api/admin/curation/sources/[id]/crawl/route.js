@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { fetchRSSFeed, fetchNitterFeedWithFallback } from '@/lib/curation/rss'
 import { fetchHTMLSource } from '@/lib/curation/scraper'
+import { uploadItemImages } from '@/lib/curation/imageStorage'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -77,8 +78,17 @@ export async function POST(request, { params }) {
     const newItems = recentItems.filter(i => i.itemId && !seen.has(i.itemId))
 
     if (newItems.length > 0) {
+      const uploadedItems = await Promise.all(
+        newItems.map(async item => {
+          if (!item.imageUrls?.length) return item
+          const folder = crypto.randomUUID()
+          const imageUrls = await uploadItemImages(supabase, folder, item.imageUrls)
+          return { ...item, imageUrls, imageFolder: folder }
+        })
+      )
+
       await supabase.from('content_queue').insert(
-        newItems.map(item => ({
+        uploadedItems.map(item => ({
           source_id: source.id,
           type:      source.type === 'twitter' ? 'tweet' : 'article',
           status:    'raw',
@@ -89,6 +99,7 @@ export async function POST(request, { params }) {
             author:             item.author,
             source_url:         item.sourceUrl,
             image_urls:         item.imageUrls,
+            image_folder:       item.imageFolder || null,
             published_at:       item.publishedAt,
             original_tweet_url: item.originalTweetUrl || null,
             source_label:       source.label,
@@ -99,7 +110,7 @@ export async function POST(request, { params }) {
 
       await supabase
         .from('crawl_log')
-        .insert(newItems.map(item => ({ source_id: source.id, item_id: item.itemId })))
+        .insert(uploadedItems.map(item => ({ source_id: source.id, item_id: item.itemId })))
     }
 
     await supabase
@@ -110,7 +121,7 @@ export async function POST(request, { params }) {
     return NextResponse.json({
       fetched: items.length,
       new: newItems.length,
-      skipped: items.length - newItems.length, // includes age-filtered + deduped
+      skipped: items.length - newItems.length,
     })
 
   } catch (err) {

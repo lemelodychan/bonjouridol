@@ -82,31 +82,7 @@ Content:
 ${(raw.body || '').slice(0, 2000)}`
 }
 
-/**
- * Process up to MAX_ITEMS raw queue items through the OpenAI classification pipeline.
- * Returns { processed, pending, rejected, errors }.
- */
-export async function runProcessQueue(supabase) {
-  const openaiKey = process.env.OPENAI_API_KEY
-  if (!openaiKey) throw new Error('OPENAI_API_KEY not configured')
-
-  // maxRetries=3: enough to handle transient 429s without risking Vercel's 30s timeout.
-  // Exponential backoff is ~0.5s + 1s + 2s = up to ~4s of retries per item.
-  const openai = new OpenAI({ apiKey: openaiKey, maxRetries: 3 })
-
-  const { data: items, error: itemsError } = await supabase
-    .from('content_queue')
-    .select('*')
-    .eq('status', 'raw')
-    .order('created_at', { ascending: true })
-    .limit(MAX_ITEMS)
-
-  if (itemsError) throw new Error(itemsError.message)
-
-  if (!items?.length) {
-    return { processed: 0, pending: 0, rejected: 0, errors: [] }
-  }
-
+async function classifyItems(supabase, openai, items) {
   const { data: artists } = await supabase
     .from('artists')
     .select('name, name_ja')
@@ -191,4 +167,52 @@ export async function runProcessQueue(supabase) {
   }
 
   return results
+}
+
+function makeOpenAI() {
+  const openaiKey = process.env.OPENAI_API_KEY
+  if (!openaiKey) throw new Error('OPENAI_API_KEY not configured')
+  // maxRetries=3: enough to handle transient 429s without risking Vercel's 30s timeout.
+  return new OpenAI({ apiKey: openaiKey, maxRetries: 3 })
+}
+
+/**
+ * Process up to MAX_ITEMS raw queue items through the OpenAI classification pipeline.
+ * Returns { processed, pending, rejected, errors }.
+ */
+export async function runProcessQueue(supabase) {
+  const openai = makeOpenAI()
+
+  const { data: items, error: itemsError } = await supabase
+    .from('content_queue')
+    .select('*')
+    .eq('status', 'raw')
+    .order('created_at', { ascending: true })
+    .limit(MAX_ITEMS)
+
+  if (itemsError) throw new Error(itemsError.message)
+  if (!items?.length) return { processed: 0, pending: 0, rejected: 0, errors: [] }
+
+  return classifyItems(supabase, openai, items)
+}
+
+/**
+ * Re-classify a specific set of items by ID.
+ * Relevant items stay pending with refreshed translated_content.
+ * Items the AI considers irrelevant are moved to rejected.
+ * Returns { processed, pending, rejected, errors }.
+ */
+export async function runReprocessBatch(supabase, ids) {
+  if (!ids?.length) return { processed: 0, pending: 0, rejected: 0, errors: [] }
+  const openai = makeOpenAI()
+
+  const { data: items, error: itemsError } = await supabase
+    .from('content_queue')
+    .select('*')
+    .in('id', ids)
+
+  if (itemsError) throw new Error(itemsError.message)
+  if (!items?.length) return { processed: 0, pending: 0, rejected: 0, errors: [] }
+
+  return classifyItems(supabase, openai, items)
 }

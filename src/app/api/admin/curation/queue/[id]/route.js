@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { deleteItemImages } from '@/lib/curation/imageStorage'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -86,10 +87,9 @@ export async function DELETE(request, { params }) {
 
   const { id } = await params
 
-  // Fetch prismic_document_id before deleting so we can warn the caller
   const { data: item } = await supabase
     .from('content_queue')
-    .select('prismic_document_id')
+    .select('prismic_document_id, raw_content')
     .eq('id', id)
     .single()
 
@@ -100,6 +100,10 @@ export async function DELETE(request, { params }) {
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  if (item?.raw_content?.image_folder) {
+    await deleteItemImages(supabase, item.raw_content.image_folder)
   }
 
   return NextResponse.json({

@@ -1,5 +1,6 @@
 import { fetchRSSFeed, fetchNitterFeedWithFallback } from '@/lib/curation/rss'
 import { fetchHTMLSource } from '@/lib/curation/scraper'
+import { uploadItemImages } from '@/lib/curation/imageStorage'
 
 function parseNitterInstances(raw) {
   const list = (raw || '').split('\n').map(s => s.trim()).filter(s => s.startsWith('http'))
@@ -65,7 +66,16 @@ async function processSingleSource(source, nitterInstances, supabase, totals) {
     totals.skipped += recentItems.length - newItems.length
 
     if (newItems.length > 0) {
-      const queueRows = newItems.map(item => ({
+      const uploadedItems = await Promise.all(
+        newItems.map(async item => {
+          if (!item.imageUrls?.length) return item
+          const folder = crypto.randomUUID()
+          const imageUrls = await uploadItemImages(supabase, folder, item.imageUrls)
+          return { ...item, imageUrls, imageFolder: folder }
+        })
+      )
+
+      const queueRows = uploadedItems.map(item => ({
         source_id: source.id,
         type:      source.type === 'twitter' ? 'tweet' : 'article',
         status:    'raw',
@@ -76,6 +86,7 @@ async function processSingleSource(source, nitterInstances, supabase, totals) {
           author:             item.author,
           source_url:         item.sourceUrl,
           image_urls:         item.imageUrls,
+          image_folder:       item.imageFolder || null,
           published_at:       item.publishedAt,
           original_tweet_url: item.originalTweetUrl || null,
           source_label:       source.label,
@@ -92,10 +103,10 @@ async function processSingleSource(source, nitterInstances, supabase, totals) {
 
       await supabase
         .from('crawl_log')
-        .insert(newItems.map(item => ({ source_id: source.id, item_id: item.itemId })))
+        .insert(uploadedItems.map(item => ({ source_id: source.id, item_id: item.itemId })))
         .select()
 
-      totals.new += newItems.length
+      totals.new += uploadedItems.length
     }
 
     await supabase

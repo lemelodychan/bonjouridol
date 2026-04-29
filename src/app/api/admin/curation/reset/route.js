@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { deleteAllImages } from '@/lib/curation/imageStorage'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -48,6 +49,8 @@ export async function POST() {
   if (errors.length > 0) {
     return NextResponse.json({ error: errors.join('; ') }, { status: 500 })
   }
+
+  await deleteAllImages(supabase)
 
   return NextResponse.json({ success: true })
 }
