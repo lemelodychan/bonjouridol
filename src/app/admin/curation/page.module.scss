@@ -93,18 +93,19 @@
 .processButton {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: #f0f0ff;
-  color: var(--bi-indigo);
-  border: 1px solid var(--bi-indigo);
-  border-radius: 8px;
-  font-size: var(--font-size-sm);
-  font-weight: 600;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  background: #fff4ec;
+  color: #b85c00;
+  border: 1px solid #f5c28a;
+  border-radius: 6px;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
   cursor: pointer;
   transition: background 0.15s;
 
-  &:hover:not(:disabled) { background: #e0e0ff; }
+  &:hover:not(:disabled) { background: #ffe8d4; }
   &:disabled { opacity: 0.6; cursor: not-allowed; }
 }
 
@@ -134,13 +135,49 @@
   gap: 0.25rem;
 }
 
+.processProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #f8f9ff;
+  border: 1px solid #dde0ff;
+  border-radius: 8px;
+  font-size: var(--font-size-sm);
+  color: #3d3d8f;
+}
+
+.progressBar {
+  height: 6px;
+  background: #e0e3ff;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: var(--bi-indigo);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+  min-width: 4px;
+}
+
+.progressLabel {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
 // Stat cards
 .statCards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1rem;
 
-  @media (max-width: 768px) {
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 560px) {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -170,6 +207,7 @@
   line-height: 1;
 }
 
+.statCardRaw .statNumber     { color: #b85c00; }
 .statCardApproved .statNumber { color: #22a06b; }
 .statCardRejected .statNumber  { color: #888; }
 .statCardPublished .statNumber { color: var(--bi-indigo); }
@@ -292,4 +330,40 @@
   border-radius: 12px;
   text-align: center;
   color: #888;
+}
+
+.crawlAllButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #f0fff4;
+  color: #1a6640;
+  border: 1px solid #b7ebd0;
+  border-radius: 8px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover:not(:disabled) { background: #dcf5e7; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.crawlOneButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  color: #888;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  transition: background 0.15s, color 0.15s;
+
+  &:hover:not(:disabled) { background: #f0fff4; color: #1a6640; border-color: #b7ebd0; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
 }

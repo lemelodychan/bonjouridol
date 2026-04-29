@@ -49,18 +49,20 @@ export async function POST(request, { params }) {
       case 'html':    items = await fetchHTMLSource(source.url, source.crawl_config || {}); break
     }
 
-    // Drop items older than 24 hours; keep items with no publishedAt (age unknown)
-    const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000)
-    let recentItems = items.filter(i => !i.publishedAt || new Date(i.publishedAt) >= cutoff)
-
-    // Fallback: if everything was filtered out, keep the single most recent item
-    if (recentItems.length === 0 && items.length > 0) {
+    let recentItems
+    if (!source.last_crawled_at) {
+      // First-ever crawl: seed with the single most recent item only
       const sorted = [...items].sort((a, b) => {
         if (!a.publishedAt) return 1
         if (!b.publishedAt) return -1
         return new Date(b.publishedAt) - new Date(a.publishedAt)
       })
-      recentItems = [sorted[0]]
+      recentItems = sorted.length > 0 ? [sorted[0]] : []
+    } else {
+      // Subsequent crawls: only items published after the last crawl
+      const cutoff = new Date(source.last_crawled_at)
+      recentItems = items.filter(i => !i.publishedAt || new Date(i.publishedAt) > cutoff)
+      // No fallback — nothing new since last crawl means the queue stays empty
     }
 
     const { data: existing } = await supabase
@@ -81,6 +83,7 @@ export async function POST(request, { params }) {
           raw_content: {
             title:              item.title,
             body:               item.body,
+            body_blocks:        item.bodyBlocks || null,
             author:             item.author,
             source_url:         item.sourceUrl,
             image_urls:         item.imageUrls,

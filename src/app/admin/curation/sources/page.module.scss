@@ -303,6 +303,47 @@
   font-weight: 500;
 }
 
+.importArtists {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #f5f5ff;
+  border: 1px solid #e0deff;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
+
+.importArtistsText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.importArtistsTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--dark-grey);
+}
+
+.importArtistsHint {
+  font-size: var(--font-size-xs);
+  color: #888;
+}
+
+.importError {
+  font-size: var(--font-size-sm);
+  color: #c33;
+  margin: 0;
+  font-weight: 500;
+}
+
+.bulkDivider {
+  height: 1px;
+  background: #e8e8e8;
+  margin: 0.25rem 0;
+}
+
 // Empty state
 .emptyState {
   display: flex;

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, createContext, useContext } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { createBrowserSupabaseClient } from '@/lib/supabase-browser'
 import Link from 'next/link'
@@ -11,6 +11,78 @@ import { IoLogOutOutline } from 'react-icons/io5'
 import { FiUser } from 'react-icons/fi'
 
 import Button from '@/app/components/IconButton'
+
+const ProcessingContext = createContext(null)
+
+export function useProcessing() {
+  return useContext(ProcessingContext)
+}
+
+function ProcessingProvider({ children }) {
+  const [processing, setProcessing]       = useState(false)
+  const [processResult, setProcessResult] = useState(null)
+  const [processTotal, setProcessTotal]   = useState(0)
+
+  const handleProcessQueue = useCallback(async (rawCount) => {
+    setProcessTotal(rawCount)
+    setProcessing(true)
+    setProcessResult(null)
+    const totals = { processed: 0, pending: 0, rejected: 0, errors: [] }
+    try {
+      while (true) {
+        const res  = await fetch('/api/admin/curation/queue/process', { method: 'POST' })
+        const text = await res.text()
+        let data
+        try {
+          data = JSON.parse(text)
+        } catch {
+          totals.errors.push(
+            `Server error${res.status !== 200 ? ` (${res.status})` : ''} — remaining items not processed. ` +
+            `Items processed so far are saved. Click Process again to continue.`
+          )
+          break
+        }
+        if (!res.ok) { totals.errors.push(data.error || `Server error ${res.status}`); break }
+        totals.processed += data.processed || 0
+        totals.pending   += data.pending   || 0
+        totals.rejected  += data.rejected  || 0
+        totals.errors     = totals.errors.concat(data.errors || [])
+        setProcessResult({ ...totals, running: data.processed > 0 })
+        if (!data.processed) break
+      }
+      setProcessResult(totals)
+    } catch (err) {
+      setProcessResult({ ...totals, error: err.message })
+    } finally {
+      setProcessing(false)
+    }
+  }, [])
+
+  return (
+    <ProcessingContext.Provider value={{ processing, processResult, processTotal, handleProcessQueue, setProcessResult }}>
+      {children}
+    </ProcessingContext.Provider>
+  )
+}
+
+function ProcessingBar() {
+  const { processing, processResult, processTotal } = useProcessing()
+  const isRunning = processing || processResult?.running
+  if (!isRunning) return null
+  return (
+    <div className={styles.processingBar}>
+      <div className={styles.processingBarTrack}>
+        <div
+          className={styles.processingBarFill}
+          style={{ width: `${processTotal > 0 ? Math.min(100, Math.round(((processResult?.processed || 0) / processTotal) * 100)) : 100}%` }}
+        />
+      </div>
+      <span className={styles.processingBarLabel}>
+        Processing… {processResult?.processed || 0}{processTotal > 0 ? ` / ${processTotal}` : ''}
+      </span>
+    </div>
+  )
+}
 
 export default function AdminLayout({ children }) {
   const [loading, setLoading] = useState(true)
@@ -116,83 +188,86 @@ export default function AdminLayout({ children }) {
   }
 
   return (
-    <div className={styles.adminLayout}>
-      <nav className={styles.sidebar}>
-        <div className={styles.logo}>
-          <Image 
-            src={LogoMobileMenu} 
-            alt="BONJOUR IDOL" 
-            height={80}
-            priority
-          />
-          <p className={styles.logoSubtitle}>Admin Panel</p>
-        </div>
+    <ProcessingProvider>
+      <div className={styles.adminLayout}>
+        <nav className={styles.sidebar}>
+          <div className={styles.logo}>
+            <Image
+              src={LogoMobileMenu}
+              alt="BONJOUR IDOL"
+              height={80}
+              priority
+            />
+            <p className={styles.logoSubtitle}>Admin Panel</p>
+          </div>
 
-        <ul className={styles.navList}>
-          <li>
-            <Link 
-              href="/admin/overview" 
-              className={pathname === '/admin/overview' ? styles.active : ''}
-            >
-              Overview
-            </Link>
-          </li>
-          <li>
-            <Link 
-              href="/admin/artist-profiles" 
-              className={pathname === '/admin/artist-profiles' ? styles.active : ''}
-            >
-              Artist Profiles
-            </Link>
-          </li>
-          <li>
-            <Link 
-              href="/admin/selection-playlist" 
-              className={pathname === '/admin/selection-playlist' ? styles.active : ''}
-            >
-              Selection Playlist
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/admin/galleries"
-              className={pathname === '/admin/galleries' ? styles.active : ''}
-            >
-              Gallery Manager
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/admin/curation"
-              className={pathname.startsWith('/admin/curation') ? styles.active : ''}
-            >
-              Content Queue
-            </Link>
-          </li>
-        </ul>
+          <ul className={styles.navList}>
+            <li>
+              <Link
+                href="/admin/overview"
+                className={pathname === '/admin/overview' ? styles.active : ''}
+              >
+                Overview
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/admin/artist-profiles"
+                className={pathname === '/admin/artist-profiles' ? styles.active : ''}
+              >
+                Artist Profiles
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/admin/selection-playlist"
+                className={pathname === '/admin/selection-playlist' ? styles.active : ''}
+              >
+                Selection Playlist
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/admin/galleries"
+                className={pathname === '/admin/galleries' ? styles.active : ''}
+              >
+                Gallery Manager
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/admin/curation"
+                className={pathname.startsWith('/admin/curation') ? styles.active : ''}
+              >
+                Content Queue
+              </Link>
+            </li>
+          </ul>
 
-        <div className={styles.userInfo}>
-          <FiUser className={styles.userIcon} /> 
-          <p className={styles.userEmail}>
-            {user.email}
-          </p>
-        </div>
+          <div className={styles.userInfo}>
+            <FiUser className={styles.userIcon} />
+            <p className={styles.userEmail}>
+              {user.email}
+            </p>
+          </div>
 
-        <div className={styles.buttonWrapper}>
-          <Button 
-            onClick={handleLogout}
-            disabled={loading} 
-            variant="Pink"
-            textValue="Logout"
-            icon={<IoLogOutOutline />}
-          />
-        </div>
-      </nav>
+          <div className={styles.buttonWrapper}>
+            <Button
+              onClick={handleLogout}
+              disabled={loading}
+              variant="Pink"
+              textValue="Logout"
+              icon={<IoLogOutOutline />}
+            />
+          </div>
+        </nav>
 
-      <main className={styles.mainContent}>
-        {children}
-      </main>
-    </div>
+        <main className={styles.mainContent}>
+          <ProcessingBar />
+          {children}
+        </main>
+      </div>
+    </ProcessingProvider>
   )
 }
 

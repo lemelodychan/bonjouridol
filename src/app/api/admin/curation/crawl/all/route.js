@@ -12,28 +12,16 @@ function getSupabaseClient() {
   })
 }
 
-function checkCronSecret(request) {
-  const authHeader = request.headers.get('Authorization')
-  const cronSecret = process.env.CRON_SECRET
-  if (!cronSecret) return false
-  return authHeader === `Bearer ${cronSecret}`
-}
-
-export async function POST(request) {
-  if (!checkCronSecret(request)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
+// UI-facing crawl — no CRON_SECRET required.
+// Called from the dashboard "Crawl all" button.
+export async function POST() {
   const supabase = getSupabaseClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
   }
 
-  let body = {}
-  try { body = await request.json() } catch { /* no body is fine */ }
-
   try {
-    const totals = await crawlActiveSources(supabase, body.source_ids || null)
+    const totals = await crawlActiveSources(supabase)
     return NextResponse.json(totals)
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 })

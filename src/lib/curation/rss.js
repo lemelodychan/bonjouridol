@@ -115,7 +115,7 @@ function toTwitterUrl(nitterUrl, nitterInstance) {
   if (!nitterUrl || !nitterInstance) return null
   try {
     const nitterOrigin = new URL(nitterInstance).origin
-    return nitterUrl.replace(nitterOrigin, 'https://twitter.com')
+    return nitterUrl.replace(nitterOrigin, 'https://x.com')
   } catch {
     return null
   }

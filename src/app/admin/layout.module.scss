@@ -151,3 +151,40 @@
   color: var(--dark-grey);
 }
 
+.processingBar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 1.5rem;
+  background: #f0f1ff;
+  border-bottom: 1px solid #dde0ff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.processingBarTrack {
+  flex: 1;
+  height: 4px;
+  background: #dde0ff;
+  border-radius: 99px;
+  overflow: hidden;
+  max-width: 200px;
+}
+
+.processingBarFill {
+  height: 100%;
+  background: var(--bi-indigo);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+  min-width: 4px;
+}
+
+.processingBarLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--bi-indigo);
+  white-space: nowrap;
+}
+
+

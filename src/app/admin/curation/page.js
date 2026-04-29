@@ -6,19 +6,26 @@ import { formatDistanceToNow } from 'date-fns'
 import styles from './page.module.scss'
 import Button from '@/app/components/IconButton'
 import { IoSettingsOutline, IoListOutline } from 'react-icons/io5'
-import { FiAlertTriangle, FiCheck, FiRadio, FiCpu } from 'react-icons/fi'
+import { FiAlertTriangle, FiCheck, FiRadio, FiCpu, FiDownload } from 'react-icons/fi'
+import { useProcessing } from './layout'
 
 export default function CurationDashboard() {
+  const { processing, processResult, processTotal, handleProcessQueue, setProcessResult } = useProcessing()
   const [sources, setSources] = useState([])
   const [queueCounts, setQueueCounts] = useState({ raw: 0, pending: 0, approved: 0, rejected: 0, published: 0 })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [processing, setProcessing] = useState(false)
-  const [processResult, setProcessResult] = useState(null)
+  const [crawlingAll, setCrawlingAll] = useState(false)
+  const [crawlAllResult, setCrawlAllResult] = useState(null)
+  const [crawlingSourceId, setCrawlingSourceId] = useState(null)
 
   useEffect(() => {
     loadData()
   }, [])
+
+  useEffect(() => {
+    if (!processing && processResult) loadData()
+  }, [processing])
 
   async function loadData() {
     setLoading(true)
@@ -45,19 +52,34 @@ export default function CurationDashboard() {
     }
   }
 
-  async function handleProcessQueue() {
-    setProcessing(true)
-    setProcessResult(null)
+  async function handleCrawlAll() {
+    setCrawlingAll(true)
+    setCrawlAllResult(null)
     try {
-      const res = await fetch('/api/admin/curation/queue/process', { method: 'POST' })
+      const res = await fetch('/api/admin/curation/crawl/all', { method: 'POST' })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Processing failed')
-      setProcessResult(data)
+      if (!res.ok) throw new Error(data.error || 'Crawl failed')
+      setCrawlAllResult(data)
       loadData()
     } catch (err) {
-      setProcessResult({ error: err.message })
+      setCrawlAllResult({ error: err.message })
     } finally {
-      setProcessing(false)
+      setCrawlingAll(false)
+    }
+  }
+
+  async function handleCrawlSource(sourceId) {
+    setCrawlingSourceId(sourceId)
+    try {
+      const res = await fetch(`/api/admin/curation/sources/${sourceId}/crawl`, { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Crawl failed')
+      setCrawlAllResult(data)
+      loadData()
+    } catch (err) {
+      setCrawlAllResult({ error: err.message })
+    } finally {
+      setCrawlingSourceId(null)
     }
   }
 
@@ -95,43 +117,55 @@ export default function CurationDashboard() {
           <section className={styles.section}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Queue</h2>
-              <div className={styles.sectionActions}>
-                {queueCounts.raw > 0 && (
-                  <button
-                    className={styles.processButton}
-                    onClick={handleProcessQueue}
-                    disabled={processing}
-                  >
-                    <FiCpu />
-                    {processing ? 'Processing…' : `Process ${queueCounts.raw} unprocessed`}
-                  </button>
-                )}
-                <Button
-                  href="/admin/curation/queue"
-                  variant="Pink"
-                  textValue="Review Queue"
-                  icon={<IoListOutline />}
-                />
-              </div>
+              <Button
+                href="/admin/curation/queue"
+                variant="Pink"
+                textValue="Review Queue"
+                icon={<IoListOutline />}
+              />
             </div>
 
-            {processResult && (
-              <div className={processResult.error || processResult.errors?.length ? styles.processError : styles.processSuccess}>
-                {processResult.error
-                  ? `Error: ${processResult.error}`
-                  : <>
-                      {`Processed ${processResult.processed} items — ${processResult.pending} pending review, ${processResult.rejected} rejected`}
-                      {processResult.errors?.length > 0 && (
-                        <ul className={styles.processErrorList}>
-                          {processResult.errors.map((e, i) => <li key={i}>{e}</li>)}
-                        </ul>
-                      )}
-                    </>
-                }
+            {(processing || processResult) && (
+              <div className={!processing && processResult?.errors?.length && !processResult?.processed ? styles.processError : styles.processProgress}>
+                {(processing || processResult?.running) && processTotal > 0 && (
+                  <div className={styles.progressBar}>
+                    <div
+                      className={styles.progressBarFill}
+                      style={{ width: `${Math.min(100, Math.round(((processResult?.processed || 0) / processTotal) * 100))}%` }}
+                    />
+                  </div>
+                )}
+                <span className={styles.progressLabel}>
+                  {(processing || processResult?.running)
+                    ? `Processing… ${processResult?.processed || 0} / ${processTotal}`
+                    : processResult?.processed === 0 && !processResult?.errors?.length
+                      ? 'Nothing to process'
+                      : `${processResult?.processed ? `${processResult.processed} processed · ${processResult.pending} pending review · ${processResult.rejected} rejected` : 'Stopped early — previously processed items are saved'}`
+                  }
+                </span>
+                {processResult?.errors?.length > 0 && (
+                  <ul className={styles.processErrorList}>
+                    {processResult.errors.map((e, i) => <li key={i}>{e}</li>)}
+                  </ul>
+                )}
               </div>
             )}
 
             <div className={styles.statCards}>
+              <div className={`${styles.statCard} ${styles.statCardRaw}`}>
+                <span className={styles.statNumber}>{queueCounts.raw}</span>
+                <span className={styles.statLabel}>Crawled</span>
+                {queueCounts.raw > 0 && (
+                  <button
+                    className={styles.processButton}
+                    onClick={() => handleProcessQueue(queueCounts.raw)}
+                    disabled={processing}
+                  >
+                    <FiCpu />
+                    {processing ? 'Processing…' : 'Process'}
+                  </button>
+                )}
+              </div>
               <Link href="/admin/curation/queue?status=pending" className={styles.statCard}>
                 <span className={styles.statNumber}>{queueCounts.pending}</span>
                 <span className={styles.statLabel}>Pending review</span>
@@ -160,12 +194,38 @@ export default function CurationDashboard() {
                   {activeSources.length} active · {sources.length} total
                 </span>
               </h2>
-              <Button
-                href="/admin/curation/sources"
-                variant="WhiteGrey"
-                textValue="Manage Sources"
-              />
+              <div className={styles.sectionActions}>
+                {sources.length > 0 && (
+                  <button
+                    className={styles.crawlAllButton}
+                    onClick={handleCrawlAll}
+                    disabled={crawlingAll || crawlingSourceId != null}
+                  >
+                    <FiDownload />
+                    {crawlingAll ? 'Crawling…' : 'Crawl all'}
+                  </button>
+                )}
+                <Button
+                  href="/admin/curation/sources"
+                  variant="WhiteGrey"
+                  textValue="Manage Sources"
+                />
+              </div>
             </div>
+
+            {crawlAllResult && (
+              <div className={crawlAllResult.error ? styles.processError : styles.processSuccess}>
+                {crawlAllResult.error
+                  ? `Crawl error: ${crawlAllResult.error}`
+                  : `Crawl complete — ${crawlAllResult.new} new, ${crawlAllResult.skipped} skipped, ${crawlAllResult.fetched} fetched`
+                }
+                {crawlAllResult.errors?.length > 0 && (
+                  <ul className={styles.processErrorList}>
+                    {crawlAllResult.errors.map((e, i) => <li key={i}>{e}</li>)}
+                  </ul>
+                )}
+              </div>
+            )}
 
             {sources.length === 0 ? (
               <div className={styles.emptyState}>
@@ -191,6 +251,7 @@ export default function CurationDashboard() {
                       <th>Type</th>
                       <th>Last crawled</th>
                       <th>Status</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -219,6 +280,18 @@ export default function CurationDashboard() {
                             <span className={styles.statusOk}>
                               <FiCheck /> OK
                             </span>
+                          )}
+                        </td>
+                        <td>
+                          {source.active && (
+                            <button
+                              className={styles.crawlOneButton}
+                              onClick={() => handleCrawlSource(source.id)}
+                              disabled={crawlingAll || crawlingSourceId != null}
+                              title="Crawl this source now"
+                            >
+                              {crawlingSourceId === source.id ? '…' : <FiDownload />}
+                            </button>
                           )}
                         </td>
                       </tr>

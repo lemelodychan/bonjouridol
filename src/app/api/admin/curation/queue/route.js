@@ -21,6 +21,7 @@ export async function GET(request) {
   const status = searchParams.get('status')
   const type = searchParams.get('type')
   const sourceId = searchParams.get('source_id')
+  const idolName = searchParams.get('idol_name')
   const countOnly = searchParams.get('countOnly') === 'true'
   const page = parseInt(searchParams.get('page') || '1', 10)
   const limit = parseInt(searchParams.get('limit') || '20', 10)
@@ -31,10 +32,13 @@ export async function GET(request) {
     const counts = {}
     await Promise.all(
       statuses.map(async s => {
-        const { count } = await supabase
+        let q = supabase
           .from('content_queue')
           .select('*', { count: 'exact', head: true })
           .eq('status', s)
+        // Dismissed rejected items don't count toward the badge
+        if (s === 'rejected') q = q.is('dismissed_at', null)
+        const { count } = await q
         counts[s] = count || 0
       })
     )
@@ -51,8 +55,10 @@ export async function GET(request) {
     .range((page - 1) * limit, page * limit - 1)
 
   if (status) query = query.eq('status', status)
+  if (status === 'rejected') query = query.is('dismissed_at', null)
   if (type) query = query.eq('type', type)
   if (sourceId) query = query.eq('source_id', sourceId)
+  if (idolName) query = query.ilike('translated_content->>idol_name', `%${idolName}%`)
 
   const { data, error, count } = await query
 

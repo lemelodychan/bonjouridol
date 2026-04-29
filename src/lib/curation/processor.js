@@ -1,9 +1,9 @@
 import OpenAI from 'openai'
 
 const MODEL = 'gpt-4o'
-const MAX_ITEMS = 10
+const MAX_ITEMS = 5  // processed sequentially; keep well within Vercel's 30s timeout
 
-function buildSystemPrompt(artistNames, feedbackExamples) {
+function buildSystemPrompt(artistNames, feedbackExamples, promptInstructions) {
   const artistList = artistNames.length > 0
     ? artistNames.join(', ')
     : 'Morning Musume, AKB48, SKE48, NMB48, HKT48, STU48, Nogizaka46, Sakurazaka46, Hinatazaka46, BEYOOOOONDS, Juice=Juice, ANGERME'
@@ -12,6 +12,10 @@ function buildSystemPrompt(artistNames, feedbackExamples) {
     ? `\n\nRecent curation decisions — calibrate your judgement against these:\n${feedbackExamples.map(f =>
         `- [${f.relevant ? 'RELEVANT' : 'NOT RELEVANT'}]${f.reason_category ? ` (${f.reason_category})` : ''} ${f.reason_text}`
       ).join('\n')}`
+    : ''
+
+  const customSection = promptInstructions?.trim()
+    ? `\n\nAdditional instructions from the editorial team:\n${promptInstructions.trim()}`
     : ''
 
   return `You are a content curator for bonjouridol.com, an English-language news site covering the Japanese female idol industry.
@@ -43,7 +47,7 @@ For tweets, generate a suggested tweet in this exact format (fill in the bracket
 
 [author if available, e.g. @groupname]
 
-#JapaneseIdol #[GroupName] #[RelevantTag]
+#BonjourIdol #[GroupName] #[RelevantTag]${customSection}${feedbackSection}
 
 Respond ONLY with valid JSON in exactly this shape — no markdown, no code fences:
 {
@@ -53,16 +57,23 @@ Respond ONLY with valid JSON in exactly this shape — no markdown, no code fenc
   "type": "article" | "tweet",
   "en_title": string | null,
   "en_body": string | null,
+  "idol_name": string | null,
   "suggested_tweet": string | null
-}`
+}
+
+idol_name: the primary artist or group name in natural English (e.g. "Morning Musume.'24", "AKB48", "Nogizaka46"). Use null if unknown.`
 }
 
 function buildUserPrompt(item) {
   const raw = item.raw_content || {}
+  // For tweets use the x.com URL; for articles use the source article URL
+  const url = item.type === 'tweet'
+    ? (raw.original_tweet_url || raw.source_url || '')
+    : (raw.source_url || '')
   return `Source type hint: ${item.type}
 Title: ${raw.title || '(none)'}
 Author: ${raw.author || '(unknown)'}
-Source URL: ${raw.source_url || ''}
+Source URL: ${url}
 Published: ${raw.published_at || 'unknown'}
 
 Content:
@@ -77,7 +88,9 @@ export async function runProcessQueue(supabase) {
   const openaiKey = process.env.OPENAI_API_KEY
   if (!openaiKey) throw new Error('OPENAI_API_KEY not configured')
 
-  const openai = new OpenAI({ apiKey: openaiKey })
+  // maxRetries=3: enough to handle transient 429s without risking Vercel's 30s timeout.
+  // Exponential backoff is ~0.5s + 1s + 2s = up to ~4s of retries per item.
+  const openai = new OpenAI({ apiKey: openaiKey, maxRetries: 3 })
 
   const { data: items, error: itemsError } = await supabase
     .from('content_queue')
@@ -106,65 +119,72 @@ export async function runProcessQueue(supabase) {
 
   const { data: settings } = await supabase
     .from('curation_settings')
-    .select('confidence_threshold, low_confidence_action')
+    .select('confidence_threshold, low_confidence_action, prompt_instructions')
     .eq('id', 1)
     .single()
 
   const confidenceThreshold = settings?.confidence_threshold ?? 0.5
   const lowConfidenceAction = settings?.low_confidence_action ?? 'flag'
 
-  const systemPrompt = buildSystemPrompt(artistNames, feedback || [])
+  const systemPrompt = buildSystemPrompt(artistNames, feedback || [], settings?.prompt_instructions)
   const results = { processed: 0, pending: 0, rejected: 0, errors: [] }
 
+  async function processOne(item) {
+    const completion = await openai.chat.completions.create({
+      model: MODEL,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: buildUserPrompt(item) },
+      ],
+      response_format: { type: 'json_object' },
+      temperature: 0.2,
+      max_tokens: 800,
+    })
+
+    let parsed
+    try {
+      parsed = JSON.parse(completion.choices[0].message.content)
+    } catch {
+      results.errors.push(`Item ${item.id}: failed to parse AI response`)
+      return
+    }
+
+    const confidence = typeof parsed.confidence === 'number' ? parsed.confidence : 0
+    const isLowConfidence = confidence < confidenceThreshold
+    const shouldReject = !parsed.relevant || (isLowConfidence && lowConfidenceAction === 'auto_reject')
+    const status = shouldReject ? 'rejected' : 'pending'
+
+    await supabase
+      .from('content_queue')
+      .update({
+        status,
+        type:               parsed.type || item.type,
+        translated_content: parsed.relevant ? {
+          en_title:        parsed.en_title        || null,
+          en_body:         parsed.en_body         || null,
+          idol_name:       parsed.idol_name       || null,
+          suggested_tweet: parsed.suggested_tweet || null,
+        } : null,
+        ai_reasoning:     parsed.reasoning   || null,
+        ai_confidence:    confidence,
+        ai_model_version: MODEL,
+      })
+      .eq('id', item.id)
+
+    results.processed++
+    if (status === 'pending') results.pending++
+    else results.rejected++
+  }
+
+  // Sequential: each item waits for the previous to finish.
+  // This naturally paces token usage to stay under the 30K TPM limit,
+  // and the SDK's built-in retry handles any 429s that still occur.
   for (const item of items) {
     try {
-      const completion = await openai.chat.completions.create({
-        model: MODEL,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: buildUserPrompt(item) },
-        ],
-        response_format: { type: 'json_object' },
-        temperature: 0.2,
-        max_tokens: 600,
-      })
-
-      let parsed
-      try {
-        parsed = JSON.parse(completion.choices[0].message.content)
-      } catch {
-        results.errors.push(`Item ${item.id}: failed to parse AI response`)
-        continue
-      }
-
-      const confidence = typeof parsed.confidence === 'number' ? parsed.confidence : 0
-      const isLowConfidence = confidence < confidenceThreshold
-      const shouldReject = !parsed.relevant || (isLowConfidence && lowConfidenceAction === 'auto_reject')
-      const status = shouldReject ? 'rejected' : 'pending'
-
-      await supabase
-        .from('content_queue')
-        .update({
-          status,
-          type:               parsed.type || item.type,
-          translated_content: parsed.relevant ? {
-            en_title:        parsed.en_title        || null,
-            en_body:         parsed.en_body         || null,
-            suggested_tweet: parsed.suggested_tweet || null,
-          } : null,
-          ai_reasoning:     parsed.reasoning   || null,
-          ai_confidence:    confidence,
-          ai_model_version: MODEL,
-        })
-        .eq('id', item.id)
-
-      results.processed++
-      if (status === 'pending') results.pending++
-      else results.rejected++
-
+      await processOne(item)
     } catch (err) {
       const detail = err.status ? `${err.status} — ${err.message}` : err.message
-      results.errors.push(`Item ${item.id}: ${detail}`)
+      results.errors.push(detail)
     }
   }
 

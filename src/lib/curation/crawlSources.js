@@ -1,0 +1,132 @@
+import { fetchRSSFeed, fetchNitterFeed } from '@/lib/curation/rss'
+import { fetchHTMLSource } from '@/lib/curation/scraper'
+
+async function fetchSourceItems(source, nitterInstance) {
+  switch (source.type) {
+    case 'twitter': return fetchNitterFeed(nitterInstance, source.url)
+    case 'rss':     return fetchRSSFeed(source.url)
+    case 'html':    return fetchHTMLSource(source.url, source.crawl_config || {})
+    default:        throw new Error(`Unknown source type: ${source.type}`)
+  }
+}
+
+async function processSingleSource(source, nitterInstance, supabase, totals) {
+  try {
+    const items = await fetchSourceItems(source, nitterInstance)
+    totals.fetched += items.length
+
+    if (items.length === 0) {
+      await supabase
+        .from('content_sources')
+        .update({ last_crawled_at: new Date().toISOString(), last_error: null })
+        .eq('id', source.id)
+      return
+    }
+
+    let recentItems
+    if (!source.last_crawled_at) {
+      // First-ever crawl: seed with the single most recent item only
+      const sorted = [...items].sort((a, b) => {
+        if (!a.publishedAt) return 1
+        if (!b.publishedAt) return -1
+        return new Date(b.publishedAt) - new Date(a.publishedAt)
+      })
+      recentItems = sorted.length > 0 ? [sorted[0]] : []
+    } else {
+      // Subsequent crawls: only items published after the last crawl
+      const cutoff = new Date(source.last_crawled_at)
+      recentItems = items.filter(i => !i.publishedAt || new Date(i.publishedAt) > cutoff)
+      // No fallback — if nothing new since last crawl, return empty
+    }
+
+    totals.skipped += items.length - recentItems.length
+
+    if (recentItems.length === 0) {
+      await supabase
+        .from('content_sources')
+        .update({ last_crawled_at: new Date().toISOString(), last_error: null })
+        .eq('id', source.id)
+      return
+    }
+
+    const { data: existing } = await supabase
+      .from('crawl_log')
+      .select('item_id')
+      .eq('source_id', source.id)
+      .in('item_id', recentItems.map(i => i.itemId).filter(Boolean))
+
+    const seen = new Set((existing || []).map(r => r.item_id))
+    const newItems = recentItems.filter(i => i.itemId && !seen.has(i.itemId))
+    totals.skipped += recentItems.length - newItems.length
+
+    if (newItems.length > 0) {
+      const queueRows = newItems.map(item => ({
+        source_id: source.id,
+        type:      source.type === 'twitter' ? 'tweet' : 'article',
+        status:    'raw',
+        raw_content: {
+          title:              item.title,
+          body:               item.body,
+          body_blocks:        item.bodyBlocks || null,
+          author:             item.author,
+          source_url:         item.sourceUrl,
+          image_urls:         item.imageUrls,
+          published_at:       item.publishedAt,
+          original_tweet_url: item.originalTweetUrl || null,
+        },
+      }))
+
+      const { error: insertError } = await supabase.from('content_queue').insert(queueRows)
+
+      if (insertError) {
+        totals.errors.push(`${source.label}: insert failed — ${insertError.message}`)
+        return
+      }
+
+      await supabase
+        .from('crawl_log')
+        .insert(newItems.map(item => ({ source_id: source.id, item_id: item.itemId })))
+        .select()
+
+      totals.new += newItems.length
+    }
+
+    await supabase
+      .from('content_sources')
+      .update({ last_crawled_at: new Date().toISOString(), last_error: null })
+      .eq('id', source.id)
+
+  } catch (err) {
+    const message = err.message || 'Unknown error'
+    totals.errors.push(`${source.label}: ${message}`)
+    await supabase
+      .from('content_sources')
+      .update({ last_crawled_at: new Date().toISOString(), last_error: message })
+      .eq('id', source.id)
+      .catch(() => {})
+  }
+}
+
+export async function crawlActiveSources(supabase, sourceIds = null) {
+  let query = supabase.from('content_sources').select('*').eq('active', true)
+  if (sourceIds?.length) query = query.in('id', sourceIds)
+
+  const { data: sources, error: sourcesError } = await query
+  if (sourcesError) throw new Error(sourcesError.message)
+  if (!sources?.length) return { fetched: 0, new: 0, skipped: 0, errors: [] }
+
+  const { data: settings } = await supabase
+    .from('curation_settings')
+    .select('nitter_instance')
+    .eq('id', 1)
+    .single()
+
+  const nitterInstance = settings?.nitter_instance || 'https://nitter.net'
+  const totals = { fetched: 0, new: 0, skipped: 0, errors: [] }
+
+  await Promise.allSettled(
+    sources.map(source => processSingleSource(source, nitterInstance, supabase, totals))
+  )
+
+  return totals
+}

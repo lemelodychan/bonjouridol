@@ -49,6 +49,7 @@ export async function PUT(request) {
     'confidence_threshold',
     'low_confidence_action',
     'nitter_instance',
+    'prompt_instructions',
   ]
 
   const updates = {}

@@ -1,4 +1,5 @@
 import { load } from 'cheerio'
+import { parseHtmlBlocks, blocksToPlainText } from './htmlBlocks.js'
 
 const FETCH_HEADERS = {
   'User-Agent': 'Mozilla/5.0 (compatible; BonjourIdolBot/1.0; +https://bonjouridol.com)',
@@ -6,9 +7,37 @@ const FETCH_HEADERS = {
   'Accept-Language': 'ja,en;q=0.9',
 }
 
-// Max articles to fetch from a single HTML source per crawl run.
-// Prevents timeouts when a site has many new articles.
 const MAX_ARTICLES_PER_SOURCE = 8
+
+// Ordered list of CSS selectors tried in sequence to find the article body container.
+// More specific / site-specific selectors come first.
+const BODY_CONTAINER_SELECTORS = [
+  // PR Times (id is most stable; class uses version number but also works)
+  '#press-release-body',
+  '[class^="press-release-body"]',
+  // Legacy / other PR Times selectors
+  '.press-body',
+  '.article-body-block',
+  // Generic Japanese news sites
+  '.article_body',
+  '.article__body',
+  '.article-body',
+  '.article-content',
+  '.news-body',
+  '.news__body',
+  '.release-body',
+  '.post-body',
+  '.post-content',
+  '.post__content',
+  '.entry-content',
+  '.entry-body',
+  '.main-text',
+  // Fallback structural
+  'article .body',
+  'article .content',
+  'main article',
+  'article',
+]
 
 /**
  * Scrape an HTML listing page and return raw_content objects for each article.
@@ -16,13 +45,19 @@ const MAX_ARTICLES_PER_SOURCE = 8
  * crawlConfig shape:
  * {
  *   linkSelector:  CSS selector for article links on the listing page
- *                  default: tries common patterns
  *   titleSelector: CSS selector for the article title on the article page
- *                  default: falls back to <title> and og:title meta
- *   bodySelector:  CSS selector for the article body on the article page
- *                  default: falls back to og:description meta
+ *   bodySelector:  CSS selector for the article body container on the article page
  * }
  */
+/**
+ * Fetch a single article page and return its structured content.
+ * Used when an item was crawled via RSS (no body_blocks) and we need
+ * the full article on draft creation.
+ */
+export async function fetchSingleArticle(url) {
+  return fetchArticlePage(url, {})
+}
+
 export async function fetchHTMLSource(pageUrl, crawlConfig = {}) {
   const listingHtml = await fetchWithTimeout(pageUrl)
   const $ = load(listingHtml)
@@ -30,38 +65,42 @@ export async function fetchHTMLSource(pageUrl, crawlConfig = {}) {
   const articleLinks = extractArticleLinks($, pageUrl, crawlConfig.linkSelector)
   const newLinks = articleLinks.slice(0, MAX_ARTICLES_PER_SOURCE)
 
-  const results = []
-
-  // Fetch each article page in parallel (with individual error handling)
   const settled = await Promise.allSettled(
     newLinks.map(link => fetchArticlePage(link, crawlConfig))
   )
 
-  for (const result of settled) {
-    if (result.status === 'fulfilled' && result.value) {
-      results.push(result.value)
-    }
-  }
-
-  return results
+  return settled
+    .filter(r => r.status === 'fulfilled' && r.value)
+    .map(r => r.value)
 }
 
 async function fetchArticlePage(url, crawlConfig) {
   const html = await fetchWithTimeout(url)
   const $ = load(html)
 
-  const title = extractTitle($, crawlConfig.titleSelector)
-  const body = extractBody($, crawlConfig.bodySelector)
+  const title  = extractTitle($, crawlConfig.titleSelector)
+  const blocks = extractContentBlocks($, crawlConfig.bodySelector)
+  const body   = blocks.length > 0
+    ? blocksToPlainText(blocks)
+    : extractBodyFallback($)
 
   if (!title && !body) return null
 
+  // Collect images: og:image first, then deduplicate against block images
+  const blockImageUrls = blocks.filter(b => b.type === 'image').map(b => b.url)
+  const ogImage = $('meta[property="og:image"]').attr('content')
+  const imageUrls = ogImage && !blockImageUrls.includes(ogImage)
+    ? [ogImage, ...blockImageUrls]
+    : blockImageUrls.length > 0 ? blockImageUrls : (ogImage ? [ogImage] : [])
+
   return {
-    itemId:    url,
-    title:     title || null,
-    body:      body || '',
-    author:    null,
-    sourceUrl: url,
-    imageUrls: extractOgImage($),
+    itemId:      url,
+    title:       title || null,
+    body:        body.slice(0, 8000),
+    bodyBlocks:  blocks.length > 0 ? blocks : null,
+    author:      null,
+    sourceUrl:   url,
+    imageUrls,
     publishedAt:      extractPublishedAt($),
     originalTweetUrl: null,
   }
@@ -79,7 +118,7 @@ async function fetchWithTimeout(url, timeoutMs = 8000) {
 }
 
 function extractArticleLinks($, baseUrl, linkSelector) {
-  const base = new URL(baseUrl)
+  const base  = new URL(baseUrl)
   const links = new Set()
 
   const selector = linkSelector || [
@@ -96,14 +135,32 @@ function extractArticleLinks($, baseUrl, linkSelector) {
     if (!href || href.startsWith('#') || href.startsWith('mailto:')) return
     try {
       const resolved = new URL(href, base).href
-      // Only keep links on the same domain
       if (new URL(resolved).hostname === base.hostname) links.add(resolved)
-    } catch {
-      // skip malformed URLs
-    }
+    } catch { /* skip malformed URLs */ }
   })
 
   return [...links]
+}
+
+function extractContentBlocks($, bodySelector) {
+  // Try explicit selector first, then fall through common patterns
+  const selectors = bodySelector
+    ? [bodySelector, ...BODY_CONTAINER_SELECTORS]
+    : BODY_CONTAINER_SELECTORS
+
+  for (const sel of selectors) {
+    const $container = $(sel).first()
+    if ($container.length && $container.text().trim().length > 100) {
+      return parseHtmlBlocks($, $container)
+    }
+  }
+
+  return []
+}
+
+function extractBodyFallback($) {
+  // Last resort: og:description
+  return $('meta[property="og:description"]').attr('content')?.trim() || ''
 }
 
 function extractTitle($, selector) {
@@ -111,30 +168,9 @@ function extractTitle($, selector) {
     const text = $(selector).first().text().trim()
     if (text) return text
   }
-  // Fallbacks
   const ogTitle = $('meta[property="og:title"]').attr('content')
   if (ogTitle) return ogTitle.trim()
-  const title = $('title').text().trim()
-  return title || null
-}
-
-function extractBody($, selector) {
-  if (selector) {
-    const text = $(selector).first().text().replace(/\s+/g, ' ').trim()
-    if (text) return text
-  }
-  // Fallbacks — try common article body patterns
-  for (const s of ['article', '.article-body', '.post-body', '.entry-content', 'main p']) {
-    const text = $(s).text().replace(/\s+/g, ' ').trim()
-    if (text && text.length > 100) return text.slice(0, 3000)
-  }
-  // Last resort: og:description
-  return $('meta[property="og:description"]').attr('content')?.trim() || ''
-}
-
-function extractOgImage($) {
-  const url = $('meta[property="og:image"]').attr('content')
-  return url ? [url] : []
+  return $('title').text().trim() || null
 }
 
 function extractPublishedAt($) {
@@ -142,9 +178,5 @@ function extractPublishedAt($) {
     $('meta[property="article:published_time"]').attr('content') ||
     $('time[datetime]').first().attr('datetime')
   if (!dateStr) return null
-  try {
-    return new Date(dateStr).toISOString()
-  } catch {
-    return null
-  }
+  try { return new Date(dateStr).toISOString() } catch { return null }
 }

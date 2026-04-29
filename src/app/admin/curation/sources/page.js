@@ -37,6 +37,10 @@ export default function SourcesPage() {
   const [bulkLoading, setBulkLoading] = useState(false)
   const [bulkResult, setBulkResult] = useState('')
 
+  // Import from Artist Directory
+  const [importingArtists, setImportingArtists] = useState(false)
+  const [importArtistResult, setImportArtistResult] = useState(null)
+
   useEffect(() => { loadSources() }, [])
 
   async function loadSources() {
@@ -190,6 +194,22 @@ export default function SourcesPage() {
       setError('Failed to delete source.')
     } finally {
       setDeletingId(null)
+    }
+  }
+
+  async function handleImportArtists() {
+    setImportingArtists(true)
+    setImportArtistResult(null)
+    try {
+      const res = await fetch('/api/admin/curation/sources/import-artists', { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Import failed')
+      setImportArtistResult(data)
+      if (data.added > 0) await loadSources()
+    } catch (e) {
+      setImportArtistResult({ error: e.message })
+    } finally {
+      setImportingArtists(false)
     }
   }
 
@@ -366,8 +386,33 @@ export default function SourcesPage() {
             </button>
             {bulkOpen && (
               <div className={styles.bulkForm}>
+                <div className={styles.importArtists}>
+                  <div className={styles.importArtistsText}>
+                    <span className={styles.importArtistsTitle}>Import from Artist Directory</span>
+                    <span className={styles.importArtistsHint}>Automatically add Twitter sources for all artists in Prismic who have a Twitter link.</span>
+                  </div>
+                  <Button
+                    onClick={handleImportArtists}
+                    variant="WhiteGrey"
+                    textValue={importingArtists ? 'Importing…' : 'Import'}
+                    disabled={importingArtists}
+                  />
+                </div>
+                {importArtistResult && (
+                  <p className={importArtistResult.error ? styles.importError : styles.bulkResult}>
+                    {importArtistResult.error
+                      ? `Error: ${importArtistResult.error}`
+                      : importArtistResult.added === 0
+                        ? `All ${importArtistResult.total} artist handles already added`
+                        : `Added ${importArtistResult.added} source${importArtistResult.added !== 1 ? 's' : ''}${importArtistResult.skipped > 0 ? ` (${importArtistResult.skipped} already existed)` : ''}`
+                    }
+                  </p>
+                )}
+
+                <div className={styles.bulkDivider} />
+
                 <p className={styles.bulkHint}>
-                  Paste one Twitter handle per line (with or without @). Each will be added as a Twitter source.
+                  Or paste handles manually, one per line (with or without @):
                 </p>
                 <textarea
                   className={styles.bulkTextarea}

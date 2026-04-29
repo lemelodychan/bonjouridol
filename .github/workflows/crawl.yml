@@ -2,11 +2,10 @@ name: Crawl news and Twitter sources
 
 on:
   schedule:
-    # Runs every 3 hours
+    # Runs every 3 hours — crawl window is dynamic: only items published since the last crawl
     - cron: '0 */3 * * *'
   workflow_dispatch:
     # Can also be triggered manually from GitHub.com → Actions tab
-    # Useful for testing or forcing a crawl outside the schedule
 
 jobs:
   crawl:
@@ -17,17 +16,24 @@ jobs:
           curl -X POST "${{ secrets.APP_URL }}/api/admin/curation/crawl/fetch" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             -H "Content-Type: application/json" \
-            --fail \
+            --fail-with-body \
             --max-time 25 \
             --silent \
             --show-error
 
-      - name: Step 2 — Process new items with AI
+      - name: Step 2 — Process new items with AI (loops until all raw items are classified)
         run: |
-          curl -X POST "${{ secrets.APP_URL }}/api/admin/curation/crawl/process" \
-            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            -H "Content-Type: application/json" \
-            --fail \
-            --max-time 25 \
-            --silent \
-            --show-error
+          max_iterations=20
+          for i in $(seq 1 $max_iterations); do
+            response=$(curl -s -X POST "${{ secrets.APP_URL }}/api/admin/curation/crawl/process" \
+              -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+              -H "Content-Type: application/json" \
+              --max-time 28)
+            echo "Batch $i: $response"
+            processed=$(echo "$response" | jq -r '.processed // 0' 2>/dev/null || echo "0")
+            if [ "$processed" -le "0" ]; then
+              echo "No more items to process."
+              break
+            fi
+            sleep 1
+          done
