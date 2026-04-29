@@ -17,7 +17,7 @@ async function fetchSourceItems(source, nitterInstances) {
 
 async function processSingleSource(source, nitterInstances, supabase, totals) {
   try {
-    const items = await fetchSourceItems(source, nitterInstance)
+    const items = await fetchSourceItems(source, nitterInstances)
     totals.fetched += items.length
 
     if (items.length === 0) {
