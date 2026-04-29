@@ -14,37 +14,58 @@ jobs:
       - name: Step 1 — Fetch new content from sources
         run: |
           BODY=$(jq -n \
-            --arg run_id    "${{ github.run_id }}" \
+            --arg run_id     "${{ github.run_id }}" \
             --argjson run_number ${{ github.run_number }} \
-            --arg repo      "${{ github.repository }}" \
+            --arg repo       "${{ github.repository }}" \
             '{github_run_id: $run_id, github_run_number: $run_number, github_repo: $repo}')
-          curl -s -X POST "${{ secrets.APP_URL }}/api/admin/curation/crawl/fetch" \
+
+          response=$(curl -s --show-error -X POST \
+            "${{ secrets.APP_URL }}/api/admin/curation/crawl/fetch" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             -H "Content-Type: application/json" \
             -d "$BODY" \
-            --fail-with-body \
-            --max-time 25 \
-            --show-error
+            --max-time 25)
+
+          echo "Fetch result: $response"
+
+          # Fail the step if the API returned an error field
+          error=$(echo "$response" | jq -r '.error // empty' 2>/dev/null)
+          if [ -n "$error" ]; then
+            echo "Fetch endpoint returned error: $error"
+            exit 1
+          fi
 
       - name: Step 2 — Process new items with AI (loops until all raw items are classified)
         run: |
           BODY=$(jq -n \
-            --arg run_id    "${{ github.run_id }}" \
+            --arg run_id     "${{ github.run_id }}" \
             --argjson run_number ${{ github.run_number }} \
-            --arg repo      "${{ github.repository }}" \
+            --arg repo       "${{ github.repository }}" \
             '{github_run_id: $run_id, github_run_number: $run_number, github_repo: $repo}')
+
           max_iterations=20
           for i in $(seq 1 $max_iterations); do
-            response=$(curl -s -X POST "${{ secrets.APP_URL }}/api/admin/curation/crawl/process" \
+            response=$(curl -s --show-error -X POST \
+              "${{ secrets.APP_URL }}/api/admin/curation/crawl/process" \
               -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
               -H "Content-Type: application/json" \
               -d "$BODY" \
               --max-time 28)
+
             echo "Batch $i: $response"
+
+            # Fail the step if the API returned an error field
+            error=$(echo "$response" | jq -r '.error // empty' 2>/dev/null)
+            if [ -n "$error" ]; then
+              echo "Process endpoint returned error: $error"
+              exit 1
+            fi
+
             processed=$(echo "$response" | jq -r '.processed // 0' 2>/dev/null || echo "0")
             if [ "$processed" -le "0" ]; then
               echo "No more items to process."
               break
             fi
+
             sleep 1
           done
