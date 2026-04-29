@@ -154,11 +154,19 @@ export default function AdminLayout({ children }) {
             </Link>
           </li>
           <li>
-            <Link 
-              href="/admin/galleries" 
+            <Link
+              href="/admin/galleries"
               className={pathname === '/admin/galleries' ? styles.active : ''}
             >
               Gallery Manager
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/admin/curation"
+              className={pathname.startsWith('/admin/curation') ? styles.active : ''}
+            >
+              Content Queue
             </Link>
           </li>
         </ul>
