@@ -126,6 +126,14 @@
   color: #c62828;
 }
 
+.processErrorList {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 // Stat cards
 .statCards {
   display: grid;

@@ -163,7 +163,8 @@ export async function runProcessQueue(supabase) {
       else results.rejected++
 
     } catch (err) {
-      results.errors.push(`Item ${item.id}: ${err.message}`)
+      const detail = err.status ? `${err.status} — ${err.message}` : err.message
+      results.errors.push(`Item ${item.id}: ${detail}`)
     }
   }
 

@@ -116,10 +116,17 @@ export default function CurationDashboard() {
             </div>
 
             {processResult && (
-              <div className={processResult.error ? styles.processError : styles.processSuccess}>
+              <div className={processResult.error || processResult.errors?.length ? styles.processError : styles.processSuccess}>
                 {processResult.error
                   ? `Error: ${processResult.error}`
-                  : `Processed ${processResult.processed} items — ${processResult.pending} pending review, ${processResult.rejected} rejected${processResult.errors?.length ? `, ${processResult.errors.length} failed` : ''}`
+                  : <>
+                      {`Processed ${processResult.processed} items — ${processResult.pending} pending review, ${processResult.rejected} rejected`}
+                      {processResult.errors?.length > 0 && (
+                        <ul className={styles.processErrorList}>
+                          {processResult.errors.map((e, i) => <li key={i}>{e}</li>)}
+                        </ul>
+                      )}
+                    </>
                 }
               </div>
             )}
