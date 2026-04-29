@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
-import { crawlActiveSources } from '@/lib/curation/crawlSources'
-import { logCrawlRun } from '@/lib/curation/logRun'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -13,20 +11,18 @@ function getSupabaseClient() {
   })
 }
 
-// UI-facing crawl — no CRON_SECRET required.
-// Called from the dashboard "Crawl all" button.
-export async function POST() {
+export async function GET() {
   const supabase = getSupabaseClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
   }
 
-  try {
-    const totals = await crawlActiveSources(supabase)
-    await logCrawlRun(supabase, 'fetch', 'manual', totals)
-    return NextResponse.json(totals)
-  } catch (err) {
-    await logCrawlRun(supabase, 'fetch', 'manual', { errors: [err.message] })
-    return NextResponse.json({ error: err.message }, { status: 500 })
-  }
+  const { data, error } = await supabase
+    .from('crawl_runs')
+    .select('*')
+    .order('ran_at', { ascending: false })
+    .limit(100)
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ runs: data || [] })
 }

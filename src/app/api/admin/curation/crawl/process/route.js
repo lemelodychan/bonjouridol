@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { runProcessQueue } from '@/lib/curation/processor'
+import { logCrawlRun } from '@/lib/curation/logRun'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -30,10 +31,21 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
   }
 
+  let body = {}
+  try { body = await request.json() } catch { /* no body is fine */ }
+
+  const githubContext = body.github_run_id ? {
+    runId:     String(body.github_run_id),
+    runNumber: body.github_run_number ? Number(body.github_run_number) : null,
+    repo:      body.github_repo || null,
+  } : null
+
   try {
     const results = await runProcessQueue(supabase)
+    if (results.processed > 0) await logCrawlRun(supabase, 'process', 'cron', results, githubContext)
     return NextResponse.json(results)
   } catch (err) {
+    await logCrawlRun(supabase, 'process', 'cron', { errors: [err.message] }, githubContext)
     return NextResponse.json({ error: err.message }, { status: 503 })
   }
 }

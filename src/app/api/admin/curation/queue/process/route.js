@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { runProcessQueue } from '@/lib/curation/processor'
+import { logCrawlRun } from '@/lib/curation/logRun'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -22,8 +23,10 @@ export async function POST() {
 
   try {
     const results = await runProcessQueue(supabase)
+    if (results.processed > 0) await logCrawlRun(supabase, 'process', 'manual', results)
     return NextResponse.json(results)
   } catch (err) {
+    await logCrawlRun(supabase, 'process', 'manual', { errors: [err.message] })
     return NextResponse.json({ error: err.message }, { status: 503 })
   }
 }

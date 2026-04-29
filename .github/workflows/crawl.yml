@@ -13,21 +13,32 @@ jobs:
     steps:
       - name: Step 1 — Fetch new content from sources
         run: |
-          curl -X POST "${{ secrets.APP_URL }}/api/admin/curation/crawl/fetch" \
+          BODY=$(jq -n \
+            --arg run_id    "${{ github.run_id }}" \
+            --argjson run_number ${{ github.run_number }} \
+            --arg repo      "${{ github.repository }}" \
+            '{github_run_id: $run_id, github_run_number: $run_number, github_repo: $repo}')
+          curl -s -X POST "${{ secrets.APP_URL }}/api/admin/curation/crawl/fetch" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             -H "Content-Type: application/json" \
+            -d "$BODY" \
             --fail-with-body \
             --max-time 25 \
-            --silent \
             --show-error
 
       - name: Step 2 — Process new items with AI (loops until all raw items are classified)
         run: |
+          BODY=$(jq -n \
+            --arg run_id    "${{ github.run_id }}" \
+            --argjson run_number ${{ github.run_number }} \
+            --arg repo      "${{ github.repository }}" \
+            '{github_run_id: $run_id, github_run_number: $run_number, github_repo: $repo}')
           max_iterations=20
           for i in $(seq 1 $max_iterations); do
             response=$(curl -s -X POST "${{ secrets.APP_URL }}/api/admin/curation/crawl/process" \
               -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
               -H "Content-Type: application/json" \
+              -d "$BODY" \
               --max-time 28)
             echo "Batch $i: $response"
             processed=$(echo "$response" | jq -r '.processed // 0' 2>/dev/null || echo "0")

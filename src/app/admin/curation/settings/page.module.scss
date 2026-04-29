@@ -37,6 +37,159 @@
   color: #888;
 }
 
+// Tabs
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #f0f0f0;
+  padding: 0 1.5rem;
+  margin-top: 0.25rem;
+}
+
+.tab {
+  padding: 0.6rem 1.25rem;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: #999;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+
+  &:hover { color: var(--dark-grey); }
+}
+
+.tabActive {
+  color: var(--bi-indigo);
+  border-bottom-color: var(--bi-indigo);
+}
+
+// Run history
+.runsContainer {
+  padding: 1.5rem;
+  max-width: 900px;
+}
+
+.runsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+
+  th {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #999;
+    border-bottom: 2px solid #f0f0f0;
+  }
+
+  td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid #f5f5f5;
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafafa; }
+}
+
+.runTypeBadge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.runTypeFetch   { background: #e8f0fe; color: #1a56db; }
+.runTypeProcess { background: #f0f1ff; color: var(--bi-indigo); }
+
+.runTrigger {
+  font-size: var(--font-size-xs);
+  color: #aaa;
+  font-weight: 500;
+}
+
+.runStatusOk, .runStatusPartial, .runStatusError {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+}
+.runStatusOk      { color: #22a06b; }
+.runStatusPartial { color: #b45309; }
+.runStatusError   { color: #c62828; }
+
+.runStats {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--font-size-sm);
+  color: var(--dark-grey);
+}
+
+.runStatsSub {
+  font-size: var(--font-size-xs);
+  color: #aaa;
+}
+
+.runStatsNone {
+  color: #ccc;
+  font-size: var(--font-size-xs);
+  font-style: italic;
+}
+
+.runErrors {
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-xs);
+  color: #c62828;
+  line-height: 1.5;
+}
+
+.runTime {
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+  color: var(--dark-grey);
+}
+
+.runTimeAbs {
+  font-size: var(--font-size-xs);
+  color: #bbb;
+  margin-top: 2px;
+}
+
+.runJobLink {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--bi-indigo);
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
+
+.runJobManual {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: #888;
+}
+
+.runsEmpty {
+  padding: 3rem 0;
+  text-align: center;
+  color: #bbb;
+  font-size: var(--font-size-sm);
+}
+
 .form {
   display: flex;
   flex-direction: column;
