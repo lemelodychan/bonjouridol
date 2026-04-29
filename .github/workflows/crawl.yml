@@ -19,16 +19,24 @@ jobs:
             --arg repo       "${{ github.repository }}" \
             '{github_run_id: $run_id, github_run_number: $run_number, github_repo: $repo}')
 
-          response=$(curl -s --show-error -X POST \
+          http_code=$(curl -s --show-error \
+            -o /tmp/fetch_response.json \
+            -w "%{http_code}" \
+            -X POST \
             "${{ secrets.APP_URL }}/api/admin/curation/crawl/fetch" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             -H "Content-Type: application/json" \
             -d "$BODY" \
             --max-time 25)
 
-          echo "Fetch result: $response"
+          response=$(cat /tmp/fetch_response.json 2>/dev/null || echo '{}')
+          echo "HTTP $http_code — $response"
 
-          # Fail the step if the API returned an error field
+          if [ "$http_code" -ge 400 ]; then
+            echo "Fetch endpoint returned HTTP $http_code"
+            exit 1
+          fi
+
           error=$(echo "$response" | jq -r '.error // empty' 2>/dev/null)
           if [ -n "$error" ]; then
             echo "Fetch endpoint returned error: $error"
@@ -45,16 +53,24 @@ jobs:
 
           max_iterations=20
           for i in $(seq 1 $max_iterations); do
-            response=$(curl -s --show-error -X POST \
+            http_code=$(curl -s --show-error \
+              -o /tmp/process_response.json \
+              -w "%{http_code}" \
+              -X POST \
               "${{ secrets.APP_URL }}/api/admin/curation/crawl/process" \
               -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
               -H "Content-Type: application/json" \
               -d "$BODY" \
               --max-time 28)
 
-            echo "Batch $i: $response"
+            response=$(cat /tmp/process_response.json 2>/dev/null || echo '{}')
+            echo "Batch $i — HTTP $http_code — $response"
 
-            # Fail the step if the API returned an error field
+            if [ "$http_code" -ge 400 ]; then
+              echo "Process endpoint returned HTTP $http_code"
+              exit 1
+            fi
+
             error=$(echo "$response" | jq -r '.error // empty' 2>/dev/null)
             if [ -n "$error" ]; then
               echo "Process endpoint returned error: $error"
