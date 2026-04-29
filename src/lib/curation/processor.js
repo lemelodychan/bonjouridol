@@ -61,16 +61,18 @@ Respond ONLY with valid JSON in exactly this shape — no markdown, no code fenc
   "suggested_tweet": string | null
 }
 
-idol_name: the primary artist or group name in natural English (e.g. "Morning Musume.'24", "AKB48", "Nogizaka46"). Use null if unknown.`
+idol_name: the primary artist or group name in natural English (e.g. "Morning Musume.'24", "AKB48", "Nogizaka46"). For tweets, use the "Source account" field as the definitive idol_name — it tells you whose account this is. Only deviate from it if the tweet is a retweet or quote-tweet that is clearly about a completely different artist. Use null if genuinely unknown.`
 }
 
 function buildUserPrompt(item) {
   const raw = item.raw_content || {}
-  // For tweets use the x.com URL; for articles use the source article URL
   const url = item.type === 'tweet'
     ? (raw.original_tweet_url || raw.source_url || '')
     : (raw.source_url || '')
-  return `Source type hint: ${item.type}
+  const sourceAccountLine = item.type === 'tweet' && raw.source_label
+    ? `\nSource account (owner of this Twitter account): ${raw.source_label}`
+    : ''
+  return `Source type hint: ${item.type}${sourceAccountLine}
 Title: ${raw.title || '(none)'}
 Author: ${raw.author || '(unknown)'}
 Source URL: ${url}

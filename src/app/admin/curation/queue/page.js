@@ -422,6 +422,11 @@ export default function QueuePage() {
                         <span className={`${styles.typeBadge} ${isTweet ? styles.typeTweet : styles.typeArticle}`}>
                           {isTweet ? 'Tweet' : 'Article'}
                         </span>
+                        {translated.idol_name && (
+                          <span className={`${styles.idolTag} ${isTweet && item.source && translated.idol_name !== item.source.label ? styles.idolTagMismatch : ''}`}>
+                            {translated.idol_name}
+                          </span>
+                        )}
                         {item.source && (
                           <span className={styles.sourceName}>{item.source.label}</span>
                         )}

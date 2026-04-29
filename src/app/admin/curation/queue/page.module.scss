@@ -303,6 +303,22 @@
 .typeTweet   { background: #e3f9e5; color: #1a7f37; }
 .typeArticle { background: #e8f0fe; color: #1a56db; }
 
+.idolTag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: #f0f1ff;
+  color: var(--bi-indigo);
+}
+
+.idolTagMismatch {
+  background: #fff3cd;
+  color: #856404;
+  outline: 1px solid #ffc107;
+}
+
 .sourceName {
   font-size: var(--font-size-sm);
   color: #666;

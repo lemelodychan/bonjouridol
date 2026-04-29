@@ -89,6 +89,8 @@ export async function POST(request, { params }) {
             image_urls:         item.imageUrls,
             published_at:       item.publishedAt,
             original_tweet_url: item.originalTweetUrl || null,
+            source_label:       source.label,
+            source_type:        source.type,
           },
         }))
       )
