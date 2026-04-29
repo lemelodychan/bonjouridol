@@ -80,23 +80,48 @@ async function processSingleSource(source, nitterInstance, supabase, totals) {
       return
     }
 
+    // Drop items older than 24 hours; keep items with no publishedAt (age unknown)
+    const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000)
+    let recentItems = items.filter(i => !i.publishedAt || new Date(i.publishedAt) >= cutoff)
+
+    // Fallback: if everything was filtered out, keep the single most recent item
+    // so there's always a reference point and the source appears alive
+    if (recentItems.length === 0 && items.length > 0) {
+      const sorted = [...items].sort((a, b) => {
+        if (!a.publishedAt) return 1
+        if (!b.publishedAt) return -1
+        return new Date(b.publishedAt) - new Date(a.publishedAt)
+      })
+      recentItems = [sorted[0]]
+    }
+
+    totals.skipped += items.length - recentItems.length
+
+    if (recentItems.length === 0) {
+      await supabase
+        .from('content_sources')
+        .update({ last_crawled_at: new Date().toISOString(), last_error: null })
+        .eq('id', source.id)
+      return
+    }
+
     // Bulk-check which item IDs are already in crawl_log for this source
     const { data: existing } = await supabase
       .from('crawl_log')
       .select('item_id')
       .eq('source_id', source.id)
-      .in('item_id', items.map(i => i.itemId).filter(Boolean))
+      .in('item_id', recentItems.map(i => i.itemId).filter(Boolean))
 
     const seen = new Set((existing || []).map(r => r.item_id))
 
-    const newItems = items.filter(i => i.itemId && !seen.has(i.itemId))
-    totals.skipped += items.length - newItems.length
+    const newItems = recentItems.filter(i => i.itemId && !seen.has(i.itemId))
+    totals.skipped += recentItems.length - newItems.length
 
     if (newItems.length > 0) {
       // Insert into content_queue (status: raw — not yet AI-processed)
       const queueRows = newItems.map(item => ({
         source_id: source.id,
-        type:      'article', // default; AI process step will reclassify
+        type:      source.type === 'twitter' ? 'tweet' : 'article',
         status:    'raw',
         raw_content: {
           title:              item.title,

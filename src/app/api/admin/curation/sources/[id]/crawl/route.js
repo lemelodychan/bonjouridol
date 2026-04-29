@@ -49,20 +49,34 @@ export async function POST(request, { params }) {
       case 'html':    items = await fetchHTMLSource(source.url, source.crawl_config || {}); break
     }
 
+    // Drop items older than 24 hours; keep items with no publishedAt (age unknown)
+    const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000)
+    let recentItems = items.filter(i => !i.publishedAt || new Date(i.publishedAt) >= cutoff)
+
+    // Fallback: if everything was filtered out, keep the single most recent item
+    if (recentItems.length === 0 && items.length > 0) {
+      const sorted = [...items].sort((a, b) => {
+        if (!a.publishedAt) return 1
+        if (!b.publishedAt) return -1
+        return new Date(b.publishedAt) - new Date(a.publishedAt)
+      })
+      recentItems = [sorted[0]]
+    }
+
     const { data: existing } = await supabase
       .from('crawl_log')
       .select('item_id')
       .eq('source_id', source.id)
-      .in('item_id', items.map(i => i.itemId).filter(Boolean))
+      .in('item_id', recentItems.map(i => i.itemId).filter(Boolean))
 
     const seen = new Set((existing || []).map(r => r.item_id))
-    const newItems = items.filter(i => i.itemId && !seen.has(i.itemId))
+    const newItems = recentItems.filter(i => i.itemId && !seen.has(i.itemId))
 
     if (newItems.length > 0) {
       await supabase.from('content_queue').insert(
         newItems.map(item => ({
           source_id: source.id,
-          type:      'article',
+          type:      source.type === 'twitter' ? 'tweet' : 'article',
           status:    'raw',
           raw_content: {
             title:              item.title,
@@ -89,7 +103,7 @@ export async function POST(request, { params }) {
     return NextResponse.json({
       fetched: items.length,
       new: newItems.length,
-      skipped: items.length - newItems.length,
+      skipped: items.length - newItems.length, // includes age-filtered + deduped
     })
 
   } catch (err) {

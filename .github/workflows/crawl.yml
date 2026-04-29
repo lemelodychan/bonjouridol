@@ -27,9 +27,7 @@ jobs:
           curl -X POST "${{ secrets.APP_URL }}/api/admin/curation/crawl/process" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             -H "Content-Type: application/json" \
+            --fail \
             --max-time 25 \
             --silent \
             --show-error
-        # Note: Step 2 returns 503 until Phase 3 is complete.
-        # We intentionally do NOT use --fail here so the workflow
-        # still passes while the AI pipeline is being built.
