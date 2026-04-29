@@ -12,19 +12,9 @@ function getSupabaseClient() {
   })
 }
 
-function checkCronSecret(request) {
-  const authHeader = request.headers.get('Authorization')
-  const cronSecret = process.env.CRON_SECRET
-  if (!cronSecret) return false
-  return authHeader === `Bearer ${cronSecret}`
-}
-
-// Called by GitHub Actions on schedule. Requires CRON_SECRET.
-export async function POST(request) {
-  if (!checkCronSecret(request)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
+// UI-facing endpoint called by the "Process queue" button in the admin dashboard.
+// No CRON_SECRET required — relies on the admin panel being access-controlled.
+export async function POST() {
   const supabase = getSupabaseClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })

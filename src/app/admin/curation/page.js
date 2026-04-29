@@ -6,13 +6,15 @@ import { formatDistanceToNow } from 'date-fns'
 import styles from './page.module.scss'
 import Button from '@/app/components/IconButton'
 import { IoSettingsOutline, IoListOutline } from 'react-icons/io5'
-import { FiAlertTriangle, FiCheck, FiRadio } from 'react-icons/fi'
+import { FiAlertTriangle, FiCheck, FiRadio, FiCpu } from 'react-icons/fi'
 
 export default function CurationDashboard() {
   const [sources, setSources] = useState([])
-  const [queueCounts, setQueueCounts] = useState({ pending: 0, approved: 0, rejected: 0, published: 0 })
+  const [queueCounts, setQueueCounts] = useState({ raw: 0, pending: 0, approved: 0, rejected: 0, published: 0 })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [processing, setProcessing] = useState(false)
+  const [processResult, setProcessResult] = useState(null)
 
   useEffect(() => {
     loadData()
@@ -40,6 +42,22 @@ export default function CurationDashboard() {
       setError('Failed to load dashboard data.')
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleProcessQueue() {
+    setProcessing(true)
+    setProcessResult(null)
+    try {
+      const res = await fetch('/api/admin/curation/queue/process', { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Processing failed')
+      setProcessResult(data)
+      loadData()
+    } catch (err) {
+      setProcessResult({ error: err.message })
+    } finally {
+      setProcessing(false)
     }
   }
 
@@ -77,13 +95,35 @@ export default function CurationDashboard() {
           <section className={styles.section}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Queue</h2>
-              <Button
-                href="/admin/curation/queue"
-                variant="Pink"
-                textValue="Review Queue"
-                icon={<IoListOutline />}
-              />
+              <div className={styles.sectionActions}>
+                {queueCounts.raw > 0 && (
+                  <button
+                    className={styles.processButton}
+                    onClick={handleProcessQueue}
+                    disabled={processing}
+                  >
+                    <FiCpu />
+                    {processing ? 'Processing…' : `Process ${queueCounts.raw} unprocessed`}
+                  </button>
+                )}
+                <Button
+                  href="/admin/curation/queue"
+                  variant="Pink"
+                  textValue="Review Queue"
+                  icon={<IoListOutline />}
+                />
+              </div>
             </div>
+
+            {processResult && (
+              <div className={processResult.error ? styles.processError : styles.processSuccess}>
+                {processResult.error
+                  ? `Error: ${processResult.error}`
+                  : `Processed ${processResult.processed} items — ${processResult.pending} pending review, ${processResult.rejected} rejected${processResult.errors?.length ? `, ${processResult.errors.length} failed` : ''}`
+                }
+              </div>
+            )}
+
             <div className={styles.statCards}>
               <Link href="/admin/curation/queue?status=pending" className={styles.statCard}>
                 <span className={styles.statNumber}>{queueCounts.pending}</span>

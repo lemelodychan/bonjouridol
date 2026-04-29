@@ -27,7 +27,7 @@ export async function GET(request) {
 
   // Return just the counts for the dashboard stat cards
   if (countOnly) {
-    const statuses = ['pending', 'approved', 'rejected', 'published']
+    const statuses = ['raw', 'pending', 'approved', 'rejected', 'published']
     const counts = {}
     await Promise.all(
       statuses.map(async s => {

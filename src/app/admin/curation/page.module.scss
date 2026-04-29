@@ -84,6 +84,48 @@
   color: #888;
 }
 
+.sectionActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.processButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #f0f0ff;
+  color: var(--bi-indigo);
+  border: 1px solid var(--bi-indigo);
+  border-radius: 8px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover:not(:disabled) { background: #e0e0ff; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.processSuccess {
+  padding: 0.75rem 1rem;
+  background: #f0fff4;
+  border: 1px solid #b7ebd0;
+  border-radius: 8px;
+  font-size: var(--font-size-sm);
+  color: #1a6640;
+}
+
+.processError {
+  padding: 0.75rem 1rem;
+  background: #fff0f0;
+  border: 1px solid #ffc0c0;
+  border-radius: 8px;
+  font-size: var(--font-size-sm);
+  color: #c62828;
+}
+
 // Stat cards
 .statCards {
   display: grid;
