@@ -309,6 +309,26 @@
   input { accent-color: var(--bi-dark-pink); }
 }
 
+.nitterTextarea {
+  width: 100%;
+  max-width: 480px;
+  padding: 0.6rem 0.875rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: var(--font-size-sm);
+  font-family: 'Courier New', monospace;
+  color: var(--dark-grey);
+  background: var(--white);
+  outline: none;
+  resize: vertical;
+  line-height: 1.6;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+
+  &:focus { border-color: var(--bi-indigo); }
+  &::placeholder { color: #bbb; }
+}
+
 .input {
   padding: 0.6rem 0.875rem;
   border: 1px solid #ddd;

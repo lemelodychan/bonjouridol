@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
-import { fetchRSSFeed, fetchNitterFeed } from '@/lib/curation/rss'
+import { fetchRSSFeed, fetchNitterFeedWithFallback } from '@/lib/curation/rss'
 import { fetchHTMLSource } from '@/lib/curation/scraper'
 
 function getSupabaseClient() {
@@ -39,12 +39,14 @@ export async function POST(request, { params }) {
     .eq('id', 1)
     .single()
 
-  const nitterInstance = settings?.nitter_instance || 'https://nitter.net'
+  const nitterInstances = (settings?.nitter_instance || '')
+    .split('\n').map(s => s.trim()).filter(s => s.startsWith('http'))
+  const instances = nitterInstances.length > 0 ? nitterInstances : ['https://nitter.net']
 
   try {
     let items = []
     switch (source.type) {
-      case 'twitter': items = await fetchNitterFeed(nitterInstance, source.url); break
+      case 'twitter': items = await fetchNitterFeedWithFallback(instances, source.url); break
       case 'rss':     items = await fetchRSSFeed(source.url); break
       case 'html':    items = await fetchHTMLSource(source.url, source.crawl_config || {}); break
     }

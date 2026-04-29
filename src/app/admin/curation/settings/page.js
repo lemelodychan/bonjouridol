@@ -125,7 +125,7 @@ export default function CurationSettingsPage() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nitter_instance:       form.nitter_instance.trim(),
+          nitter_instance:       form.nitter_instance.split('\n').map(s => s.trim()).filter(Boolean).join('\n') || null,
           confidence_threshold:  parseFloat(form.confidence_threshold),
           low_confidence_action: form.low_confidence_action,
           prompt_instructions:   form.prompt_instructions.trim() || null,
@@ -280,16 +280,17 @@ export default function CurationSettingsPage() {
 
               <div className={styles.fieldRow}>
                 <label className={styles.label} htmlFor="nitter">
-                  Nitter instance
-                  <span className={styles.labelHint}>Used to fetch Twitter/X accounts as RSS. Change if the current instance goes down.</span>
+                  Nitter instances
+                  <span className={styles.labelHint}>One URL per line — tried in order. If the first fails (socket hangup, timeout), the next is tried automatically.</span>
                 </label>
-                <input
+                <textarea
                   id="nitter"
-                  type="url"
-                  className={styles.input}
+                  className={styles.nitterTextarea}
                   value={form.nitter_instance}
                   onChange={e => set('nitter_instance', e.target.value)}
-                  placeholder="https://nitter.net"
+                  placeholder={'https://nitter.net\nhttps://nitter.privacydev.net\nhttps://nitter.cz'}
+                  rows={4}
+                  spellCheck={false}
                 />
               </div>
             </section>

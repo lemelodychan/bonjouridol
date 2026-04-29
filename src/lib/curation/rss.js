@@ -36,6 +36,22 @@ export async function fetchRSSFeed(url) {
 }
 
 /**
+ * Try each Nitter instance in order, returning the first successful result.
+ * Throws the last error if all instances fail.
+ */
+export async function fetchNitterFeedWithFallback(instances, handle) {
+  let lastErr
+  for (const instance of instances) {
+    try {
+      return await fetchNitterFeed(instance, handle)
+    } catch (err) {
+      lastErr = err
+    }
+  }
+  throw lastErr || new Error('All Nitter instances failed')
+}
+
+/**
  * Fetch and parse a Nitter RSS feed for a given Twitter handle.
  * Nitter exposes twitter accounts as RSS at {nitterInstance}/{handle}/rss.
  *

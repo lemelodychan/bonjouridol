@@ -1,16 +1,21 @@
-import { fetchRSSFeed, fetchNitterFeed } from '@/lib/curation/rss'
+import { fetchRSSFeed, fetchNitterFeedWithFallback } from '@/lib/curation/rss'
 import { fetchHTMLSource } from '@/lib/curation/scraper'
 
-async function fetchSourceItems(source, nitterInstance) {
+function parseNitterInstances(raw) {
+  const list = (raw || '').split('\n').map(s => s.trim()).filter(s => s.startsWith('http'))
+  return list.length > 0 ? list : ['https://nitter.net']
+}
+
+async function fetchSourceItems(source, nitterInstances) {
   switch (source.type) {
-    case 'twitter': return fetchNitterFeed(nitterInstance, source.url)
+    case 'twitter': return fetchNitterFeedWithFallback(nitterInstances, source.url)
     case 'rss':     return fetchRSSFeed(source.url)
     case 'html':    return fetchHTMLSource(source.url, source.crawl_config || {})
     default:        throw new Error(`Unknown source type: ${source.type}`)
   }
 }
 
-async function processSingleSource(source, nitterInstance, supabase, totals) {
+async function processSingleSource(source, nitterInstances, supabase, totals) {
   try {
     const items = await fetchSourceItems(source, nitterInstance)
     totals.fetched += items.length
@@ -124,11 +129,11 @@ export async function crawlActiveSources(supabase, sourceIds = null) {
     .eq('id', 1)
     .single()
 
-  const nitterInstance = settings?.nitter_instance || 'https://nitter.net'
+  const nitterInstances = parseNitterInstances(settings?.nitter_instance)
   const totals = { fetched: 0, new: 0, skipped: 0, errors: [] }
 
   await Promise.allSettled(
-    sources.map(source => processSingleSource(source, nitterInstance, supabase, totals))
+    sources.map(source => processSingleSource(source, nitterInstances, supabase, totals))
   )
 
   return totals
