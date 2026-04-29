@@ -3,6 +3,8 @@ import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { crawlActiveSources } from '@/lib/curation/crawlSources'
 import { logCrawlRun } from '@/lib/curation/logRun'
 
+export const dynamic = 'force-dynamic'
+
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -20,31 +22,38 @@ function checkCronSecret(request) {
   return authHeader === `Bearer ${cronSecret}`
 }
 
+// Called by GitHub Actions on schedule. Requires CRON_SECRET.
 export async function POST(request) {
-  if (!checkCronSecret(request)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  const supabase = getSupabaseClient()
-  if (!supabase) {
-    return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
-  }
-
-  let body = {}
-  try { body = await request.json() } catch { /* no body is fine */ }
-
-  const githubContext = body.github_run_id ? {
-    runId:     String(body.github_run_id),
-    runNumber: body.github_run_number ? Number(body.github_run_number) : null,
-    repo:      body.github_repo || null,
-  } : null
+  let supabase = null
+  let githubContext = null
 
   try {
+    if (!checkCronSecret(request)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    supabase = getSupabaseClient()
+    if (!supabase) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
+    }
+
+    let body = {}
+    try { body = await request.json() } catch { /* no body is fine */ }
+
+    githubContext = body.github_run_id ? {
+      runId:     String(body.github_run_id),
+      runNumber: body.github_run_number ? Number(body.github_run_number) : null,
+      repo:      body.github_repo || null,
+    } : null
+
     const totals = await crawlActiveSources(supabase, body.source_ids || null)
     await logCrawlRun(supabase, 'fetch', 'cron', totals, githubContext)
     return NextResponse.json(totals)
   } catch (err) {
-    await logCrawlRun(supabase, 'fetch', 'cron', { errors: [err.message] }, githubContext)
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    const message = err instanceof Error ? err.message : String(err)
+    if (supabase) {
+      await logCrawlRun(supabase, 'fetch', 'cron', { errors: [message] }, githubContext).catch(() => {})
+    }
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }

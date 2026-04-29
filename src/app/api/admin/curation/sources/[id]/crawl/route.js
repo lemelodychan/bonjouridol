@@ -113,11 +113,9 @@ export async function POST(request, { params }) {
 
   } catch (err) {
     const message = err.message || 'Crawl failed'
-    await supabase
-      .from('content_sources')
-      .update({ last_error: message })
-      .eq('id', source.id)
-      .catch(() => {})
+    try {
+      await supabase.from('content_sources').update({ last_error: message }).eq('id', source.id)
+    } catch { /* best-effort */ }
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }

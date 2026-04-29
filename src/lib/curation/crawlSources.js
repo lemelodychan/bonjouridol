@@ -101,11 +101,12 @@ async function processSingleSource(source, nitterInstance, supabase, totals) {
   } catch (err) {
     const message = err.message || 'Unknown error'
     totals.errors.push(`${source.label}: ${message}`)
-    await supabase
-      .from('content_sources')
-      .update({ last_crawled_at: new Date().toISOString(), last_error: message })
-      .eq('id', source.id)
-      .catch(() => {})
+    try {
+      await supabase
+        .from('content_sources')
+        .update({ last_crawled_at: new Date().toISOString(), last_error: message })
+        .eq('id', source.id)
+    } catch { /* best-effort */ }
   }
 }
 
