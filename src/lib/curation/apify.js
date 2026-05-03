@@ -1,27 +1,30 @@
-const ACTOR = 'apidojo~tweet-scraper'
-const MAX_ITEMS = 10 // free tier cap per query
+// APIFY_ACTOR_ID should be set to your deployed actor, e.g. "yourname/bonjouridol-twitter-scraper"
+// Falls back to the third-party browser-based actor if not set (much more expensive).
+const ACTOR = process.env.APIFY_ACTOR_ID || 'apidojo~tweet-scraper'
+const IS_CUSTOM = !!process.env.APIFY_ACTOR_ID
 
 /**
- * Fetch recent tweets for a Twitter handle via Apify Tweet Scraper V2.
- * Returns items in the same normalised shape as fetchNitterFeed.
- * Requires APIFY_API_TOKEN env var.
+ * Fetch recent tweets for multiple handles in a single Apify actor run.
+ * Returns a Map<handleLowercase, normalizedItem[]>.
+ * One run = one startup cost regardless of how many handles are passed.
  */
-export async function fetchApifyTweets(handle) {
+export async function fetchApifyBatch(handles) {
   const apiToken = process.env.APIFY_API_TOKEN
   if (!apiToken) throw new Error('APIFY_API_TOKEN not set')
+  if (!handles.length) return new Map()
 
-  const cleanHandle = handle.replace(/^@/, '')
+  const cleanHandles = handles.map(h => h.replace(/^@/, ''))
+
+  const input = IS_CUSTOM
+    ? { handles: cleanHandles, maxTweetsPerHandle: 10 }
+    : { twitterHandles: cleanHandles, maxItems: cleanHandles.length * 10, sort: 'Latest' }
 
   const res = await fetch(
     `https://api.apify.com/v2/acts/${ACTOR}/run-sync-get-dataset-items?token=${apiToken}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        twitterHandles: [cleanHandle],
-        maxItems:       MAX_ITEMS,
-        sort:           'Latest',
-      }),
+      body: JSON.stringify(input),
       signal: AbortSignal.timeout(25000),
     }
   )
@@ -34,39 +37,59 @@ export async function fetchApifyTweets(handle) {
   const tweets = await res.json()
   if (!Array.isArray(tweets)) throw new Error('Unexpected Apify response format')
 
-  return tweets
-    .filter(t => !t.isRetweet)
-    .map(tweet => {
-      const tweetUrl = tweet.url || tweet.twitterUrl
-        || (tweet.id ? `https://x.com/${cleanHandle}/status/${tweet.id}` : null)
-      return {
-        itemId:          tweet.id || tweetUrl,
-        title:           null,
-        body:            tweet.text || '',
-        author:          `@${tweet.author?.userName || cleanHandle}`,
-        sourceUrl:       tweetUrl,
-        imageUrls:       extractImages(tweet),
-        publishedAt:     tweet.createdAt ? new Date(tweet.createdAt).toISOString() : null,
-        originalTweetUrl: tweetUrl,
-      }
-    })
+  const byHandle = new Map()
+  for (const tweet of tweets) {
+    if (tweet.isRetweet || tweet.error) continue
+    const handle = (tweet.handle || tweet.author?.userName || '').toLowerCase()
+    if (!handle) continue
+    if (!byHandle.has(handle)) byHandle.set(handle, [])
+    byHandle.get(handle).push(IS_CUSTOM ? normalizeCustom(tweet) : normalizeThirdParty(tweet))
+  }
+  return byHandle
 }
 
-function extractImages(tweet) {
+/**
+ * Single-handle wrapper for the "Crawl now" button on a single source.
+ */
+export async function fetchApifyTweets(handle) {
+  const batch = await fetchApifyBatch([handle])
+  return batch.get(handle.replace(/^@/, '').toLowerCase()) || []
+}
+
+// ─── normalizers ─────────────────────────────────────────────────────────────
+
+function normalizeCustom(t) {
+  return {
+    itemId:           t.id || t.url,
+    title:            null,
+    body:             t.text || '',
+    author:           `@${t.handle}`,
+    sourceUrl:        t.url,
+    imageUrls:        Array.isArray(t.mediaUrls) ? t.mediaUrls : [],
+    publishedAt:      t.createdAt ? new Date(t.createdAt).toISOString() : null,
+    originalTweetUrl: t.url,
+  }
+}
+
+function normalizeThirdParty(t) {
+  const tweetUrl = t.url || t.twitterUrl
+    || (t.id ? `https://x.com/${t.author?.userName}/status/${t.id}` : null)
   const urls = []
-  // Apify may expose media in different locations depending on actor version
-  const candidates = [
-    tweet.media,
-    tweet.photos,
-    tweet.entities?.media,
-    tweet.extendedEntities?.media,
-  ]
-  for (const list of candidates) {
+  for (const list of [t.media, t.photos, t.entities?.media, t.extendedEntities?.media]) {
     if (!Array.isArray(list)) continue
     for (const m of list) {
       const url = m.mediaUrl || m.media_url_https || m.url || m.thumbnailUrl
       if (url && !urls.includes(url)) urls.push(url)
     }
   }
-  return urls
+  return {
+    itemId:           t.id || tweetUrl,
+    title:            null,
+    body:             t.text || '',
+    author:           `@${t.author?.userName || ''}`,
+    sourceUrl:        tweetUrl,
+    imageUrls:        urls,
+    publishedAt:      t.createdAt ? new Date(t.createdAt).toISOString() : null,
+    originalTweetUrl: tweetUrl,
+  }
 }

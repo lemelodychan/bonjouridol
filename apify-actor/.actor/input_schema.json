@@ -1,0 +1,22 @@
+{
+  "title": "BonjourIdol Twitter Scraper input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "handles": {
+      "title": "Twitter handles",
+      "type": "array",
+      "description": "List of Twitter/X handles to fetch (with or without @)",
+      "editor": "json"
+    },
+    "maxTweetsPerHandle": {
+      "title": "Max tweets per handle",
+      "type": "integer",
+      "description": "Maximum number of recent tweets to fetch per handle",
+      "default": 10,
+      "minimum": 1,
+      "maximum": 100
+    }
+  },
+  "required": ["handles"]
+}

@@ -1,0 +1,12 @@
+{
+  "actorSpecification": 1,
+  "name": "bonjouridol-twitter-scraper",
+  "title": "BonjourIdol Twitter Scraper",
+  "description": "Fetches recent tweets for a list of handles using the Twitter v1.1 API — no browser, minimal compute cost.",
+  "version": "1.0",
+  "meta": {
+    "templateId": "js-start"
+  },
+  "input": "./input_schema.json",
+  "dockerfile": "./Dockerfile"
+}

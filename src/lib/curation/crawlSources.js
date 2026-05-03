@@ -1,35 +1,27 @@
 import { fetchRSSFeed, fetchNitterFeedWithFallback } from '@/lib/curation/rss'
 import { fetchHTMLSource } from '@/lib/curation/scraper'
 import { uploadItemImages } from '@/lib/curation/imageStorage'
-import { fetchApifyTweets } from '@/lib/curation/apify'
+import { fetchApifyBatch } from '@/lib/curation/apify'
 
 function parseNitterInstances(raw) {
   const list = (raw || '').split('\n').map(s => s.trim()).filter(s => s.startsWith('http'))
   return list.length > 0 ? list : ['https://nitter.net']
 }
 
-async function fetchSourceItems(source, nitterInstances) {
+// prefetchedItems: pre-fetched results from the Apify batch; null = not available, use live fetch
+async function fetchSourceItems(source, nitterInstances, prefetchedItems = null) {
+  if (prefetchedItems !== null) return prefetchedItems
   switch (source.type) {
-    case 'twitter':
-      if (process.env.APIFY_API_TOKEN) {
-        try {
-          return await fetchApifyTweets(source.url)
-        } catch (err) {
-          // Fall back to Nitter if Apify fails (quota exhausted, transient error, etc.)
-          console.warn(`Apify failed for ${source.label}, falling back to Nitter: ${err.message}`)
-          return fetchNitterFeedWithFallback(nitterInstances, source.url)
-        }
-      }
-      return fetchNitterFeedWithFallback(nitterInstances, source.url)
+    case 'twitter': return fetchNitterFeedWithFallback(nitterInstances, source.url)
     case 'rss':     return fetchRSSFeed(source.url)
     case 'html':    return fetchHTMLSource(source.url, source.crawl_config || {})
     default:        throw new Error(`Unknown source type: ${source.type}`)
   }
 }
 
-async function processSingleSource(source, nitterInstances, supabase, totals) {
+async function processSingleSource(source, nitterInstances, supabase, totals, prefetchedItems = null) {
   try {
-    const items = await fetchSourceItems(source, nitterInstances)
+    const items = await fetchSourceItems(source, nitterInstances, prefetchedItems)
     totals.fetched += items.length
 
     if (items.length === 0) {
@@ -154,8 +146,26 @@ export async function crawlActiveSources(supabase, sourceIds = null) {
   const nitterInstances = parseNitterInstances(settings?.nitter_instance)
   const totals = { fetched: 0, new: 0, skipped: 0, errors: [] }
 
+  // Fetch all Twitter handles in a single Apify run (one startup cost instead of N)
+  let apifyBatch = null
+  if (process.env.APIFY_API_TOKEN) {
+    const twitterSources = sources.filter(s => s.type === 'twitter')
+    if (twitterSources.length > 0) {
+      try {
+        apifyBatch = await fetchApifyBatch(twitterSources.map(s => s.url))
+      } catch (err) {
+        totals.errors.push(`Apify batch failed, using Nitter: ${err.message}`)
+      }
+    }
+  }
+
   await Promise.allSettled(
-    sources.map(source => processSingleSource(source, nitterInstances, supabase, totals))
+    sources.map(source => {
+      const prefetched = source.type === 'twitter' && apifyBatch !== null
+        ? (apifyBatch.get(source.url.replace(/^@/, '').toLowerCase()) ?? [])
+        : null
+      return processSingleSource(source, nitterInstances, supabase, totals, prefetched)
+    })
   )
 
   return totals
