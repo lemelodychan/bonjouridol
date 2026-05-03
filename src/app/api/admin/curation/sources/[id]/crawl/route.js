@@ -3,6 +3,7 @@ import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { fetchRSSFeed, fetchNitterFeedWithFallback } from '@/lib/curation/rss'
 import { fetchHTMLSource } from '@/lib/curation/scraper'
 import { uploadItemImages } from '@/lib/curation/imageStorage'
+import { fetchApifyTweets } from '@/lib/curation/apify'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -47,9 +48,20 @@ export async function POST(request, { params }) {
   try {
     let items = []
     switch (source.type) {
-      case 'twitter': items = await fetchNitterFeedWithFallback(instances, source.url); break
-      case 'rss':     items = await fetchRSSFeed(source.url); break
-      case 'html':    items = await fetchHTMLSource(source.url, source.crawl_config || {}); break
+      case 'twitter':
+        if (process.env.APIFY_API_TOKEN) {
+          try {
+            items = await fetchApifyTweets(source.url)
+          } catch (err) {
+            console.warn(`Apify failed, falling back to Nitter: ${err.message}`)
+            items = await fetchNitterFeedWithFallback(instances, source.url)
+          }
+        } else {
+          items = await fetchNitterFeedWithFallback(instances, source.url)
+        }
+        break
+      case 'rss':  items = await fetchRSSFeed(source.url); break
+      case 'html': items = await fetchHTMLSource(source.url, source.crawl_config || {}); break
     }
 
     let recentItems

@@ -1,6 +1,7 @@
 import { fetchRSSFeed, fetchNitterFeedWithFallback } from '@/lib/curation/rss'
 import { fetchHTMLSource } from '@/lib/curation/scraper'
 import { uploadItemImages } from '@/lib/curation/imageStorage'
+import { fetchApifyTweets } from '@/lib/curation/apify'
 
 function parseNitterInstances(raw) {
   const list = (raw || '').split('\n').map(s => s.trim()).filter(s => s.startsWith('http'))
@@ -9,7 +10,17 @@ function parseNitterInstances(raw) {
 
 async function fetchSourceItems(source, nitterInstances) {
   switch (source.type) {
-    case 'twitter': return fetchNitterFeedWithFallback(nitterInstances, source.url)
+    case 'twitter':
+      if (process.env.APIFY_API_TOKEN) {
+        try {
+          return await fetchApifyTweets(source.url)
+        } catch (err) {
+          // Fall back to Nitter if Apify fails (quota exhausted, transient error, etc.)
+          console.warn(`Apify failed for ${source.label}, falling back to Nitter: ${err.message}`)
+          return fetchNitterFeedWithFallback(nitterInstances, source.url)
+        }
+      }
+      return fetchNitterFeedWithFallback(nitterInstances, source.url)
     case 'rss':     return fetchRSSFeed(source.url)
     case 'html':    return fetchHTMLSource(source.url, source.crawl_config || {})
     default:        throw new Error(`Unknown source type: ${source.type}`)
