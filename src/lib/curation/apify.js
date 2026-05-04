@@ -20,7 +20,7 @@ export async function fetchApifyBatch(handles) {
     : { twitterHandles: cleanHandles, maxItems: cleanHandles.length * 10, sort: 'Latest' }
 
   const res = await fetch(
-    `https://api.apify.com/v2/acts/${ACTOR}/run-sync-get-dataset-items?token=${apiToken}`,
+    `https://api.apify.com/v2/acts/${ACTOR}/run-sync-get-dataset-items?token=${apiToken}&memory=128&timeout=30`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

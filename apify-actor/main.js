@@ -57,25 +57,23 @@ Actor.main(async () => {
 
   const guestToken = await getGuestToken()
 
-  for (const raw of handles) {
+  // Fetch all handles in parallel — pure HTTP so no browser concurrency concerns
+  await Promise.all(handles.map(async (raw) => {
     const handle = raw.replace(/^@/, '')
     try {
       const tweets = await fetchTimeline(handle, guestToken, maxTweetsPerHandle)
-      for (const t of tweets) {
-        await Actor.pushData({
-          handle:    handle.toLowerCase(),
-          id:        t.id_str,
-          text:      t.full_text || t.text,
-          createdAt: t.created_at,  // "Fri Nov 24 17:49:36 +0000 2023"
-          url:       `https://x.com/${handle}/status/${t.id_str}`,
-          mediaUrls: extractMedia(t),
-          isReply:   !!t.in_reply_to_status_id_str,
-        })
-      }
+      await Promise.all(tweets.map(t => Actor.pushData({
+        handle:    handle.toLowerCase(),
+        id:        t.id_str,
+        text:      t.full_text || t.text,
+        createdAt: t.created_at,
+        url:       `https://x.com/${handle}/status/${t.id_str}`,
+        mediaUrls: extractMedia(t),
+        isReply:   !!t.in_reply_to_status_id_str,
+      })))
     } catch (err) {
-      // Log the error but keep going — one bad handle shouldn't abort the run
       console.error(`@${handle}: ${err.message}`)
       await Actor.pushData({ handle: handle.toLowerCase(), error: err.message })
     }
-  }
+  }))
 })

@@ -5,7 +5,7 @@ import { formatDistanceToNow } from 'date-fns'
 import styles from './page.module.scss'
 import { FiCheck, FiX, FiChevronDown, FiChevronUp, FiCopy, FiExternalLink, FiRefreshCw, FiFileText, FiSend, FiTrash2, FiRotateCcw, FiArchive, FiDownload, FiTwitter } from 'react-icons/fi'
 
-const STATUSES = ['pending', 'approved', 'rejected']
+const STATUSES = ['pending', 'approved', 'rejected', 'published']
 const LIMIT = 20
 
 const REASON_CATEGORIES = [
@@ -40,6 +40,8 @@ export default function QueuePage() {
   const [draftResults, setDraftResults] = useState({})
   const [dismissingRejected, setDismissingRejected] = useState(false)
   const [dismissResult, setDismissResult] = useState(null)
+  const [publishingAll, setPublishingAll] = useState(false)
+  const [publishAllResult, setPublishAllResult] = useState(null)
 
   useEffect(() => {
     const t = setTimeout(() => setArtistDebounced(artistFilter.trim()), 400)
@@ -176,6 +178,24 @@ export default function QueuePage() {
       setError(err.message)
     } finally {
       setActioningId(null)
+    }
+  }
+
+  async function handlePublishAll() {
+    if (!confirm(`Mark all ${total} approved item${total !== 1 ? 's' : ''} as published?`)) return
+    setPublishingAll(true)
+    setPublishAllResult(null)
+    try {
+      const res = await fetch('/api/admin/curation/queue/publish-all', { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to publish all')
+      setPublishAllResult(data)
+      setItems([])
+      setTotal(0)
+    } catch (err) {
+      setPublishAllResult({ error: err.message })
+    } finally {
+      setPublishingAll(false)
     }
   }
 
@@ -377,6 +397,28 @@ export default function QueuePage() {
                     {reprocessResult.error
                       ? `Error: ${reprocessResult.error}`
                       : `Done — ${reprocessResult.pending} pending, ${reprocessResult.rejected} rejected`
+                    }
+                  </span>
+                )}
+              </div>
+            )}
+
+            {status === 'approved' && (
+              <div className={styles.bulkBar}>
+                <button
+                  className={styles.btnPublish}
+                  onClick={handlePublishAll}
+                  disabled={publishingAll}
+                  title="Mark all approved items as published"
+                >
+                  <FiCheck />
+                  {publishingAll ? 'Publishing…' : 'Mark all as published'}
+                </button>
+                {publishAllResult && (
+                  <span className={publishAllResult.error ? styles.reprocessError : styles.reprocessSuccess}>
+                    {publishAllResult.error
+                      ? `Error: ${publishAllResult.error}`
+                      : `${publishAllResult.published} item${publishAllResult.published !== 1 ? 's' : ''} marked as published`
                     }
                   </span>
                 )}
@@ -644,6 +686,13 @@ export default function QueuePage() {
                               >
                                 <FiFileText />
                                 {creatingDraftId === item.id ? 'Creating draft…' : 'Create Prismic draft'}
+                              </button>
+                              <button
+                                className={styles.btnPublish}
+                                onClick={() => handlePublish(item)}
+                                disabled={isActioning || creatingDraftId === item.id}
+                              >
+                                <FiCheck /> Mark as published
                               </button>
                               {draftResults[item.id] && (
                                 <span className={draftResults[item.id].error ? styles.reprocessError : styles.reprocessSuccess}>

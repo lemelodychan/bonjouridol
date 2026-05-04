@@ -112,6 +112,7 @@ export async function GET(request) {
       { data: allArticles,    error: allArticlesError },
       { data: articleLikes,   error: articleLikesError },
       { data: articlesByViews },
+      { count: totalViewsCount },
       totalAssets,
     ] = await Promise.all([
       db.from('artists').select('*', { count: 'exact', head: true }),
@@ -121,6 +122,7 @@ export async function GET(request) {
       db.from('articles').select('slug, artist, likes, views'),
       db.from('article_likes').select('slug, like_count'),
       db.from('articles').select('slug, views').order('views', { ascending: false }).limit(20),
+      db.from('article_views').select('*', { count: 'exact', head: true }),
       fetchPrismicAssetCount(),
     ])
 
@@ -179,14 +181,15 @@ export async function GET(request) {
         .map(a => ({ slug: a.slug, totalLikes: a.likes || 0 }))
     }
 
-    // ── Article view rankings ────────────────────────────────────────────────
+    // ── Article view rankings (uses articles.views counter, kept in sync by view tracker) ──
     const articleViewRankings = (articlesByViews || []).map(a => ({
       slug: a.slug,
       totalViews: a.views || 0,
     }))
 
     // ── Totals ───────────────────────────────────────────────────────────────
-    const totalViews = (allArticles || []).reduce((sum, a) => sum + (a.views || 0), 0)
+    // totalViews from article_views COUNT — accurate even if articles.views counter drifts
+    const totalViews = totalViewsCount || 0
 
     let totalLikes = 0
     if (!artistLikesError  && artistLikes)  artistLikes.forEach(l => { totalLikes += l.like_count || 0 })

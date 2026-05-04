@@ -180,36 +180,21 @@ export async function POST(request) {
         )
       }
 
-      // Update total views for the article
-      const { data: totalViewsResult, error: totalError } = await supabase
-        .from('articles')
-        .update({ 
-          views: supabase.rpc('get_article_total_views', { article_slug: slug })
+      // Update the articles.views counter using service role (anon key is blocked by RLS)
+      const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      if (serviceKey && supabaseUrl) {
+        const { createClient: createServiceClient } = await import('@supabase/supabase-js')
+        const adminSupabase = createServiceClient(supabaseUrl, serviceKey, {
+          auth: { persistSession: false }
         })
-        .eq('slug', slug)
-        .select('views')
-        .single()
-
-      if (totalError) {
-        // Fallback: calculate total manually
-        const { data: allViews, error: countError } = await supabase
+        const { count } = await adminSupabase
           .from('article_views')
-          .select('*')
+          .select('*', { count: 'exact', head: true })
           .eq('slug', slug)
-
-        if (countError) {
-          return NextResponse.json(
-            { error: 'Failed to calculate total views' },
-            { status: 500 }
-          )
-        }
-
-        const totalViews = allViews.length
-
-        // Update the article with the calculated total
-        await supabase
+        await adminSupabase
           .from('articles')
-          .update({ views: totalViews })
+          .update({ views: count ?? 0 })
           .eq('slug', slug)
       }
     }

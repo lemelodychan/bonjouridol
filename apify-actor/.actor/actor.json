@@ -8,5 +8,10 @@
     "templateId": "js-start"
   },
   "input": "./input_schema.json",
-  "dockerfile": "./Dockerfile"
+  "dockerfile": "./Dockerfile",
+  "defaultRunOptions": {
+    "build": "latest",
+    "timeoutSecs": 30,
+    "memoryMbytes": 128
+  }
 }

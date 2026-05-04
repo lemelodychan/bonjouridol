@@ -28,6 +28,7 @@
     "@prismicio/next": "^1.7.1",
     "@prismicio/react": "^2.9.1",
     "@supabase/supabase-js": "^2.54.0",
+    "@tabler/icons-react": "^3.41.1",
     "@vercel/analytics": "^1.5.0",
     "archiver": "^6.0.1",
     "cheerio": "^1.2.0",

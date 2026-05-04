@@ -9,6 +9,8 @@ import {
 import styles from './page.module.scss'
 import Button from '@/app/components/IconButton'
 import { IoRefreshOutline } from 'react-icons/io5'
+import { IconSparkles, IconSettings } from '@tabler/icons-react'
+import { createBrowserSupabaseClient } from '@/lib/supabase-browser'
 
 const CACHE_KEY = 'admin_stats_cache'
 const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
@@ -74,10 +76,33 @@ export default function OverviewPage() {
   const [rangeStart, setRangeStart] = useState(DEFAULT_START)
   const [rangeEnd,   setRangeEnd]   = useState(TODAY)
 
+  const [insight, setInsight] = useState(null)
+  const [insightLoading, setInsightLoading] = useState(true)
+  const [regenerating, setRegenerating] = useState(false)
+  const [rateLimitedUntil, setRateLimitedUntil] = useState(null)
+
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [insightsSettings, setInsightsSettings] = useState({ rate_limit_enabled: true, custom_instructions: '' })
+  const [settingsSaving, setSettingsSaving] = useState(false)
+
   useEffect(() => {
     loadStats()
     fetchAnalytics(DEFAULT_START, TODAY)
+    fetchInsight()
+    fetchInsightsSettings()
+    checkAdminRole()
   }, [])
+
+  // Recompute rate limit whenever the loaded insight or the toggle changes
+  useEffect(() => {
+    if (!insight || !insightsSettings.rate_limit_enabled) {
+      setRateLimitedUntil(null)
+      return
+    }
+    const nextAvailable = new Date(new Date(insight.generated_at).getTime() + 23 * 60 * 60 * 1000)
+    setRateLimitedUntil(nextAvailable > new Date() ? nextAvailable : null)
+  }, [insight, insightsSettings.rate_limit_enabled])
 
   // ── Cache helpers ──────────────────────────────────────────────────────────
   function getCached() {
@@ -133,6 +158,82 @@ export default function OverviewPage() {
     }
   }
 
+  // ── Insights ──────────────────────────────────────────────────────────────
+  async function fetchInsight() {
+    try {
+      setInsightLoading(true)
+      const res = await fetch('/api/admin/insights', { cache: 'no-store' })
+      const data = await res.json()
+      if (data.insight) setInsight(data.insight)
+    } catch (e) {
+      console.error('Insight fetch error:', e)
+    } finally {
+      setInsightLoading(false)
+    }
+  }
+
+  async function handleRegenerate() {
+    try {
+      setRegenerating(true)
+      setRateLimitedUntil(null)
+      const res = await fetch('/api/admin/insights/run', { method: 'POST', cache: 'no-store' })
+      if (res.status === 429) {
+        const data = await res.json()
+        setRateLimitedUntil(data.nextAvailable ? new Date(data.nextAvailable) : null)
+        return
+      }
+      const data = await res.json()
+      if (data.insight) setInsight(data.insight)
+    } catch (e) {
+      console.error('Regenerate error:', e)
+    } finally {
+      setRegenerating(false)
+    }
+  }
+
+  async function checkAdminRole() {
+    try {
+      const supabase = createBrowserSupabaseClient()
+      if (!supabase) return
+      const { data: { session } } = await supabase.auth.getSession()
+      setIsAdmin(session?.user?.app_metadata?.role === 'admin')
+    } catch { /* non-critical */ }
+  }
+
+  async function fetchInsightsSettings() {
+    try {
+      const res = await fetch('/api/admin/insights/settings')
+      const data = await res.json()
+      if (data.settings) {
+        setInsightsSettings({
+          rate_limit_enabled: data.settings.rate_limit_enabled,
+          custom_instructions: data.settings.custom_instructions || '',
+        })
+      }
+    } catch { /* non-critical */ }
+  }
+
+  async function handleSaveSettings() {
+    try {
+      setSettingsSaving(true)
+      const supabase = createBrowserSupabaseClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      await fetch('/api/admin/insights/settings', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify(insightsSettings),
+      })
+      setSettingsOpen(false)
+    } catch (e) {
+      console.error('Settings save error:', e)
+    } finally {
+      setSettingsSaving(false)
+    }
+  }
+
   // ── Analytics (Umami) ─────────────────────────────────────────────────────
   async function fetchAnalytics(start, end) {
     try {
@@ -181,312 +282,436 @@ export default function OverviewPage() {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Overview</h1>
-        <Button
-          onClick={handleRefresh}
-          disabled={refreshing || loading}
-          variant="White"
-          textValue={refreshing ? 'Refreshing…' : 'Refresh Data'}
-          icon={<IoRefreshOutline />}
-        />
-      </div>
-
-      <div className={styles.content}>
-
-        {/* ── Stat cards ── */}
-        <div className={styles.statsGrid}>
-          <div className={styles.statCard}>
-            <div className={styles.statValue}>{stats.totalArtists}</div>
-            <div className={styles.statLabel}>Artists</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.statValue}>{stats.totalArticles}</div>
-            <div className={styles.statLabel}>Articles</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.statValue}>{(stats.totalViews || 0).toLocaleString()}</div>
-            <div className={styles.statLabel}>Total Views</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.statValue}>{(stats.totalLikes || 0).toLocaleString()}</div>
-            <div className={styles.statLabel}>Total 🥐</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.statValue}>{(stats.totalAssets || 0).toLocaleString()}</div>
-            <div className={styles.statLabel}>Photos</div>
-          </div>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Overview</h1>
+          <Button
+            onClick={handleRefresh}
+            disabled={refreshing || loading}
+            variant="White"
+            textValue={refreshing ? 'Refreshing…' : 'Refresh Data'}
+            icon={<IoRefreshOutline />}
+          />
         </div>
 
-        {/* ── Traffic chart (Umami) ── */}
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Traffic</h2>
-            {analytics?.stats && (
-              <div className={styles.trafficSummary}>
-                <span className={styles.trafficStat}>
-                  <span className={styles.trafficDot} style={{ background: PINK }} />
-                  <strong>{(analytics.stats.pageviews ?? 0).toLocaleString()}</strong> pageviews
-                </span>
-                <span className={styles.trafficStat}>
-                  <span className={styles.trafficDot} style={{ background: INDIGO }} />
-                  <strong>{(analytics.stats.visitors ?? 0).toLocaleString()}</strong> visitors
-                </span>
-              </div>
-            )}
-            <div className={styles.dateRange}>
-              <input
-                type="date" className={styles.dateInput}
-                value={rangeStart} min={SIX_MONTHS_AGO} max={rangeEnd}
-                onChange={e => setRangeStart(e.target.value)}
-              />
-              <span className={styles.dateRangeSep}>→</span>
-              <input
-                type="date" className={styles.dateInput}
-                value={rangeEnd} min={rangeStart} max={TODAY}
-                onChange={e => setRangeEnd(e.target.value)}
-              />
-              <button
-                className={styles.applyBtn}
-                onClick={() => fetchAnalytics(rangeStart, rangeEnd)}
-                disabled={analyticsLoading}
-              >
-                {analyticsLoading ? '…' : 'Apply'}
-              </button>
+        <div className={styles.content}>
+
+          {/* ── Stat cards ── */}
+          <div className={styles.statsGrid}>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>{stats.totalArtists}</div>
+              <div className={styles.statLabel}>Artists</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>{stats.totalArticles}</div>
+              <div className={styles.statLabel}>Articles</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>{(stats.totalViews || 0).toLocaleString()}</div>
+              <div className={styles.statLabel}>Total Views</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>{(stats.totalLikes || 0).toLocaleString()}</div>
+              <div className={styles.statLabel}>Total 🥐</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>{(stats.totalAssets || 0).toLocaleString()}</div>
+              <div className={styles.statLabel}>Photos</div>
             </div>
           </div>
 
-          {analyticsLoading ? (
-            <div className={styles.chartPlaceholder}>Loading traffic data…</div>
-          ) : !analytics?.configured ? (
-            <div className={styles.chartPlaceholder}>
-              <p>Traffic analytics not configured.</p>
-              <p className={styles.hint}>Add <code>UMAMI_API_SECRET</code> to your environment variables.<br />Generate a key in Umami Cloud → Settings → API Keys.</p>
+          {/* ── Data Insights ── */}
+          <div className={styles.insightsSection}>
+            <div className={styles.insightsContent}>
+              <div className={styles.insightsHeader}>
+                <h2 className={styles.insightsTitle}>
+                  <IconSparkles stroke="2" size={20} />
+                  <span>Data Insights</span>
+                  <div className={styles.insightsBeta}>Beta</div>
+                </h2>
+                <div className={styles.insightsMeta}>
+                  {insight && (
+                    <span className={styles.insightsUpdated}>
+                      Last updated{' '}
+                      {new Date(insight.generated_at).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                    </span>
+                  )}
+                  <button
+                    className={styles.regenerateBtn}
+                    onClick={handleRegenerate}
+                    disabled={regenerating || insightLoading || !!rateLimitedUntil}
+                    title={rateLimitedUntil ? `Next available at ${rateLimitedUntil.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}` : 'Generate new insights'}
+                  >
+                    {regenerating ? 'Generating…' : 'Regenerate'}
+                  </button>
+                  <button
+                    className={styles.insightsSettingsBtn}
+                    onClick={() => setSettingsOpen(true)}
+                    title="Insights settings"
+                  >
+                    <IconSettings size={16} stroke={1.75} />
+                  </button>
+                </div>
+              </div>
+
+              {insightLoading || regenerating ? (
+                <div className={styles.insightsSkeleton}>
+                  <div className={`${styles.skeletonLine} ${styles.wide}`} />
+                  <div className={`${styles.skeletonLine} ${styles.med}`} />
+                  <div className={`${styles.skeletonLine} ${styles.short}`} />
+                </div>
+              ) : !insight ? (
+                <p className={styles.insightsEmpty}>
+                  No insights yet — first run scheduled for Monday, or click Regenerate.
+                </p>
+              ) : (
+                <>
+                  <p className={styles.insightsHeadline}>{insight.insights.headline}</p>
+                  <div className={styles.insightsBody}>
+                    <div className={styles.insightsCol}>
+                      <span className={styles.insightsColLabel}>What&rsquo;s working</span>
+                      <ul className={styles.insightsBullets}>
+                        {insight.insights.whats_working.map((item, i) => (
+                          <li key={i}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className={styles.insightsCol}>
+                      <span className={styles.insightsColLabel}>Suggestions</span>
+                      <ul className={styles.insightsBullets}>
+                        {insight.insights.suggestions.map((item, i) => (
+                          <li key={i}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  {rateLimitedUntil && (
+                    <p className={styles.insightsRateLimit}>
+                      Already refreshed recently — next available tomorrow at{' '}
+                      {rateLimitedUntil.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}.
+                    </p>
+                  )}
+                </>
+              )}
             </div>
-          ) : analytics.error ? (
-            <div className={styles.chartPlaceholder}>Could not load traffic data: {analytics.error}</div>
-          ) : analytics.pageviews?.length === 0 ? (
-            <div className={styles.chartPlaceholder}>No traffic data for the last 30 days.</div>
-          ) : (
-            <div className={styles.areaChartWrap}>
-              <ResponsiveContainer width="100%" height={200}>
-                <AreaChart data={analytics.pageviews} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="pvFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%"   stopColor={PINK}   stopOpacity={0.18} />
-                      <stop offset="100%" stopColor={PINK}   stopOpacity={0} />
-                    </linearGradient>
-                    <linearGradient id="visFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%"   stopColor={INDIGO} stopOpacity={0.14} />
-                      <stop offset="100%" stopColor={INDIGO} stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke={GRID} vertical={false} />
-                  <XAxis
-                    dataKey="date"
-                    tickFormatter={fmtDate}
-                    tick={{ fontSize: 11, fill: '#888' }}
-                    axisLine={false} tickLine={false}
-                    interval={4}
-                  />
-                  <YAxis
-                    tickFormatter={fmtNum}
-                    tick={{ fontSize: 11, fill: '#888' }}
-                    axisLine={false} tickLine={false}
-                    width={36}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend
-                    iconType="circle" iconSize={8}
-                    formatter={v => <span style={{ fontSize: 12, color: '#555' }}>{v}</span>}
-                  />
-                  <Area
-                    type="monotone" dataKey="pageviews" name="Pageviews"
-                    stroke={PINK} strokeWidth={2} fill="url(#pvFill)" dot={false}
-                  />
-                  <Area
-                    type="monotone" dataKey="visitors" name="Visitors"
-                    stroke={INDIGO} strokeWidth={2} fill="url(#visFill)" dot={false}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+          </div>
+
+          {/* ── Insights settings modal ── */}
+          {settingsOpen && (
+            <div className={styles.insightsModalOverlay} onClick={() => setSettingsOpen(false)}>
+              <div className={styles.insightsModal} onClick={e => e.stopPropagation()}>
+                <div className={styles.insightsModalHeader}>
+                  <h3 className={styles.insightsModalTitle}>Insights Settings</h3>
+                  <button className={styles.insightsModalClose} onClick={() => setSettingsOpen(false)}>✕</button>
+                </div>
+
+                <div className={styles.insightsModalBody}>
+                  <div className={styles.insightsSettingRow}>
+                    <div>
+                      <span className={styles.insightsSettingLabel}>Rate limit (23h)</span>
+                      <p className={styles.insightsSettingHint}>Prevents regenerating more than once every 23 hours. Disable for testing.</p>
+                    </div>
+                    <label className={styles.toggle}>
+                      <input
+                        type="checkbox"
+                        checked={insightsSettings.rate_limit_enabled}
+                        onChange={e => setInsightsSettings(s => ({ ...s, rate_limit_enabled: e.target.checked }))}
+                      />
+                      <span className={styles.toggleTrack} />
+                    </label>
+                  </div>
+
+                  <div className={styles.insightsSettingCol}>
+                    <span className={styles.insightsSettingLabel}>Additional instructions</span>
+                    <p className={styles.insightsSettingHint}>Appended to the AI system prompt — use this to tune the analysis over time (e.g. "We're focusing on live report coverage this month").</p>
+                    <textarea
+                      className={styles.insightsSettingTextarea}
+                      rows={5}
+                      placeholder="e.g. We're launching a new series covering underground idol groups — flag any relevant traction in the data."
+                      value={insightsSettings.custom_instructions}
+                      onChange={e => setInsightsSettings(s => ({ ...s, custom_instructions: e.target.value }))}
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.insightsModalFooter}>
+                  <button className={styles.insightsModalCancel} onClick={() => setSettingsOpen(false)}>Cancel</button>
+                  <button className={styles.insightsModalSave} onClick={handleSaveSettings} disabled={settingsSaving}>
+                    {settingsSaving ? 'Saving…' : 'Save'}
+                  </button>
+                </div>
+              </div>
             </div>
           )}
-        </section>
 
-        {/* ── Ranking bar charts ── */}
-        <div className={styles.chartsGrid}>
+          {/* ── Traffic chart (Umami) ── */}
+          <section className={styles.section}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>Traffic</h2>
+              {analytics?.stats && (
+                <div className={styles.trafficSummary}>
+                  <span className={styles.trafficStat}>
+                    <span className={styles.trafficDot} style={{ background: PINK }} />
+                    <strong>{(analytics.stats.pageviews ?? 0).toLocaleString()}</strong> pageviews
+                  </span>
+                  <span className={styles.trafficStat}>
+                    <span className={styles.trafficDot} style={{ background: INDIGO }} />
+                    <strong>{(analytics.stats.visitors ?? 0).toLocaleString()}</strong> visitors
+                  </span>
+                </div>
+              )}
+              <div className={styles.dateRange}>
+                <input
+                  type="date" className={styles.dateInput}
+                  value={rangeStart} min={SIX_MONTHS_AGO} max={rangeEnd}
+                  onChange={e => setRangeStart(e.target.value)}
+                />
+                <span className={styles.dateRangeSep}>→</span>
+                <input
+                  type="date" className={styles.dateInput}
+                  value={rangeEnd} min={rangeStart} max={TODAY}
+                  onChange={e => setRangeEnd(e.target.value)}
+                />
+                <button
+                  className={styles.applyBtn}
+                  onClick={() => fetchAnalytics(rangeStart, rangeEnd)}
+                  disabled={analyticsLoading}
+                >
+                  {analyticsLoading ? '…' : 'Apply'}
+                </button>
+              </div>
+            </div>
 
-          {/* Artists by likes */}
-          <section className={styles.chartCard}>
-            <h2 className={styles.chartTitle}>Top Artists by 🥐</h2>
-            {stats.artistRankings?.length === 0 ? (
-              <p className={styles.noData}>No data</p>
+            {analyticsLoading ? (
+              <div className={styles.chartPlaceholder}>Loading traffic data…</div>
+            ) : !analytics?.configured ? (
+              <div className={styles.chartPlaceholder}>
+                <p>Traffic analytics not configured.</p>
+                <p className={styles.hint}>Add <code>UMAMI_API_SECRET</code> to your environment variables.<br />Generate a key in Umami Cloud → Settings → API Keys.</p>
+              </div>
+            ) : analytics.error ? (
+              <div className={styles.chartPlaceholder}>Could not load traffic data: {analytics.error}</div>
+            ) : analytics.pageviews?.length === 0 ? (
+              <div className={styles.chartPlaceholder}>No traffic data for the last 30 days.</div>
             ) : (
-              <>
-                <ResponsiveContainer width="100%" height={320}>
-                  <BarChart layout="vertical" data={artistChartData}
-                    margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
-                    <XAxis type="number" tickFormatter={fmtNum}
-                      tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
-                    <YAxis type="category" dataKey="label" width={110}
-                      tick={{ fontSize: 12, fill: '#444' }} axisLine={false} tickLine={false} />
-                    <Tooltip content={<CustomTooltip />} cursor={{ fill: '#fafafa' }} />
-                    <Bar dataKey="value" name="🥐" fill={PINK} radius={[0, 6, 6, 0]} barSize={18} />
-                  </BarChart>
-                </ResponsiveContainer>
-                <table className={styles.rankTable}>
-                  <thead>
-                    <tr>
-                      <th className={styles.rankNum}>#</th>
-                      <th className={styles.rankName}>Artist</th>
-                      <th className={styles.rankCount}>🥐</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stats.artistRankings.map((r, i) => (
-                      <tr key={r.name} className={styles.rankRow}>
-                        <td className={styles.rankNum}>{i + 1}</td>
-                        <td className={styles.rankName}>{r.name}</td>
-                        <td className={styles.rankCount}>{r.totalLikes.toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </>
-            )}
-          </section>
-
-          {/* Articles by likes */}
-          <section className={styles.chartCard}>
-            <h2 className={styles.chartTitle}>Top Articles by 🥐</h2>
-            {stats.articleLikeRankings?.length === 0 ? (
-              <p className={styles.noData}>No data</p>
-            ) : (
-              <>
-                <ResponsiveContainer width="100%" height={320}>
-                  <BarChart layout="vertical" data={articleLikeChartData}
-                    margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
-                    <XAxis type="number" tickFormatter={fmtNum}
-                      tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
-                    <YAxis type="category" dataKey="label" width={130}
-                      tick={{ fontSize: 11, fill: '#444' }} axisLine={false} tickLine={false} />
-                    <Tooltip
-                      content={({ active, payload }) =>
-                        active && payload?.length ? (
-                          <div className={styles.tooltip}>
-                            <p className={styles.tooltipLabel}>
-                              <Link href={`https://www.bonjouridol.com/articles/${payload[0]?.payload?.slug}`}
-                                target="_blank" className={styles.tooltipLink}>
-                                {payload[0]?.payload?.slug}
-                              </Link>
-                            </p>
-                            <p style={{ color: INDIGO }} className={styles.tooltipRow}>
-                              🥐 <strong>{(payload[0]?.value ?? 0).toLocaleString()}</strong>
-                            </p>
-                          </div>
-                        ) : null
-                      }
-                      cursor={{ fill: '#fafafa' }}
+              <div className={styles.areaChartWrap}>
+                <ResponsiveContainer width="100%" height={200}>
+                  <AreaChart data={analytics.pageviews} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="pvFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%"   stopColor={PINK}   stopOpacity={0.18} />
+                        <stop offset="100%" stopColor={PINK}   stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="visFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%"   stopColor={INDIGO} stopOpacity={0.14} />
+                        <stop offset="100%" stopColor={INDIGO} stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke={GRID} vertical={false} />
+                    <XAxis
+                      dataKey="date"
+                      tickFormatter={fmtDate}
+                      tick={{ fontSize: 11, fill: '#888' }}
+                      axisLine={false} tickLine={false}
+                      interval={4}
                     />
-                    <Bar dataKey="value" name="🥐" fill={INDIGO} radius={[0, 6, 6, 0]} barSize={18} />
-                  </BarChart>
-                </ResponsiveContainer>
-                <table className={styles.rankTable}>
-                  <thead>
-                    <tr>
-                      <th className={styles.rankNum}>#</th>
-                      <th className={styles.rankName}>Article</th>
-                      <th className={styles.rankCount}>🥐</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stats.articleLikeRankings.map((r, i) => (
-                      <tr key={r.slug} className={styles.rankRow}>
-                        <td className={styles.rankNum}>{i + 1}</td>
-                        <td className={styles.rankName}>
-                          <Link href={`https://www.bonjouridol.com/articles/${r.slug}`}
-                            target="_blank" className={styles.rankLink}>
-                            {fmtSlug(r.slug)}
-                          </Link>
-                        </td>
-                        <td className={styles.rankCount}>{r.totalLikes.toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </>
-            )}
-          </section>
-
-          {/* Articles by views */}
-          <section className={styles.chartCard}>
-            <h2 className={styles.chartTitle}>Top Articles by Views</h2>
-            {stats.articleViewRankings?.length === 0 ? (
-              <p className={styles.noData}>No data</p>
-            ) : (
-              <>
-                <ResponsiveContainer width="100%" height={320}>
-                  <BarChart layout="vertical" data={articleViewChartData}
-                    margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
-                    <XAxis type="number" tickFormatter={fmtNum}
-                      tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
-                    <YAxis type="category" dataKey="label" width={130}
-                      tick={{ fontSize: 11, fill: '#444' }} axisLine={false} tickLine={false} />
-                    <Tooltip
-                      content={({ active, payload }) =>
-                        active && payload?.length ? (
-                          <div className={styles.tooltip}>
-                            <p className={styles.tooltipLabel}>
-                              <Link href={`https://www.bonjouridol.com/articles/${payload[0]?.payload?.slug}`}
-                                target="_blank" className={styles.tooltipLink}>
-                                {payload[0]?.payload?.slug}
-                              </Link>
-                            </p>
-                            <p style={{ color: GOLD }} className={styles.tooltipRow}>
-                              Views: <strong>{(payload[0]?.value ?? 0).toLocaleString()}</strong>
-                            </p>
-                          </div>
-                        ) : null
-                      }
-                      cursor={{ fill: '#fafafa' }}
+                    <YAxis
+                      tickFormatter={fmtNum}
+                      tick={{ fontSize: 11, fill: '#888' }}
+                      axisLine={false} tickLine={false}
+                      width={36}
                     />
-                    <Bar dataKey="value" name="Views" fill={GOLD} radius={[0, 6, 6, 0]} barSize={18} />
-                  </BarChart>
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend
+                      iconType="circle" iconSize={8}
+                      formatter={v => <span style={{ fontSize: 12, color: '#555' }}>{v}</span>}
+                    />
+                    <Area
+                      type="monotone" dataKey="pageviews" name="Pageviews"
+                      stroke={PINK} strokeWidth={2} fill="url(#pvFill)" dot={false}
+                    />
+                    <Area
+                      type="monotone" dataKey="visitors" name="Visitors"
+                      stroke={INDIGO} strokeWidth={2} fill="url(#visFill)" dot={false}
+                    />
+                  </AreaChart>
                 </ResponsiveContainer>
-                <table className={styles.rankTable}>
-                  <thead>
-                    <tr>
-                      <th className={styles.rankNum}>#</th>
-                      <th className={styles.rankName}>Article</th>
-                      <th className={styles.rankCount}>Views</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stats.articleViewRankings.map((r, i) => (
-                      <tr key={r.slug} className={styles.rankRow}>
-                        <td className={styles.rankNum}>{i + 1}</td>
-                        <td className={styles.rankName}>
-                          <Link href={`https://www.bonjouridol.com/articles/${r.slug}`}
-                            target="_blank" className={styles.rankLink}>
-                            {fmtSlug(r.slug)}
-                          </Link>
-                        </td>
-                        <td className={styles.rankCount}>{r.totalViews.toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </>
+              </div>
             )}
           </section>
 
+          {/* ── Ranking bar charts ── */}
+          <div className={styles.chartsGrid}>
+
+            {/* Artists by likes */}
+            <section className={styles.chartCard}>
+              <h2 className={styles.chartTitle}>Top Artists by 🥐</h2>
+              {stats.artistRankings?.length === 0 ? (
+                <p className={styles.noData}>No data</p>
+              ) : (
+                <>
+                  <ResponsiveContainer width="100%" height={320}>
+                    <BarChart layout="vertical" data={artistChartData}
+                      margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
+                      <XAxis type="number" tickFormatter={fmtNum}
+                        tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
+                      <YAxis type="category" dataKey="label" width={110}
+                        tick={{ fontSize: 12, fill: '#444' }} axisLine={false} tickLine={false} />
+                      <Tooltip content={<CustomTooltip />} cursor={{ fill: '#fafafa' }} />
+                      <Bar dataKey="value" name="🥐" fill={PINK} radius={[0, 6, 6, 0]} barSize={18} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                  <table className={styles.rankTable}>
+                    <thead>
+                      <tr>
+                        <th className={styles.rankNum}>#</th>
+                        <th className={styles.rankName}>Artist</th>
+                        <th className={styles.rankCount}>🥐</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stats.artistRankings.map((r, i) => (
+                        <tr key={r.name} className={styles.rankRow}>
+                          <td className={styles.rankNum}>{i + 1}</td>
+                          <td className={styles.rankName}>{r.name}</td>
+                          <td className={styles.rankCount}>{r.totalLikes.toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              )}
+            </section>
+
+            {/* Articles by likes */}
+            <section className={styles.chartCard}>
+              <h2 className={styles.chartTitle}>Top Articles by 🥐</h2>
+              {stats.articleLikeRankings?.length === 0 ? (
+                <p className={styles.noData}>No data</p>
+              ) : (
+                <>
+                  <ResponsiveContainer width="100%" height={320}>
+                    <BarChart layout="vertical" data={articleLikeChartData}
+                      margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
+                      <XAxis type="number" tickFormatter={fmtNum}
+                        tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
+                      <YAxis type="category" dataKey="label" width={130}
+                        tick={{ fontSize: 11, fill: '#444' }} axisLine={false} tickLine={false} />
+                      <Tooltip
+                        content={({ active, payload }) =>
+                          active && payload?.length ? (
+                            <div className={styles.tooltip}>
+                              <p className={styles.tooltipLabel}>
+                                <Link href={`https://www.bonjouridol.com/articles/${payload[0]?.payload?.slug}`}
+                                  target="_blank" className={styles.tooltipLink}>
+                                  {payload[0]?.payload?.slug}
+                                </Link>
+                              </p>
+                              <p style={{ color: INDIGO }} className={styles.tooltipRow}>
+                                🥐 <strong>{(payload[0]?.value ?? 0).toLocaleString()}</strong>
+                              </p>
+                            </div>
+                          ) : null
+                        }
+                        cursor={{ fill: '#fafafa' }}
+                      />
+                      <Bar dataKey="value" name="🥐" fill={INDIGO} radius={[0, 6, 6, 0]} barSize={18} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                  <table className={styles.rankTable}>
+                    <thead>
+                      <tr>
+                        <th className={styles.rankNum}>#</th>
+                        <th className={styles.rankName}>Article</th>
+                        <th className={styles.rankCount}>🥐</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stats.articleLikeRankings.map((r, i) => (
+                        <tr key={r.slug} className={styles.rankRow}>
+                          <td className={styles.rankNum}>{i + 1}</td>
+                          <td className={styles.rankName}>
+                            <Link href={`https://www.bonjouridol.com/articles/${r.slug}`}
+                              target="_blank" className={styles.rankLink}>
+                              {fmtSlug(r.slug)}
+                            </Link>
+                          </td>
+                          <td className={styles.rankCount}>{r.totalLikes.toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              )}
+            </section>
+
+            {/* Articles by views */}
+            <section className={styles.chartCard}>
+              <h2 className={styles.chartTitle}>Top Articles by Views</h2>
+              {stats.articleViewRankings?.length === 0 ? (
+                <p className={styles.noData}>No data</p>
+              ) : (
+                <>
+                  <ResponsiveContainer width="100%" height={320}>
+                    <BarChart layout="vertical" data={articleViewChartData}
+                      margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
+                      <XAxis type="number" tickFormatter={fmtNum}
+                        tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
+                      <YAxis type="category" dataKey="label" width={130}
+                        tick={{ fontSize: 11, fill: '#444' }} axisLine={false} tickLine={false} />
+                      <Tooltip
+                        content={({ active, payload }) =>
+                          active && payload?.length ? (
+                            <div className={styles.tooltip}>
+                              <p className={styles.tooltipLabel}>
+                                <Link href={`https://www.bonjouridol.com/articles/${payload[0]?.payload?.slug}`}
+                                  target="_blank" className={styles.tooltipLink}>
+                                  {payload[0]?.payload?.slug}
+                                </Link>
+                              </p>
+                              <p style={{ color: GOLD }} className={styles.tooltipRow}>
+                                Views: <strong>{(payload[0]?.value ?? 0).toLocaleString()}</strong>
+                              </p>
+                            </div>
+                          ) : null
+                        }
+                        cursor={{ fill: '#fafafa' }}
+                      />
+                      <Bar dataKey="value" name="Views" fill={GOLD} radius={[0, 6, 6, 0]} barSize={18} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                  <table className={styles.rankTable}>
+                    <thead>
+                      <tr>
+                        <th className={styles.rankNum}>#</th>
+                        <th className={styles.rankName}>Article</th>
+                        <th className={styles.rankCount}>Views</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stats.articleViewRankings.map((r, i) => (
+                        <tr key={r.slug} className={styles.rankRow}>
+                          <td className={styles.rankNum}>{i + 1}</td>
+                          <td className={styles.rankName}>
+                            <Link href={`https://www.bonjouridol.com/articles/${r.slug}`}
+                              target="_blank" className={styles.rankLink}>
+                              {fmtSlug(r.slug)}
+                            </Link>
+                          </td>
+                          <td className={styles.rankCount}>{r.totalViews.toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              )}
+            </section>
+
+          </div>
         </div>
       </div>
-    </div>
   )
 }

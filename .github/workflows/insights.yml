@@ -1,0 +1,39 @@
+name: Generate weekly AI insights
+
+on:
+  schedule:
+    # Every Monday at 7am UTC = 8am Paris (9am during summer time — close enough)
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+    # Can also be triggered manually from GitHub.com → Actions tab
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate weekly insights
+        run: |
+          http_code=$(curl -s --show-error \
+            -o /tmp/insights_response.json \
+            -w "%{http_code}" \
+            -X POST \
+            "${{ secrets.APP_URL }}/api/admin/insights/run" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            --max-time 120)
+
+          response=$(cat /tmp/insights_response.json 2>/dev/null || echo '{}')
+          echo "HTTP $http_code — $response"
+
+          if [ "$http_code" -ge 400 ]; then
+            echo "Insights endpoint returned HTTP $http_code"
+            exit 1
+          fi
+
+          error=$(echo "$response" | jq -r '.error // empty' 2>/dev/null)
+          if [ -n "$error" ]; then
+            echo "Insights endpoint returned error: $error"
+            exit 1
+          fi
+
+          echo "Insights generated successfully."

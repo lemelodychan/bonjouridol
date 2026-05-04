@@ -264,6 +264,14 @@ export default function AdminLayout({ children }) {
 
         <main className={styles.mainContent}>
           <ProcessingBar />
+          <svg width={0} height={0} style={{ position: 'absolute' }}>
+            <defs>
+              <linearGradient id="bi-gradient-2" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#FF3194" />
+                <stop offset="100%" stopColor="#7272FC" />
+              </linearGradient>
+            </defs>
+          </svg>
           {children}
         </main>
       </div>

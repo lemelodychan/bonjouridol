@@ -2,8 +2,8 @@ name: Crawl news and Twitter sources
 
 on:
   schedule:
-    # Runs every 3 hours — crawl window is dynamic: only items published since the last crawl
-    - cron: '0 */3 * * *'
+    # Runs every 6 hours — crawl window is dynamic: only items published since the last crawl
+    - cron: '0 */6 * * *'
   workflow_dispatch:
     # Can also be triggered manually from GitHub.com → Actions tab
 

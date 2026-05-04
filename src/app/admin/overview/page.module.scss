@@ -322,6 +322,426 @@
   &:hover { text-decoration: underline; }
 }
 
+// ── Data Insights card ────────────────────────────────────────────────────────
+
+.insightsSection {
+  margin: 0 1.5rem 1.5rem;
+  border-radius: 14px;
+  position: relative;
+
+  &:before {
+    display: block;
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    background-image: var(--bi-gradient-2);
+    border-radius: 14px;
+    z-index: 0;
+  }
+}
+
+.insightsContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+  border-radius: 12px;
+  padding: 1rem;
+  background: 
+    linear-gradient(135deg, rgba(255, 49, 148, 0.04) 0%, rgba(114, 114, 252, 0.07) 100%),
+    var(--white);
+}
+
+.insightsHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.insightsTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--dark-grey);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  svg {
+    color: var(--bi-dark-pink);
+    font-style: normal;
+  }
+
+  span {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--dark-grey);
+    background-image: var(--bi-gradient-2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .insightsBeta {
+    display: inline-block;
+    padding: 0 0.5rem;
+    border-radius: 6px;
+    height: 20px;
+    line-height: 20px;
+    background: var(--bi-gradient-2);
+    color: var(--white);
+    font-family: var(--font-text);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+  }
+}
+
+.insightsMeta {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.insightsUpdated {
+  font-size: 12px;
+  color: var(--medium-grey);
+}
+
+.regenerateBtn {
+  font-family: var(--font-text);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bi-indigo);
+  background: rgba(114, 114, 252, 0.08);
+  border: 1px solid rgba(114, 114, 252, 0.25);
+  border-radius: 6px;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) { background: rgba(114, 114, 252, 0.14); }
+  &:disabled { opacity: 0.45; cursor: default; }
+}
+
+.insightsHeadline {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--dark-grey);
+  line-height: 1.45;
+  margin: 0 0 0.5rem;
+}
+
+.insightsBody {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.insightsCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.insightsColLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--medium-grey);
+}
+
+.insightsBullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.5rem;
+  background: var(--white);
+  border-radius: 8px;
+
+  li {
+    font-size: 13px;
+    color: var(--dark-grey);
+    line-height: 1.45;
+    padding-left: 1rem;
+    position: relative;
+
+    &::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: #FF3194;
+      font-weight: 700;
+    }
+  }
+}
+
+.suggestionChips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.suggestionChip {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--dark-grey);
+  background: white;
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
+}
+
+.insightsSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  .skeletonLine {
+    background: rgba(114, 114, 252, 0.1);
+    border-radius: 6px;
+    height: 14px;
+    animation: shimmer 1.5s ease-in-out infinite;
+
+    &.wide  { width: 70%; }
+    &.med   { width: 50%; }
+    &.short { width: 35%; }
+  }
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1;   }
+}
+
+.insightsEmpty {
+  font-size: 13px;
+  color: var(--medium-grey);
+  font-style: italic;
+}
+
+.insightsRateLimit {
+  font-size: 11px;
+  color: var(--medium-grey);
+  margin-top: 0.2rem;
+}
+
+.insightsSettingsBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--medium-grey);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+
+  &:hover { background: rgba(0,0,0,0.06); color: var(--dark-grey); }
+}
+
+// ── Insights settings modal ───────────────────────────────────────────────────
+
+.insightsModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.insightsModal {
+  background: var(--white);
+  border-radius: 14px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22);
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.insightsModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--light-grey, #ebebeb);
+}
+
+.insightsModalTitle {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--dark-grey);
+  margin: 0;
+}
+
+.insightsModalClose {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: var(--medium-grey);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  line-height: 1;
+  &:hover { background: rgba(0,0,0,0.06); color: var(--dark-grey); }
+}
+
+.insightsModalBody {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.insightsSettingRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.insightsSettingCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.insightsSettingLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dark-grey);
+}
+
+.insightsSettingHint {
+  font-size: 12px;
+  color: var(--medium-grey);
+  line-height: 1.45;
+  margin: 0.15rem 0 0;
+}
+
+.insightsSettingTextarea {
+  font-family: var(--font-text);
+  font-size: 13px;
+  color: var(--dark-grey);
+  background: var(--white);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  resize: vertical;
+  width: 100%;
+  box-sizing: border-box;
+  line-height: 1.5;
+  margin-top: 0.35rem;
+  transition: border-color 0.15s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--bi-indigo);
+  }
+  &::placeholder { color: #bbb; }
+}
+
+// Toggle switch
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .toggleTrack {
+      background: var(--bi-indigo);
+      &::after { transform: translateX(18px); }
+    }
+  }
+}
+
+.toggleTrack {
+  width: 38px;
+  height: 22px;
+  background: #ccc;
+  border-radius: 11px;
+  transition: background 0.2s;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+}
+
+.insightsModalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem 1rem;
+  border-top: 1px solid var(--light-grey, #ebebeb);
+}
+
+.insightsModalCancel {
+  font-family: var(--font-text);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--medium-grey);
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+  &:hover { background: rgba(0,0,0,0.04); }
+}
+
+.insightsModalSave {
+  font-family: var(--font-text);
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  background: var(--bi-indigo);
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  &:hover:not(:disabled) { opacity: 0.85; }
+  &:disabled { opacity: 0.5; cursor: default; }
+}
+
 // ── Misc ──────────────────────────────────────────────────────────────────────
 
 .noData {
