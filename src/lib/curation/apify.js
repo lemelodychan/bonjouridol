@@ -25,7 +25,7 @@ export async function fetchApifyBatch(handles) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(input),
-      signal: AbortSignal.timeout(25000),
+      signal: AbortSignal.timeout(38000), // 8s margin after Apify's 30s actor timeout
     }
   )
 

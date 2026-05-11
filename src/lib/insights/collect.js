@@ -64,26 +64,29 @@ async function fetchUmamiData(boundaries) {
   const h = { Authorization: `Bearer ${apiKey}` }
   const base = `${UMAMI_HOST}/websites/${UMAMI_WEBSITE_ID}`
 
-  const [s0, s1, s2, s3, pagesRes] = await Promise.all([
+  const [s0, s1, s2, s3, pagesWeekRes, pages28Res] = await Promise.all([
     fetch(`${base}/stats?startAt=${boundaries[1]}&endAt=${boundaries[0]}`, { headers: h }),
     fetch(`${base}/stats?startAt=${boundaries[2]}&endAt=${boundaries[1]}`, { headers: h }),
     fetch(`${base}/stats?startAt=${boundaries[3]}&endAt=${boundaries[2]}`, { headers: h }),
     fetch(`${base}/stats?startAt=${boundaries[4]}&endAt=${boundaries[3]}`, { headers: h }),
+    fetch(`${base}/metrics?startAt=${boundaries[1]}&endAt=${boundaries[0]}&type=url&limit=10`, { headers: h }),
     fetch(`${base}/metrics?startAt=${boundaries[4]}&endAt=${boundaries[0]}&type=url&limit=10`, { headers: h }),
   ])
 
-  const [w0, w1, w2, w3, pages] = await Promise.all([
+  const [w0, w1, w2, w3, pagesWeek, pages28] = await Promise.all([
     s0.ok ? s0.json() : null,
     s1.ok ? s1.json() : null,
     s2.ok ? s2.json() : null,
     s3.ok ? s3.json() : null,
-    pagesRes.ok ? pagesRes.json() : null,
+    pagesWeekRes.ok ? pagesWeekRes.json() : null,
+    pages28Res.ok ? pages28Res.json() : null,
   ])
 
   return {
-    weeklyPageviews: [w0?.pageviews?.value ?? 0, w1?.pageviews?.value ?? 0, w2?.pageviews?.value ?? 0, w3?.pageviews?.value ?? 0],
-    weeklyVisitors:  [w0?.visitors?.value  ?? 0, w1?.visitors?.value  ?? 0, w2?.visitors?.value  ?? 0, w3?.visitors?.value  ?? 0],
-    topPages: (pages || []).slice(0, 8).map(p => ({ url: p.x, views: p.y })),
+    weeklyPageviews:  [w0?.pageviews?.value ?? 0, w1?.pageviews?.value ?? 0, w2?.pageviews?.value ?? 0, w3?.pageviews?.value ?? 0],
+    weeklyVisitors:   [w0?.visitors?.value  ?? 0, w1?.visitors?.value  ?? 0, w2?.visitors?.value  ?? 0, w3?.visitors?.value  ?? 0],
+    thisWeekTopPages: (pagesWeek || []).slice(0, 8).map(p => ({ url: p.x, views: p.y })),
+    topPages:         (pages28   || []).slice(0, 8).map(p => ({ url: p.x, views: p.y })),
   }
 }
 
@@ -92,8 +95,8 @@ async function fetchSupabaseData(supabase, boundaries) {
   const nowISO      = new Date(boundaries[0]).toISOString()
 
   const [viewsRes, likesRes] = await Promise.all([
-    supabase.from('article_views').select('slug, created_at').gte('created_at', monthAgoISO).lte('created_at', nowISO),
-    supabase.from('article_likes').select('slug, like_count, created_at').gte('created_at', monthAgoISO).lte('created_at', nowISO),
+    supabase.from('article_views').select('slug, created_at').gte('created_at', monthAgoISO).lte('created_at', nowISO).limit(50000),
+    supabase.from('article_likes').select('slug, like_count, created_at').gte('created_at', monthAgoISO).lte('created_at', nowISO).limit(50000),
   ])
 
   const viewRows = viewsRes.data || []
@@ -273,14 +276,18 @@ export function formatDataForPrompt(data) {
   const lines = [`4-week data report (${data.weekStart} → ${data.weekEnd}). Week 1 = this week (most recent), Week 4 = oldest.`]
 
   if (data.umami) {
-    const { weeklyPageviews: pv, weeklyVisitors: vis, topPages } = data.umami
+    const { weeklyPageviews: pv, weeklyVisitors: vis, thisWeekTopPages, topPages } = data.umami
     const pvAvg = Math.round(avg(pv.slice(1)))
     lines.push(`\nTRAFFIC (Umami):`)
     lines.push(`- Pageviews per week (oldest→newest): ${pv.slice().reverse().join(' → ')}`)
     if (pvAvg > 0) lines.push(`- This week vs 3-week avg: ${pct(pv[0], pvAvg)} (avg was ${pvAvg})`)
     lines.push(`- Unique visitors this week: ${vis[0]}`)
+    if (thisWeekTopPages?.length > 0) {
+      lines.push(`- Top pages THIS WEEK (use these to identify what drove any traffic peak):`)
+      thisWeekTopPages.slice(0, 8).forEach(p => lines.push(`  • ${p.url} — ${p.views} views`))
+    }
     if (topPages?.length > 0) {
-      lines.push(`- Top pages (28 days):`)
+      lines.push(`- Top pages (28-day window for context):`)
       topPages.slice(0, 6).forEach(p => lines.push(`  • ${p.url} — ${p.views} views`))
     }
   }

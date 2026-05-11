@@ -49,7 +49,7 @@ export async function generateInsights(data, customInstructions) {
   const completion = await openai.chat.completions.create({
     model: 'o4-mini',
     response_format: { type: 'json_object' },
-    max_completion_tokens: 2000,
+    max_completion_tokens: 10000,
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user',   content: prompt },

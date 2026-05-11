@@ -27,7 +27,7 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             -H "Content-Type: application/json" \
             -d "$BODY" \
-            --max-time 25)
+            --max-time 55)
 
           response=$(cat /tmp/fetch_response.json 2>/dev/null || echo '{}')
           echo "HTTP $http_code — $response"
