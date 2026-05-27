@@ -16,14 +16,22 @@ import Link from "next/link.js";
 export default async function PressRelease() {
     const client = createClient();
 
-    const results = await client.getAllByType('articles', {
+    // Only the 3 newest PR articles are displayed. Fetch a small page ordered
+    // by publication date instead of getAllByType, which pulls every PR
+    // article in full (multi-MB) just to slice the top 3.
+    const response = await client.getByType('articles', {
         fetchOptions: {
-          next: { 
+          next: {
             tags: ['prismic', 'articles'],
             revalidate: 3600 // Cache for 1 hour
           },
         },
+        pageSize: 10,
         orderings: [
+          {
+            field: 'my.articles.publication_date',
+            direction: 'desc',
+          },
           {
             field: 'document.first_publication_date',
             direction: 'desc',
@@ -36,7 +44,7 @@ export default async function PressRelease() {
             ),
         ],
     });
-    const sortedResults = results.sort((a, b) => {
+    const sortedResults = response.results.sort((a, b) => {
         const dateA = a.data.publication_date || a.first_publication_date;
         const dateB = b.data.publication_date || b.first_publication_date;
         return new Date(dateB) - new Date(dateA); // Descending order

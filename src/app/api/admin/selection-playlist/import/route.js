@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { createClient as createPrismicClient } from '@/prismicio'
+import { requireAdmin } from '@/lib/admin-auth'
 
 // Normalize function to handle whitespace, special characters, and case
 // This ensures consistent duplicate detection
@@ -77,6 +78,8 @@ async function getAuthenticatedSupabase() {
 
 // GET - Fetch importable songs from Prismic
 export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const supabase = await getAuthenticatedSupabase()
     if (!supabase) {
@@ -239,6 +242,8 @@ export async function GET(request) {
 
 // POST - Import selected songs to Supabase
 export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const supabase = await getAuthenticatedSupabase()
     if (!supabase) {

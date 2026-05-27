@@ -1,14 +1,17 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/prismicio'
+import { requireAdmin } from '@/lib/admin-auth'
 
 /**
  * Get all unique tags from published galleries
  * This is used to suggest tags when creating/editing galleries
  */
 export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const client = createClient()
-    
+
     // Get ALL published galleries (getAllByType fetches all pages automatically)
     const galleries = await client.getAllByType('gallery', {
       orderings: [

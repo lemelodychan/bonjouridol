@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/prismicio'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { requireAdmin } from '@/lib/admin-auth'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -158,6 +159,8 @@ function mapRow(row) {
 }
 
 export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const supabase = getSupabaseClient()
 
@@ -233,6 +236,8 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const migrationData = await request.json()
 
@@ -346,6 +351,8 @@ export async function POST(request) {
 }
 
 export async function PUT(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
@@ -407,6 +414,8 @@ export async function PUT(request) {
 }
 
 export async function DELETE(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')

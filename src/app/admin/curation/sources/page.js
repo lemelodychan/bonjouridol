@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { adminFetch } from '@/lib/admin-fetch'
 import { formatDistanceToNow } from 'date-fns'
 import styles from './page.module.scss'
 import Button from '@/app/components/IconButton'
@@ -47,7 +48,7 @@ export default function SourcesPage() {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch('/api/admin/curation/sources')
+      const res = await adminFetch('/api/admin/curation/sources')
       if (!res.ok) throw new Error('Failed to load sources')
       const { sources } = await res.json()
       setSources(sources || [])
@@ -123,7 +124,7 @@ export default function SourcesPage() {
         : '/api/admin/curation/sources'
       const method = editingSource ? 'PUT' : 'POST'
 
-      const res = await fetch(url, {
+      const res = await adminFetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -144,7 +145,7 @@ export default function SourcesPage() {
   async function handleToggleActive(source) {
     setTogglingId(source.id)
     try {
-      const res = await fetch(`/api/admin/curation/sources/${source.id}`, {
+      const res = await adminFetch(`/api/admin/curation/sources/${source.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ active: !source.active }),
@@ -162,7 +163,7 @@ export default function SourcesPage() {
     setCrawlingId(source.id)
     setCrawlResult(prev => ({ ...prev, [source.id]: null }))
     try {
-      const res = await fetch(`/api/admin/curation/sources/${source.id}/crawl`, { method: 'POST' })
+      const res = await adminFetch(`/api/admin/curation/sources/${source.id}/crawl`, { method: 'POST' })
       const data = await res.json()
       if (res.status === 503) {
         setCrawlResult(prev => ({ ...prev, [source.id]: { ok: false, message: 'Crawler not available yet (Phase 2)' } }))
@@ -186,7 +187,7 @@ export default function SourcesPage() {
   async function handleDelete(id) {
     setDeletingId(id)
     try {
-      const res = await fetch(`/api/admin/curation/sources/${id}`, { method: 'DELETE' })
+      const res = await adminFetch(`/api/admin/curation/sources/${id}`, { method: 'DELETE' })
       if (!res.ok) throw new Error()
       setSources(prev => prev.filter(s => s.id !== id))
       setConfirmDeleteId(null)
@@ -201,7 +202,7 @@ export default function SourcesPage() {
     setImportingArtists(true)
     setImportArtistResult(null)
     try {
-      const res = await fetch('/api/admin/curation/sources/import-artists', { method: 'POST' })
+      const res = await adminFetch('/api/admin/curation/sources/import-artists', { method: 'POST' })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Import failed')
       setImportArtistResult(data)
@@ -231,7 +232,7 @@ export default function SourcesPage() {
     let failed = 0
     for (const handle of handles) {
       try {
-        const res = await fetch('/api/admin/curation/sources', {
+        const res = await adminFetch('/api/admin/curation/sources', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type: 'twitter', label: `@${handle}`, url: handle }),

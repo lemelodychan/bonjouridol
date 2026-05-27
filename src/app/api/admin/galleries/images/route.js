@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/prismicio'
+import { requireAdmin } from '@/lib/admin-auth'
 
 /**
  * Get all images from Media Library (including unused ones)
@@ -10,6 +11,8 @@ import { createClient } from '@/prismicio'
  * 4. Return all images (used + unused) filtered by suffix
  */
 export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const { searchParams } = new URL(request.url)
     const filenameSuffix = searchParams.get('suffix') // Optional: filter by filename suffix

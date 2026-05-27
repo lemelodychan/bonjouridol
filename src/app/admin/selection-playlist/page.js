@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
+import { adminFetch } from '@/lib/admin-fetch'
 import styles from './page.module.scss'
 import Button from '@/app/components/IconButton'
 import SingleImage from '@/app/components/SingleImage'
@@ -71,8 +72,8 @@ export default function SelectionPlaylistPage() {
       const url = search 
         ? `/api/admin/selection-playlist/artists?search=${encodeURIComponent(search)}`
         : '/api/admin/selection-playlist/artists'
-      
-      const response = await fetch(url)
+
+      const response = await adminFetch(url)
       const data = await response.json()
 
       if (response.ok && data.artists) {
@@ -223,7 +224,7 @@ export default function SelectionPlaylistPage() {
       }
       setError('')
       
-      const response = await fetch('/api/admin/selection-playlist', {
+      const response = await adminFetch('/api/admin/selection-playlist', {
         cache: 'no-store' // Always fetch fresh data from API
       })
       
@@ -281,7 +282,7 @@ export default function SelectionPlaylistPage() {
       formData.append('file', file)
       formData.append('alt', `Cover for ${formData.title_en || formData.title_ja || 'song'} by ${formData.artist_en || formData.artist_ja || 'artist'}`)
 
-      const response = await fetch('/api/admin/artists/upload-image', {
+      const response = await adminFetch('/api/admin/artists/upload-image', {
         method: 'POST',
         body: formData,
       })
@@ -326,7 +327,7 @@ export default function SelectionPlaylistPage() {
       const method = editingId ? 'PUT' : 'POST'
       const body = editingId ? { ...formData, id: editingId } : formData
 
-      const response = await fetch(url, {
+      const response = await adminFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json'
@@ -370,7 +371,7 @@ export default function SelectionPlaylistPage() {
     }
 
     try {
-      const response = await fetch(`/api/admin/selection-playlist?id=${id}`, {
+      const response = await adminFetch(`/api/admin/selection-playlist?id=${id}`, {
         method: 'DELETE'
       })
 
@@ -453,8 +454,8 @@ export default function SelectionPlaylistPage() {
     setError('')
     
     try {
-      const response = await fetch('/api/admin/selection-playlist/import')
-      
+      const response = await adminFetch('/api/admin/selection-playlist/import')
+
       if (!response.ok) {
         throw new Error('Failed to fetch importable songs')
       }
@@ -516,7 +517,7 @@ export default function SelectionPlaylistPage() {
     setError('')
 
     try {
-      const response = await fetch('/api/admin/selection-playlist/import', {
+      const response = await adminFetch('/api/admin/selection-playlist/import', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

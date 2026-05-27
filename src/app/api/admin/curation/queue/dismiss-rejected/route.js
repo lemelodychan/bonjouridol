@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { deleteItemImages } from '@/lib/curation/imageStorage'
+import { requireAdmin } from '@/lib/admin-auth'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -15,7 +16,9 @@ function getSupabaseClient() {
 // POST /api/admin/curation/queue/dismiss-rejected
 // Soft-hides all rejected items by setting dismissed_at = now().
 // Items remain in Supabase for AI feedback history but are hidden from the UI.
-export async function POST() {
+export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   const supabase = getSupabaseClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })

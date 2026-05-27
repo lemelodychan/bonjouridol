@@ -38,9 +38,28 @@ export default function ErrorHandler() {
       return false;
     };
 
+    // Third-party scripts (analytics, the Prismic preview toolbar, etc.) can
+    // reject internal promises with a bare DOM Event when a request/resource
+    // fails — typically when a privacy extension or flaky network blocks them.
+    // Such a rejection has no message or stack (it stringifies to
+    // "[object Event]") and is not an app bug, so swallow it instead of letting
+    // it surface as Next's dev "[object Event]" overlay. Real Error rejections
+    // are left untouched.
+    const handleNonErrorRejection = (event) => {
+      if (event.reason instanceof Event) {
+        console.warn(
+          '%c[Resource]',
+          'color: #666; font-style: italic;',
+          'A third-party script or resource failed to load (often blocked by a privacy extension). This is non-fatal.'
+        );
+        event.preventDefault();
+      }
+    };
+
     // Listen for unhandled errors
     window.addEventListener('error', handleChunkError, true);
     window.addEventListener('unhandledrejection', handleChunkError);
+    window.addEventListener('unhandledrejection', handleNonErrorRejection);
 
     // Override console.error for specific errors
     const originalConsoleError = console.error;
@@ -103,6 +122,7 @@ export default function ErrorHandler() {
     return () => {
       window.removeEventListener('error', handleChunkError, true);
       window.removeEventListener('unhandledrejection', handleChunkError);
+      window.removeEventListener('unhandledrejection', handleNonErrorRejection);
       console.error = originalConsoleError;
       console.warn = originalConsoleWarn;
     };

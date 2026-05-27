@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { requireAdmin } from '@/lib/admin-auth'
 
 // Normalize function (same as in import route)
 const normalizeString = (str) => {
@@ -40,6 +41,8 @@ function getSupabaseClient() {
  * Check which songs from an artist's song_list already exist in the playlist
  */
 export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const { songs, artistName } = await request.json()
 

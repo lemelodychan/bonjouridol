@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireAdmin } from '@/lib/admin-auth'
 
 function makeServiceClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -8,7 +9,10 @@ function makeServiceClient() {
   return createClient(url, key, { auth: { persistSession: false } })
 }
 
-export async function GET() {
+export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
+
   const supabase = makeServiceClient()
   if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
 
@@ -22,16 +26,11 @@ export async function GET() {
 }
 
 export async function PUT(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
+
   const supabase = makeServiceClient()
   if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
-
-  // Verify the caller is an admin via their access token
-  const authHeader = request.headers.get('Authorization') || ''
-  const token = authHeader.replace('Bearer ', '').trim()
-  if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const { data: { user }, error: userError } = await supabase.auth.getUser(token)
-  if (userError || !user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { rate_limit_enabled, custom_instructions } = await request.json()
 

@@ -38,7 +38,7 @@
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.13",
     "mini-css-extract-plugin": "^2.9.2",
-    "next": "15.5.9",
+    "next": "15.5.18",
     "next-share": "^0.27.0",
     "node-fetch": "^2.7.0",
     "openai": "^6.35.0",
@@ -49,12 +49,15 @@
     "react-masonry-css": "^1.0.16",
     "recharts": "^3.7.0",
     "rss-parser": "^3.13.0",
-    "swiper": "^11.1.15",
+    "swiper": "^12.1.4",
     "yet-another-react-lightbox": "^3.21.7"
   },
   "devDependencies": {
     "@slicemachine/adapter-next": "^0.3.59",
     "sass": "^1.65.1",
     "slice-machine-ui": "^2.10.5"
+  },
+  "overrides": {
+    "postcss": ">=8.5.10"
   }
 }

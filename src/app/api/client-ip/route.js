@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
 
+// Returns the caller's apparent IP, used only to self-exclude the owner from
+// Umami analytics. These forwarding headers are client-spoofable and must
+// NEVER be used for authentication, authorization, or rate-limit trust.
 export async function GET(request) {
   try {
     // Get client IP from headers

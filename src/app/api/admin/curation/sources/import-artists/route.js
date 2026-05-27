@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { createClient as createPrismicClient } from '@/prismicio'
+import { requireAdmin } from '@/lib/admin-auth'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -24,7 +25,9 @@ function extractHandle(twitterUrl) {
 // POST /api/admin/curation/sources/import-artists
 // Reads all published artist documents from Prismic, extracts their Twitter handles,
 // and creates content_sources rows for any not already present.
-export async function POST() {
+export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   const supabase = getSupabaseClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })

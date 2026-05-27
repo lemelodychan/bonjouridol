@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { adminFetch } from '@/lib/admin-fetch'
 import styles from './CoverFinder.module.scss'
 import { FiSearch, FiX, FiDownload, FiImage, FiCheck, FiRefreshCw } from 'react-icons/fi'
 import { IoCloseOutline } from 'react-icons/io5'
@@ -36,8 +37,8 @@ export default function CoverFinder({ artistName, songTitle, songTitleJa, onCove
       const songTitleToUse = (songTitleJa && songTitleJa.trim()) ? songTitleJa.trim() : (songTitle && songTitle.trim() ? songTitle.trim() : '')
       const query = `${artistName} ${songTitleToUse}`.trim()
       const url = `/api/admin/artists/search-covers?query=${encodeURIComponent(query)}`
-      
-      const response = await fetch(url)
+
+      const response = await adminFetch(url)
       const data = await response.json()
 
       if (!response.ok) {
@@ -72,7 +73,7 @@ export default function CoverFinder({ artistName, songTitle, songTitleJa, onCove
       const altText = `Cover for ${item.trackName} by ${item.artistName}`
 
       // Use our API to download and upload the cover
-      const uploadResponse = await fetch('/api/admin/artists/download-cover', {
+      const uploadResponse = await adminFetch('/api/admin/artists/download-cover', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -148,8 +149,8 @@ export default function CoverFinder({ artistName, songTitle, songTitleJa, onCove
       const url = cursor 
         ? `/api/admin/artists/prismic-assets?cursor=${encodeURIComponent(cursor)}`
         : '/api/admin/artists/prismic-assets'
-      
-      const response = await fetch(url)
+
+      const response = await adminFetch(url)
       const data = await response.json()
 
       if (!response.ok) {

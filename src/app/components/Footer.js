@@ -63,7 +63,7 @@ export default function Footer() {
                 </a>
             </div>
             <div className={styles.Credits}>
-                BONJOUR IDOL © Copyright 2018-2025.  All Rights Reserved.
+                BONJOUR IDOL © Copyright 2018-2026.  All Rights Reserved.
             </div>
         </div>
     )

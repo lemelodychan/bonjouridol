@@ -15,7 +15,15 @@ import LogoBI from "@/app/assets/Square_Logo_Pink.png";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { FiUsers } from "react-icons/fi";
 
-export const dynamicParams = false;
+export const dynamicParams = true;
+export const revalidate = 1800;
+
+export async function generateStaticParams() {
+  const client = createClient();
+  const galleries = await client.getAllByType("gallery");
+  return galleries.map((gallery) => ({ uid: gallery.uid }));
+}
+
 export async function generateMetadata({ params }) {
   const { uid } = await params;
   const client = createClient();

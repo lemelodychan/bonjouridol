@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/prismicio'
+import { requireAdmin } from '@/lib/admin-auth'
 
 export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     // Import and create Supabase client
     const { createSupabaseClient } = await import('@/lib/supabase')

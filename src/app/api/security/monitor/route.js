@@ -8,9 +8,10 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url)
   const action = searchParams.get('action')
   
-  // Basic authentication (in production, use proper auth)
+  // Requires SECURITY_MONITOR_TOKEN to be configured; fails closed otherwise.
+  const expected = process.env.SECURITY_MONITOR_TOKEN
   const authHeader = request.headers.get('authorization')
-  if (authHeader !== `Bearer ${process.env.SECURITY_MONITOR_TOKEN || 'dev-token'}`) {
+  if (!expected || authHeader !== `Bearer ${expected}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
   

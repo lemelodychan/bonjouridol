@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { adminFetch } from '@/lib/admin-fetch'
 import { formatDistanceToNow, format } from 'date-fns'
 import styles from './page.module.scss'
 import { FiAlertTriangle, FiCheckCircle, FiAlertCircle, FiXCircle } from 'react-icons/fi'
@@ -84,7 +85,7 @@ export default function CurationSettingsPage() {
   const [runsError, setRunsError] = useState('')
 
   useEffect(() => {
-    fetch('/api/admin/curation/settings')
+    adminFetch('/api/admin/curation/settings')
       .then(r => r.json())
       .then(({ settings }) => {
         if (settings) {
@@ -105,7 +106,7 @@ export default function CurationSettingsPage() {
     if (tab !== 'history') return
     setRunsLoading(true)
     setRunsError('')
-    fetch('/api/admin/curation/runs')
+    adminFetch('/api/admin/curation/runs')
       .then(r => r.json())
       .then(({ runs, error }) => {
         if (error) throw new Error(error)
@@ -121,7 +122,7 @@ export default function CurationSettingsPage() {
     setSaved(false)
     setError('')
     try {
-      const res = await fetch('/api/admin/curation/settings', {
+      const res = await adminFetch('/api/admin/curation/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -156,7 +157,7 @@ export default function CurationSettingsPage() {
     setResetting(true)
     setResetResult(null)
     try {
-      const res = await fetch('/api/admin/curation/reset', { method: 'POST' })
+      const res = await adminFetch('/api/admin/curation/reset', { method: 'POST' })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Reset failed')
       setResetResult({ success: true })

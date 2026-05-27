@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireAdmin } from '@/lib/admin-auth'
 
 function makeSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -8,7 +9,9 @@ function makeSupabase() {
   return createClient(url, key, { auth: { persistSession: false } })
 }
 
-export async function GET() {
+export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   const supabase = makeSupabase()
   if (!supabase) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })

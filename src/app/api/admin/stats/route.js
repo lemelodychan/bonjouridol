@@ -1,53 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { cookies } from 'next/headers'
-
-// Check authentication from cookie/header
-async function checkAuth(request) {
-  try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-      return { authenticated: false, supabase: null }
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    })
-
-    const cookieStore = await cookies()
-    const authCookie = cookieStore.getAll().find(
-      c => c.name.includes('sb-') && c.name.includes('-auth-token')
-    )
-
-    if (authCookie) {
-      const { data: { session }, error } = await supabase.auth.getSession()
-      if (!error && session) return { authenticated: true, supabase }
-    }
-
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-    if (serviceKey) {
-      const adminSupabase = createClient(supabaseUrl, serviceKey, {
-        auth: { persistSession: false, autoRefreshToken: false },
-      })
-      return { authenticated: true, supabase: adminSupabase }
-    }
-
-    return { authenticated: false, supabase: null }
-  } catch (error) {
-    console.error('Auth check error:', error)
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-    if (supabaseUrl && serviceKey) {
-      const adminSupabase = createClient(supabaseUrl, serviceKey, {
-        auth: { persistSession: false, autoRefreshToken: false },
-      })
-      return { authenticated: true, supabase: adminSupabase }
-    }
-    return { authenticated: false, supabase: null }
-  }
-}
+import { requireAdmin } from '@/lib/admin-auth'
 
 // Helper function to extract artist name from JSONB field
 function extractArtistName(artistField) {
@@ -86,6 +39,9 @@ async function fetchPrismicAssetCount() {
 }
 
 export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
+
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -96,12 +52,9 @@ export async function GET(request) {
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
     }
 
-    const supabase = createClient(supabaseUrl, serviceKey || anonKey, {
+    const db = createClient(supabaseUrl, serviceKey || anonKey, {
       auth: { persistSession: false, autoRefreshToken: false },
     })
-
-    const { authenticated, supabase: authSupabase } = await checkAuth(request)
-    const db = (authenticated && authSupabase) ? authSupabase : supabase
 
     // Fire all queries in parallel
     const [

@@ -1,3 +1,5 @@
+import { assertSafeUrl } from '@/lib/ssrf'
+
 const BUCKET = 'crawl-images'
 
 /**
@@ -8,6 +10,8 @@ const BUCKET = 'crawl-images'
 export async function uploadItemImages(supabase, folder, imageUrls) {
   return Promise.all(imageUrls.map(async (url, i) => {
     try {
+      // Block SSRF: crawled URLs are untrusted — skip internal/private targets.
+      await assertSafeUrl(url)
       const res = await fetch(url, {
         headers: { 'User-Agent': 'Mozilla/5.0 (compatible; BonjourIdolBot/1.0)' },
         signal: AbortSignal.timeout(8000),

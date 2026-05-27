@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { runProcessQueue } from '@/lib/curation/processor'
 import { logCrawlRun } from '@/lib/curation/logRun'
+import { requireAdmin } from '@/lib/admin-auth'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -15,7 +16,9 @@ function getSupabaseClient() {
 
 // UI-facing endpoint called by the "Process queue" button in the admin dashboard.
 // No CRON_SECRET required — relies on the admin panel being access-controlled.
-export async function POST() {
+export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   const supabase = getSupabaseClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })

@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/admin-auth'
+import { assertSafeUrl } from '@/lib/ssrf'
 
 /**
  * Download an image from a URL and upload it to Prismic
  * This proxies the download to avoid CORS and CSP issues
  */
 export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const { imageUrl, fileName, altText } = await request.json()
 
@@ -13,6 +17,13 @@ export async function POST(request) {
         { error: 'Image URL is required' },
         { status: 400 }
       )
+    }
+
+    // Block SSRF: reject internal/private targets before fetching the URL.
+    try {
+      await assertSafeUrl(imageUrl)
+    } catch (e) {
+      return NextResponse.json({ error: e.message || 'Blocked URL' }, { status: 400 })
     }
 
     // Download the image from the URL

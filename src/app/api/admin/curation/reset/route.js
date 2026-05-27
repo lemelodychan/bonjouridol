@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { deleteAllImages } from '@/lib/curation/imageStorage'
+import { requireAdmin } from '@/lib/admin-auth'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -16,7 +17,9 @@ function getSupabaseClient() {
 // Wipes all crawl history for a clean slate.
 // Deletes: content_queue, crawl_log, ai_feedback.
 // Prismic drafts must be manually removed in Prismic → Migration Releases.
-export async function POST() {
+export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   const supabase = getSupabaseClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })

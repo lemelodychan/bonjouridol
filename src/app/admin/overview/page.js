@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { adminFetch } from '@/lib/admin-fetch'
 import Link from 'next/link'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -141,7 +142,7 @@ export default function OverviewPage() {
       else setRefreshing(true)
       setError('')
 
-      const res = await fetch('/api/admin/stats', { cache: 'no-store' })
+      const res = await adminFetch('/api/admin/stats', { cache: 'no-store' })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
         throw new Error(err.error || `Failed to fetch stats (${res.status})`)
@@ -162,7 +163,7 @@ export default function OverviewPage() {
   async function fetchInsight() {
     try {
       setInsightLoading(true)
-      const res = await fetch('/api/admin/insights', { cache: 'no-store' })
+      const res = await adminFetch('/api/admin/insights', { cache: 'no-store' })
       const data = await res.json()
       if (data.insight) setInsight(data.insight)
     } catch (e) {
@@ -176,7 +177,7 @@ export default function OverviewPage() {
     try {
       setRegenerating(true)
       setRateLimitedUntil(null)
-      const res = await fetch('/api/admin/insights/run', { method: 'POST', cache: 'no-store' })
+      const res = await adminFetch('/api/admin/insights/run', { method: 'POST', cache: 'no-store' })
       if (res.status === 429) {
         const data = await res.json()
         setRateLimitedUntil(data.nextAvailable ? new Date(data.nextAvailable) : null)
@@ -202,7 +203,7 @@ export default function OverviewPage() {
 
   async function fetchInsightsSettings() {
     try {
-      const res = await fetch('/api/admin/insights/settings')
+      const res = await adminFetch('/api/admin/insights/settings')
       const data = await res.json()
       if (data.settings) {
         setInsightsSettings({
@@ -216,13 +217,10 @@ export default function OverviewPage() {
   async function handleSaveSettings() {
     try {
       setSettingsSaving(true)
-      const supabase = createBrowserSupabaseClient()
-      const { data: { session } } = await supabase.auth.getSession()
-      await fetch('/api/admin/insights/settings', {
+      await adminFetch('/api/admin/insights/settings', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token}`,
         },
         body: JSON.stringify(insightsSettings),
       })
@@ -239,7 +237,7 @@ export default function OverviewPage() {
     try {
       setAnalyticsLoading(true)
       const params = new URLSearchParams({ startAt: start, endAt: end })
-      const res = await fetch(`/api/admin/analytics?${params}`, { cache: 'no-store' })
+      const res = await adminFetch(`/api/admin/analytics?${params}`, { cache: 'no-store' })
       const data = await res.json().catch(() => null)
       if (data) setAnalytics(data)
     } catch (e) {

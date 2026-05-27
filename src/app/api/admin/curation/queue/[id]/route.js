@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { deleteItemImages } from '@/lib/curation/imageStorage'
+import { requireAdmin } from '@/lib/admin-auth'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -15,6 +16,8 @@ function getSupabaseClient() {
 // PATCH /api/admin/curation/queue/[id]
 // { action: 'approve' | 'reject' | 'publish' | 'back_to_pending' | 'reset_draft' }
 export async function PATCH(request, { params }) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   const supabase = getSupabaseClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
@@ -80,6 +83,8 @@ export async function PATCH(request, { params }) {
 // Permanently removes the queue item. If a Prismic draft exists,
 // it must be deleted manually in Prismic → Migration Releases.
 export async function DELETE(request, { params }) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   const supabase = getSupabaseClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })

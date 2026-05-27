@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/prismicio'
+import { requireAdmin } from '@/lib/admin-auth'
 
 /**
  * Backfill prismic_uid and name_ja for existing artists in Supabase
  * by matching them with Prismic Artist documents
  */
 export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     // Import and create Supabase client
     const { createSupabaseClient } = await import('@/lib/supabase')

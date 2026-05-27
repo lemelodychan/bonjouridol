@@ -4,6 +4,7 @@ import { fetchRSSFeed, fetchNitterFeedWithFallback } from '@/lib/curation/rss'
 import { fetchHTMLSource } from '@/lib/curation/scraper'
 import { uploadItemImages } from '@/lib/curation/imageStorage'
 import { fetchApifyTweets } from '@/lib/curation/apify'
+import { requireAdmin } from '@/lib/admin-auth'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -18,6 +19,8 @@ function getSupabaseClient() {
 // Called from the Source Manager "Crawl now" button.
 // Crawls a single source and stores new raw items.
 export async function POST(request, { params }) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   const supabase = getSupabaseClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })

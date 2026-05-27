@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { runProcessQueue } from '@/lib/curation/processor'
 import { logCrawlRun } from '@/lib/curation/logRun'
+import { requireAdmin } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,23 +16,15 @@ function getSupabaseClient() {
   })
 }
 
-function checkCronSecret(request) {
-  const authHeader = request.headers.get('Authorization')
-  const cronSecret = process.env.CRON_SECRET
-  if (!cronSecret) return false
-  return authHeader === `Bearer ${cronSecret}`
-}
-
-// Called by GitHub Actions on schedule. Requires CRON_SECRET.
+// Called by GitHub Actions on schedule (CRON_SECRET) or manually by an admin.
 export async function POST(request) {
+  const auth = await requireAdmin(request, { allowCron: true })
+  if (!auth.ok) return auth.response
+
   let supabase = null
   let githubContext = null
 
   try {
-    if (!checkCronSecret(request)) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
     supabase = getSupabaseClient()
     if (!supabase) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 })

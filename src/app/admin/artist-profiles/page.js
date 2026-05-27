@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import { adminFetch } from '@/lib/admin-fetch'
 import styles from './page.module.scss'
 import Button from '@/app/components/IconButton'
 import CustomSelect from '@/app/components/CustomSelect'
@@ -151,7 +152,7 @@ export default function ArtistProfilesPage() {
       }
       setError('')
       
-      const response = await fetch('/api/admin/artists', {
+      const response = await adminFetch('/api/admin/artists', {
         cache: 'no-store',
       })
       
@@ -177,7 +178,7 @@ export default function ArtistProfilesPage() {
     try {
       setLoadingPending(true)
       
-      const response = await fetch('/api/admin/artists/pending')
+      const response = await adminFetch('/api/admin/artists/pending')
       if (response.ok) {
         const data = await response.json()
         const serverMigrations = data.pending || []
@@ -196,7 +197,7 @@ export default function ArtistProfilesPage() {
   async function removePendingMigration(id) {
     try {
       // Update status to 'published' instead of deleting
-      const response = await fetch(`/api/admin/artists/pending?id=${id}`, {
+      const response = await adminFetch(`/api/admin/artists/pending?id=${id}`, {
         method: 'DELETE',
       })
       
@@ -320,7 +321,7 @@ export default function ArtistProfilesPage() {
           : {}),
       }
       
-      const response = await fetch('/api/admin/artists/create', {
+      const response = await adminFetch('/api/admin/artists/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -375,7 +376,7 @@ export default function ArtistProfilesPage() {
             ? `/api/admin/artists/pending?id=${existingMigration.id}`
             : '/api/admin/artists/pending'
           
-          const serverResponse = await fetch(url, {
+          const serverResponse = await adminFetch(url, {
             method,
             headers: {
               'Content-Type': 'application/json',
@@ -495,7 +496,7 @@ export default function ArtistProfilesPage() {
     }
 
     try {
-      const response = await fetch('/api/admin/artists/check-songs', {
+      const response = await adminFetch('/api/admin/artists/check-songs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -635,7 +636,7 @@ export default function ArtistProfilesPage() {
     if (songsToImportArray.length === 0) return
 
     try {
-      const response = await fetch('/api/admin/selection-playlist/import', {
+      const response = await adminFetch('/api/admin/selection-playlist/import', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -779,7 +780,7 @@ export default function ArtistProfilesPage() {
       formData.append('file', file)
       formData.append('alt', `Cover for ${formData.song_title_en || 'song'}`)
 
-      const response = await fetch('/api/admin/artists/upload-image', {
+      const response = await adminFetch('/api/admin/artists/upload-image', {
         method: 'POST',
         body: formData,
       })
@@ -832,7 +833,7 @@ export default function ArtistProfilesPage() {
       formData.append('file', file)
       formData.append('alt', `Profile picture for ${formData.name_en || 'artist'}`)
 
-      const response = await fetch('/api/admin/artists/upload-image', {
+      const response = await adminFetch('/api/admin/artists/upload-image', {
         method: 'POST',
         body: formData,
       })

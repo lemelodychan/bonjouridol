@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
+import { adminFetch } from '@/lib/admin-fetch'
 import styles from './page.module.scss'
 import Button from '@/app/components/IconButton'
 import CustomSelect from '@/app/components/CustomSelect'
@@ -157,7 +158,7 @@ export default function GalleriesPage() {
       }
       setError('')
       
-      const response = await fetch('/api/admin/galleries', {
+      const response = await adminFetch('/api/admin/galleries', {
         cache: 'no-store', // Always fetch fresh data from API
       })
       
@@ -181,7 +182,7 @@ export default function GalleriesPage() {
 
   async function loadAuthors() {
     try {
-      const response = await fetch('/api/admin/galleries/authors')
+      const response = await adminFetch('/api/admin/galleries/authors')
       if (response.ok) {
         const data = await response.json()
         setAuthors(data.authors || [])
@@ -195,7 +196,7 @@ export default function GalleriesPage() {
     try {
       setLoadingPending(true)
       
-      const response = await fetch('/api/admin/galleries/pending')
+      const response = await adminFetch('/api/admin/galleries/pending')
       if (response.ok) {
         const data = await response.json()
         const serverMigrations = data.pending || []
@@ -214,7 +215,7 @@ export default function GalleriesPage() {
   async function removePendingMigration(id) {
     try {
       // Update status to 'published' instead of deleting
-      const response = await fetch(`/api/admin/galleries/pending?id=${id}`, {
+      const response = await adminFetch(`/api/admin/galleries/pending?id=${id}`, {
         method: 'DELETE',
       })
       
@@ -292,7 +293,7 @@ export default function GalleriesPage() {
 
     setSearchingImages(true)
     try {
-      const response = await fetch(
+      const response = await adminFetch(
         `/api/admin/galleries/images?suffix=${encodeURIComponent(imageSearchSuffix)}`
       )
       
@@ -464,7 +465,7 @@ export default function GalleriesPage() {
           : {}),
       }
       
-      const response = await fetch('/api/admin/galleries/create', {
+      const response = await adminFetch('/api/admin/galleries/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -529,7 +530,7 @@ export default function GalleriesPage() {
                 ? `/api/admin/galleries/pending?id=${existingMigration.id}` // Use Supabase UUID (must be valid UUID)
                 : '/api/admin/galleries/pending' // POST will upsert by UID
               
-              const serverResponse = await fetch(url, {
+              const serverResponse = await adminFetch(url, {
                 method,
                 headers: {
                   'Content-Type': 'application/json',

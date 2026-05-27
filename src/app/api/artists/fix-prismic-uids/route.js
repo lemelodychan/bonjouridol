@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/prismicio'
+import { requireAdmin } from '@/lib/admin-auth'
 
 /**
  * Fix incorrect prismic_uid values that point to articles instead of artist documents
  * This script verifies each prismic_uid and corrects any that are wrong
  */
 export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     // Import and create Supabase client
     const { createSupabaseClient } = await import('@/lib/supabase')

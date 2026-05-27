@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/admin-auth'
 
 const UMAMI_HOST = 'https://api.umami.is/v1'
 const UMAMI_WEBSITE_ID = 'f092e573-6aba-45f6-af52-71e7d3c51bd0'
@@ -11,6 +12,8 @@ const UMAMI_WEBSITE_ID = 'f092e573-6aba-45f6-af52-71e7d3c51bd0'
  * Requires UMAMI_API_SECRET environment variable.
  */
 export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   const apiKey = process.env.UMAMI_API_SECRET
 
   if (!apiKey) {

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
+import { requireAdmin } from '@/lib/admin-auth'
 
 // Get authenticated Supabase client
 async function getAuthenticatedSupabase() {
@@ -27,6 +28,8 @@ async function getAuthenticatedSupabase() {
 
 // GET - Fetch all playlist items
 export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const supabase = await getAuthenticatedSupabase()
     if (!supabase) {
@@ -70,6 +73,8 @@ export async function GET(request) {
 
 // POST - Create new playlist item
 export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const supabase = await getAuthenticatedSupabase()
     if (!supabase) {
@@ -170,6 +175,8 @@ export async function POST(request) {
 
 // PUT - Update playlist item
 export async function PUT(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const supabase = await getAuthenticatedSupabase()
     if (!supabase) {
@@ -253,6 +260,8 @@ export async function PUT(request) {
 
 // DELETE - Delete playlist item
 export async function DELETE(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const supabase = await getAuthenticatedSupabase()
     if (!supabase) {

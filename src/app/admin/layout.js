@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback, createContext, useContext } from 'react'
+import { adminFetch } from '@/lib/admin-fetch'
 import { useRouter, usePathname } from 'next/navigation'
 import { createBrowserSupabaseClient } from '@/lib/supabase-browser'
 import Link from 'next/link'
@@ -30,7 +31,7 @@ function ProcessingProvider({ children }) {
     const totals = { processed: 0, pending: 0, rejected: 0, errors: [] }
     try {
       while (true) {
-        const res  = await fetch('/api/admin/curation/queue/process', { method: 'POST' })
+        const res  = await adminFetch('/api/admin/curation/queue/process', { method: 'POST' })
         const text = await res.text()
         let data
         try {

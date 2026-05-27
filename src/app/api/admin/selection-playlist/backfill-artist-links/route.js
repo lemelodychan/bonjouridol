@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireAdmin } from '@/lib/admin-auth'
 
 /**
  * Get authenticated Supabase client with service role key for admin operations
@@ -31,6 +32,8 @@ async function getAuthenticatedSupabase() {
  * Links playlist songs to the artists table based on artist_en field
  */
 export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     // Get authenticated Supabase client with service role key
     const supabase = await getAuthenticatedSupabase()

@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/prismicio'
 import { extractArtistsFromPrismicArticle } from '@/utils/artistUtils'
+import { requireAdmin } from '@/lib/admin-auth'
 
 /**
  * Backfill artist_id in articles table for single-artist articles
  * Links articles to the artists table based on the artist JSONB field
  */
 export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     // Import and create Supabase client
     const { createSupabaseClient } = await import('@/lib/supabase')

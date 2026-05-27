@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/admin-auth'
 
 /**
  * Upload an image to Prismic Asset API
  * Endpoint: POST https://asset-api.prismic.io/assets
  */
 export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const formData = await request.formData()
     const file = formData.get('file')

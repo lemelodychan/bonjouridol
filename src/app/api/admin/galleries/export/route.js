@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/admin-auth'
 
 /**
  * Export gallery data as Prismic import JSON
  * Format based on Prismic's import/export specification
  */
 export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const galleryData = await request.json()
-    
+
     // Validate required fields
     if (!galleryData.title || !galleryData.uid) {
       return NextResponse.json(

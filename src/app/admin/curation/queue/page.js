@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { adminFetch } from '@/lib/admin-fetch'
 import { formatDistanceToNow } from 'date-fns'
 import styles from './page.module.scss'
 import { FiCheck, FiX, FiChevronDown, FiChevronUp, FiCopy, FiExternalLink, FiRefreshCw, FiFileText, FiSend, FiTrash2, FiRotateCcw, FiArchive, FiDownload, FiTwitter } from 'react-icons/fi'
@@ -55,7 +56,7 @@ export default function QueuePage() {
       const params = new URLSearchParams({ status, page, limit: LIMIT })
       if (typeFilter)      params.set('type', typeFilter)
       if (artistDebounced) params.set('idol_name', artistDebounced)
-      const res = await fetch(`/api/admin/curation/queue?${params}`)
+      const res = await adminFetch(`/api/admin/curation/queue?${params}`)
       if (!res.ok) throw new Error('Failed to load queue')
       const data = await res.json()
       setItems(data.items || [])
@@ -95,7 +96,7 @@ export default function QueuePage() {
     setReprocessing(true)
     setReprocessResult(null)
     try {
-      const res = await fetch('/api/admin/curation/queue/reprocess', { method: 'POST' })
+      const res = await adminFetch('/api/admin/curation/queue/reprocess', { method: 'POST' })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Reprocess failed')
       setReprocessResult(data)
@@ -110,7 +111,7 @@ export default function QueuePage() {
   async function handleAction(item, action) {
     setActioningId(item.id)
     try {
-      const res = await fetch(`/api/admin/curation/queue/${item.id}`, {
+      const res = await adminFetch(`/api/admin/curation/queue/${item.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action }),
@@ -135,7 +136,7 @@ export default function QueuePage() {
       (item.prismic_document_id ? '\n\nNote: the Prismic draft must be deleted manually in Prismic → Migration Releases.' : ''))) return
     setActioningId(item.id)
     try {
-      const res = await fetch(`/api/admin/curation/queue/${item.id}`, { method: 'DELETE' })
+      const res = await adminFetch(`/api/admin/curation/queue/${item.id}`, { method: 'DELETE' })
       if (!res.ok) throw new Error((await res.json()).error || 'Delete failed')
       setItems(prev => prev.filter(i => i.id !== item.id))
       setTotal(prev => prev - 1)
@@ -150,7 +151,7 @@ export default function QueuePage() {
     setActioningId(item.id)
     try {
       // Clear the existing draft reference first
-      const resetRes = await fetch(`/api/admin/curation/queue/${item.id}`, {
+      const resetRes = await adminFetch(`/api/admin/curation/queue/${item.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'reset_draft' }),
@@ -166,7 +167,7 @@ export default function QueuePage() {
   async function handlePublish(item) {
     setActioningId(item.id)
     try {
-      const res = await fetch(`/api/admin/curation/queue/${item.id}`, {
+      const res = await adminFetch(`/api/admin/curation/queue/${item.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'publish' }),
@@ -186,7 +187,7 @@ export default function QueuePage() {
     setPublishingAll(true)
     setPublishAllResult(null)
     try {
-      const res = await fetch('/api/admin/curation/queue/publish-all', { method: 'POST' })
+      const res = await adminFetch('/api/admin/curation/queue/publish-all', { method: 'POST' })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to publish all')
       setPublishAllResult(data)
@@ -202,7 +203,7 @@ export default function QueuePage() {
   async function handleCreateDraft(item) {
     setCreatingDraftId(item.id)
     try {
-      const res = await fetch('/api/admin/curation/articles/create', {
+      const res = await adminFetch('/api/admin/curation/articles/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ queue_item_id: item.id }),
@@ -222,7 +223,7 @@ export default function QueuePage() {
   async function handleApprove(item) {
     setActioningId(item.id)
     try {
-      const res = await fetch(`/api/admin/curation/queue/${item.id}`, {
+      const res = await adminFetch(`/api/admin/curation/queue/${item.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'approve' }),
@@ -240,7 +241,7 @@ export default function QueuePage() {
   async function handleReject(item) {
     setActioningId(item.id)
     try {
-      const res = await fetch(`/api/admin/curation/queue/${item.id}`, {
+      const res = await adminFetch(`/api/admin/curation/queue/${item.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -266,7 +267,7 @@ export default function QueuePage() {
     setDismissingRejected(true)
     setDismissResult(null)
     try {
-      const res = await fetch('/api/admin/curation/queue/dismiss-rejected', { method: 'POST' })
+      const res = await adminFetch('/api/admin/curation/queue/dismiss-rejected', { method: 'POST' })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Dismiss failed')
       setDismissResult(data)

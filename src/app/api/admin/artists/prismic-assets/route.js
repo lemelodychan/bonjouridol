@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/admin-auth'
 
 /**
  * Get Prismic assets with pagination
  * Returns 50 assets per page
  */
 export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const { searchParams } = new URL(request.url)
     const cursor = searchParams.get('cursor') || null

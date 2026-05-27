@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { adminFetch } from '@/lib/admin-fetch'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import styles from './page.module.scss'
@@ -32,8 +33,8 @@ export default function CurationDashboard() {
     setError('')
     try {
       const [sourcesRes, queueRes] = await Promise.all([
-        fetch('/api/admin/curation/sources'),
-        fetch('/api/admin/curation/queue?countOnly=true'),
+        adminFetch('/api/admin/curation/sources'),
+        adminFetch('/api/admin/curation/queue?countOnly=true'),
       ])
 
       if (sourcesRes.ok) {
@@ -56,7 +57,7 @@ export default function CurationDashboard() {
     setCrawlingAll(true)
     setCrawlAllResult(null)
     try {
-      const res = await fetch('/api/admin/curation/crawl/all', { method: 'POST' })
+      const res = await adminFetch('/api/admin/curation/crawl/all', { method: 'POST' })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Crawl failed')
       setCrawlAllResult(data)
@@ -71,7 +72,7 @@ export default function CurationDashboard() {
   async function handleCrawlSource(sourceId) {
     setCrawlingSourceId(sourceId)
     try {
-      const res = await fetch(`/api/admin/curation/sources/${sourceId}/crawl`, { method: 'POST' })
+      const res = await adminFetch(`/api/admin/curation/sources/${sourceId}/crawl`, { method: 'POST' })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Crawl failed')
       setCrawlAllResult(data)

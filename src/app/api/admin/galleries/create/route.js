@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/prismicio'
+import { requireAdmin } from '@/lib/admin-auth'
 
 /**
  * Create or update a gallery document using Prismic Migration API
@@ -13,9 +14,11 @@ import { createClient } from '@/prismicio'
  * Otherwise, it will CREATE a new document.
  */
 export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const galleryData = await request.json()
-    
+
     // Validate required fields
     if (!galleryData.title || !galleryData.title.trim() || !galleryData.uid || !galleryData.uid.trim()) {
       return NextResponse.json(

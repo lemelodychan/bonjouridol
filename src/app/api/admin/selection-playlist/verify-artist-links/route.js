@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireAdmin } from '@/lib/admin-auth'
 
 /**
  * Get authenticated Supabase client with service role key for admin operations
@@ -29,9 +30,11 @@ async function getAuthenticatedSupabase() {
  * Verify which playlist items are missing artist_id
  */
 export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const supabase = await getAuthenticatedSupabase()
-    
+
     if (!supabase) {
       return NextResponse.json(
         { error: 'Supabase not configured' },

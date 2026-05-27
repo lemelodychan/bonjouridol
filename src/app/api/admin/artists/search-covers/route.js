@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/admin-auth'
 
 /**
  * Search iTunes for album/single covers
  * Proxies the iTunes Search API to avoid CORS issues
  */
 export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const { searchParams } = new URL(request.url)
     const query = searchParams.get('query')

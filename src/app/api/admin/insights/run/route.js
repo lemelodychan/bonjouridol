@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { collectWeeklyData } from '@/lib/insights/collect'
 import { generateInsights } from '@/lib/insights/generate'
+import { requireAdmin } from '@/lib/admin-auth'
 
 const RATE_LIMIT_MS = 23 * 60 * 60 * 1000 // 23 hours
 
@@ -13,15 +14,16 @@ function makeSupabase() {
 }
 
 export async function POST(request) {
+  const auth = await requireAdmin(request, { allowCron: true })
+  if (!auth.ok) return auth.response
+
   const supabase = makeSupabase()
   if (!supabase) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
   }
 
   // Cron calls bypass rate limit; manual calls from the admin UI are rate-limited
-  const authHeader = request.headers.get('Authorization') || ''
-  const cronSecret = process.env.CRON_SECRET
-  const isCron = cronSecret && authHeader === `Bearer ${cronSecret}`
+  const isCron = auth.cron === true
 
   // Read settings (rate limit toggle + custom instructions)
   const { data: settings } = await supabase

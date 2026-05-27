@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { runReprocessBatch } from '@/lib/curation/processor'
+import { requireAdmin } from '@/lib/admin-auth'
 
 const BATCH_SIZE = 5
 const DEADLINE_MS = 25000 // stay safely under Vercel's 30s limit
@@ -19,7 +20,9 @@ function getSupabaseClient() {
 // IDs are snapshotted upfront so items that stay pending are not re-processed.
 // Relevant items stay pending with refreshed translated_content.
 // Items the AI now considers irrelevant are moved to rejected.
-export async function POST() {
+export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   const supabase = getSupabaseClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })

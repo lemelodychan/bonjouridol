@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { requireAdmin } from '@/lib/admin-auth'
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -26,9 +27,11 @@ function getSupabaseClient() {
  * Get all artists from Supabase for the playlist form
  */
 export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const supabase = getSupabaseClient()
-    
+
     if (!supabase) {
       return NextResponse.json(
         { error: 'Supabase not configured' },
@@ -45,9 +48,12 @@ export async function GET(request) {
       .select('id, name, name_ja, prismic_uid')
       .order('name', { ascending: true })
 
-    // Add search filter if provided
-    if (search.trim()) {
-      query = query.or(`name.ilike.%${search}%,name_ja.ilike.%${search}%`)
+    // Add search filter if provided. Strip PostgREST filter metacharacters
+    // (, ( ) * : \ %) so the term can't break out of the ilike value and
+    // inject additional .or() conditions.
+    const safeSearch = search.trim().replace(/[,()*:\\%]/g, '')
+    if (safeSearch) {
+      query = query.or(`name.ilike.%${safeSearch}%,name_ja.ilike.%${safeSearch}%`)
     }
 
     const { data, error } = await query

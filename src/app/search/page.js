@@ -9,45 +9,17 @@ import SearchTracker from "./SearchTracker";
 
 import styles from "./page.module.scss";
 
-// Function to fetch like counts for multiple articles
-async function fetchArticleLikeCounts(slugs) {
-  try {
-    const { createSupabaseClient } = await import('@/lib/supabase');
-    const supabase = createSupabaseClient();
-    if (!supabase) return {};
-
-    const { data: likesData, error } = await supabase
-      .from('article_likes')
-      .select('slug, like_count')
-      .in('slug', slugs);
-
-    if (error) {
-      console.error('Error fetching article like counts:', error);
-      return {};
-    }
-
-    const likeCounts = {};
-    likesData.forEach(like => {
-      if (!likeCounts[like.slug]) {
-        likeCounts[like.slug] = 0;
-      }
-      likeCounts[like.slug] += like.like_count;
-    });
-
-    return likeCounts;
-  } catch (error) {
-    console.error('Error in fetchArticleLikeCounts:', error);
-    return {};
-  }
-}
+// Cap the search term so a single request can't trigger oversized fulltext
+// queries across Prismic. Idol/artist names and titles are short.
+const MAX_SEARCH_LENGTH = 100;
 
 export default async function SearchPage({ searchParams }) {
     const params = await searchParams;
-    const searchTerm = params?.keyword || "";
+    const searchTerm = (params?.keyword || "").slice(0, MAX_SEARCH_LENGTH).trim();
     const currentPage = parseInt(params?.page) || 1;
     const isAuthorSearch = params?.author === "true";
 
-    if (!searchTerm.trim()) {
+    if (!searchTerm) {
       return (
         <div className={styles.SearchPage}>
           <SearchTracker searchTerm={searchTerm} />
@@ -89,13 +61,16 @@ export default async function SearchPage({ searchParams }) {
           if (exactAuthorResponse.results.length > 0) {
           exactAuthorMatch = exactAuthorResponse.results[0];
           
-          // If it's an exact author match, fetch their articles and galleries
-          const authorUid = exactAuthorMatch.uid;
+          // If it's an exact author match, fetch their articles and galleries.
+          // Use targeted content-relationship filters (author / photographer
+          // link to this author's document id) instead of pulling the entire
+          // corpus with getAllByType and filtering in JS.
+          const authorId = exactAuthorMatch.id;
 
-          // Fetch all articles and filter for photographer work in JavaScript
-          const allArticlesResponse = await client.getAllByType("articles", {
+          // Articles where this person is the author
+          const authoredArticles = await client.getAllByType("articles", {
             fetchOptions: {
-              next: { 
+              next: {
                 tags: ["prismic", "articles"],
                 revalidate: 1800 // Cache for 30 minutes
               },
@@ -104,56 +79,49 @@ export default async function SearchPage({ searchParams }) {
               { field: "my.articles.publication_date", direction: "desc" },
               { field: "document.first_publication_date", direction: "desc" },
             ],
+            filters: [prismic.filter.at("my.articles.author", authorId)],
           });
 
-          // Filter articles where this person is the author or translator
-          const authorAndTranslatorArticles = allArticlesResponse.filter(article => {
-            // Check if they're the author
-            if (article.data.author?.uid === authorUid) {
-              return true;
-            }
-            
-            // Check if they're credited as a translator in the Authors slice
-            const authorsSlice = article.data.slices?.find(slice => slice.slice_type === 'authors');
-            if (!authorsSlice) return false;
-            
-            return authorsSlice.primary?.translator_pr?.uid === authorUid ||
-                   authorsSlice.primary?.translator_jp?.uid === authorUid ||
-                   authorsSlice.primary?.translator_en?.uid === authorUid ||
-                   authorsSlice.primary?.translator_fr?.uid === authorUid;
-          });
-
-          results = authorAndTranslatorArticles;
+          results = authoredArticles;
           totalPages = Math.ceil(results.length / defaultPageSize);
 
-          // Fetch all galleries and filter for photographer work in JavaScript
-          const allGalleriesResponse = await client.getAllByType("gallery", {
-            fetchOptions: {
-              next: { 
-                tags: ["prismic", "galleries"],
-                revalidate: 1800 // Cache for 30 minutes
-              },
-            },
-            orderings: [
-              { field: "my.gallery.event_date", direction: "desc" },
-              { field: "document.first_publication_date", direction: "desc" },
-            ],
-            fetchLinks: ["my.gallery.photographer.name", "my.gallery.photographer_2.name"],
-          });
+          // Galleries where this person is the primary or secondary photographer.
+          // Two targeted queries (one per relationship field), then merge.
+          const [primaryPhotog, secondaryPhotog] = await Promise.all([
+            client.getAllByType("gallery", {
+              fetchOptions: { next: { tags: ["prismic", "galleries"], revalidate: 1800 } },
+              orderings: [
+                { field: "my.gallery.event_date", direction: "desc" },
+                { field: "document.first_publication_date", direction: "desc" },
+              ],
+              fetchLinks: ["my.gallery.photographer.name", "my.gallery.photographer_2.name"],
+              filters: [
+                prismic.filter.not("my.gallery.is_official_photos", true),
+                prismic.filter.at("my.gallery.photographer", authorId),
+              ],
+            }),
+            client.getAllByType("gallery", {
+              fetchOptions: { next: { tags: ["prismic", "galleries"], revalidate: 1800 } },
+              orderings: [
+                { field: "my.gallery.event_date", direction: "desc" },
+                { field: "document.first_publication_date", direction: "desc" },
+              ],
+              fetchLinks: ["my.gallery.photographer.name", "my.gallery.photographer_2.name"],
+              filters: [
+                prismic.filter.not("my.gallery.is_official_photos", true),
+                prismic.filter.at("my.gallery.photographer_2", authorId),
+              ],
+            }),
+          ]);
 
-          // Filter galleries where this person is the photographer
-          const photographerGalleries = allGalleriesResponse.filter(gallery => {
-            // Skip official photos
-            if (gallery.data.is_official_photos) return false;
-            
-            // Check if the person is the primary or secondary photographer
-            return gallery.data.photographer?.uid === authorUid || 
-                   gallery.data.photographer_2?.uid === authorUid;
-          });
+          const seenGalleryIds = new Set(primaryPhotog.map((item) => item.id));
+          const photographerGalleries = [
+            ...primaryPhotog,
+            ...secondaryPhotog.filter((item) => !seenGalleryIds.has(item.id)),
+          ];
 
           // Limit galleries to 10 latest for author searches
-          const limitedGalleries = photographerGalleries.slice(0, 10);
-          resultsGallery = limitedGalleries;
+          resultsGallery = photographerGalleries.slice(0, 10);
 
           // Resolve artist names for all results
           results = results.map(item => ({
@@ -164,10 +132,6 @@ export default async function SearchPage({ searchParams }) {
             ...item,
             resolvedArtists: resolveArtistNames(item.data.artist_name, knownArtists),
           }));
-
-          // Fetch like counts for all articles
-          const articleSlugs = results.map(item => item.uid).filter(Boolean);
-          const likeCounts = await fetchArticleLikeCounts(articleSlugs);
 
           return (
             <div className={styles.SearchPage}>
@@ -185,7 +149,7 @@ export default async function SearchPage({ searchParams }) {
                   <GalleryList results={resultsGallery} />
                 </div>
               )}
-          
+
               <div className={`${styles.SearchResults} ${styles.AuthorSearch}`}>
                 {results.length > 0 ? (
                   <>
@@ -196,7 +160,7 @@ export default async function SearchPage({ searchParams }) {
                         currentPage={currentPage}
                         totalPages={totalPages}
                         postType="Search results"
-                        likeCounts={likeCounts}
+                        likeCounts={{}}
                       />
                     </div>
                   </>
@@ -224,8 +188,6 @@ export default async function SearchPage({ searchParams }) {
         if (exactArtistResponse.results.length > 0) {
           exactArtistMatch = exactArtistResponse.results[0]
         }
-
-        console.log(exactArtistMatch);
 
         // Search logic
         const response1 = await client.getByType("articles", {
@@ -318,12 +280,8 @@ export default async function SearchPage({ searchParams }) {
         totalPages = Math.ceil(combinedResults.length / defaultPageSize);
         results = combinedResults;
 
-        // Fetch like counts for all articles
-        const articleSlugs = results.map(item => item.uid).filter(Boolean);
-        const likeCounts = await fetchArticleLikeCounts(articleSlugs);
-
-        // Note: Artist like counts will be fetched client-side by the batched hook
-        // This eliminates server-side fetch issues and provides better performance
+        // Like counts (articles and artists) are fetched client-side by the
+        // batched hooks in DocList / ArtistProfile, so no Supabase call here.
         const artistLikeCounts = {};
 
 
@@ -404,7 +362,7 @@ export default async function SearchPage({ searchParams }) {
                       currentPage={currentPage}
                       totalPages={totalPages}
                       postType="Search results"
-                      likeCounts={likeCounts}
+                      likeCounts={{}}
                     />
                   </div>
                 ) : (

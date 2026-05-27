@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@/prismicio'
+import { requireAdmin } from '@/lib/admin-auth'
 
 // Get Supabase client
 function getSupabaseClient() {
@@ -32,6 +33,8 @@ function getSupabaseClient() {
  * They must be manually reviewed and published in Prismic Dashboard > Migration Releases.
  */
 export async function POST(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const artistData = await request.json()
     

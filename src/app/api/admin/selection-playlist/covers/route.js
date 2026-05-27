@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireAdmin } from '@/lib/admin-auth'
 
 // Get Supabase client with service role for storage operations
 function getSupabaseClient() {
@@ -29,6 +30,8 @@ function getSupabaseClient() {
 
 // GET - List all cover images from the bucket
 export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const supabase = getSupabaseClient()
     if (!supabase) {

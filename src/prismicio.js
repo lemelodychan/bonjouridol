@@ -4,7 +4,10 @@ import config from "../slicemachine.config.json";
 const fetch = require('node-fetch');
 
 export const endpoint = "https://bonjouridol.cdn.prismic.io/api/v2";
-export const repositoryName = process.env.REPO_NAME;
+// Fall back to the repository name in slicemachine.config.json when REPO_NAME
+// is not set in the environment. Without this, a dev server started without the
+// env var builds requests against https://undefined.cdn.prismic.io.
+export const repositoryName = process.env.REPO_NAME || config.repositoryName;
 
 /**
  * A list of Route Resolver objects that define how a document's `url` field is resolved.

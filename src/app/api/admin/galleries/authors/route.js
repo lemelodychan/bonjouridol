@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/prismicio'
+import { requireAdmin } from '@/lib/admin-auth'
 
 /**
  * Get all authors (photographers) for dropdown selection
  */
 export async function GET(request) {
+  const auth = await requireAdmin(request)
+  if (!auth.ok) return auth.response
   try {
     const client = createClient()
-    
+
     // Get all authors
     const authors = await client.getAllByType('author', {
       orderings: [
