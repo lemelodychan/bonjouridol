@@ -1,15 +1,9 @@
 import { Actor } from 'apify'
 
-// Twitter's public web-app bearer token.
-// If you start getting 401s, find the current value by opening twitter.com in DevTools
-// → Network → any request to api.twitter.com → Authorization header → copy the "Bearer ..." value.
-// Store it as an Apify secret named TWITTER_BEARER_TOKEN.
-const BEARER = process.env.TWITTER_BEARER_TOKEN
-
-async function getGuestToken() {
+async function getGuestToken(bearer) {
   const res = await fetch('https://api.twitter.com/1.1/guest/activate.json', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${BEARER}` },
+    headers: { Authorization: `Bearer ${bearer}` },
   })
   if (!res.ok) throw new Error(`Guest token request failed: ${res.status}`)
   const { guest_token } = await res.json()
@@ -17,7 +11,7 @@ async function getGuestToken() {
   return guest_token
 }
 
-async function fetchTimeline(handle, guestToken, count) {
+async function fetchTimeline(handle, bearer, guestToken, count) {
   const qs = new URLSearchParams({
     screen_name:     handle,
     count:           String(count),
@@ -29,7 +23,7 @@ async function fetchTimeline(handle, guestToken, count) {
     `https://api.twitter.com/1.1/statuses/user_timeline.json?${qs}`,
     {
       headers: {
-        Authorization:   `Bearer ${BEARER}`,
+        Authorization:   `Bearer ${bearer}`,
         'x-guest-token': guestToken,
       },
     }
@@ -50,18 +44,17 @@ function extractMedia(tweet) {
 }
 
 Actor.main(async () => {
-  if (!BEARER) throw new Error('TWITTER_BEARER_TOKEN secret is not set')
-
-  const { handles = [], maxTweetsPerHandle = 10 } = await Actor.getInput()
+  const { handles = [], maxTweetsPerHandle = 10, bearerToken } = await Actor.getInput()
+  if (!bearerToken) throw new Error('bearerToken input is required')
   if (!handles.length) return
 
-  const guestToken = await getGuestToken()
+  const guestToken = await getGuestToken(bearerToken)
 
   // Fetch all handles in parallel — pure HTTP so no browser concurrency concerns
   await Promise.all(handles.map(async (raw) => {
     const handle = raw.replace(/^@/, '')
     try {
-      const tweets = await fetchTimeline(handle, guestToken, maxTweetsPerHandle)
+      const tweets = await fetchTimeline(handle, bearerToken, guestToken, maxTweetsPerHandle)
       await Promise.all(tweets.map(t => Actor.pushData({
         handle:    handle.toLowerCase(),
         id:        t.id_str,

@@ -16,7 +16,14 @@
       "default": 10,
       "minimum": 1,
       "maximum": 100
+    },
+    "bearerToken": {
+      "title": "Twitter bearer token",
+      "type": "string",
+      "description": "Public web-app bearer token used to mint a guest token. Rotate from twitter.com DevTools when 401s start.",
+      "editor": "textfield",
+      "isSecret": true
     }
   },
-  "required": ["handles"]
+  "required": ["handles", "bearerToken"]
 }

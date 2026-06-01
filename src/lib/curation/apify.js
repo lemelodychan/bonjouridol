@@ -16,8 +16,12 @@ export async function fetchApifyBatch(handles) {
   const cleanHandles = handles.map(h => h.replace(/^@/, ''))
 
   const input = IS_CUSTOM
-    ? { handles: cleanHandles, maxTweetsPerHandle: 10 }
+    ? { handles: cleanHandles, maxTweetsPerHandle: 10, bearerToken: process.env.TWITTER_BEARER_TOKEN }
     : { twitterHandles: cleanHandles, maxItems: cleanHandles.length * 10, sort: 'Latest' }
+
+  if (IS_CUSTOM && !process.env.TWITTER_BEARER_TOKEN) {
+    throw new Error('TWITTER_BEARER_TOKEN not set (required for custom Apify actor)')
+  }
 
   const res = await fetch(
     `https://api.apify.com/v2/acts/${ACTOR}/run-sync-get-dataset-items?token=${apiToken}&memory=128&timeout=30`,
