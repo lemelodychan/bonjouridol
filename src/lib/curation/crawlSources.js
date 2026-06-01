@@ -1,7 +1,7 @@
 import { fetchRSSFeed, fetchNitterFeedWithFallback } from '@/lib/curation/rss'
 import { fetchHTMLSource } from '@/lib/curation/scraper'
 import { uploadItemImages } from '@/lib/curation/imageStorage'
-import { fetchApifyBatch } from '@/lib/curation/apify'
+import { fetchApifyBatchWithBudget } from '@/lib/curation/apify'
 
 function parseNitterInstances(raw) {
   const list = (raw || '').split('\n').map(s => s.trim()).filter(s => s.startsWith('http'))
@@ -146,13 +146,20 @@ export async function crawlActiveSources(supabase, sourceIds = null) {
   const nitterInstances = parseNitterInstances(settings?.nitter_instance)
   const totals = { fetched: 0, new: 0, skipped: 0, errors: [] }
 
-  // Fetch all Twitter handles in a single Apify run (one startup cost instead of N)
+  // Fetch all Twitter handles in a single Apify run (one startup cost instead of N).
+  // The budget wrapper returns skipped=true once monthly tweet cap is reached,
+  // in which case apifyBatch stays null and Nitter fallback kicks in below.
   let apifyBatch = null
   if (process.env.APIFY_API_TOKEN) {
     const twitterSources = sources.filter(s => s.type === 'twitter')
     if (twitterSources.length > 0) {
       try {
-        apifyBatch = await fetchApifyBatch(twitterSources.map(s => s.url))
+        const result = await fetchApifyBatchWithBudget(supabase, twitterSources.map(s => s.url))
+        if (result.skipped) {
+          totals.errors.push(result.reason)
+        } else {
+          apifyBatch = result.byHandle
+        }
       } catch (err) {
         totals.errors.push(`Apify batch failed, using Nitter: ${err.message}`)
       }
