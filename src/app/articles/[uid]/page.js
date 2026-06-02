@@ -23,16 +23,14 @@ const ArticleViewTracker = dynamic(() => import('@/app/components/ArticleViewTra
   loading: () => null
 });
 
-// Pre-render all articles at build time and revalidate on a 30-minute ISR
-// window. Like counts are fetched client-side (see ArticleLike) so this route
-// stays statically cacheable instead of rendering dynamically on every request.
+// Articles render on-demand on first request, cached via ISR (30-min window)
+// and invalidated by the Prismic webhook on publish. Skipping build-time
+// pre-rendering keeps deploys fast.
 export const dynamicParams = true;
 export const revalidate = 1800;
 
 export async function generateStaticParams() {
-  const client = createClient();
-  const articles = await client.getAllByType('articles');
-  return articles.map((article) => ({ uid: article.uid }));
+  return [];
 }
 
 export async function generateMetadata({ params }) {

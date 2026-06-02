@@ -1,5 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    optimizePackageImports: [
+      '@tabler/icons-react',
+      'react-icons',
+      'date-fns',
+    ],
+  },
+
+  images: {
+    minimumCacheTTL: 2678400,
+  },
+
   async redirects() {
     return [
       // Live Reports - Map specific articles

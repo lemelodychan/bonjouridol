@@ -79,9 +79,7 @@ export async function generateMetadata({ params }) {
 }
 
 export async function generateStaticParams() {
-  const client = createClient();
-  const pages = await client.getAllByType("page");
-  return pages.map((page) => ({ uid: page.uid }));
+  return [];
 }
 
 export default async function Page({ params, searchParams }) {

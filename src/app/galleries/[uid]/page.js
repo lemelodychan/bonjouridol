@@ -19,9 +19,7 @@ export const dynamicParams = true;
 export const revalidate = 1800;
 
 export async function generateStaticParams() {
-  const client = createClient();
-  const galleries = await client.getAllByType("gallery");
-  return galleries.map((gallery) => ({ uid: gallery.uid }));
+  return [];
 }
 
 export async function generateMetadata({ params }) {
