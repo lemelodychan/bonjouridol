@@ -8,12 +8,21 @@ import FeaturedImage from "@/app/assets/FeaturedImage.png";
 import styles from "./page.module.scss";
 import Custom404 from "@/app/not-found";
 
+export const dynamicParams = true;
+export const revalidate = 1800;
+
+const PAGE_FETCH_OPTIONS = {
+  fetchOptions: {
+    next: { tags: ["prismic", "pages"], revalidate: 1800 },
+  },
+};
+
 export async function generateMetadata({ params }) {
   const { uid } = await params;
   const client = createClient();
 
   try {
-    const page = await client.getByUID("page", uid);
+    const page = await client.getByUID("page", uid, PAGE_FETCH_OPTIONS);
     
     const title = page?.data?.meta_title || `${page?.data?.title} | BONJOUR IDOL`;
     const description = page?.data?.meta_description || "Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content. Check it out!";
@@ -84,7 +93,7 @@ export default async function Page({ params, searchParams }) {
 
   try {
     // Fetch the page first
-    const page = await client.getByUID("page", uid);
+    const page = await client.getByUID("page", uid, PAGE_FETCH_OPTIONS);
 
     if (!page) {
       return <Custom404 />;
