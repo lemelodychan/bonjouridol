@@ -48,14 +48,25 @@ jobs:
         run: |
           echo "Backup files created:"
           ls -la backups/
-          
+
+      - name: Prune old backups (keep latest 5)
+        run: |
+          cd backups
+          # Filenames embed ISO timestamps, so reverse-sort by name = newest first
+          ls -1 prismic-backup-*.zip 2>/dev/null | sort -r | tail -n +6 | while read -r f; do
+            echo "Removing old backup: $f"
+            rm -f -- "$f"
+          done
+          echo "Remaining backups:"
+          ls -1 prismic-backup-*.zip 2>/dev/null || echo "(none)"
+
       - name: Commit and push backup files
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          
-          # Add backup files
-          git add backups/
+
+          # Stage adds and deletes so pruned backups are removed in the same commit
+          git add -A backups/
           
           # Check if there are changes to commit
           if git diff --staged --quiet; then
