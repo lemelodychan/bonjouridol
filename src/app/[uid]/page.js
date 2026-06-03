@@ -8,9 +8,11 @@ import FeaturedImage from "@/app/assets/FeaturedImage.png";
 import styles from "./page.module.scss";
 import Custom404 from "@/app/not-found";
 
-export const dynamicParams = true;
-export const revalidate = 1800;
-
+// This route reads `searchParams` (pagination, year filter) so it renders
+// dynamically per request. Do NOT add `export const revalidate` here — it
+// conflicts with searchParams usage and throws at request time. Freshness
+// comes from PAGE_FETCH_OPTIONS' `next.revalidate` on the underlying fetches,
+// which the Prismic webhook invalidates via the "pages" tag.
 const PAGE_FETCH_OPTIONS = {
   fetchOptions: {
     next: { tags: ["prismic", "pages"], revalidate: 1800 },
