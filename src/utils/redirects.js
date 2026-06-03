@@ -32,6 +32,7 @@ export const redirectMapping = {
   '2020/03/onepixcel-first-oneman-live-2020': '/articles/200209-onepixcel-one-man',
   '2019/10/onepixcel-tour-finale-2019': '/articles/190922-onepixcel-tour-finale',
   '2020/03/akishibu-project-first-concert-2020': '/articles/200216-akishibu-project-one-man-live',
+  '2019/02/akishibu-project-6eme-one-man-live': '/articles/190126-akishibu-project-6th-one-man-live',
   '2019/09/tif2019-stu48-en': '/articles/190802-04-tif2019-stu48',
   '2019/09/tif2019-task-have-fun-en': '/articles/190804-tif2019-task-have-fun',
   '2019/09/tif2019-equal-love-en': '/articles/190802-04-tif2019-equal-love',

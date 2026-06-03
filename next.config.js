@@ -121,6 +121,11 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/2019/02/akishibu-project-6eme-one-man-live',
+        destination: '/articles/190126-akishibu-project-6th-one-man-live',
+        permanent: true,
+      },
+      {
         source: '/2019/09/tif2019-stu48-en',
         destination: '/articles/190802-04-tif2019-stu48',
         permanent: true,
