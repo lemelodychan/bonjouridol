@@ -72,8 +72,11 @@ export default async function Page({ params }) {
         "author.website",
       ],
       fetchOptions: {
-        next: { 
-          tags: ["prismic", "galleries"],
+        next: {
+          // Per-document tag so a publish of THIS gallery (revalidateTag(`gallery:<uid>`))
+          // regenerates only this page. The shared "galleries" tag is intentionally
+          // omitted here so listing-level purges don't regenerate every gallery page.
+          tags: ["prismic", `gallery:${uid}`],
           revalidate: 1800 // Cache for 30 minutes
         },
       },
