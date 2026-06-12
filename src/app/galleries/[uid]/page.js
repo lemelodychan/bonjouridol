@@ -15,8 +15,11 @@ import LogoBI from "@/app/assets/Square_Logo_Pink.png";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { FiUsers } from "react-icons/fi";
 
+// Freshness comes from the Prismic webhook (revalidates `gallery:<uid>` on
+// publish); the long window below is only a safety net for a missed webhook.
+// A short window forced every trafficked gallery to rewrite its cache constantly.
 export const dynamicParams = true;
-export const revalidate = 1800;
+export const revalidate = 86400; // 1 day (safety net; webhook handles real freshness)
 
 export async function generateStaticParams() {
   return [];
@@ -77,7 +80,7 @@ export default async function Page({ params }) {
           // regenerates only this page. The shared "galleries" tag is intentionally
           // omitted here so listing-level purges don't regenerate every gallery page.
           tags: ["prismic", `gallery:${uid}`],
-          revalidate: 1800 // Cache for 30 minutes
+          revalidate: 86400 // 1 day; webhook revalidates `gallery:<uid>` on publish
         },
       },
   });

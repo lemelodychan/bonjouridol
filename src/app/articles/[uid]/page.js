@@ -23,11 +23,13 @@ const ArticleViewTracker = dynamic(() => import('@/app/components/ArticleViewTra
   loading: () => null
 });
 
-// Articles render on-demand on first request, cached via ISR (30-min window)
-// and invalidated by the Prismic webhook on publish. Skipping build-time
-// pre-rendering keeps deploys fast.
+// Articles render on-demand on first request and are cached via ISR. Freshness
+// comes from the Prismic webhook, which revalidates `article:<uid>` precisely on
+// publish; the long time-based window below is just a safety net for a missed
+// webhook (not the primary refresh path). A short window here forced every
+// trafficked article to rewrite its cache constantly — the main ISR-write spike.
 export const dynamicParams = true;
-export const revalidate = 1800;
+export const revalidate = 86400; // 1 day (safety net; webhook handles real freshness)
 
 export async function generateStaticParams() {
   return [];
@@ -138,7 +140,7 @@ export default async function Page({ params }) {
           // regenerates only this page. The shared "articles" tag is intentionally
           // omitted here so listing-level purges don't regenerate every article page.
           tags: ["prismic", `article:${uid}`],
-          revalidate: 1800 // Cache for 30 minutes
+          revalidate: 86400 // 1 day; webhook revalidates `article:<uid>` on publish
         },
       },
     });
