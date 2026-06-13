@@ -28,10 +28,73 @@ function eachDay(startDateStr, endDateStr) {
   return days
 }
 
+function isValidIp(ip) {
+  return ip && ip !== 'unknown'
+}
+
+async function fetchAllArticleViews(db, startISO, endISO) {
+  const PAGE = 1000
+  const rows = []
+  let from = 0
+
+  while (true) {
+    const { data, error } = await db
+      .from('article_views')
+      .select('created_at, ip_address')
+      .gte('created_at', startISO)
+      .lte('created_at', endISO)
+      .order('created_at', { ascending: true })
+      .range(from, from + PAGE - 1)
+
+    if (error) throw error
+    if (!data?.length) break
+
+    rows.push(...data)
+    if (data.length < PAGE) break
+    from += PAGE
+  }
+
+  return rows
+}
+
+function aggregateArticleViews(rows, startDateStr, endDateStr) {
+  const viewsByDate = new Map()
+  const readersByDate = new Map()
+
+  for (const row of rows) {
+    const date = row.created_at?.slice(0, 10)
+    if (!date) continue
+    viewsByDate.set(date, (viewsByDate.get(date) || 0) + 1)
+    if (isValidIp(row.ip_address)) {
+      if (!readersByDate.has(date)) readersByDate.set(date, new Set())
+      readersByDate.get(date).add(row.ip_address)
+    }
+  }
+
+  const daily = eachDay(startDateStr, endDateStr).map((date) => ({
+    date,
+    pageviews: viewsByDate.get(date) || 0,
+    visitors: readersByDate.get(date)?.size || 0,
+  }))
+
+  const periodReaders = new Set()
+  for (const row of rows) {
+    if (isValidIp(row.ip_address)) periodReaders.add(row.ip_address)
+  }
+
+  return {
+    daily,
+    stats: {
+      pageviews: { value: daily.reduce((sum, d) => sum + d.pageviews, 0) },
+      visitors: { value: periodReaders.size },
+    },
+  }
+}
+
 /**
- * Daily article view traffic from Supabase (no Umami API key required).
+ * Daily article views + unique readers (by IP) from article_views.
  *
- * Query params: startAt (YYYY-MM-DD), endAt (YYYY-MM-DD) — defaults to last 30 days.
+ * Query params: startAt (YYYY-MM-DD), endAt (YYYY-MM-DD).
  */
 export async function GET(request) {
   const auth = await requireAdmin(request)
@@ -57,58 +120,55 @@ export async function GET(request) {
   const endISO = new Date(endDateStr + 'T23:59:59').toISOString()
 
   try {
-    const { data, error } = await db
-      .from('article_views')
-      .select('created_at, user_identifier')
-      .gte('created_at', startISO)
-      .lte('created_at', endISO)
-      .limit(50000)
+    const { data: rpcData, error: rpcError } = await db.rpc('get_daily_article_view_stats', {
+      start_at: startISO,
+      end_at: endISO,
+    })
 
-    if (error) {
-      console.error('article_views query error:', error)
-      return NextResponse.json(
-        {
-          configured: true,
-          error: error.message,
-          pageviews: [],
-          stats: null,
-        },
-        { status: 500 }
+    if (!rpcError && rpcData) {
+      const viewsByDate = new Map(rpcData.map((r) => [r.date, Number(r.views)]))
+      const readersByDate = new Map(rpcData.map((r) => [r.date, Number(r.readers)]))
+
+      const daily = eachDay(startDateStr, endDateStr).map((date) => ({
+        date,
+        pageviews: viewsByDate.get(date) || 0,
+        visitors: readersByDate.get(date) || 0,
+      }))
+
+      const totalViews = daily.reduce((sum, d) => sum + d.pageviews, 0)
+
+      const { data: readerCount, error: readerError } = await db.rpc(
+        'count_article_view_readers',
+        { start_at: startISO, end_at: endISO }
       )
+
+      if (readerError) {
+        console.error('count_article_view_readers RPC error:', readerError)
+      }
+
+      return NextResponse.json({
+        configured: true,
+        source: 'articles',
+        pageviews: daily,
+        stats: {
+          pageviews: { value: totalViews },
+          visitors: { value: Number(readerCount) || 0 },
+        },
+      })
     }
 
-    const viewsByDate = new Map()
-    const visitorsByDate = new Map()
-
-    for (const row of data || []) {
-      const date = row.created_at?.slice(0, 10)
-      if (!date) continue
-      viewsByDate.set(date, (viewsByDate.get(date) || 0) + 1)
-      if (!visitorsByDate.has(date)) visitorsByDate.set(date, new Set())
-      if (row.user_identifier) visitorsByDate.get(date).add(row.user_identifier)
+    if (rpcError?.code !== 'PGRST202') {
+      console.error('get_daily_article_view_stats RPC error:', rpcError)
     }
 
-    const daily = eachDay(startDateStr, endDateStr).map((date) => ({
-      date,
-      pageviews: viewsByDate.get(date) || 0,
-      visitors: visitorsByDate.get(date)?.size || 0,
-    }))
-
-    const periodVisitors = new Set()
-    for (const row of data || []) {
-      if (row.user_identifier) periodVisitors.add(row.user_identifier)
-    }
-
-    const totalViews = daily.reduce((sum, d) => sum + d.pageviews, 0)
+    const rows = await fetchAllArticleViews(db, startISO, endISO)
+    const { daily, stats } = aggregateArticleViews(rows, startDateStr, endDateStr)
 
     return NextResponse.json({
       configured: true,
-      source: 'supabase',
+      source: 'articles',
       pageviews: daily,
-      stats: {
-        pageviews: { value: totalViews },
-        visitors: { value: periodVisitors.size },
-      },
+      stats,
     })
   } catch (e) {
     console.error('Analytics route error:', e)

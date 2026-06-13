@@ -442,7 +442,7 @@ export default function OverviewPage() {
             </div>
           )}
 
-          {/* ── Traffic chart (article views from Supabase) ── */}
+          {/* ── Article views chart (Supabase article_views) ── */}
           <section className={styles.section}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Article views</h2>
@@ -481,14 +481,14 @@ export default function OverviewPage() {
             </div>
 
             {analyticsLoading ? (
-              <div className={styles.chartPlaceholder}>Loading view data…</div>
+              <div className={styles.chartPlaceholder}>Loading article view data…</div>
+            ) : analytics?.error ? (
+              <div className={styles.chartPlaceholder}>{analytics.error}</div>
             ) : !analytics?.configured ? (
               <div className={styles.chartPlaceholder}>
-                <p>View analytics not available.</p>
-                <p className={styles.hint}>Check that Supabase is configured — article views are recorded when readers open articles.</p>
+                <p>Article view analytics not available.</p>
+                <p className={styles.hint}>Check that Supabase is configured.</p>
               </div>
-            ) : analytics.error ? (
-              <div className={styles.chartPlaceholder}>Could not load view data: {analytics.error}</div>
             ) : analytics.pageviews?.length === 0 ? (
               <div className={styles.chartPlaceholder}>No article views for this period.</div>
             ) : (
