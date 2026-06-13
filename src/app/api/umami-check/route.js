@@ -11,24 +11,17 @@ export async function GET(request) {
     const clientIP = forwarded?.split(',')[0] || realIP || cfConnectingIP || 'unknown'
     
     // Get excluded IPs from environment variable
-    const excludedIPs = process.env.NEXT_PUBLIC_UMAMI_EXCLUDED_IPS?.split(',') || []
-    
-    // Check if client IP is in excluded list
+    const excludedIPs = (process.env.NEXT_PUBLIC_UMAMI_EXCLUDED_IPS?.split(',') || [])
+      .map((ip) => ip.trim())
+      .filter(Boolean)
+
     const shouldDisable = excludedIPs.includes(clientIP)
-    
-    // Only log when IP is excluded
+
     if (shouldDisable) {
-      console.log('Umami check: IP excluded from tracking:', {
-        clientIP,
-        excludedIPs
-      })
+      console.log('Umami check: IP excluded from tracking:', clientIP)
     }
-    
-    return NextResponse.json({ 
-      shouldDisable,
-      clientIP,
-      excludedIPs
-    })
+
+    return NextResponse.json({ shouldDisable })
   } catch (error) {
     console.error('Error checking Umami exclusion:', error)
     return NextResponse.json({ 

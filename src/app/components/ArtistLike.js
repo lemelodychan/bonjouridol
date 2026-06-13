@@ -58,7 +58,7 @@ export default function ArtistLike({ artistName, initialLikeCount = 0, hasServer
         setLocalLikes(data.totalLikes)
         
         // Track database update event in Umami
-        if (typeof window !== 'undefined' && window.umami && !window.umami.disabled && localStorage.getItem('umami.disabled') !== '1') {
+        if (typeof window !== 'undefined' && window.umami && !window.umami.disabled) {
           window.umami.track('artist_likes_saved', {
             artist_name: artistName,
             artist_liked: count,
