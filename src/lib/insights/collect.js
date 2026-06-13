@@ -1,7 +1,10 @@
 import { createClient } from '@/prismicio'
-
-const UMAMI_HOST = 'https://api.umami.is/v1'
-const UMAMI_WEBSITE_ID = 'f092e573-6aba-45f6-af52-71e7d3c51bd0'
+import {
+  getUmamiApiBase,
+  getUmamiApiKey,
+  getUmamiHeaders,
+  UMAMI_WEBSITE_ID,
+} from '@/lib/umami'
 const APIFY_ACTOR = 'apidojo~tweet-scraper'
 
 function readableSlug(slug) {
@@ -57,19 +60,18 @@ async function fetchArticleMetadata(rawSlugs) {
 }
 
 async function fetchUmamiData(boundaries) {
-  const apiKey = process.env.UMAMI_API_SECRET
-  if (!apiKey) return null
+  const headers = getUmamiHeaders()
+  if (!headers) return null
 
-  const h = { Authorization: `Bearer ${apiKey}` }
-  const base = `${UMAMI_HOST}/websites/${UMAMI_WEBSITE_ID}`
+  const base = `${getUmamiApiBase()}/websites/${UMAMI_WEBSITE_ID}`
 
   const [s0, s1, s2, s3, pagesWeekRes, pages28Res] = await Promise.all([
-    fetch(`${base}/stats?startAt=${boundaries[1]}&endAt=${boundaries[0]}`, { headers: h }),
-    fetch(`${base}/stats?startAt=${boundaries[2]}&endAt=${boundaries[1]}`, { headers: h }),
-    fetch(`${base}/stats?startAt=${boundaries[3]}&endAt=${boundaries[2]}`, { headers: h }),
-    fetch(`${base}/stats?startAt=${boundaries[4]}&endAt=${boundaries[3]}`, { headers: h }),
-    fetch(`${base}/metrics?startAt=${boundaries[1]}&endAt=${boundaries[0]}&type=url&limit=10`, { headers: h }),
-    fetch(`${base}/metrics?startAt=${boundaries[4]}&endAt=${boundaries[0]}&type=url&limit=10`, { headers: h }),
+    fetch(`${base}/stats?startAt=${boundaries[1]}&endAt=${boundaries[0]}`, { headers }),
+    fetch(`${base}/stats?startAt=${boundaries[2]}&endAt=${boundaries[1]}`, { headers }),
+    fetch(`${base}/stats?startAt=${boundaries[3]}&endAt=${boundaries[2]}`, { headers }),
+    fetch(`${base}/stats?startAt=${boundaries[4]}&endAt=${boundaries[3]}`, { headers }),
+    fetch(`${base}/metrics?startAt=${boundaries[1]}&endAt=${boundaries[0]}&type=url&limit=10`, { headers }),
+    fetch(`${base}/metrics?startAt=${boundaries[4]}&endAt=${boundaries[0]}&type=url&limit=10`, { headers }),
   ])
 
   const [w0, w1, w2, w3, pagesWeek, pages28] = await Promise.all([

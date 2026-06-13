@@ -1,85 +1,114 @@
 import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 import { requireAdmin } from '@/lib/admin-auth'
 
-const UMAMI_HOST = 'https://api.umami.is/v1'
-const UMAMI_WEBSITE_ID = 'f092e573-6aba-45f6-af52-71e7d3c51bd0'
+function getSupabaseAdmin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY
+  if (!url || !key) return null
+  return createClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
+}
+
+function toDateStr(d) {
+  return d.toISOString().slice(0, 10)
+}
+
+function eachDay(startDateStr, endDateStr) {
+  const days = []
+  const d = new Date(startDateStr + 'T00:00:00')
+  const end = new Date(endDateStr + 'T00:00:00')
+  while (d <= end) {
+    days.push(toDateStr(d))
+    d.setDate(d.getDate() + 1)
+  }
+  return days
+}
 
 /**
- * Proxy to Umami Cloud API — returns daily pageviews/visitors for a date range
- * plus a summary for the period.
+ * Daily article view traffic from Supabase (no Umami API key required).
  *
  * Query params: startAt (YYYY-MM-DD), endAt (YYYY-MM-DD) — defaults to last 30 days.
- * Requires UMAMI_API_SECRET environment variable.
  */
 export async function GET(request) {
   const auth = await requireAdmin(request)
   if (!auth.ok) return auth.response
-  const apiKey = process.env.UMAMI_API_SECRET
 
-  if (!apiKey) {
+  const db = getSupabaseAdmin()
+  if (!db) {
     return NextResponse.json({
       configured: false,
-      message: 'Add UMAMI_API_SECRET to your environment variables to enable traffic analytics.',
+      message: 'Supabase is not configured.',
       pageviews: [],
       stats: null,
     })
   }
 
   const { searchParams } = new URL(request.url)
-  const startParam = searchParams.get('startAt')
-  const endParam   = searchParams.get('endAt')
+  const endDateStr = searchParams.get('endAt') || toDateStr(new Date())
+  const startDateStr =
+    searchParams.get('startAt') ||
+    toDateStr(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))
 
-  const now   = endParam   ? new Date(endParam   + 'T23:59:59').getTime() : Date.now()
-  const start = startParam ? new Date(startParam + 'T00:00:00').getTime() : now - 30 * 24 * 60 * 60 * 1000
-
-  const headers = { Authorization: `Bearer ${apiKey}` }
+  const startISO = new Date(startDateStr + 'T00:00:00').toISOString()
+  const endISO = new Date(endDateStr + 'T23:59:59').toISOString()
 
   try {
-    // Fetch daily bucketed pageviews + sessions, and period summary in parallel
-    const pageviewsUrl = new URL(`${UMAMI_HOST}/websites/${UMAMI_WEBSITE_ID}/pageviews`)
-    pageviewsUrl.searchParams.set('startAt', String(start))
-    pageviewsUrl.searchParams.set('endAt', String(now))
-    pageviewsUrl.searchParams.set('unit', 'day')
-    pageviewsUrl.searchParams.set('timezone', 'Europe/Paris')
+    const { data, error } = await db
+      .from('article_views')
+      .select('created_at, user_identifier')
+      .gte('created_at', startISO)
+      .lte('created_at', endISO)
+      .limit(50000)
 
-    const statsUrl = new URL(`${UMAMI_HOST}/websites/${UMAMI_WEBSITE_ID}/stats`)
-    statsUrl.searchParams.set('startAt', String(start))
-    statsUrl.searchParams.set('endAt', String(now))
-
-    const [pageviewsRes, statsRes] = await Promise.all([
-      fetch(pageviewsUrl.toString(), { headers }),
-      fetch(statsUrl.toString(), { headers }),
-    ])
-
-    if (!pageviewsRes.ok) {
-      const text = await pageviewsRes.text()
-      console.error('Umami pageviews error:', pageviewsRes.status, text)
+    if (error) {
+      console.error('article_views query error:', error)
       return NextResponse.json(
-        { configured: true, error: `Umami API error: ${pageviewsRes.status}`, pageviews: [], stats: null },
-        { status: 502 }
+        {
+          configured: true,
+          error: error.message,
+          pageviews: [],
+          stats: null,
+        },
+        { status: 500 }
       )
     }
 
-    // Umami returns { pageviews: [{x: "YYYY-MM-DD ...", y: N}], sessions: [{x, y}] }
-    const pvData = await pageviewsRes.json()
-    const statsData = statsRes.ok ? await statsRes.json() : null
+    const viewsByDate = new Map()
+    const visitorsByDate = new Map()
 
-    // Merge pageviews and sessions arrays into a single per-day list
-    const sessionsByDate = new Map(
-      (pvData.sessions || []).map(s => [s.x?.slice(0, 10), s.y])
-    )
+    for (const row of data || []) {
+      const date = row.created_at?.slice(0, 10)
+      if (!date) continue
+      viewsByDate.set(date, (viewsByDate.get(date) || 0) + 1)
+      if (!visitorsByDate.has(date)) visitorsByDate.set(date, new Set())
+      if (row.user_identifier) visitorsByDate.get(date).add(row.user_identifier)
+    }
 
-    const daily = (pvData.pageviews || []).map(pv => ({
-      date: pv.x?.slice(0, 10), // "YYYY-MM-DD"
-      pageviews: pv.y ?? 0,
-      visitors: sessionsByDate.get(pv.x?.slice(0, 10)) ?? 0,
+    const daily = eachDay(startDateStr, endDateStr).map((date) => ({
+      date,
+      pageviews: viewsByDate.get(date) || 0,
+      visitors: visitorsByDate.get(date)?.size || 0,
     }))
+
+    const periodVisitors = new Set()
+    for (const row of data || []) {
+      if (row.user_identifier) periodVisitors.add(row.user_identifier)
+    }
+
+    const totalViews = daily.reduce((sum, d) => sum + d.pageviews, 0)
 
     return NextResponse.json({
       configured: true,
+      source: 'supabase',
       pageviews: daily,
-      stats: statsData,   // { pageviews:{value,change}, visitors:{value,change}, ... }
-      period: '30d',
+      stats: {
+        pageviews: { value: totalViews },
+        visitors: { value: periodVisitors.size },
+      },
     })
   } catch (e) {
     console.error('Analytics route error:', e)

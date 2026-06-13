@@ -442,19 +442,19 @@ export default function OverviewPage() {
             </div>
           )}
 
-          {/* ── Traffic chart (Umami) ── */}
+          {/* ── Traffic chart (article views from Supabase) ── */}
           <section className={styles.section}>
             <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>Traffic</h2>
+              <h2 className={styles.sectionTitle}>Article views</h2>
               {analytics?.stats && (
                 <div className={styles.trafficSummary}>
                   <span className={styles.trafficStat}>
                     <span className={styles.trafficDot} style={{ background: PINK }} />
-                    <strong>{(analytics.stats.pageviews ?? 0).toLocaleString()}</strong> pageviews
+                    <strong>{(analytics.stats.pageviews?.value ?? analytics.stats.pageviews ?? 0).toLocaleString()}</strong> views
                   </span>
                   <span className={styles.trafficStat}>
                     <span className={styles.trafficDot} style={{ background: INDIGO }} />
-                    <strong>{(analytics.stats.visitors ?? 0).toLocaleString()}</strong> visitors
+                    <strong>{(analytics.stats.visitors?.value ?? analytics.stats.visitors ?? 0).toLocaleString()}</strong> readers
                   </span>
                 </div>
               )}
@@ -481,16 +481,16 @@ export default function OverviewPage() {
             </div>
 
             {analyticsLoading ? (
-              <div className={styles.chartPlaceholder}>Loading traffic data…</div>
+              <div className={styles.chartPlaceholder}>Loading view data…</div>
             ) : !analytics?.configured ? (
               <div className={styles.chartPlaceholder}>
-                <p>Traffic analytics not configured.</p>
-                <p className={styles.hint}>Add <code>UMAMI_API_SECRET</code> to your environment variables.<br />Generate a key in Umami Cloud → Settings → API Keys.</p>
+                <p>View analytics not available.</p>
+                <p className={styles.hint}>Check that Supabase is configured — article views are recorded when readers open articles.</p>
               </div>
             ) : analytics.error ? (
-              <div className={styles.chartPlaceholder}>Could not load traffic data: {analytics.error}</div>
+              <div className={styles.chartPlaceholder}>Could not load view data: {analytics.error}</div>
             ) : analytics.pageviews?.length === 0 ? (
-              <div className={styles.chartPlaceholder}>No traffic data for the last 30 days.</div>
+              <div className={styles.chartPlaceholder}>No article views for this period.</div>
             ) : (
               <div className={styles.areaChartWrap}>
                 <ResponsiveContainer width="100%" height={200}>
@@ -525,11 +525,11 @@ export default function OverviewPage() {
                       formatter={v => <span style={{ fontSize: 12, color: '#555' }}>{v}</span>}
                     />
                     <Area
-                      type="monotone" dataKey="pageviews" name="Pageviews"
+                      type="monotone" dataKey="pageviews" name="Views"
                       stroke={PINK} strokeWidth={2} fill="url(#pvFill)" dot={false}
                     />
                     <Area
-                      type="monotone" dataKey="visitors" name="Visitors"
+                      type="monotone" dataKey="visitors" name="Readers"
                       stroke={INDIGO} strokeWidth={2} fill="url(#visFill)" dot={false}
                     />
                   </AreaChart>
