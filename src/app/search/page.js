@@ -52,7 +52,7 @@ export default async function SearchPage({ searchParams }) {
             fetchOptions: {
               next: { 
                 tags: ["prismic", "authors"],
-                revalidate: 1800 // Cache for 30 minutes
+                revalidate: false // Cached until the Prismic webhook invalidates this tag
               },
             },
             filters: [prismic.filter.at("my.author.name", searchTerm)],
@@ -72,7 +72,7 @@ export default async function SearchPage({ searchParams }) {
             fetchOptions: {
               next: {
                 tags: ["prismic", "articles"],
-                revalidate: 1800 // Cache for 30 minutes
+                revalidate: false // Cached until the Prismic webhook invalidates this tag
               },
             },
             orderings: [
@@ -89,7 +89,7 @@ export default async function SearchPage({ searchParams }) {
           // Two targeted queries (one per relationship field), then merge.
           const [primaryPhotog, secondaryPhotog] = await Promise.all([
             client.getAllByType("gallery", {
-              fetchOptions: { next: { tags: ["prismic", "galleries"], revalidate: 1800 } },
+              fetchOptions: { next: { tags: ["prismic", "galleries"], revalidate: false } },
               orderings: [
                 { field: "my.gallery.event_date", direction: "desc" },
                 { field: "document.first_publication_date", direction: "desc" },
@@ -101,7 +101,7 @@ export default async function SearchPage({ searchParams }) {
               ],
             }),
             client.getAllByType("gallery", {
-              fetchOptions: { next: { tags: ["prismic", "galleries"], revalidate: 1800 } },
+              fetchOptions: { next: { tags: ["prismic", "galleries"], revalidate: false } },
               orderings: [
                 { field: "my.gallery.event_date", direction: "desc" },
                 { field: "document.first_publication_date", direction: "desc" },
@@ -179,7 +179,7 @@ export default async function SearchPage({ searchParams }) {
           fetchOptions: {
             next: { 
               tags: ["prismic", "artists"],
-              revalidate: 1800 // Cache for 30 minutes
+              revalidate: false // Cached until the Prismic webhook invalidates this tag
             },
           },
           filters: [prismic.filter.fulltext("my.artist.name_en", searchTerm)],
@@ -194,7 +194,7 @@ export default async function SearchPage({ searchParams }) {
             fetchOptions: {
               next: { 
                 tags: ["prismic", "articles"],
-                revalidate: 1800 // Cache for 30 minutes
+                revalidate: false // Cached until the Prismic webhook invalidates this tag
               },
             },
             pageSize: defaultPageSize,
@@ -213,7 +213,7 @@ export default async function SearchPage({ searchParams }) {
             fetchOptions: {
               next: { 
                 tags: ["prismic", "articles"],
-                revalidate: 1800 // Cache for 30 minutes
+                revalidate: false // Cached until the Prismic webhook invalidates this tag
               },
             },
             pageSize: defaultPageSize,
@@ -230,7 +230,7 @@ export default async function SearchPage({ searchParams }) {
         fetchOptions: {
             next: { 
               tags: ["prismic", "articles"],
-              revalidate: 1800 // Cache for 30 minutes
+              revalidate: false // Cached until the Prismic webhook invalidates this tag
             },
         },
         pageSize: defaultPageSize,
@@ -247,7 +247,7 @@ export default async function SearchPage({ searchParams }) {
             fetchOptions: {
               next: { 
                 tags: ["prismic", "articles"],
-                revalidate: 1800 // Cache for 30 minutes
+                revalidate: false // Cached until the Prismic webhook invalidates this tag
               },
             },
             pageSize: defaultPageSize,
@@ -289,7 +289,7 @@ export default async function SearchPage({ searchParams }) {
             fetchOptions: {
               next: { 
                 tags: ["prismic", "galleries"],
-                revalidate: 1800 // Cache for 30 minutes
+                revalidate: false // Cached until the Prismic webhook invalidates this tag
               },
             },
             orderings: [
@@ -307,7 +307,7 @@ export default async function SearchPage({ searchParams }) {
             fetchOptions: {
               next: { 
                 tags: ["prismic", "galleries"],
-                revalidate: 1800 // Cache for 30 minutes
+                revalidate: false // Cached until the Prismic webhook invalidates this tag
               },
             },
             orderings: [

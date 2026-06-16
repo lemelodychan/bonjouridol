@@ -27,7 +27,7 @@ export async function POST(request) {
       fetchOptions: {
         next: { 
           tags: ["prismic", "artists"],
-          revalidate: 3600 // Cache for 1 hour
+          revalidate: false // Cached until the Prismic webhook invalidates this tag
         },
       },
     })

@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
 
 const PAGE_FETCH_OPTIONS = {
   fetchOptions: {
-    next: { tags: ["prismic", "pages"], revalidate: 1800 },
+    next: { tags: ["prismic", "pages"], revalidate: false },
   },
 };
 
@@ -171,7 +171,7 @@ export default async function Page({ params, searchParams }) {
           fetchOptions: {
             next: { 
               tags: ["prismic", "articles"],
-              revalidate: 1800 // Cache for 30 minutes
+              revalidate: false // Cached until the Prismic webhook invalidates this tag
             },
           },
           pageSize: defaultPageSize,
@@ -224,7 +224,7 @@ export default async function Page({ params, searchParams }) {
           fetchOptions: {
             next: { 
               tags: ["prismic", "galleries"],
-              revalidate: 1800 // Cache for 30 minutes
+              revalidate: false // Cached until the Prismic webhook invalidates this tag
             },
           },
           pageSize: defaultPageSize,

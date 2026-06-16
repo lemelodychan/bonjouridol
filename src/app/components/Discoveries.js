@@ -18,7 +18,7 @@ export default async function Discoveries() {
       fetchOptions: {
         next: { 
           tags: ["prismic", "articles"],
-          revalidate: 3600 // Cache for 1 hour
+          revalidate: false // Cached until the Prismic webhook invalidates this tag
         },
       },
       pageSize: 8,

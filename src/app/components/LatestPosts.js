@@ -20,9 +20,9 @@ export default async function LatestPost() {
     // Get the hero post first (limit 1)
     const heroPostResponse = await client.getByType('articles', {
         fetchOptions: {
-          next: { 
+          next: {
             tags: ['prismic', 'articles'],
-            revalidate: 3600 // Cache for 1 hour
+            revalidate: false // Cached until the webhook invalidates "articles"
           },
         },
         pageSize: 1,
@@ -47,9 +47,9 @@ export default async function LatestPost() {
     // This keeps the response under 2MB for caching
     const resultsResponse = await client.getByType('articles', {
         fetchOptions: {
-            next: { 
+            next: {
                 tags: ['prismic', 'articles'],
-                revalidate: 3600 // Cache for 1 hour
+                revalidate: false // Cached until the webhook invalidates "articles"
             },
         },
         pageSize: 10, // Fetch 10 to ensure we have enough after filtering

@@ -18,7 +18,7 @@ export default async function MemberListContent() {
         fetchOptions: {
             next: { 
               tags: ["prismic", "authors"],
-              revalidate: 3600 // Cache for 1 hour
+              revalidate: false // Cached until the Prismic webhook invalidates this tag
             },
         },
         orderings: [

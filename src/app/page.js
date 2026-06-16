@@ -13,7 +13,11 @@ import { components } from '@/slices';
 export async function generateMetadata() {
   try {
     const client = createClient();
-    const page = await client.getSingle("homepage");
+    const page = await client.getSingle("homepage", {
+      fetchOptions: {
+        next: { tags: ["prismic", "homepage"], revalidate: false },
+      },
+    });
 
     const title = page.data.meta_title || 'BONJOUR IDOL';
     const description = page.data.meta_description || 'Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content.';
@@ -73,7 +77,11 @@ export async function generateMetadata() {
 export default async function Page() {
   try {
     const client = createClient();
-    const page = await client.getSingle("homepage");
+    const page = await client.getSingle("homepage", {
+      fetchOptions: {
+        next: { tags: ["prismic", "homepage"], revalidate: false },
+      },
+    });
 
     return (
       <div className={styles.main}>

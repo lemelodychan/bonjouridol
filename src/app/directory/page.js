@@ -64,9 +64,9 @@ export default async function DirectoryPage() {
 
   const artists = await client.getAllByType("artist", {
     fetchOptions: {
-      next: { 
+      next: {
         tags: ["prismic", "artists"],
-        revalidate: 3600 // Cache for 1 hour
+        revalidate: false // Cached until the webhook invalidates "artists"
       },
     },
   });
