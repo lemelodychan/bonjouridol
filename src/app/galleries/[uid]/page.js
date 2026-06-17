@@ -1,4 +1,6 @@
 import { createClient } from '@/prismicio'
+import { NotFoundError } from '@prismicio/client';
+import { notFound } from 'next/navigation';
 import { getKnownArtistNames, resolveArtistNames } from "@/utils/artistUtils";
 import styles from "./page.module.scss"
 
@@ -15,11 +17,13 @@ import LogoBI from "@/app/assets/Square_Logo_Pink.png";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { FiUsers } from "react-icons/fi";
 
-// Freshness comes from the Prismic webhook (revalidates `gallery:<uid>` on
-// publish); the long window below is only a safety net for a missed webhook.
-// A short window forced every trafficked gallery to rewrite its cache constantly.
+// Galleries render on-demand, then are cached INDEFINITELY (revalidate = false).
+// Freshness comes solely from the Prismic webhook, which regenerates this exact
+// page via revalidateTag(`gallery:<uid>`) on publish. No time-based window: any
+// finite window left crawled pages stale on each ~daily crawl and rewrote them,
+// which was the real ISR-write driver (and immune to lengthening the window).
 export const dynamicParams = true;
-export const revalidate = 86400; // 1 day (safety net; webhook handles real freshness)
+export const revalidate = false;
 
 export async function generateStaticParams() {
   return [];
@@ -28,8 +32,21 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }) {
   const { uid } = await params;
   const client = createClient();
-  const gallery = await client.getByUID("gallery", uid);
-  
+
+  let gallery;
+  try {
+    gallery = await client.getByUID("gallery", uid, {
+      fetchOptions: { next: { tags: ["prismic", `gallery:${uid}`], revalidate: false } },
+    });
+  } catch (error) {
+    // Missing UID: don't throw a 500 here — let the Page component return the
+    // 404. Return minimal fallback metadata so this segment renders cleanly.
+    if (error instanceof NotFoundError) {
+      return { title: "Gallery Not Found | BONJOUR IDOL" };
+    }
+    throw error;
+  }
+
   const title = gallery.data.meta_title || `Gallery - ${gallery.data.title} | BONJOUR IDOL`;
   const description = gallery.data.meta_description || "Bonjour Idol is a French media about the Japanese idol scene. Our team are idol fans and will be sharing their passion through photo reports of concerts and events, interviews and more exclusive content. Check it out!";
   const imageUrl = gallery.data.meta_image?.url || '/FeaturedImage.png';
@@ -80,9 +97,14 @@ export default async function Page({ params }) {
           // regenerates only this page. The shared "galleries" tag is intentionally
           // omitted here so listing-level purges don't regenerate every gallery page.
           tags: ["prismic", `gallery:${uid}`],
-          revalidate: 86400 // 1 day; webhook revalidates `gallery:<uid>` on publish
+          revalidate: false // never time-expire; webhook revalidates `gallery:<uid>` on publish
         },
       },
+  }).catch((error) => {
+    // Missing UID (e.g. a bot hitting a non-existent gallery) → real 404, not a
+    // cached page. Re-throw anything else so genuine errors aren't masked as 404s.
+    if (error instanceof NotFoundError) notFound();
+    throw error;
   });
 
   const knownArtists = await getKnownArtistNames();

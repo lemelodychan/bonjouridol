@@ -14,6 +14,7 @@ import { HiOutlineLocationMarker, HiOutlineCalendar } from 'react-icons/hi';
 import RightClickProtection from '@/app/components/RightClickProtection';
 import dynamic from 'next/dynamic';
 import { notFound } from 'next/navigation';
+import { NotFoundError } from '@prismicio/client';
 
 const ArticleLike = dynamic(() => import('@/app/components/ArticleLike'), {
   loading: () => null
@@ -23,13 +24,15 @@ const ArticleViewTracker = dynamic(() => import('@/app/components/ArticleViewTra
   loading: () => null
 });
 
-// Articles render on-demand on first request and are cached via ISR. Freshness
-// comes from the Prismic webhook, which revalidates `article:<uid>` precisely on
-// publish; the long time-based window below is just a safety net for a missed
-// webhook (not the primary refresh path). A short window here forced every
-// trafficked article to rewrite its cache constantly — the main ISR-write spike.
+// Articles render on-demand on first request, then are cached INDEFINITELY
+// (revalidate = false). Freshness comes solely from the Prismic webhook, which
+// regenerates this exact page via revalidateTag(`article:<uid>`) on publish.
+// We deliberately use NO time-based window: crawlers re-hit the back-catalog at
+// roughly daily intervals, so any finite window left every crawled page stale
+// on arrival and rewrote it on each crawl — that per-crawl rewrite was the real
+// ISR-write driver, and it was immune to lengthening the window.
 export const dynamicParams = true;
-export const revalidate = 86400; // 1 day (safety net; webhook handles real freshness)
+export const revalidate = false;
 
 export async function generateStaticParams() {
   return [];
@@ -140,7 +143,7 @@ export default async function Page({ params }) {
           // regenerates only this page. The shared "articles" tag is intentionally
           // omitted here so listing-level purges don't regenerate every article page.
           tags: ["prismic", `article:${uid}`],
-          revalidate: 86400 // 1 day; webhook revalidates `article:<uid>` on publish
+          revalidate: false // never time-expire; webhook revalidates `article:<uid>` on publish
         },
       },
     });
@@ -149,6 +152,13 @@ export default async function Page({ params }) {
       notFound();
     }
   } catch (error) {
+    // A missing UID (e.g. a bot hitting a non-existent article) throws
+    // NotFoundError. Return a real 404 — NOT a 200 error page, which ISR would
+    // cache for that junk URL and count as a write for every distinct bad UID
+    // crawled. notFound() renders the force-dynamic not-found route (uncached).
+    if (error instanceof NotFoundError) {
+      notFound();
+    }
     console.error('Error fetching article:', error);
     return (
       <div style={{ padding: '2rem', textAlign: 'center' }}>
