@@ -1,0 +1,211 @@
+/* Tokens (--pk, --iv, --ink, --party-font-text, --party-font-text, --cream ...) are inherited
+   from .page in src/app/party/party.module.scss. */
+
+.lineup {
+  padding: 24px 24px 32px;
+  scroll-margin-top: 64px;
+  background: linear-gradient(180deg, var(--pinkbg), var(--cream));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.head { display: flex; flex-direction: column; }
+.kicker {
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--pk);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.h2 {
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 0 0 3px;
+  color: var(--ink);
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Featured (headliner) cards */
+.featCard {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--white);
+  box-shadow: 0 14px 34px rgba(var(--iv2-rgb), 0.18);
+  margin-bottom: 16px;
+  transition: transform 0.25s;
+}
+.featCard:hover { transform: translateY(-4px); }
+.featMedia {
+  aspect-ratio: 3 / 2;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: repeating-linear-gradient(45deg, var(--ta), var(--ta) 16px, var(--tb) 16px, var(--tb) 32px);
+}
+.rankBig {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 34px;
+  color: var(--white);
+  line-height: 1;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.22);
+}
+.headTag {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--pk), var(--pk2));
+  border-radius: 999px;
+  padding: 5px 12px;
+  box-shadow: 0 5px 12px rgba(var(--pk-rgb), 0.4);
+}
+.okPill {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--white);
+  border-radius: 999px;
+  padding: 5px 10px 5px 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+.okTxt { font-size: 10px; font-weight: 800; color: var(--pk2); }
+.photoLabel {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: rgba(var(--ink-rgb), 0.32);
+  font-weight: 600;
+}
+.featBody {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.featInfo { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.featName { font-size: 19px; font-weight: 800; color: var(--ink); }
+.performing {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--iv);
+  text-transform: uppercase;
+}
+
+/* Grid cards */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.gridCard {
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--white);
+  box-shadow: 0 8px 20px rgba(var(--iv2-rgb), 0.12);
+  transition: transform 0.25s;
+}
+.gridCard:hover { transform: translateY(-3px); }
+.gridMedia {
+  aspect-ratio: 3 / 2;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: repeating-linear-gradient(45deg, var(--ta), var(--ta) 12px, var(--tb) 12px, var(--tb) 24px);
+}
+.rankSm {
+  position: absolute;
+  top: 9px;
+  left: 10px;
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 22px;
+  color: #fff;
+  line-height: 1;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+}
+.okPillSm {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  display: inline-flex;
+  align-items: center;
+  background: var(--white);
+  border-radius: 999px;
+  padding: 5px;
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.12);
+}
+.photoLabelSm {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: rgba(var(--ink-rgb), 0.3);
+  font-weight: 600;
+}
+.gridBody { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.gridName { font-size: 15px; font-weight: 800; color: var(--ink); }
+
+/* Per-artist socials */
+.socials { display: flex; flex-wrap: wrap; gap: 8px; }
+.social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--accent-bg, var(--lilacbg));
+  color: var(--accent, var(--iv2));
+  transition: transform 0.2s, background 0.2s, color 0.2s;
+}
+.social:hover { transform: translateY(-2px); background: var(--accent, var(--iv2)); color: var(--white); }
+.social svg { width: 15px; height: 15px; display: block; }
+
+/* Legend */
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  background: var(--white);
+  border: 1.5px dashed var(--bd-indigo);
+  border-radius: 16px;
+  padding: 12px;
+}
+.legendIcon {
+  display: inline-flex;
+  align-items: center;
+  background: var(--lilacbg);
+  border-radius: 999px;
+  padding: 4px;
+  flex-shrink: 0;
+}
+.legendTxt { font-size: 12.5px; font-weight: 700; color: var(--muted); }

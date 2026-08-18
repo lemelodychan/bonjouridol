@@ -1,0 +1,52 @@
+{
+  "id": "party_socials",
+  "type": "SharedSlice",
+  "name": "PartySocials",
+  "description": "Bonjour Party footer socials — links grouped by organisation.",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "links": {
+          "type": "Group",
+          "config": {
+            "label": "Links (grouped by organisation, in order)",
+            "repeat": true,
+            "fields": {
+              "org": {
+                "type": "Text",
+                "config": {
+                  "label": "Organisation (groups consecutive links)",
+                  "placeholder": "BONJOUR IDOL"
+                }
+              },
+              "label": {
+                "type": "Text",
+                "config": {
+                  "label": "Link label",
+                  "placeholder": "Instagram"
+                }
+              },
+              "url": {
+                "type": "Link",
+                "config": {
+                  "label": "URL",
+                  "placeholder": "",
+                  "allowTargetBlank": true,
+                  "select": null,
+                  "allowText": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

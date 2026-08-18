@@ -50,3 +50,6 @@ backups/*.temp
 supabase/
 src/.env
 .env*
+
+# Claude Design export for the Bonjour Party page — local only, not tracked
+bonjour-party-landing/

@@ -1,0 +1,128 @@
+{
+  "id": "party_lineup",
+  "type": "SharedSlice",
+  "name": "PartyLineup",
+  "description": "Bonjour Party line-up — one entry per group. Drives both the line-up grid and the derived timetable.",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "groups": {
+          "type": "Group",
+          "config": {
+            "label": "Groups",
+            "repeat": true,
+            "fields": {
+              "name_en": {
+                "type": "Text",
+                "config": {
+                  "label": "Name (EN)",
+                  "placeholder": "BANZAI JAPAN"
+                }
+              },
+              "name_ja": {
+                "type": "Text",
+                "config": {
+                  "label": "Name (JA)",
+                  "placeholder": "エラバレシ"
+                }
+              },
+              "is_headliner": {
+                "type": "Boolean",
+                "config": {
+                  "label": "Headliner? (large featured card)",
+                  "placeholder_false": "false",
+                  "placeholder_true": "true",
+                  "default_value": false
+                }
+              },
+              "photos_ok": {
+                "type": "Boolean",
+                "config": {
+                  "label": "Photos OK?",
+                  "placeholder_false": "false",
+                  "placeholder_true": "true",
+                  "default_value": false
+                }
+              },
+              "image": {
+                "type": "Image",
+                "config": {
+                  "label": "Photo (optional — falls back to a tinted placeholder)",
+                  "constraint": {},
+                  "thumbnails": []
+                }
+              },
+              "live_start": {
+                "type": "Text",
+                "config": {
+                  "label": "Live start (HH:MM, e.g. 12:20 or 25:50)",
+                  "placeholder": "12:20"
+                }
+              },
+              "live_end": {
+                "type": "Text",
+                "config": {
+                  "label": "Live end (HH:MM)",
+                  "placeholder": "12:35"
+                }
+              },
+              "mng_start": {
+                "type": "Text",
+                "config": {
+                  "label": "Meet & greet start (HH:MM)",
+                  "placeholder": "15:00"
+                }
+              },
+              "mng_end": {
+                "type": "Text",
+                "config": {
+                  "label": "Meet & greet end (HH:MM)",
+                  "placeholder": "16:00"
+                }
+              },
+              "twitter": {
+                "type": "Link",
+                "config": {
+                  "label": "Twitter / X (optional)",
+                  "select": "web",
+                  "allowTargetBlank": true
+                }
+              },
+              "instagram": {
+                "type": "Link",
+                "config": {
+                  "label": "Instagram (optional)",
+                  "select": "web",
+                  "allowTargetBlank": true
+                }
+              },
+              "tiktok": {
+                "type": "Link",
+                "config": {
+                  "label": "TikTok (optional)",
+                  "select": "web",
+                  "allowTargetBlank": true
+                }
+              },
+              "website": {
+                "type": "Link",
+                "config": {
+                  "label": "Website (optional)",
+                  "select": "web",
+                  "allowTargetBlank": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

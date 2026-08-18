@@ -1,0 +1,51 @@
+{
+  "heroTag": "日本のアイドルカルチャーを世界へ。BONJOUR IDOL 初の対バンイベント、ついに東京で開催。",
+  "ctaTickets": "チケット情報を見る",
+  "ctaBuy": "チケットを購入",
+  "marquee": "BONJOUR PARTY ★ まもなく搭乗開始 ★  ",
+  "infoKicker": "EVENT INFO",
+  "infoTitle": "イベント概要",
+  "venueLabel": "会場",
+  "dateLabel": "開催日",
+  "timeLabel": "開場 / 開演",
+  "tba": "調整中",
+  "tbaTag": "予定",
+  "tentativeNote": "※時間・料金は予定です。決定次第、更新します。",
+  "priceKicker": "TICKETS",
+  "drinkNote": "＋ 1ドリンク別（会場でお支払いください）",
+  "lineupKicker": "LINE-UP",
+  "lineupTitle": "出演アーティスト",
+  "headlinerTag": "HEADLINER",
+  "performingTag": "出演",
+  "photoLabel": "OFFICIAL PHOTO",
+  "photoOk": "撮影OK",
+  "photoLegend": "このアイコンのあるグループは写真撮影OKです",
+  "ttKicker": "TIMETABLE",
+  "ttTitle": "タイムテーブル",
+  "ttSub": "ステージ & 特典会スケジュール",
+  "ttTentative": "※予定・変更の可能性があります",
+  "liveLabel": "LIVE",
+  "mngLabel": "特典会",
+  "rulesKicker": "RULES & MANNERS",
+  "rulesTitle": "ルール & マナー",
+  "aboutKicker": "ABOUT",
+  "aboutTitle": "Bonjour Party について",
+  "followKicker": "FOLLOW US",
+  "footerNote": "© 2026 BONJOUR IDOL / KAIZOKU JAPAN",
+  "tiers": [
+    {
+      "name": "前方エリア",
+      "price": "¥ 4,000",
+      "note": "優先エリア確約・前方から観覧",
+      "hot": true,
+      "badge": "優先"
+    },
+    {
+      "name": "一般",
+      "price": "¥ 2,500",
+      "note": "自由エリア",
+      "hot": false,
+      "badge": ""
+    }
+  ]
+}

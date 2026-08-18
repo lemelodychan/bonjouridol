@@ -1,0 +1,31 @@
+/* Tokens inherited from .page (src/app/party/party.module.scss). */
+.about {
+  padding: 24px 24px 32px;
+  scroll-margin-top: 64px;
+  background: var(--pinkbg);
+}
+.kicker {
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--pk);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.h2 {
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 0 0 16px;
+  color: var(--ink);
+}
+.body { display: flex; flex-direction: column; gap: 14px; font-family: var(--party-font-text); }
+.p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: var(--muted);
+  font-weight: 500;
+}

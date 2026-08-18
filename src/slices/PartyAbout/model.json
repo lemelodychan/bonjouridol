@@ -1,0 +1,37 @@
+{
+  "id": "party_about",
+  "type": "SharedSlice",
+  "name": "PartyAbout",
+  "description": "Bonjour Party about section — bilingual rich text.",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "body_en": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Body (EN)",
+            "placeholder": "About text in English",
+            "allowTargetBlank": true,
+            "multi": "paragraph,strong,em"
+          }
+        },
+        "body_ja": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Body (JA)",
+            "placeholder": "日本語の本文",
+            "allowTargetBlank": true,
+            "multi": "paragraph,strong,em"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

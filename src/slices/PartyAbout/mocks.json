@@ -1,0 +1,51 @@
+[
+  {
+    "__TYPE__": "SharedSliceContent",
+    "variation": "default",
+    "primary": {
+      "body_en": {
+        "__TYPE__": "StructuredTextContent",
+        "value": [
+          {
+            "type": "paragraph",
+            "content": {
+              "text": "Bonjour Party is a night of live idol performances in the heart of Tokyo.",
+              "spans": [
+                { "start": 0, "end": 13, "type": "strong" }
+              ]
+            }
+          },
+          {
+            "type": "paragraph",
+            "content": {
+              "text": "Come early, stay late, and cheer on your favourite acts.",
+              "spans": []
+            }
+          }
+        ]
+      },
+      "body_ja": {
+        "__TYPE__": "StructuredTextContent",
+        "value": [
+          {
+            "type": "paragraph",
+            "content": {
+              "text": "Bonjour Party は東京で開催されるアイドルのライブイベントです。",
+              "spans": [
+                { "start": 0, "end": 13, "type": "strong" }
+              ]
+            }
+          },
+          {
+            "type": "paragraph",
+            "content": {
+              "text": "お早めにお越しいただき、お気に入りの出演者を応援しましょう。",
+              "spans": []
+            }
+          }
+        ]
+      }
+    },
+    "items": []
+  }
+]

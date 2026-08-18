@@ -1,4 +1,5 @@
 import { createClient } from "@/prismicio";
+import { PARTY_INDEXABLE, PARTY_URL } from "@/app/party/config";
 
 export const dynamic = 'force-dynamic'; // Disable caching for sitemap
 export const revalidate = 0; // Ensure no caching
@@ -20,6 +21,12 @@ export async function GET() {
     { loc: `${baseUrl}/about`, lastmod: new Date().toISOString().split('T')[0], changefreq: "monthly", priority: 0.5 },
     { loc: `${baseUrl}/contact`, lastmod: new Date().toISOString().split('T')[0], changefreq: "monthly", priority: 0.3 },
   ];
+
+  // Bonjour Party event page — only advertised once it's public (same flag that
+  // controls its noindex tag), so it stays out of the sitemap during soft launch.
+  if (PARTY_INDEXABLE) {
+    pages.push({ loc: PARTY_URL, lastmod: new Date().toISOString().split('T')[0], changefreq: "daily", priority: 0.9 });
+  }
 
   // Fetch your site data with error handling
   // Use pagination to avoid 2MB cache limit

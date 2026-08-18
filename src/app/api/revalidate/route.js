@@ -14,6 +14,7 @@ const LISTING_TAG = {
   page: "pages",
   author: "authors",
   photographer: "artists",
+  bonjour_party: "bonjour_party",
 };
 
 // Per-document detail tag for types that have an ISR-cached detail page.
@@ -26,7 +27,7 @@ const DETAIL_TAG = {
 // Bounded fallback for unpublish/error: refresh the indexes only. Far narrower
 // than the old global `revalidateTag("prismic")` since detail pages no longer
 // carry these shared tags.
-const ALL_LISTING_TAGS = ["articles", "galleries", "pages", "authors", "artists"];
+const ALL_LISTING_TAGS = ["articles", "galleries", "pages", "authors", "artists", "bonjour_party"];
 
 function revalidateListings(reason) {
   for (const tag of ALL_LISTING_TAGS) revalidateTag(tag);
@@ -98,6 +99,10 @@ export async function POST(request) {
 
         const listing = LISTING_TAG[doc.type];
         if (listing) listingTags.add(listing);
+
+        // The Bonjour Party page is a singleton (no uid) fetched with the
+        // "bonjour_party" tag; also refresh its fixed route on publish.
+        if (doc.type === "bonjour_party") paths.add("/party");
 
         // The homepage shows the latest articles.
         if (doc.type === "articles") refreshHome = true;

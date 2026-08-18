@@ -1,0 +1,49 @@
+/* Tokens inherited from .page (src/app/party/party.module.scss). */
+.rules {
+  padding: 24px 24px 32px;
+  scroll-margin-top: 64px;
+  background: linear-gradient(180deg, var(--cream), var(--pinkbg));
+}
+.kicker {
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--pk);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.h2 {
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 0 0 16px;
+  color: var(--ink);
+}
+.list { display: flex; flex-direction: column; gap: 12px; }
+.item {
+  display: flex;
+  gap: 12px;
+  background: var(--white);
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 6px 16px rgba(var(--iv2-rgb), 0.09);
+}
+.num {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--pk), var(--iv));
+  color: var(--white);
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.body { flex: 1; }
+.title { font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 2px; }
+.text { font-size: 13px; font-weight: 500; line-height: 1.6; color: var(--muted); }

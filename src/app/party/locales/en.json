@@ -1,0 +1,51 @@
+{
+  "heroTag": "Sharing Japan's idol culture with the world — BONJOUR IDOL's very first live event, live in Tokyo.",
+  "ctaTickets": "See ticket info",
+  "ctaBuy": "Buy tickets",
+  "marquee": "BONJOUR PARTY ★ BOARDING SOON ★  ",
+  "infoKicker": "EVENT INFO",
+  "infoTitle": "Event Info",
+  "venueLabel": "Venue",
+  "dateLabel": "Date",
+  "timeLabel": "Open / Start",
+  "tba": "T.B.A.",
+  "tbaTag": "TBA",
+  "tentativeNote": "Times and prices are provisional and will be updated once confirmed.",
+  "priceKicker": "TICKETS",
+  "drinkNote": "+ One drink required (payable at the venue)",
+  "lineupKicker": "LINE-UP",
+  "lineupTitle": "Line-up",
+  "headlinerTag": "HEADLINER",
+  "performingTag": "Live",
+  "photoLabel": "OFFICIAL PHOTO",
+  "photoOk": "Photos OK",
+  "photoLegend": "Groups with this icon allow photography",
+  "ttKicker": "TIMETABLE",
+  "ttTitle": "Timetable",
+  "ttSub": "Stage & meet-and-greet schedule",
+  "ttTentative": "Provisional — subject to change",
+  "liveLabel": "LIVE",
+  "mngLabel": "M&G",
+  "rulesKicker": "RULES & MANNERS",
+  "rulesTitle": "Rules & Manners",
+  "aboutKicker": "ABOUT",
+  "aboutTitle": "About Bonjour Party",
+  "followKicker": "FOLLOW US",
+  "footerNote": "© 2026 BONJOUR IDOL / KAIZOKU JAPAN",
+  "tiers": [
+    {
+      "name": "Front Area",
+      "price": "¥ 4,000",
+      "note": "Priority area, front-of-stage viewing",
+      "hot": true,
+      "badge": "PRIORITY"
+    },
+    {
+      "name": "General",
+      "price": "¥ 2,500",
+      "note": "Free-standing area",
+      "hot": false,
+      "badge": ""
+    }
+  ]
+}

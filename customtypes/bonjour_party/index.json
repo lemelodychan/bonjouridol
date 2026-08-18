@@ -1,0 +1,133 @@
+{
+  "id": "bonjour_party",
+  "label": "Bonjour Party",
+  "format": "page",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "venue_name_en": {
+        "type": "Text",
+        "config": {
+          "label": "Venue name (EN)",
+          "placeholder": "Nippori Neko Theater"
+        }
+      },
+      "venue_name_ja": {
+        "type": "Text",
+        "config": {
+          "label": "Venue name (JA)",
+          "placeholder": "日暮里ねこシアター"
+        }
+      },
+      "venue_sub_en": {
+        "type": "Text",
+        "config": {
+          "label": "Venue sub-label (EN)",
+          "placeholder": "Tokyo, Japan"
+        }
+      },
+      "venue_sub_ja": {
+        "type": "Text",
+        "config": {
+          "label": "Venue sub-label (JA)",
+          "placeholder": "東京 / Tokyo"
+        }
+      },
+      "event_date": {
+        "type": "Date",
+        "config": {
+          "label": "Event date"
+        }
+      },
+      "is_holiday": {
+        "type": "Boolean",
+        "config": {
+          "label": "Public holiday? (adds ・祝 / ・Holiday after the weekday)",
+          "placeholder_false": "false",
+          "placeholder_true": "true",
+          "default_value": false
+        }
+      },
+      "open_time": {
+        "type": "Text",
+        "config": {
+          "label": "Open time",
+          "placeholder": "12:00"
+        }
+      },
+      "start_time": {
+        "type": "Text",
+        "config": {
+          "label": "Start time",
+          "placeholder": "12:20"
+        }
+      },
+      "times_confirmed": {
+        "type": "Boolean",
+        "config": {
+          "label": "Times & prices confirmed? (off = show TBA / provisional notes)",
+          "placeholder_false": "false",
+          "placeholder_true": "true",
+          "default_value": false
+        }
+      },
+      "ticket_url": {
+        "type": "Link",
+        "config": {
+          "label": "Ticket purchase URL (external)",
+          "placeholder": "https://tickets.example.com/bonjour-party",
+          "select": "web",
+          "allowTargetBlank": true
+        }
+      },
+      "slices": {
+        "type": "Slices",
+        "fieldset": "Slice Zone",
+        "config": {
+          "choices": {
+            "party_lineup": {
+              "type": "SharedSlice"
+            },
+            "party_rules": {
+              "type": "SharedSlice"
+            },
+            "party_about": {
+              "type": "SharedSlice"
+            },
+            "party_socials": {
+              "type": "SharedSlice"
+            }
+          }
+        }
+      }
+    },
+    "SEO & Metadata": {
+      "meta_title": {
+        "config": {
+          "label": "Meta Title",
+          "placeholder": "A title of the page used for social media and search engines"
+        },
+        "type": "Text"
+      },
+      "meta_description": {
+        "config": {
+          "label": "Meta Description",
+          "placeholder": "A brief summary of the page"
+        },
+        "type": "Text"
+      },
+      "meta_image": {
+        "config": {
+          "constraint": {
+            "height": 1260,
+            "width": 2400
+          },
+          "label": "Meta Image",
+          "thumbnails": []
+        },
+        "type": "Image"
+      }
+    }
+  }
+}

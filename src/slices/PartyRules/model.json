@@ -1,0 +1,56 @@
+{
+  "id": "party_rules",
+  "type": "SharedSlice",
+  "name": "PartyRules",
+  "description": "Bonjour Party rules & manners — numbered list.",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "rules": {
+          "type": "Group",
+          "config": {
+            "label": "Rules",
+            "repeat": true,
+            "fields": {
+              "title_en": {
+                "type": "Text",
+                "config": {
+                  "label": "Title (EN)",
+                  "placeholder": "Photography"
+                }
+              },
+              "title_ja": {
+                "type": "Text",
+                "config": {
+                  "label": "Title (JA)",
+                  "placeholder": "撮影について"
+                }
+              },
+              "text_en": {
+                "type": "Text",
+                "config": {
+                  "label": "Text (EN)",
+                  "placeholder": "Only groups marked with the camera icon allow photos."
+                }
+              },
+              "text_ja": {
+                "type": "Text",
+                "config": {
+                  "label": "Text (JA)",
+                  "placeholder": "撮影OKアイコンのあるグループのみ撮影可能です。"
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

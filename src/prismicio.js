@@ -19,6 +19,7 @@ export const repositoryName = process.env.REPO_NAME || config.repositoryName;
 
 export const routes = [
   { type: "homepage", path: "/" },
+  { type: "bonjour_party", path: "/party" },
   { type: "page", path: "/:uid" },
   { type: "articles", path: "/articles/:uid" },
   { type: "gallery", path: "/galleries/:uid" },
@@ -28,6 +29,8 @@ export const linkResolver = (doc) => {
   switch (doc.type) {
     case "homepage":
       return "/";
+    case "bonjour_party":
+      return "/party";
     case "page":
       return `/${doc.uid}`;
     case "articles":

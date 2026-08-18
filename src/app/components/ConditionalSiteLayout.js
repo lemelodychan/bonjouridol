@@ -12,8 +12,10 @@ import { Analytics } from "@vercel/analytics/next"
 export default function ConditionalSiteLayout({ children }) {
   const pathname = usePathname()
   const isAdminRoute = pathname?.startsWith('/admin')
+  // The Bonjour Party page is a standalone bespoke landing with its own chrome.
+  const isPartyRoute = pathname?.startsWith('/party')
 
-  if (isAdminRoute) {
+  if (isAdminRoute || isPartyRoute) {
     return <>{children}</>
   }
 

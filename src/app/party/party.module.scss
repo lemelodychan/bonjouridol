@@ -1,0 +1,680 @@
+/* Bonjour Party — bespoke standalone landing page.
+   Design tokens live on .page as CSS custom properties so the co-located slice
+   modules (PartyLineup / PartyRules / PartyAbout / PartySocials) inherit them.
+   RGB triplets (--*-rgb) back the translucent shadows/glows via rgba(). */
+
+.page {
+  /* Brand */
+  --pk: #f0479b;
+  --pk2: #e12e86;
+  --iv: #8a7ceb;
+  --iv2: #6e5fd8;
+  --teal: #5fd0cc;
+  --teal2: #5fbfbc;
+
+  /* RGB triplets for translucent shadows / glows */
+  --pk-rgb: 240, 71, 155;
+  --iv-rgb: 138, 124, 235;
+  --iv2-rgb: 110, 95, 216;
+  --ink-rgb: 51, 41, 79;
+
+  /* Text */
+  --ink: #33294f;
+  --muted: #5b5375;
+  --muted2: #8b84a3;
+  --lilac: #b49fc4;
+
+  /* Surfaces */
+  --white: #fff;
+  --cream: #fff7fc;
+  --pinkbg: #fbf1f9;
+  --lav: #efe6f6;
+  --lilacbg: #f1edfb;
+  --pink-tint: #fff0f8;
+  --pink-tint2: #ffe1f0;
+
+  /* Borders */
+  --bd-pink: #f7d0e7;
+  --bd-indigo: #dad0f7;
+  --bd-dash: #f1d9ea;
+
+  /* Accents */
+  --spark: #ffce3a;
+  --amber-ink: #b07a00;
+  --amber-bg: #fff0c4;
+
+  /* Fonts */
+  --party-font-text: "M PLUS Rounded 1c", system-ui, sans-serif;
+  --party-font-text: "DM Sans", "M PLUS Rounded 1c", Helvetica, Arial, sans-serif;
+
+  position: relative;
+  max-width: 520px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--cream);
+  box-shadow: 0 0 70px rgba(var(--iv2-rgb), 0.18);
+  font-family: var(--party-font-text);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Full-bleed backdrop behind the centred card */
+.bleed {
+  background: var(--lav);
+  min-height: 100vh;
+}
+
+@keyframes party-popIn {
+  0% { opacity: 0; transform: scale(0.82); }
+  60% { transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes party-floaty {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(4deg); }
+}
+@keyframes party-floatyB {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-9px) rotate(-5deg); }
+}
+@keyframes party-twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.65); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+@keyframes party-marquee {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(calc(-1 * var(--ticker-width)), 0, 0); }
+}
+@keyframes party-glow {
+  0%, 100% { box-shadow: 0 10px 26px rgba(var(--pk-rgb), 0.36); }
+  50% { box-shadow: 0 14px 38px rgba(var(--iv-rgb), 0.52); }
+}
+
+/* ---------- Language toggle ---------- */
+.toggle {
+  position: fixed;
+  top: 24px;
+  right: max(16px, calc(50% - 244px));
+  left: auto;
+  z-index: 60;
+  display: flex;
+  background: rgba(241, 231, 250, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 999px;
+  padding: 4px;
+  width: 112px;
+  height: 38px;
+  user-select: none;
+  box-shadow: 0 6px 18px rgba(var(--iv2-rgb), 0.22);
+}
+.knob {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--pk), var(--iv));
+  box-shadow: 0 5px 13px rgba(var(--pk-rgb), 0.45);
+  transition: transform 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.knobEn { transform: translateX(100%); }
+.toggle button {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  border: none;
+  background: none;
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.3s;
+  color: var(--muted2);
+}
+.toggle button.active { color: var(--white); }
+
+/* ---------- Hero ----------
+   .hero no longer clips: only the decorative backdrop (.heroBgLayer) clips the
+   parallax image + disco/glow. This keeps the CTA's animated glow shadow from
+   being cut off at the hero's bottom edge, so it blends into the marquee. */
+.hero {
+  position: relative;
+  isolation: isolate;
+  text-align: center;
+  height: 500px;
+  padding: 64px 20px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+.heroBgLayer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+.heroBg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 122%;
+  object-fit: cover;
+  object-position: top center;
+  opacity: 0.72;
+  pointer-events: none;
+  will-change: transform;
+}
+.heroFade {
+  position: absolute;
+  inset: 0;
+  height: 500px;
+  background: linear-gradient(180deg, rgba(255, 247, 252, 0) 45%, var(--cream) 96%);
+  pointer-events: none;
+}
+.disco {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  margin-left: -260px;
+  width: 520px;
+  height: 234px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgba(var(--iv2-rgb), 0.3));
+  pointer-events: none;
+  z-index: 0;
+}
+.heroGlow {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  height: 340px;
+  background: radial-gradient(circle at 40% 35%, rgba(var(--pk-rgb), 0.2), transparent 60%),
+    radial-gradient(circle at 68% 55%, rgba(var(--iv-rgb), 0.22), transparent 62%);
+  filter: blur(6px);
+  pointer-events: none;
+  opacity: 0.66;
+}
+.spark {
+  position: absolute;
+  background: var(--spark);
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+.spark1 { top: 44px; left: 20px; width: 20px; height: 20px; animation: party-twinkle 2.4s ease-in-out infinite; }
+.spark2 { top: 120px; right: 26px; width: 26px; height: 26px; animation: party-twinkle 3s ease-in-out 0.5s infinite; }
+.dot1 { position: absolute; top: 200px; left: 34px; width: 12px; height: 12px; border-radius: 50%; background: var(--teal); animation: party-floaty 4s ease-in-out infinite; }
+.dot2 { position: absolute; top: 80px; right: 64px; width: 10px; height: 10px; border-radius: 50%; background: var(--pk); animation: party-floatyB 3.6s ease-in-out 0.3s infinite; }
+.logo {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 120%;
+  height: auto;
+  display: block;
+  margin: 8px auto;
+  animation: party-popIn 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.heroTag {
+  position: relative;
+  z-index: 1;
+  max-width: 390px;
+  margin: 4px auto 16px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--muted);
+  font-weight: 500;
+}
+.heroCtas {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--white);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 800;
+  font-size: 14px;
+}
+.badge span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.badgePink { border: 1.5px solid var(--bd-pink); color: var(--pk2); box-shadow: 0 5px 14px rgba(var(--pk-rgb), 0.12); }
+.badgePink span { background: var(--pk); }
+.badgeIndigo { border: 1.5px solid var(--bd-indigo); color: var(--iv2); box-shadow: 0 5px 14px rgba(var(--iv-rgb), 0.12); }
+.badgeIndigo span { background: var(--iv); }
+.cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  height: 44px;
+  width: 240px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--pk), var(--iv));
+  color: var(--white);
+  font-weight: 800;
+  font-size: 16px;
+  font-family: var(--party-font-text);
+  transition: transform 0.2s;
+  animation: party-glow 3.2s ease-in-out infinite;
+}
+.cta:hover { transform: translateY(-2px) scale(1.03); }
+.cta:active { transform: scale(0.97); }
+
+/* ---------- Marquee ----------
+   Seamless-loop structure mirrors the main site's ArtistHighlight ticker:
+   the repeat unit is duplicated across spans and JS measures one unit's exact
+   width into --ticker-width, so the loop is seamless at any width. Party fonts
+   / gradient stay. */
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(90deg, var(--pk), var(--iv));
+  padding: 8px 0;
+  margin-top: 8px;
+  position: relative;
+}
+.marqueeInner {
+  display: flex;
+  gap: 4px;
+  white-space: nowrap;
+  --ticker-width: 0px;
+  will-change: transform;
+  animation: party-marquee 20s linear infinite;
+}
+.marqueeReverse .marqueeInner {
+  animation-direction: reverse;
+}
+.marqueeText {
+  flex-shrink: 0;
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  color: var(--white);
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+/* ---------- Generic section ---------- */
+.section {
+  padding: 24px 24px 32px;
+  scroll-margin-top: 64px;
+}
+.kicker {
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--pk);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.h2 {
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 0 0 16px;
+  color: var(--ink);
+}
+
+/* ---------- Event info card ---------- */
+.infoCard {
+  background: linear-gradient(162deg, var(--white), var(--pink-tint));
+  border: 1.5px solid var(--bd-pink);
+  border-radius: 16px;
+  padding: 8px 20px;
+  box-shadow: 0 12px 32px rgba(var(--pk-rgb), 0.13);
+  margin-bottom: 16px;
+}
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px dashed var(--bd-dash);
+}
+.infoRow:last-child { border-bottom: none; }
+.infoBar {
+  width: 5px;
+  height: 36px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.infoLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--lilac);
+  text-transform: uppercase;
+}
+.infoValue {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.35;
+}
+.infoSub {
+  font-size: 13px;
+  color: var(--muted2);
+  font-weight: 700;
+}
+.dateTag {
+  margin-left: 8px;
+  font-size: 13px;
+  color: var(--muted2);
+  font-weight: 700;
+}
+.tbaTag {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--amber-ink);
+  background: var(--amber-bg);
+  border-radius: 999px;
+  padding: 3px 9px;
+  vertical-align: middle;
+}
+
+/* ---------- Tickets ---------- */
+.priceKicker {
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  color: var(--iv);
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+.tiers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.tier {
+  position: relative;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 22px rgba(var(--iv2-rgb), 0.1);
+}
+.tierHot { background: linear-gradient(160deg, var(--pink-tint), var(--pink-tint2)); border: 2px solid var(--pk); }
+.tierPlain { background: var(--white); border: 1.5px solid var(--bd-indigo); }
+.tierBadge {
+  position: absolute;
+  top: -9px;
+  left: 14px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--pk), var(--pk2));
+  border-radius: 999px;
+  padding: 4px 10px;
+  box-shadow: 0 4px 10px rgba(var(--pk-rgb), 0.4);
+}
+.tierName { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+.tierName.hot { color: var(--pk2); }
+.tierName.plain { color: var(--iv2); }
+.tierPrice { font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.5px; }
+.tierNote { font-size: 11.5px; font-weight: 600; color: var(--muted2); margin-top: 4px; line-height: 1.4; }
+.drinkNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  background: var(--lilacbg);
+  border-radius: 16px;
+  padding: 12px 16px;
+}
+.drinkNote .icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--teal), var(--iv));
+  flex-shrink: 0;
+}
+.drinkNote .txt { font-size: 13px; font-weight: 700; color: var(--muted); }
+.tentativeNote { font-size: 11.5px; color: var(--lilac); font-weight: 600; margin: 12px 4px 0; }
+
+/* Primary purchase button inside the tickets section. */
+.buyBtn {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 50px;
+  margin-top: 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--pk), var(--iv));
+  color: var(--white);
+  font-family: var(--f-round);
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow: 0 10px 26px rgba(var(--pk-rgb), 0.36);
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+.buyBtn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 14px 34px rgba(var(--iv-rgb), 0.5); }
+.buyBtn:active { transform: scale(0.98); }
+
+/* ---------- Timetable ---------- */
+.tt { display: flex; flex-direction: column; gap: 16px; }
+.ttHead { display: flex; flex-direction: column; gap: 8px; }
+.ttSub { margin: 0; font-size: 13px; font-weight: 600; color: var(--muted2); }
+.ttTentative {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--amber-ink);
+  background: var(--amber-bg);
+  border-radius: 999px;
+  padding: 4px 11px;
+}
+.ttList { display: flex; flex-direction: column; }
+.ttRow { display: flex; gap: 12px; }
+.ttTime {
+  width: 52px;
+  flex-shrink: 0;
+  text-align: right;
+  padding-top: 4px;
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--pk2);
+}
+.ttRail { position: relative; width: 16px; flex-shrink: 0; display: flex; justify-content: center; }
+.ttLine { position: absolute; top: 4px; bottom: -16px; width: 3px; background: var(--bd-dash); border-radius: 2px; }
+.ttNode {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pk), var(--iv));
+  margin-top: 6px;
+  box-shadow: 0 0 0 4px var(--cream);
+}
+.ttCard {
+  flex: 1;
+  margin-bottom: 20px;
+  background: var(--white);
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 6px 16px rgba(var(--iv2-rgb), 0.1);
+  border: 1px solid transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ttCard.head { border: 2px solid var(--bd-pink); }
+.ttCardTop { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.ttName { font-size: 16px; font-weight: 800; color: var(--ink); }
+.ttMeta { display: flex; gap: 12px; margin-top: 8px; font-size: 12px; font-weight: 700; }
+.ttLive { color: var(--iv); }
+.ttMng { color: var(--teal2); }
+.camPill {
+  display: inline-flex;
+  align-items: center;
+  background: var(--lilacbg);
+  border-radius: 999px;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+/* ---------- Footer chrome ---------- */
+.footer {
+  background: linear-gradient(150deg, var(--pk), var(--iv) 90%);
+  color: var(--white);
+  padding: 32px 24px;
+  text-align: center;
+  border-radius: 16px 16px 0 0;
+}
+.footerNote { margin-top: 24px; font-size: 11px; font-weight: 600; opacity: 0.75; }
+
+/* ---------- Floating ticket CTA ----------
+   Persistent purchase button pinned to the bottom edge. Spans the card column
+   but stops short of the back-to-top FAB's corner (right offset = 16 + 48 + 12)
+   so the two never overlap, on mobile or on the centred desktop column. */
+.ticketFab {
+  position: fixed;
+  overflow: hidden;
+  isolation: isolate;
+  bottom: 20px;
+  width: fit-content;
+  padding: 0 24px;
+  left: max(16px, calc(50% - 244px));
+  right: max(76px, calc(50% - 184px));
+  z-index: 58;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  text-decoration: none;
+  /* White fill (padding-box) inside a gradient outline (border-box). */
+  background: linear-gradient(var(--white), var(--white)) padding-box,
+    linear-gradient(135deg, var(--pk), var(--iv)) border-box;
+  color: var(--pk2);
+  font-family: var(--f-round);
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow: 0 10px 24px rgba(var(--ink-rgb), 0.14);
+  /* Hidden until the hero scrolls out of view (mirrors .backTop), so it never
+     competes with the hero's own "See ticket info" CTA above the fold. */
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 0.3s ease, box-shadow 0.3s ease;
+}
+/* Gradient fill that fades in on hover/tap — the outline "lights up". */
+.ticketFab::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--pk), var(--iv));
+  opacity: 0;
+  transition: opacity 0.32s ease;
+  z-index: 0;
+}
+.ticketFab > * { position: relative; z-index: 1; } /* icon + label above the fill */
+.ticketFab.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.ticketFab.show:hover,
+.ticketFab.show:active {
+  color: var(--white);
+  box-shadow: 0 16px 36px rgba(var(--pk-rgb), 0.42);
+}
+.ticketFab.show:hover { transform: translateY(-2px); }
+.ticketFab.show:active { transform: scale(0.97); }
+.ticketFab.show:hover::before,
+.ticketFab.show:active::before { opacity: 1; }
+
+/* Shared shine sweep for the ticket CTAs — a diagonal highlight glides across
+   on hover and on tap (:active covers touch). The stripe sits off the left edge
+   at rest and is clipped by each button's overflow:hidden. (The hero .cta is
+   left out: overflow:hidden would clip its animated outer glow.) */
+.buyBtn::after,
+.ticketFab::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 100%
+  );
+  transform: translateX(-190%) skewX(-18deg);
+  pointer-events: none;
+  z-index: 2;
+}
+.buyBtn:hover::after,
+.buyBtn:active::after,
+.ticketFab:hover::after,
+.ticketFab:active::after {
+  transform: translateX(310%) skewX(-18deg);
+  transition: transform 0.62s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .buyBtn::after,
+  .ticketFab::after { display: none; }
+}
+
+/* ---------- Back to top ---------- */
+.backTop {
+  position: fixed;
+  bottom: 20px;
+  right: max(16px, calc(50% - 244px));
+  z-index: 60;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--pk), var(--iv));
+  color: var(--white);
+  box-shadow: 0 8px 20px rgba(var(--pk-rgb), 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.backTop.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.backTop:hover { transform: translateY(-3px); }
+.backTop:active { transform: scale(0.94); }
