@@ -159,6 +159,25 @@ export default async function Page() {
   // every ticket CTA is gated on this, so pre-sale the page shows none.
   const ticketUrl = doc.data.ticket_url?.url || "";
 
+  // Pricing (CMS-driven). Both languages are passed through; PartyPage resolves
+  // by the active lang. When the Prismic group is empty the client falls back
+  // to the built-in defaults in locales/{ja,en}.json, so the page never renders
+  // an empty ticket block.
+  const pricing = {
+    tiers: (doc.data.ticket_tiers || [])
+      .map((tt) => ({
+        name_en: tt.name_en || "",
+        name_ja: tt.name_ja || "",
+        price: tt.price || "",
+        note_en: tt.note_en || "",
+        note_ja: tt.note_ja || "",
+        hot: !!tt.is_hot,
+      }))
+      .filter((tt) => tt.name_en || tt.name_ja || tt.price),
+    drinkNote_en: doc.data.drink_note_en || "",
+    drinkNote_ja: doc.data.drink_note_ja || "",
+  };
+
   // schema.org MusicEvent — powers rich results once the page is indexable.
   // Emitted now (harmless while noindex) so it's live and verifiable on launch.
   // Suppressed while the line-up section is hidden so unconfirmed performers
@@ -238,6 +257,7 @@ export default async function Page() {
         socialsSlice={byType("party_socials")}
         timetable={timetable}
         visibility={visibility}
+        pricing={pricing}
       />
     </>
   );

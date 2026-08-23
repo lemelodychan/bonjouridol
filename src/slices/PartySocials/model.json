@@ -15,13 +15,13 @@
         "links": {
           "type": "Group",
           "config": {
-            "label": "Links (grouped by organisation, in order)",
+            "label": "Links",
             "repeat": true,
             "fields": {
               "org": {
                 "type": "Text",
                 "config": {
-                  "label": "Organisation (groups consecutive links)",
+                  "label": "Organisation",
                   "placeholder": "BONJOUR IDOL"
                 }
               },

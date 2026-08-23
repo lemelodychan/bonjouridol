@@ -43,7 +43,7 @@
       "is_holiday": {
         "type": "Boolean",
         "config": {
-          "label": "Public holiday? (adds ・祝 / ・Holiday after the weekday)",
+          "label": "Public holiday",
           "placeholder_false": "false",
           "placeholder_true": "true",
           "default_value": false
@@ -66,7 +66,7 @@
       "times_confirmed": {
         "type": "Boolean",
         "config": {
-          "label": "Times & prices confirmed? (off = show TBA / provisional notes)",
+          "label": "Times & prices confirmed",
           "placeholder_false": "false",
           "placeholder_true": "true",
           "default_value": false
@@ -75,16 +75,83 @@
       "ticket_url": {
         "type": "Link",
         "config": {
-          "label": "Ticket purchase URL (external)",
+          "label": "Ticket URL",
           "placeholder": "https://tickets.example.com/bonjour-party",
           "select": "web",
           "allowTargetBlank": true
         }
       },
+      "ticket_tiers": {
+        "type": "Group",
+        "config": {
+          "label": "Ticket tiers",
+          "repeat": true,
+          "fields": {
+            "name_en": {
+              "type": "Text",
+              "config": {
+                "label": "Tier name (EN)",
+                "placeholder": "Front Area"
+              }
+            },
+            "name_ja": {
+              "type": "Text",
+              "config": {
+                "label": "Tier name (JA)",
+                "placeholder": "前方エリア"
+              }
+            },
+            "price": {
+              "type": "Text",
+              "config": {
+                "label": "Price",
+                "placeholder": "¥ 4,000"
+              }
+            },
+            "note_en": {
+              "type": "Text",
+              "config": {
+                "label": "Note (EN)",
+                "placeholder": "Priority area, front-of-stage viewing"
+              }
+            },
+            "note_ja": {
+              "type": "Text",
+              "config": {
+                "label": "Note (JA)",
+                "placeholder": "優先エリア確約・前方から観覧"
+              }
+            },
+            "is_hot": {
+              "type": "Boolean",
+              "config": {
+                "label": "Highlight tier",
+                "placeholder_false": "false",
+                "placeholder_true": "true",
+                "default_value": false
+              }
+            }
+          }
+        }
+      },
+      "drink_note_en": {
+        "type": "Text",
+        "config": {
+          "label": "Drink note (EN)",
+          "placeholder": "+ One drink required (payable at the venue)"
+        }
+      },
+      "drink_note_ja": {
+        "type": "Text",
+        "config": {
+          "label": "Drink note (JA)",
+          "placeholder": "＋ 1ドリンク別（会場でお支払いください）"
+        }
+      },
       "show_lineup": {
         "type": "Boolean",
         "config": {
-          "label": "Show line-up section? (off = hide the artist grid)",
+          "label": "Show line-up",
           "placeholder_false": "false",
           "placeholder_true": "true",
           "default_value": true
@@ -93,7 +160,7 @@
       "show_timetable": {
         "type": "Boolean",
         "config": {
-          "label": "Show timetable section? (off = hide the schedule)",
+          "label": "Show timetable",
           "placeholder_false": "false",
           "placeholder_true": "true",
           "default_value": true
@@ -102,7 +169,7 @@
       "show_rules": {
         "type": "Boolean",
         "config": {
-          "label": "Show rules section?",
+          "label": "Show rules",
           "placeholder_false": "false",
           "placeholder_true": "true",
           "default_value": true
@@ -111,7 +178,7 @@
       "show_about": {
         "type": "Boolean",
         "config": {
-          "label": "Show about section?",
+          "label": "Show about",
           "placeholder_false": "false",
           "placeholder_true": "true",
           "default_value": true
@@ -120,7 +187,7 @@
       "show_socials": {
         "type": "Boolean",
         "config": {
-          "label": "Show socials (footer) section?",
+          "label": "Show socials",
           "placeholder_false": "false",
           "placeholder_true": "true",
           "default_value": true
@@ -150,14 +217,14 @@
     "SEO & Metadata": {
       "meta_title": {
         "config": {
-          "label": "Meta Title",
+          "label": "Meta title",
           "placeholder": "A title of the page used for social media and search engines"
         },
         "type": "Text"
       },
       "meta_description": {
         "config": {
-          "label": "Meta Description",
+          "label": "Meta description",
           "placeholder": "A brief summary of the page"
         },
         "type": "Text"
@@ -168,7 +235,7 @@
             "height": 1260,
             "width": 2400
           },
-          "label": "Meta Image",
+          "label": "Meta image",
           "thumbnails": []
         },
         "type": "Image"

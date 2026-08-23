@@ -59,6 +59,7 @@ export default function PartyPage({
   socialsSlice = null,
   timetable = [],
   visibility = {},
+  pricing = {},
 }) {
   // Per-section visibility from Prismic. Undefined → visible (see page.js).
   const show = {
@@ -125,6 +126,19 @@ export default function PartyPage({
   const timeValue = confirmed
     ? `${event.open_time || ""} / ${event.start_time || ""}`
     : `${t.tba} / ${t.tba}`;
+
+  // Ticket tiers: prefer CMS content, resolving each field to the active
+  // language; fall back to the built-in locale defaults when Prismic is empty.
+  const tiers = pricing.tiers?.length
+    ? pricing.tiers.map((tt) => ({
+        name: lang === "ja" ? tt.name_ja || tt.name_en : tt.name_en || tt.name_ja,
+        price: tt.price,
+        note: lang === "ja" ? tt.note_ja || tt.note_en : tt.note_en || tt.note_ja,
+        hot: tt.hot,
+      }))
+    : t.tiers || [];
+  const drinkNote =
+    (lang === "ja" ? pricing.drinkNote_ja : pricing.drinkNote_en) || t.drinkNote;
 
   return (
     <div className={styles.bleed}>
@@ -241,7 +255,7 @@ export default function PartyPage({
 
           <div className={styles.priceKicker}>{t.priceKicker}</div>
           <div className={styles.tiers}>
-            {(t.tiers || []).map((tier, i) => (
+            {tiers.map((tier, i) => (
               <div
                 className={`${styles.tier} ${tier.hot ? styles.tierHot : styles.tierPlain}`}
                 key={i}
@@ -254,10 +268,10 @@ export default function PartyPage({
               </div>
             ))}
           </div>
-          {t.drinkNote && (
+          {drinkNote && (
             <div className={styles.drinkNote}>
               <div className={styles.icon} />
-              <div className={styles.txt}>{t.drinkNote}</div>
+              <div className={styles.txt}>{drinkNote}</div>
             </div>
           )}
           {!confirmed && t.tentativeNote && (

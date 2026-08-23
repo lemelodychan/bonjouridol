@@ -35,7 +35,7 @@
               "is_headliner": {
                 "type": "Boolean",
                 "config": {
-                  "label": "Headliner? (large featured card)",
+                  "label": "Headliner",
                   "placeholder_false": "false",
                   "placeholder_true": "true",
                   "default_value": false
@@ -44,7 +44,7 @@
               "photos_ok": {
                 "type": "Boolean",
                 "config": {
-                  "label": "Photos OK?",
+                  "label": "Photos OK",
                   "placeholder_false": "false",
                   "placeholder_true": "true",
                   "default_value": false
@@ -53,7 +53,7 @@
               "image": {
                 "type": "Image",
                 "config": {
-                  "label": "Photo (optional — falls back to a tinted placeholder)",
+                  "label": "Photo",
                   "constraint": {},
                   "thumbnails": []
                 }
@@ -61,35 +61,35 @@
               "live_start": {
                 "type": "Text",
                 "config": {
-                  "label": "Live start (HH:MM, e.g. 12:20 or 25:50)",
+                  "label": "Live start",
                   "placeholder": "12:20"
                 }
               },
               "live_end": {
                 "type": "Text",
                 "config": {
-                  "label": "Live end (HH:MM)",
+                  "label": "Live end",
                   "placeholder": "12:35"
                 }
               },
               "mng_start": {
                 "type": "Text",
                 "config": {
-                  "label": "Meet & greet start (HH:MM)",
+                  "label": "Meet & greet start",
                   "placeholder": "15:00"
                 }
               },
               "mng_end": {
                 "type": "Text",
                 "config": {
-                  "label": "Meet & greet end (HH:MM)",
+                  "label": "Meet & greet end",
                   "placeholder": "16:00"
                 }
               },
               "twitter": {
                 "type": "Link",
                 "config": {
-                  "label": "Twitter / X (optional)",
+                  "label": "Twitter / X",
                   "select": "web",
                   "allowTargetBlank": true
                 }
@@ -97,7 +97,7 @@
               "instagram": {
                 "type": "Link",
                 "config": {
-                  "label": "Instagram (optional)",
+                  "label": "Instagram",
                   "select": "web",
                   "allowTargetBlank": true
                 }
@@ -105,7 +105,7 @@
               "tiktok": {
                 "type": "Link",
                 "config": {
-                  "label": "TikTok (optional)",
+                  "label": "TikTok",
                   "select": "web",
                   "allowTargetBlank": true
                 }
@@ -113,7 +113,7 @@
               "website": {
                 "type": "Link",
                 "config": {
-                  "label": "Website (optional)",
+                  "label": "Website",
                   "select": "web",
                   "allowTargetBlank": true
                 }
