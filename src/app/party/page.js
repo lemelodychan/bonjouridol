@@ -102,6 +102,18 @@ export default async function Page() {
   const byType = (type) => slices.find((s) => s.slice_type === type) || null;
   const lineupSlice = byType("party_lineup");
 
+  // Per-section visibility toggles (Prismic Booleans on the singleton). Editors
+  // flip these to hide unconfirmed sections without touching slice content.
+  // Absent/undefined counts as visible so existing content never regresses —
+  // only an explicit `false` hides a section.
+  const visibility = {
+    lineup: doc.data.show_lineup !== false,
+    timetable: doc.data.show_timetable !== false,
+    rules: doc.data.show_rules !== false,
+    about: doc.data.show_about !== false,
+    socials: doc.data.show_socials !== false,
+  };
+
   // Timetable is derived from the single lineup groups list — no double entry.
   const groups = lineupSlice?.primary?.groups || [];
   const timetable = groups
@@ -139,10 +151,14 @@ export default async function Page() {
 
   // schema.org MusicEvent — powers rich results once the page is indexable.
   // Emitted now (harmless while noindex) so it's live and verifiable on launch.
-  const performers = groups
-    .map((g) => g.name_en || g.name_ja)
-    .filter(Boolean)
-    .map((name) => ({ "@type": "MusicGroup", name }));
+  // Suppressed while the line-up section is hidden so unconfirmed performers
+  // aren't published in structured data.
+  const performers = visibility.lineup
+    ? groups
+        .map((g) => g.name_en || g.name_ja)
+        .filter(Boolean)
+        .map((name) => ({ "@type": "MusicGroup", name }))
+    : [];
 
   const startDate = event.times_confirmed
     ? toIsoStart(event.event_date, event.start_time)
@@ -211,6 +227,7 @@ export default async function Page() {
         aboutSlice={byType("party_about")}
         socialsSlice={byType("party_socials")}
         timetable={timetable}
+        visibility={visibility}
       />
     </>
   );

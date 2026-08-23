@@ -81,6 +81,51 @@
           "allowTargetBlank": true
         }
       },
+      "show_lineup": {
+        "type": "Boolean",
+        "config": {
+          "label": "Show line-up section? (off = hide the artist grid)",
+          "placeholder_false": "false",
+          "placeholder_true": "true",
+          "default_value": true
+        }
+      },
+      "show_timetable": {
+        "type": "Boolean",
+        "config": {
+          "label": "Show timetable section? (off = hide the schedule)",
+          "placeholder_false": "false",
+          "placeholder_true": "true",
+          "default_value": true
+        }
+      },
+      "show_rules": {
+        "type": "Boolean",
+        "config": {
+          "label": "Show rules section?",
+          "placeholder_false": "false",
+          "placeholder_true": "true",
+          "default_value": true
+        }
+      },
+      "show_about": {
+        "type": "Boolean",
+        "config": {
+          "label": "Show about section?",
+          "placeholder_false": "false",
+          "placeholder_true": "true",
+          "default_value": true
+        }
+      },
+      "show_socials": {
+        "type": "Boolean",
+        "config": {
+          "label": "Show socials (footer) section?",
+          "placeholder_false": "false",
+          "placeholder_true": "true",
+          "default_value": true
+        }
+      },
       "slices": {
         "type": "Slices",
         "fieldset": "Slice Zone",

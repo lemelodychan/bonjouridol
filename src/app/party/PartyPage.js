@@ -58,7 +58,16 @@ export default function PartyPage({
   aboutSlice = null,
   socialsSlice = null,
   timetable = [],
+  visibility = {},
 }) {
+  // Per-section visibility from Prismic. Undefined → visible (see page.js).
+  const show = {
+    lineup: visibility.lineup !== false,
+    timetable: visibility.timetable !== false,
+    rules: visibility.rules !== false,
+    about: visibility.about !== false,
+    socials: visibility.socials !== false,
+  };
   const [lang, setLang] = useState("ja");
   const [scrolled, setScrolled] = useState(false);
   const heroRef = useRef(null);
@@ -267,14 +276,18 @@ export default function PartyPage({
           )}
         </section>
 
-        {/* CMS-driven sections (page-only slices) */}
-        <PartyLineup slice={lineupSlice} lang={lang} t={t} />
-        <Timetable rows={timetable} lang={lang} t={t} confirmed={confirmed} />
-        <PartyRules slice={rulesSlice} lang={lang} t={t} />
-        <PartyAbout slice={aboutSlice} lang={lang} t={t} />
+        {/* CMS-driven sections (page-only slices). Each is gated by a Prismic
+            visibility toggle so unconfirmed sections can be hidden without
+            editing slice content. */}
+        {show.lineup && <PartyLineup slice={lineupSlice} lang={lang} t={t} />}
+        {show.timetable && (
+          <Timetable rows={timetable} lang={lang} t={t} confirmed={confirmed} />
+        )}
+        {show.rules && <PartyRules slice={rulesSlice} lang={lang} t={t} />}
+        {show.about && <PartyAbout slice={aboutSlice} lang={lang} t={t} />}
 
         <footer className={styles.footer}>
-          <PartySocials slice={socialsSlice} t={t} />
+          {show.socials && <PartySocials slice={socialsSlice} t={t} />}
           {t.footerNote && <div className={styles.footerNote}>{t.footerNote}</div>}
         </footer>
 
