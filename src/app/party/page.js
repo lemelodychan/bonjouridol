@@ -58,7 +58,17 @@ export async function generateMetadata() {
     const description =
       doc.data.meta_description ||
       "BONJOUR IDOL presents Bonjour Party — a live idol event in Tokyo.";
-    const imageUrl = doc.data.meta_image?.url || "/FeaturedImage.png";
+    // Use the document's Meta Image fully — its own URL, dimensions and alt —
+    // falling back to the site default only when unset in Prismic.
+    const metaImage = doc.data.meta_image;
+    const image = metaImage?.url
+      ? {
+          url: metaImage.url,
+          width: metaImage.dimensions?.width || 1200,
+          height: metaImage.dimensions?.height || 630,
+          alt: metaImage.alt || title,
+        }
+      : { url: "/FeaturedImage.png", width: 1200, height: 630, alt: title };
     return {
       title,
       description,
@@ -73,9 +83,9 @@ export async function generateMetadata() {
         title,
         description,
         url: CANONICAL,
-        images: [{ url: imageUrl, width: 1200, height: 630, alt: title }],
+        images: [image],
       },
-      twitter: { card: "summary_large_image", title, description, images: [imageUrl] },
+      twitter: { card: "summary_large_image", title, description, images: [image.url] },
     };
   } catch {
     return {
