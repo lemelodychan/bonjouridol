@@ -8,7 +8,14 @@
  */
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { TbArrowRight, TbArrowUp, TbTicket } from "react-icons/tb";
+import {
+  TbArrowRight,
+  TbArrowUp,
+  TbTicket,
+  TbCalendarEvent,
+  TbMapPin,
+  TbGlassFull,
+} from "react-icons/tb";
 import styles from "./party.module.scss";
 import ja from "./locales/ja.json";
 import en from "./locales/en.json";
@@ -182,7 +189,7 @@ export default function PartyPage({
           <div className={styles.heroCtas}>
             <div className={styles.badges}>
               <div className={`${styles.badge} ${styles.badgePink}`}>
-                <span />
+                <TbCalendarEvent size={16} aria-hidden />
                 {(() => {
                     const { date, tag } = fmtDate(event.event_date, lang, event.is_holiday);
                     return (
@@ -194,7 +201,7 @@ export default function PartyPage({
                   })()}
               </div>
               <div className={`${styles.badge} ${styles.badgeIndigo}`}>
-                <span />
+                <TbMapPin size={16} aria-hidden />
                 {venueName}
               </div>
             </div>
@@ -216,7 +223,7 @@ export default function PartyPage({
           <div className={styles.infoCard}>
             <div className={styles.infoRow}>
               <div className={styles.infoBar} style={{ background: "var(--pk)" }} />
-              <div style={{ flex: 1 }}>
+              <div className={styles.infoValueContainer}>
                 <div className={styles.infoLabel}>{t.venueLabel}</div>
                 <div className={styles.infoValue}>
                   {venueName}
@@ -226,7 +233,7 @@ export default function PartyPage({
             </div>
             <div className={styles.infoRow}>
               <div className={styles.infoBar} style={{ background: "var(--iv)" }} />
-              <div style={{ flex: 1 }}>
+              <div className={styles.infoValueContainer}>
                 <div className={styles.infoLabel}>{t.dateLabel}</div>
                 <div className={styles.infoValue}>
                   {(() => {
@@ -243,12 +250,9 @@ export default function PartyPage({
             </div>
             <div className={styles.infoRow}>
               <div className={styles.infoBar} style={{ background: "var(--teal)" }} />
-              <div style={{ flex: 1 }}>
+              <div className={styles.infoValueContainer}>
                 <div className={styles.infoLabel}>{t.timeLabel}</div>
-                <div className={styles.infoValue}>
-                  {timeValue}
-                  {!confirmed && <span className={styles.tbaTag}>{t.tbaTag}</span>}
-                </div>
+                <div className={styles.infoValue}>{timeValue}</div>
               </div>
             </div>
           </div>
@@ -270,12 +274,11 @@ export default function PartyPage({
           </div>
           {drinkNote && (
             <div className={styles.drinkNote}>
-              <div className={styles.icon} />
+              <div className={styles.icon}>
+                <TbGlassFull size={16} aria-hidden />
+              </div>
               <div className={styles.txt}>{drinkNote}</div>
             </div>
-          )}
-          {!confirmed && t.tentativeNote && (
-            <p className={styles.tentativeNote}>{t.tentativeNote}</p>
           )}
           {ticketUrl && (
             <a

@@ -30,7 +30,6 @@ const PartySocials = ({ slice, t = {} }) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
     >
-      <div className={styles.kicker}>{t.followKicker}</div>
       <div className={styles.orgs}>
         {orgs.map((o, i) => (
           <div key={i}>

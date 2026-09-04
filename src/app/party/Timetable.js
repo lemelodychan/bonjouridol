@@ -37,18 +37,20 @@ export default function Timetable({ rows = [], lang = "ja", t = {}, confirmed = 
                   </span>
                 )}
               </div>
-              <div className={styles.ttMeta}>
-                {r.liveRange && (
-                  <span className={styles.ttLive}>
-                    {t.liveLabel} {r.liveRange}
-                  </span>
-                )}
-                {r.mng && (
-                  <span className={styles.ttMng}>
-                    {t.mngLabel} {r.mng}
-                  </span>
-                )}
-              </div>
+              {(r.liveRange || r.mng) && (
+                <div className={styles.ttMeta}>
+                  {r.liveRange && (
+                    <span className={styles.ttLive}>
+                      {t.liveLabel} {r.liveRange}
+                    </span>
+                  )}
+                  {r.mng && (
+                    <span className={styles.ttMng}>
+                      {t.mngLabel} {r.mng}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         ))}

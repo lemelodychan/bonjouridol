@@ -14,7 +14,7 @@
   font-family: var(--party-font-text);
   font-weight: 800;
   font-size: 12px;
-  letter-spacing: 3px;
+  letter-spacing: 1px;
   color: var(--pk);
   text-transform: uppercase;
   margin-bottom: 8px;
@@ -36,6 +36,12 @@
   object-fit: cover;
 }
 
+.featured {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 /* Featured (headliner) cards */
 .featCard {
   position: relative;
@@ -43,7 +49,6 @@
   overflow: hidden;
   background: var(--white);
   box-shadow: 0 14px 34px rgba(var(--iv2-rgb), 0.18);
-  margin-bottom: 16px;
   transition: transform 0.25s;
 }
 .featCard:hover { transform: translateY(-4px); }
@@ -61,26 +66,10 @@
   left: 14px;
   font-family: var(--party-font-text);
   font-weight: 800;
-  font-size: 34px;
+  font-size: 36px;
   color: var(--white);
   line-height: 1;
   text-shadow: 0 3px 8px rgba(0, 0, 0, 0.22);
-}
-.headTag {
-  position: absolute;
-  bottom: 12px;
-  left: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  color: var(--white);
-  background: linear-gradient(135deg, var(--pk), var(--pk2));
-  border-radius: 999px;
-  padding: 5px 12px;
-  box-shadow: 0 5px 12px rgba(var(--pk-rgb), 0.4);
 }
 .okPill {
   position: absolute;
@@ -110,7 +99,7 @@
   gap: 12px;
 }
 .featInfo { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-.featName { font-size: 19px; font-weight: 800; color: var(--ink); }
+.featName { font-size: 20px; font-weight: 800; color: var(--ink); flex-grow: 1; }
 .performing {
   font-size: 11px;
   font-weight: 800;
@@ -123,7 +112,7 @@
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
 }
 .gridCard {
   border-radius: 16px;
@@ -171,10 +160,10 @@
   font-weight: 600;
 }
 .gridBody { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-.gridName { font-size: 15px; font-weight: 800; color: var(--ink); }
+.gridName { font-size: 16px; font-weight: 800; color: var(--ink); }
 
 /* Per-artist socials */
-.socials { display: flex; flex-wrap: wrap; gap: 8px; }
+.socials { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
 .social {
   display: inline-flex;
   align-items: center;

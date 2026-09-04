@@ -16,7 +16,6 @@ import {
   TbBrandTiktok,
   TbWorld,
   TbCamera,
-  TbStarFilled,
 } from "react-icons/tb";
 import styles from "./page.module.scss";
 
@@ -91,64 +90,63 @@ const PartyLineup = ({ slice, lang = "ja", t = {} }) => {
         <h2 className={styles.h2}>{t.lineupTitle}</h2>
       </div>
 
-      {featured.map((g, i) => (
-        <div className={styles.featCard} key={`f${i}`}>
-          <div
-            className={styles.featMedia}
-            style={{ "--ta": TINT_A[g.tint], "--tb": TINT_B[g.tint] }}
-          >
-            {g.image?.url && (
-              <PrismicNextImage field={g.image} className={styles.photo} fallbackAlt="" />
-            )}
-            <div className={styles.rankBig}>{g.rank}</div>
-            <span className={styles.headTag}>
-              <TbStarFilled size={11} aria-hidden />
-              {t.headlinerTag}
-            </span>
-            {g.photos_ok && (
-              <span className={styles.okPill}>
-                <TbCamera size={16} style={{ color: "var(--iv)" }} aria-hidden />
-                <span className={styles.okTxt}>{t.photoOk}</span>
-              </span>
-            )}
-            {!g.image?.url && <div className={styles.photoLabel}>{t.photoLabel}</div>}
-          </div>
-          <div className={styles.featBody}>
-            <div className={styles.featInfo}>
-              <div className={styles.featName}>{nm(g)}</div>
-              <Socials group={g} />
-            </div>
-            <div className={styles.performing}>{t.performingTag}</div>
-          </div>
-        </div>
-      ))}
-
-      {grid.length > 0 && (
-        <div className={styles.grid}>
-          {grid.map((g, i) => (
-            <div className={styles.gridCard} key={`g${i}`}>
+      {featured.length > 0 && (
+        <div className={styles.featured}>
+          {featured.map((g, i) => (
+            <div className={styles.featCard} key={`f${i}`}>
               <div
-                className={styles.gridMedia}
+                className={styles.featMedia}
                 style={{ "--ta": TINT_A[g.tint], "--tb": TINT_B[g.tint] }}
               >
                 {g.image?.url && (
                   <PrismicNextImage field={g.image} className={styles.photo} fallbackAlt="" />
                 )}
-                <div className={styles.rankSm}>{g.rank}</div>
+                <div className={styles.rankBig}>{g.rank}</div>
                 {g.photos_ok && (
-                  <span className={styles.okPillSm}>
-                    <TbCamera size={15} style={{ color: "var(--iv)" }} aria-hidden />
+                  <span className={styles.okPill}>
+                    <TbCamera size={16} style={{ color: "var(--iv)" }} aria-hidden />
+                    <span className={styles.okTxt}>{t.photoOk}</span>
                   </span>
                 )}
-                {!g.image?.url && <div className={styles.photoLabelSm}>{t.photoLabel}</div>}
+                {!g.image?.url && <div className={styles.photoLabel}>{t.photoLabel}</div>}
               </div>
-              <div className={styles.gridBody}>
-                <div className={styles.gridName}>{nm(g)}</div>
-                <Socials group={g} />
+              <div className={styles.featBody}>
+                <div className={styles.featInfo}>
+                  <div className={styles.featName}>{nm(g)}</div>
+                  <Socials group={g} />
+                </div>
               </div>
             </div>
           ))}
-        </div>
+
+          {grid.length > 0 && (
+            <div className={styles.grid}>
+              {grid.map((g, i) => (
+                <div className={styles.gridCard} key={`g${i}`}>
+                  <div
+                    className={styles.gridMedia}
+                    style={{ "--ta": TINT_A[g.tint], "--tb": TINT_B[g.tint] }}
+                  >
+                    {g.image?.url && (
+                      <PrismicNextImage field={g.image} className={styles.photo} fallbackAlt="" />
+                    )}
+                    <div className={styles.rankSm}>{g.rank}</div>
+                    {g.photos_ok && (
+                      <span className={styles.okPillSm}>
+                        <TbCamera size={15} style={{ color: "var(--iv)" }} aria-hidden />
+                      </span>
+                    )}
+                    {!g.image?.url && <div className={styles.photoLabelSm}>{t.photoLabel}</div>}
+                  </div>
+                  <div className={styles.gridBody}>
+                    <div className={styles.gridName}>{nm(g)}</div>
+                    <Socials group={g} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+      </div>
       )}
 
 {/*       <div className={styles.legend}>
