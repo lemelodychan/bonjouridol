@@ -130,6 +130,20 @@ export default function PartyPage({
     }
   };
 
+  // Smooth-scroll the hero CTA to the tickets section. Keeps the #tickets href
+  // as a no-JS / a11y fallback; scroll-margin-top on .section handles the
+  // fixed-header offset.
+  const scrollToTickets = (e) => {
+    const el = document.getElementById("tickets");
+    if (!el) return;
+    e.preventDefault();
+    try {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch {
+      el.scrollIntoView();
+    }
+  };
+
   const timeValue = confirmed
     ? `${event.open_time || ""} / ${event.start_time || ""}`
     : `${t.tba} / ${t.tba}`;
@@ -205,7 +219,7 @@ export default function PartyPage({
                 {venueName}
               </div>
             </div>
-            <a href="#tickets" className={styles.cta}>
+            <a href="#tickets" className={styles.cta} onClick={scrollToTickets}>
               {t.ctaTickets}
               <TbArrowRight size={18} aria-hidden />
             </a>
@@ -289,6 +303,7 @@ export default function PartyPage({
             >
               <TbTicket size={20} aria-hidden />
               {t.ctaBuy}
+              <span className={styles.fabBadge}>{t.onSaleBadge}</span>
             </a>
           )}
         </section>
@@ -309,15 +324,20 @@ export default function PartyPage({
         </footer>
 
         {ticketUrl && (
-          <a
-            className={`${styles.ticketFab} ${scrolled ? styles.show : ""}`}
-            href={ticketUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <TbTicket size={20} aria-hidden />
-            <span>{t.ctaBuy}</span>
-          </a>
+          <div className={`${styles.ticketFab} ${scrolled ? styles.show : ""}`}>
+            {t.onSaleBadge && (
+              <span className={styles.fabBadge}>{t.onSaleBadge}</span>
+            )}
+            <a
+              className={styles.ticketFabLink}
+              href={ticketUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <TbTicket size={20} aria-hidden />
+              <span>{t.ctaBuy}</span>
+            </a>
+          </div>
         )}
 
         <button

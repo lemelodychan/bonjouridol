@@ -340,7 +340,7 @@
 /* ---------- Event info card ---------- */
 .infoCard {
   background: linear-gradient(162deg, var(--white), var(--pink-tint));
-  border: 1.5px solid var(--bd-pink);
+  border: 2px solid var(--bd-pink);
   border-radius: 16px;
   padding: 4px 16px;
   box-shadow: 0 12px 32px rgba(var(--pk-rgb), 0.13);
@@ -404,6 +404,23 @@
   text-transform: uppercase;
   margin: 0 0 12px;
 }
+/* On-sale announcement pill above the ticket tiers. */
+.saleNotice {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 14px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--pink-tint), var(--pink-tint2));
+  border: 1.5px solid var(--bd-pink);
+  color: var(--pk2);
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1.3;
+}
+.saleNotice svg { color: var(--pk); flex-shrink: 0; }
 .tiers {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -418,8 +435,8 @@
   gap: 4px;
   box-shadow: 0 8px 22px rgba(var(--iv2-rgb), 0.1);
 }
-.tierHot { background: linear-gradient(160deg, var(--pink-tint), var(--pink-tint2)); border: 2px solid var(--pk); }
-.tierPlain { background: var(--white); border: 1.5px solid var(--bd-indigo); }
+.tierHot { background: var(--white); border: 2px solid var(--pk); }
+.tierPlain { background: var(--white); border: 2px solid var(--bd-indigo); }
 .tierName { font-size: 14px; font-weight: 800; }
 .tierName.hot { color: var(--pk2); }
 .tierName.plain { color: var(--iv2); }
@@ -483,6 +500,13 @@
 }
 .buyBtn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 14px 34px rgba(var(--iv-rgb), 0.5); }
 .buyBtn:active { transform: scale(0.98); }
+
+.buyBtn .fabBadge {
+  position: relative;
+  top: 0;
+  right: 0;
+  transform: translateX(0%);
+}
 
 /* ---------- Timetable ---------- */
 .tt { display: flex; flex-direction: column; gap: 16px; }
@@ -561,43 +585,58 @@
 /* ---------- Floating ticket CTA ----------
    Persistent purchase button pinned to the bottom edge. Spans the card column
    but stops short of the back-to-top FAB's corner (right offset = 16 + 48 + 12)
-   so the two never overlap, on mobile or on the centred desktop column. */
+   so the two never overlap, on mobile or on the centred desktop column.
+
+   Structure: .ticketFab is the fixed wrapper that owns positioning + the
+   reveal animation and is NOT clipped, so the .fabBadge can sit above the top
+   edge. It also paints the gradient outline as its own background, with a 2px
+   pad; .ticketFabLink is the solid white pill laid on top. (Painting the
+   gradient behind an opaque pill — rather than the padding-box/border-box
+   layer trick on one element — avoids the hairline seam that antialiasing
+   leaves between the two backgrounds at the rounded corners.) */
 .ticketFab {
   position: fixed;
-  overflow: hidden;
-  isolation: isolate;
   bottom: 20px;
   width: fit-content;
-  padding: 0 24px;
   left: max(16px, calc(50% - 244px));
   right: max(76px, calc(50% - 184px));
   z-index: 58;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: 44px;
-  border: 2px solid transparent;
+  padding: 2px;
   border-radius: 999px;
-  text-decoration: none;
-  /* White fill (padding-box) inside a gradient outline (border-box). */
-  background: linear-gradient(var(--white), var(--white)) padding-box,
-    linear-gradient(135deg, var(--pk), var(--iv)) border-box;
-  color: var(--pk2);
-  font-family: var(--f-round);
-  font-weight: 800;
-  font-size: 16px;
-  box-shadow: 0 10px 24px rgba(var(--ink-rgb), 0.14);
+  background: linear-gradient(135deg, var(--pk), var(--iv));
   /* Hidden until the hero scrolls out of view (mirrors .backTop), so it never
      competes with the hero's own "See ticket info" CTA above the fold. */
   opacity: 0;
   transform: translateY(20px);
   pointer-events: none;
-  transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-    color 0.3s ease, box-shadow 0.3s ease;
+  transition: opacity 0.35s ease,
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.ticketFabLink {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  border: 0;
+  border-radius: 999px;
+  text-decoration: none;
+  background: var(--white);
+  color: var(--pk2);
+  font-family: var(--f-round);
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow: 0 10px 24px rgba(var(--ink-rgb), 0.14);
+  transition: color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 }
 /* Gradient fill that fades in on hover/tap — the outline "lights up". */
-.ticketFab::before {
+.ticketFabLink::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -607,24 +646,43 @@
   transition: opacity 0.32s ease;
   z-index: 0;
 }
-.ticketFab > * { position: relative; z-index: 1; } /* icon + label above the fill */
+.ticketFabLink > * { position: relative; z-index: 1; } /* icon + label above the fill */
 .ticketFab.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-.ticketFab.show:hover,
-.ticketFab.show:active {
+.ticketFabLink:hover,
+.ticketFabLink:active {
   color: var(--white);
   box-shadow: 0 16px 36px rgba(var(--pk-rgb), 0.42);
 }
-.ticketFab.show:hover { transform: translateY(-2px); }
-.ticketFab.show:active { transform: scale(0.97); }
-.ticketFab.show:hover::before,
-.ticketFab.show:active::before { opacity: 1; }
+.ticketFabLink:active { transform: scale(0.97); }
+.ticketFabLink:hover::before,
+.ticketFabLink:active::before { opacity: 1; }
+
+/* "On sale" badge perched on the top edge of the floating CTA. */
+.fabBadge {
+  position: absolute;
+  top: -12px;
+  right: 50%;
+  transform: translateX(50%);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--pink-tint), var(--pink-tint2));
+  color: var(--pk2);
+  font-family: var(--party-font-text);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
 
 /* Shared shine sweep for the ticket CTAs — a diagonal highlight glides across
    on hover and on tap (:active covers touch). The stripe sits off the left edge
    at rest and is clipped by each button's overflow:hidden. (The hero .cta is
    left out: overflow:hidden would clip its animated outer glow.) */
 .buyBtn::after,
-.ticketFab::after {
+.ticketFabLink::after {
   content: "";
   position: absolute;
   top: 0;
@@ -643,14 +701,14 @@
 }
 .buyBtn:hover::after,
 .buyBtn:active::after,
-.ticketFab:hover::after,
-.ticketFab:active::after {
+.ticketFabLink:hover::after,
+.ticketFabLink:active::after {
   transform: translateX(310%) skewX(-18deg);
   transition: transform 0.62s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 @media (prefers-reduced-motion: reduce) {
   .buyBtn::after,
-  .ticketFab::after { display: none; }
+  .ticketFabLink::after { display: none; }
 }
 
 /* ---------- Back to top ---------- */
